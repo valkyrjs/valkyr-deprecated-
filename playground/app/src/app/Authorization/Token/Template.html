@@ -1,0 +1,17 @@
+<div class="authorization-token">
+  <h1>Enter token</h1>
+  <p>
+    We've sent a 6-character code to <b>{{email}}</b>.
+  </p>
+  <div class="token-inputs">
+    <input
+      *ngFor="let n of size; index as i"
+      id="token-{{i}}"
+      maxLength="1"
+      (input)="onChange(i, $event)"
+      (focus)="onFocus($event)"
+      (keyup.backspace)="onDelete(i, $event)"
+    />
+  </div>
+  <p>Can't find your code? Check your spam folder!</p>
+</div>

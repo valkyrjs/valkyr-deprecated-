@@ -1,0 +1,20 @@
+{
+  "name": "@valkyr/angular",
+  "version": "0.0.0",
+  "description": "A angular toolkit for @valkyr applications.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json"
+  },
+  "dependencies": {
+    "@angular/core": "^13.3.5",
+    "@angular/router": "^13.3.5",
+    "@valkyr/db": "*",
+    "@valkyr/ledger": "*",
+    "@valkyr/utils": "*",
+    "rxjs": "~7.5.0"
+  }
+}

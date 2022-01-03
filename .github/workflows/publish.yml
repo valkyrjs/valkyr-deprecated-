@@ -1,0 +1,40 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  npm:
+    name: NPM
+    runs-on: ubuntu-latest
+    environment: NPM Release Publishing
+    steps:
+      - uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
+      - uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561
+        with:
+          node-version: "16"
+
+      - uses: actions/github-script@e3cbab99d3a9b271e1b79fc96d103a4a5534998c
+        id: version
+        with:
+          script: |
+            const semver = context.ref.replace('refs/tags/v', '')
+            if (semver.match(/^[0-9]+\.[0-9]+\.[0-9]+$/)) {
+              return semver
+            }
+            throw new Error('not semver')
+          result-encoding: string
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Version
+        run: |
+          node ./scripts/version.js --version ${{ steps.version.outputs.result }}
+      - name: Publish
+        run: |
+          npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
+          npm run publish
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

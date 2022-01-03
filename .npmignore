@@ -1,0 +1,19 @@
+# Development
+
+.vscode
+.eslintignore
+.eslintrc
+.gitignore
+.prettierrc
+node_modules
+src
+tests
+
+# Testing
+
+coverage
+
+# TypeScript
+
+tsconfig-cjs.json
+tsconfig.json

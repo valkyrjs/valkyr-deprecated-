@@ -1,0 +1,44 @@
+{
+  "name": "valkyr",
+  "version": "0.0.0",
+  "description": "A collection of TypeScript tools and libraries for Valkyr developers to build event sourced real time applications.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "files": [],
+  "workspaces": [
+    "./packages/*",
+    "./playground/*",
+    "./"
+  ],
+  "scripts": {
+    "prepare": "husky install",
+    "build": "node ./scripts/build.js",
+    "clean": "rm -rf ./packages/**/dist && rm -rf ./playground/**/dist && rm -rf ./packages/**/tsconfig.build.tsbuildinfo && rm -rf ./playground/app/.angular",
+    "flush": "npm run clean && npx rimraf ./**/node_modules",
+    "publish": "node ./scripts/publish.js",
+    "api": "npm start --prefix playground/api",
+    "app": "npm start --prefix playground/app",
+    "web": "npm start --prefix website",
+    "lint": "eslint ./packages --ext .ts --fix",
+    "test": "jest --maxWorkers=100% --detectOpenHandles",
+    "coverage": "jest --ci --coverage --forceExit --maxWorkers=4"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/jest": "27.4.1",
+    "@types/node": "16.10.3",
+    "@typescript-eslint/eslint-plugin": "5.21.0",
+    "@typescript-eslint/parser": "5.21.0",
+    "eslint": "8.14.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-simple-import-sort": "7.0.0",
+    "husky": "7.0.4",
+    "process": "^0.11.10",
+    "ts-jest": "27.1.4",
+    "typescript": "4.6.4"
+  }
+}

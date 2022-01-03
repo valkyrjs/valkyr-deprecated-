@@ -1,0 +1,31 @@
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "cSpell.words": [
+    "bitflag",
+    "Bitflags",
+    "camelcase",
+    "jsxdev",
+    "keyval",
+    "mingo",
+    "nestjs",
+    "nocheck",
+    "paramtypes",
+    "rfdc",
+    "signin",
+    "todos",
+    "tsbuildinfo",
+    "upsert",
+    "valkyr",
+    "websockets",
+    "Wksp"
+  ]
+}

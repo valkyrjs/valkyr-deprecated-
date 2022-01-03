@@ -1,0 +1,7 @@
+<div *ngIf="workspace">
+  <h1>Workspace [{{workspace.name}}]</h1>
+  <h2>Workspace Members</h2>
+  <div *ngFor="let member of workspace.members.getAll() ?? []">
+    #{{member.id}} {{member.name}}
+  </div>
+</div>

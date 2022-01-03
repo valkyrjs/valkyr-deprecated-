@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "name": "stores",
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "scripts": {
+    "build": "ts-node ./build/stores.ts"
+  },
+  "dependencies": {
+    "@valkyr/access": "*",
+    "@valkyr/ledger": "*"
+  },
+  "devDependencies": {
+    "camelcase": "^6.3.0",
+    "ts-node": "^10.7.0"
+  }
+}
