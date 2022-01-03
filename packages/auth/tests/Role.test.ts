@@ -1,11 +1,11 @@
 import { createMockDatabase } from "./Mocks/Database";
 import { TestRole } from "./Mocks/Lib/TestRole";
 
-describe("Role", () => {
-  beforeEach(() => {
-    createMockDatabase();
-  });
+beforeEach(() => {
+  createMockDatabase();
+});
 
+describe("Role", () => {
   describe("when .get is used", () => {
     it("should successfully successfully get role", async () => {
       expect(await TestRole.get("role-1")).toBeDefined();

@@ -1,14 +1,19 @@
-import { JSONRole, Role } from "../../../src/Lib/Role";
+import { RoleData } from "../../../src/Lib/Role";
 import type { Database } from "../../../src/Services/Database";
 import type { Operation } from "../../../src/Types";
+import { TestRole } from "../Lib/TestRole";
 
 export class TestDatabase implements Database {
-  public store: JSONRole[] = [];
+  public store: RoleData[] = [];
+
+  public async addRole(role: RoleData): Promise<void> {
+    this.store.push(role);
+  }
 
   /**
    * Retrieve role data from persistent database solution.
    */
-  public async getRole(roleId: string): Promise<JSONRole | undefined> {
+  public async getRole(roleId: string): Promise<RoleData | undefined> {
     return this.store.find((role) => role.roleId === roleId);
   }
 
@@ -41,10 +46,10 @@ export class TestDatabase implements Database {
    * method should retrieve all roles for the given member and combine them into a single
    * permissions object.
    */
-  public async getPermissions<Permissions extends Role["permissions"]>(tenantId: string, memberId: string): Promise<Permissions> {
+  public async getPermissions<Permissions extends TestRole["permissions"]>(tenantId: string, memberId: string): Promise<Permissions> {
     return this.store
       .filter((role) => role.tenantId !== tenantId || !role.members.includes(memberId))
-      .reduce((permissions, role) => leftMerge(permissions, role.permissions), {} as Permissions);
+      .reduce((permissions, role) => leftMerge(permissions, role.permissions), {}) as Permissions;
   }
 
   /**
@@ -94,7 +99,7 @@ function leftMerge(source: any, data: any): any {
   return source;
 }
 
-function assign(role: JSONRole, resource: string, action: string, data: any): void {
+function assign(role: RoleData, resource: string, action: string, data: any): void {
   if (!role.permissions[resource]) {
     role.permissions[resource] = {};
   }
@@ -104,7 +109,7 @@ function assign(role: JSONRole, resource: string, action: string, data: any): vo
   role.permissions[resource][action] = data;
 }
 
-function remove(role: JSONRole, resource: string, action?: string): void {
+function remove(role: RoleData, resource: string, action?: string): void {
   if (action) {
     delete role.permissions[resource][action];
   } else {

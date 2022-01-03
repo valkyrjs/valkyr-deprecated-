@@ -24,6 +24,6 @@
     "test": "jest --runInBand --verbose"
   },
   "dependencies": {
-    "@valkyr/inverse": "0.0.1"
+    "@valkyr/inverse": "*"
   }
 }

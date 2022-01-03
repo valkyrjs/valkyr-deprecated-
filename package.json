@@ -1,8 +1,15 @@
 {
-  "name": "@valkyr",
+  "name": "root",
   "private": true,
   "scripts": {
-    "clean": "lerna run clean"
+    "clean": "lerna run clean",
+    "setup": "lerna bootstrap",
+    "build": "lerna run build",
+
+    "api": "cd ./sandbox/api && npm start",
+    "app": "cd ./sandbox/app && npm start",
+
+    "test": "jest --runInBand --verbose"
   },
   "devDependencies": {
     "@types/jest": "27.4.0",
@@ -19,11 +26,6 @@
     "typescript": "4.5.4"
   },
   "jest": {
-    "globals": {
-      "ts-jest": {
-        "tsconfig": "tsconfig-cjs.json"
-      }
-    },
     "transform": {
       "^.+\\.ts$": "ts-jest"
     },
