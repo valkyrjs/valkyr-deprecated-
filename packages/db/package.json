@@ -1,0 +1,30 @@
+{
+  "name": "@valkyr/db",
+  "version": "0.0.0",
+  "description": "Simple storage solution written in TypeScript.",
+  "author": "Christoffer Rødvik <dev@kodemon.net>",
+  "license": "MIT",
+  "keywords": [
+    "browser",
+    "database",
+    "mingo",
+    "mongodb"
+  ],
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "prepublishOnly": "npm run lint && npm run build",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc --project tsconfig.json && cmdo output esm -f esm",
+    "build:cjs": "tsc --project tsconfig-cjs.json",
+    "clean": "rm -rf ./cjs ./esm ./types",
+    "lint": "eslint 'src/**/*.ts'",
+    "test": "jest --runInBand --verbose"
+  },
+  "dependencies": {
+    "eventemitter3": "4.0.7",
+    "mingo": "5.0.0",
+    "nanoid": "3.1.30"
+  }
+}

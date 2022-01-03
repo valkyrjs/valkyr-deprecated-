@@ -1,0 +1,29 @@
+{
+  "name": "@valkyr/auth",
+  "version": "0.0.0",
+  "description": "Simple auth solution written in TypeScript.",
+  "author": "Christoffer Rødvik <christoffer@kodemon.net>",
+  "license": "MIT",
+  "keywords": [
+    "authentication",
+    "auth",
+    "access-control",
+    "security",
+    "acl"
+  ],
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "prepublishOnly": "npm run lint && npm run build",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc --project tsconfig.json && cmdo output esm -f esm",
+    "build:cjs": "tsc --project tsconfig-cjs.json",
+    "clean": "rm -rf ./cjs ./esm ./types",
+    "lint": "eslint 'src/**/*.ts'",
+    "test": "jest --runInBand --verbose"
+  },
+  "dependencies": {
+    "@valkyr/inverse": "0.0.1"
+  }
+}
