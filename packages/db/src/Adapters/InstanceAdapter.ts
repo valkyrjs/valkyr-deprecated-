@@ -1,4 +1,4 @@
-import type { Adapter, Document } from "../Types/Storage";
+import type { Adapter, Document } from "../Storage/Types";
 
 export class InstanceAdapter implements Adapter {
   public readonly cache = new Map<string, Document[]>();

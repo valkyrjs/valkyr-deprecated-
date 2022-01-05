@@ -1,5 +1,5 @@
 import { Collection, InstanceAdapter } from "../src";
-import { Storage } from "../src/Lib/Storage";
+import { DocumentNotFoundError, DuplicateDocumentError } from "../src/Storage";
 import { User } from "./Mocks/User";
 import { data } from "./Mocks/UserData";
 
@@ -21,7 +21,7 @@ describe("Collection", () => {
 
     it("should throw an error if the document already exists", async () => {
       const { collection, documents } = await getMockedCollection();
-      await expect(collection.insert(documents[0])).rejects.toThrow(new Storage.DuplicateDocumentError(documents[0].id));
+      await expect(collection.insert(documents[0])).rejects.toThrow(new DuplicateDocumentError(documents[0].id));
     });
   });
 
@@ -33,9 +33,7 @@ describe("Collection", () => {
 
     it("should throw error if document does not exist", async () => {
       const { collection } = await getMockedCollection();
-      await expect(collection.update({ id: "user-3", name: "James Doe" })).rejects.toThrow(
-        new Storage.DocumentNotFoundError("user-3")
-      );
+      await expect(collection.update({ id: "user-3", name: "James Doe" })).rejects.toThrow(new DocumentNotFoundError("user-3"));
     });
   });
 

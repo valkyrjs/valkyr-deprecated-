@@ -1,11 +1,13 @@
 {
-  "name": "@valkyr/inverse",
+  "name": "@valkyr/access",
   "version": "0.0.0",
-  "description": "A simple dependency injection service.",
-  "author": "Christoffer Rødvik <dev@kodemon.net>",
+  "description": "Simple access control solution written in TypeScript.",
+  "author": "Christoffer Rødvik <christoffer@kodemon.net>",
   "license": "MIT",
   "keywords": [
-    "dependency-injection"
+    "access-control",
+    "security",
+    "acl"
   ],
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
@@ -16,7 +18,10 @@
     "build:esm": "tsc --project tsconfig.json && cmdo output esm -f esm",
     "build:cjs": "tsc --project tsconfig-cjs.json",
     "clean": "rm -rf ./cjs ./esm ./types",
-    "lint": "eslint 'src/**/*.ts' --fix",
+    "lint": "eslint 'src/**/*.ts'",
     "test": "jest --runInBand --verbose"
+  },
+  "dependencies": {
+    "@valkyr/inverse": "*"
   }
 }

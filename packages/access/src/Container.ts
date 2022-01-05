@@ -1,7 +1,7 @@
 import { Container } from "@valkyr/inverse";
 
-import { Token } from "./Token";
+import { Database } from "./Services";
 
 export const container = new Container<{
-  Token: Token;
+  Database: Database;
 }>();
