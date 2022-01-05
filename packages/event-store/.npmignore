@@ -1,0 +1,15 @@
+# General
+
+node_modules
+src
+tests
+
+# Testing
+
+coverage
+
+# TypeScript
+
+tsconfig-esm.json
+tsconfig-cjs.json
+tsconfig-types.json
