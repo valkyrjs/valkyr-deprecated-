@@ -8,6 +8,7 @@
 
     "api": "cd ./sandbox/api && npm start",
     "app": "cd ./sandbox/app && npm start",
+    "web": "cd ./website && npx docusaurus start",
 
     "test": "jest --runInBand --verbose"
   },
