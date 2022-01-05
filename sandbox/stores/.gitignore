@@ -1,0 +1,7 @@
+/src/index.ts
+
+# Build Output
+
+/cjs
+/esm
+/types

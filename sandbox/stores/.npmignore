@@ -1,0 +1,22 @@
+# General
+
+node_modules
+src
+
+# Testing
+
+coverage
+jest.config.js
+
+# Formatting
+
+.eslintignore
+.eslintrc
+.prettierrc
+
+# TypeScript
+
+custom.d.ts
+tsconfig.json
+tsconfig-esm.json
+tsconfig.tsbuildinfo

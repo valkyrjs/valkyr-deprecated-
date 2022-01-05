@@ -1,0 +1,38 @@
+{
+  "name": "app",
+  "scripts": {
+    "clean": "rm -rf ./node_modules ./package-lock.json",
+    "start": "rm -rf ./node_modules/.vite && vite",
+    "lint": "eslint 'src/**/*.ts' --fix"
+  },
+  "dependencies": {
+    "@valkyr/access": "*",
+    "@valkyr/auth": "*",
+    "@valkyr/db": "*",
+    "@valkyr/event-cache": "*",
+    "@valkyr/event-store": "*",
+    "@valkyr/router": "*",
+    "@valkyr/socket": "*",
+    "date-fns": "2.28.0",
+    "debug": "4.3.3",
+    "eventemitter3": "4.0.7",
+    "faker": "5.5.3",
+    "idb-keyval": "6.0.3",
+    "jwt-decode": "3.1.2",
+    "normalize.css": "8.0.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-resize-detector": "6.7.7",
+    "stores": "*"
+  },
+  "devDependencies": {
+    "@types/debug": "4.1.7",
+    "@types/faker": "5.5.9",
+    "@types/react": "17.0.38",
+    "@types/react-dom": "17.0.11",
+    "@vitejs/plugin-react-refresh": "1.3.6",
+    "sass": "1.45.2",
+    "typescript": "4.5.4",
+    "vite": "2.7.10"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "stores",
+  "version": "0.0.0",
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
+  "types": "./types/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf ./cjs ./esm ./types",
+
+    "build": "npm run clean && npm run build:stores && npm run build:esm && npm run build:cjs",
+    "build:stores": "ts-node --project ./tsconfig-cjs.json ./build/stores.ts",
+    "build:esm": "tsc --project ./tsconfig.json && ts-node --project ./tsconfig-cjs.json ./build/esm.ts",
+    "build:cjs": "tsc --project ./tsconfig-cjs.json",
+
+    "lint": "eslint 'src/**/*.ts' --fix"
+  },
+  "dependencies": {
+    "@valkyr/access": "*",
+    "@valkyr/auth": "*",
+    "@valkyr/event-store": "*"
+  },
+  "devDependencies": {
+    "ts-node": "10.4.0"
+  }
+}

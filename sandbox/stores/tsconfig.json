@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["es2020", "dom", "dom.iterable"],
+    "declarationDir": "types",
+    "outDir": "esm"
+  },
+  "include": ["src"]
+}

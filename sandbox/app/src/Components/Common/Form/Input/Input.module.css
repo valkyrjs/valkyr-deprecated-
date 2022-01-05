@@ -1,0 +1,28 @@
+.container {
+  padding: 5px 15px;
+  margin: 0 5px;
+}
+
+.inline {
+  flex-direction: row;
+}
+
+.inlineText {
+  color: #ccc;
+  font-size: 15px;
+  margin-right: 3px;
+  padding: 10px 0;
+}
+
+.input {
+  background-color: transparent;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  padding: 9px 13px;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+}

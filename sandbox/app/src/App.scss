@@ -1,0 +1,46 @@
+@import "normalize.css";
+
+html,
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+input:focus {
+  outline: none;
+}
+
+table {
+  border: 1px solid #d6d6d6;
+  border-collapse: collapse;
+  font-size: 14px;
+  width: 100%;
+
+  thead {
+    tr {
+      border-bottom: 2px solid #d6d6d6;
+    }
+
+    th {
+      font-weight: 500;
+      text-align: left;
+    }
+  }
+
+  tr {
+    &:nth-child(2n) {
+      background-color: #f6f6f6;
+    }
+  }
+
+  th,
+  td {
+    border: 1px solid #d6d6d6;
+    padding: 10px;
+  }
+}

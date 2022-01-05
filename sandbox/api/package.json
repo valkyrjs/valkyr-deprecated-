@@ -1,0 +1,30 @@
+{
+  "name": "api",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf ./node_modules ./package-lock.json",
+    "start": "docker-compose up -d && ts-node-dev src/index.ts",
+    "lint": "eslint 'src/**/*.ts' --fix"
+  },
+  "dependencies": {
+    "@valkyr/access": "*",
+    "@valkyr/auth": "*",
+    "@valkyr/event-store": "*",
+    "@valkyr/server": "*",
+    "chalk": "5.0.0",
+    "dotenv": "10.0.0",
+    "eventemitter3": "4.0.7",
+    "jsonwebtoken": "8.5.1",
+    "mongodb": "4.2.2",
+    "nanoid": "3.1.30",
+    "stores": "*"
+  },
+  "devDependencies": {
+    "@swc/core": "1.2.124",
+    "@swc/helpers": "0.3.2",
+    "@types/eventemitter3": "2.0.2",
+    "@types/jsonwebtoken": "8.5.6",
+    "@types/mongodb": "4.0.6",
+    "ts-node-dev": "1.1.8"
+  }
+}

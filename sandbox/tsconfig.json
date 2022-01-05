@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+
+    "allowSyntheticDefaultImports": true,
+    "useUnknownInCatchVariables": false,
+
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "lib": ["ES2020"],
+    
+    "declaration": true
+  },
+  "exclude": ["node_modules"]
+}

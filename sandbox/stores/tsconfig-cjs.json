@@ -1,0 +1,8 @@
+{
+  "extends": "../tsconfig-cjs.json",
+  "compilerOptions": {
+    "lib": ["es6", "dom", "dom.iterable"],
+    "outDir": "cjs"
+  },
+  "include": ["src"]
+}

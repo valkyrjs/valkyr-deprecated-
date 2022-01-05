@@ -1,0 +1,37 @@
+/* eslint-disable */
+
+/*
+
+  Stores
+
+  The following is an auto generated index.ts file which contains the results of
+  traversing the stores folder and outputting its resources depending on folder
+  and file naming structures.
+
+  This file will override any manual changes made here, so no need to edit!
+  
+ */
+
+/*
+ |--------------------------------------------------------------------------------
+ | Exports
+ |--------------------------------------------------------------------------------
+ */
+
+$output
+
+/*
+ |--------------------------------------------------------------------------------
+ | Access
+ |--------------------------------------------------------------------------------
+ */
+
+$access
+
+/*
+ |--------------------------------------------------------------------------------
+ | Events
+ |--------------------------------------------------------------------------------
+ */
+
+$events
