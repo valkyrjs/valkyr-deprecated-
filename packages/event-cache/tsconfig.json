@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "strict": true,
+
+    "allowSyntheticDefaultImports": true,
+    "useUnknownInCatchVariables": false,
+
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "lib": ["ES2020"],
+    
+    "declaration": true,
+    "declarationDir": "types",
+
+    "outDir": "esm"
+  },
+  "include": ["src"]
+}
