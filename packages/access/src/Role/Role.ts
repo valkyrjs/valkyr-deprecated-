@@ -1,9 +1,7 @@
 import { container } from "../Container";
 import { RolePermission } from "./RolePermission";
-import type { Actions } from "./Types";
+import type { Actions, RoleData } from "./Types";
 import { deepCopy } from "./Utils";
-
-export type RoleData<Permissions extends Record<string, Actions> = Record<string, Actions>> = ReturnType<Role<Permissions>["toJSON"]>;
 
 export abstract class Role<
   Permissions extends Record<string, Actions> = Record<string, Actions>,

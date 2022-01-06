@@ -1,7 +1,6 @@
-export { Access } from "./Access";
 export { Attributes, createAllFilter } from "./Attributes";
 export { container } from "./Container";
-export { Permission, Query } from "./Permission";
+export { createPermission, permission, Query } from "./Permission";
 export { Operation, Role, RoleData } from "./Role";
 export type { Database } from "./Services";
 

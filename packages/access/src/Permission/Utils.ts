@@ -1,4 +1,4 @@
-import { Permission } from "./Permission";
+import { permission } from "./Permission";
 
 /**
  * Default granted permission handler.
@@ -9,5 +9,5 @@ import { Permission } from "./Permission";
  * value which always resolved to true.
  */
 export function defaultPermissionHandler() {
-  return new Permission({ granted: true });
+  return permission({ granted: true });
 }

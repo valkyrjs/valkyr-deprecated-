@@ -1,3 +1,7 @@
+import type { Role } from "./Role";
+
+export type RoleData<Permissions extends Record<string, Actions> = Record<string, Actions>> = ReturnType<Role<Permissions>["toJSON"]>;
+
 export type Actions = Record<string, Action>;
 
 export type Action = Value | Value[];
