@@ -81,7 +81,7 @@ function writeStoresMod(cwd: string, output: any) {
 function getAccessImports(src: string, stores: Map<string, string>) {
   let imports = "";
   for (const [store, path] of stores) {
-    imports += `import * as ${store.toLowerCase()}Access from "${path.replace(src, ".")}/Access";\n`;
+    imports += `import ${store.toLowerCase()}Access from "${path.replace(src, ".")}/Access";\n`;
   }
   return imports + "\n";
 }

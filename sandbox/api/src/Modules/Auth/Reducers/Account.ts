@@ -11,7 +11,7 @@ import type {
 
 type Event = AccountCreated | AccountActivated | AccountAliasSet | AccountNameSet | AccountEmailSet | AccountClosed;
 
-export const reducer = createReducer<Account, Event>(
+export const account = createReducer<Account, Event>(
   {
     accountId: "",
     status: "onboarding",

@@ -1,6 +1,6 @@
 import { container, createAllFilter } from "@valkyr/access";
 
-import { ACCOUNT_FLAGS } from "./Constants";
+import { ACCOUNT_FLAGS } from "./Attributes";
 
 export async function setup(accountId: string, db = container.get("Database")): Promise<void> {
   await db.addRole({

@@ -1,6 +1,6 @@
 import { hasData } from "../../Policies/hasData";
 import { route } from "../../Providers/Server";
-import { join, leave, pull, push } from "./Stream.Controller";
+import { join, leave, pull, push } from "./Controller";
 
 // store.on("saved", (descriptor) => {
 //   for (const stream of descriptor.streams) {

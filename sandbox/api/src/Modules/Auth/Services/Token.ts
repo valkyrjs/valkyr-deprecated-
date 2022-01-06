@@ -1,15 +1,9 @@
 import { customAlphabet } from "nanoid";
 
-import { collection } from "../../Collections";
-import { config } from "../../Config";
+import { collection } from "../../../Collections";
+import { config } from "../../../Config";
 
 const generateToken = customAlphabet(config.auth.token.letters, config.auth.token.length);
-
-/*
- |--------------------------------------------------------------------------------
- | Create
- |--------------------------------------------------------------------------------
- */
 
 export async function create(type: "email" | "sms" | "console", accountId: string) {
   const token = generateToken();
@@ -28,12 +22,6 @@ export async function create(type: "email" | "sms" | "console", accountId: strin
   }
   return token;
 }
-
-/*
- |--------------------------------------------------------------------------------
- | Delete
- |--------------------------------------------------------------------------------
- */
 
 export async function remove(accountId: string) {
   return collection.accounts.updateOne({ accountId }, { $set: { token: "" } });
