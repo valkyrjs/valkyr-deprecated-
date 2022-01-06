@@ -3,8 +3,19 @@
   "private": true,
   "scripts": {
     "clean": "lerna run clean",
+    
     "setup": "lerna bootstrap",
+    
     "build": "lerna run build",
+    "build:access": "lerna run build --scope @valkyr/access",
+    "build:auth": "lerna run build --scope @valkyr/auth",
+    "build:db": "lerna run build --scope @valkyr/db",
+    "build:event-cache": "lerna run build --scope @valkyr/event-cache",
+    "build:event-store": "lerna run build --scope @valkyr/event-store",
+    "build:inverse": "lerna run build --scope @valkyr/inverse",
+    "build:router": "lerna run build --scope @valkyr/router",
+    "build:server": "lerna run build --scope @valkyr/server",
+    "build:socket": "lerna run build --scope @valkyr/socket",
 
     "api": "cd ./sandbox/api && npm start",
     "app": "cd ./sandbox/app && npm start",
@@ -13,6 +24,7 @@
     "test": "jest --runInBand --verbose"
   },
   "devDependencies": {
+    "@docusaurus/types": "^2.0.0-beta.14",
     "@types/jest": "27.4.0",
     "@types/node": "16.10.3",
     "@typescript-eslint/eslint-plugin": "5.8.1",
