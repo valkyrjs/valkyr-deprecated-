@@ -16,6 +16,7 @@
     "build:router": "lerna run build --scope @valkyr/router",
     "build:server": "lerna run build --scope @valkyr/server",
     "build:socket": "lerna run build --scope @valkyr/socket",
+    "build:stores": "lerna run build --scope stores",
 
     "api": "cd ./sandbox/api && npm start",
     "app": "cd ./sandbox/app && npm start",

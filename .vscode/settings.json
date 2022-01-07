@@ -6,8 +6,7 @@
   },
   "eslint.workingDirectories": [
     {
-      "mode": "auto", 
-      "changeProcessCWD": true
+      "mode": "auto"
     }
   ]
 }
