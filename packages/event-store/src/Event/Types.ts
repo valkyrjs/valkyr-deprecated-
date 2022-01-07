@@ -1,20 +1,8 @@
-export type EventFactoryPayload<Event extends EventBase> = EventFactoryData<Event> & EventFactoryMeta<Event>;
-
-type EventFactoryData<Event extends EventBase> = Event["data"] extends never
-  ? {
-      data?: undefined;
-    }
-  : {
-      data: Event["data"];
-    };
-
-type EventFactoryMeta<Event extends EventBase> = Event["meta"] extends never
-  ? {
-      meta?: undefined;
-    }
-  : {
-      meta: Event["meta"];
-    };
+export type EventFactory<Event extends EventBase> = Event["data"] extends never
+  ? () => Event
+  : Event["meta"] extends never
+  ? (data: Event["data"]) => Event
+  : (data: Event["data"], meta: Event["meta"]) => Event;
 
 export type EventBase<EventType = unknown, EventData = unknown | never, EventMeta = unknown | never> = {
   /**

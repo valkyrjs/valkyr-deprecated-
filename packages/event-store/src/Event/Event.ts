@@ -1,11 +1,11 @@
 import { nanoid } from "nanoid";
 
 import { getLogicalTimestamp } from "../Time";
-import type { EventBase, EventFactoryPayload, EventRecord } from "./Types";
+import type { EventBase, EventFactory, EventRecord } from "./Types";
 
-export function createEvent<Event extends EventBase>(type: Event["type"]) {
-  return function (payload: EventFactoryPayload<Event>) {
-    return getEvent(type, payload.data, payload.meta);
+export function createEvent<Event extends EventBase>(type: Event["type"]): EventFactory<Event> {
+  return function (data: Event["data"] = {}, meta: Event["meta"] = {}) {
+    return getEvent(type, data, meta);
   };
 }
 
