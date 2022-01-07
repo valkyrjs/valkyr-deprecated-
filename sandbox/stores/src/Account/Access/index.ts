@@ -4,7 +4,7 @@ import { read } from "./Queries";
 import { setup } from "./Setup";
 import { Permissions } from "./Types";
 
-export default {
+export const access = {
   setup,
   for: createPermission<Permissions>(),
   read

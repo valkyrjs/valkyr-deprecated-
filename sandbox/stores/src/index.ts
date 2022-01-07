@@ -18,7 +18,11 @@
  |--------------------------------------------------------------------------------
  */
 
-$access
+import { access as accountAccess } from "./Account/Access";
+
+export const access = {
+  account: accountAccess
+};
 
 /*
  |--------------------------------------------------------------------------------
@@ -26,7 +30,37 @@ $access
  |--------------------------------------------------------------------------------
  */
 
-$events
+import {
+  AccountCreated,
+  AccountActivated,
+  AccountAliasSet,
+  AccountNameSet,
+  AccountEmailSet,
+  AccountClosed,
+  events as accountEvents
+} from "./Account/Events";
+
+export type Event =
+  | AccountCreated
+  | AccountActivated
+  | AccountAliasSet
+  | AccountNameSet
+  | AccountEmailSet
+  | AccountClosed;
+
+export {
+  AccountCreated,
+  AccountActivated,
+  AccountAliasSet,
+  AccountNameSet,
+  AccountEmailSet,
+  AccountClosed
+};
+
+export const events = {
+  account: accountEvents
+};
+
 
 /*
  |--------------------------------------------------------------------------------
@@ -34,4 +68,4 @@ $events
  |--------------------------------------------------------------------------------
  */
 
-$general
+export * from "./Account";

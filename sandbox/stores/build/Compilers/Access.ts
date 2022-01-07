@@ -6,25 +6,33 @@ import * as fs from "fs";
  |--------------------------------------------------------------------------------
  */
 
-export async function getAccess(path: string, root: string, events: Record<string, unknown> = {}) {
-  const dir = await fs.promises.opendir(path);
+export async function getAccess(src: string) {
+  const access: Map<string, string> = new Map();
+  const dir = await fs.promises.opendir(src);
   for await (const dirent of dir) {
-    if (dirent.isFile() && path.includes("Access")) {
-      events[lower(dirent.name.replace(".ts", ""))] = `${path}/${dirent.name}`.replace(root, ".").replace(".ts", "");
-    }
     if (dirent.isDirectory()) {
-      await getAccess(`${path}/${dirent.name}`, root, events);
+      access.set(dirent.name, `${src}/${dirent.name}`);
     }
   }
-  return events;
+  return access;
 }
 
-export function getAccessImports(list: any) {
-  const imports: string[] = [];
-  for (const [action, path] of getSortedPaths(list)) {
-    imports.push(`export { ${action} } from "${path}";`);
+export function getAccessImports(src: string, stores: Map<string, string>) {
+  let imports = "";
+  for (const [store, path] of stores) {
+    imports += `import { access as ${store.toLowerCase()}Access } from "${path.replace(src, ".")}/Access";\n`;
   }
-  return imports.join("\n");
+  return imports + "\n";
+}
+
+export function getAccessExports(stores: Map<string, string>) {
+  const exports = [];
+  for (const [store] of stores) {
+    exports.push(store.toLowerCase());
+  }
+  const print = [];
+  print.push(`export const access = {\n  ${exports.map((key) => `${key}: ${key}Access`).join(",\n  ")}\n};`);
+  return print.join("");
 }
 
 /*
