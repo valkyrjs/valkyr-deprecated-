@@ -21,6 +21,7 @@
     "app": "cd ./sandbox/app && npm start",
     "web": "cd ./website && npx docusaurus start",
 
+    "lint": "lerna run lint",
     "test": "jest --runInBand --verbose"
   },
   "devDependencies": {

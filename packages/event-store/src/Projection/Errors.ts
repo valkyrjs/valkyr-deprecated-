@@ -4,7 +4,9 @@ export class DuplicateHandlerError extends Error {
   public readonly type = "DuplicateHandlerError";
 
   constructor(type: string) {
-    super(`Event Publisher Violation: Duplicate '${type}' handler, only one event handler can be defined per publisher instance.`);
+    super(
+      `Event Publisher Violation: Duplicate '${type}' handler, only one event handler can be defined per publisher instance.`
+    );
   }
 }
 

@@ -28,7 +28,10 @@ export function useRouter(onError: (err: any) => JSX.Element | undefined): JSX.E
   return view;
 }
 
-function createReactElement(list: React.ComponentType[], props = { ...router.params.get(), ...router.query.get() }): any {
+function createReactElement(
+  list: React.ComponentType[],
+  props = { ...router.params.get(), ...router.query.get() }
+): any {
   if (list.length === 1) {
     return React.createElement(list[0], props);
   }

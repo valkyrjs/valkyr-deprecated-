@@ -1,6 +1,13 @@
 import { createEvent } from "@valkyr/event-store";
 
-import type { AccountActivated, AccountAliasSet, AccountClosed, AccountCreated, AccountEmailSet, AccountNameSet } from "./Events";
+import type {
+  AccountActivated,
+  AccountAliasSet,
+  AccountClosed,
+  AccountCreated,
+  AccountEmailSet,
+  AccountNameSet
+} from "./Events";
 
 export const account = {
   created: createEvent<AccountCreated>("AccountCreated"),

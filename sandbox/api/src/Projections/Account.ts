@@ -1,5 +1,12 @@
 import { projection } from "@valkyr/event-store";
-import type { AccountActivated, AccountAliasSet, AccountClosed, AccountCreated, AccountEmailSet, AccountNameSet } from "stores";
+import type {
+  AccountActivated,
+  AccountAliasSet,
+  AccountClosed,
+  AccountCreated,
+  AccountEmailSet,
+  AccountNameSet
+} from "stores";
 import { access } from "stores";
 
 import { collection } from "../Collections";

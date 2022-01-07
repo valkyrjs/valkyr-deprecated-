@@ -8,7 +8,11 @@ export function resolveOne(key: Collection, { filter, observe = true }: Options,
   collection[key].findOne(filter).then(setData);
 }
 
-export function resolveMany(key: Collection, { filter, observe = true, ...other }: Options, setData: React.Dispatch<any>) {
+export function resolveMany(
+  key: Collection,
+  { filter, observe = true, ...other }: Options,
+  setData: React.Dispatch<any>
+) {
   if (observe) {
     return collection[key].observe(filter, getQueryOptions(other)).subscribe(setData).unsubscribe;
   }

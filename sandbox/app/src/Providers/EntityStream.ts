@@ -101,14 +101,16 @@ async function pull(entityId: string, itterations = 0) {
       `Event Stream Violation: Escaping pull operation, infinite loop candidate detected after ${itterations} pull itterations.`
     );
   }
-  socket.send("streams.pull", { entityId, recorded: await getCursor(entityId) }).then(async (events: EventRecord<Event>[]) => {
-    if (events.length > 0) {
-      for (const event of events) {
-        await append(event);
+  socket
+    .send("streams.pull", { entityId, recorded: await getCursor(entityId) })
+    .then(async (events: EventRecord<Event>[]) => {
+      if (events.length > 0) {
+        for (const event of events) {
+          await append(event);
+        }
+        return pull(entityId, itterations + 1); // keep pulling the stream until its hydrated
       }
-      return pull(entityId, itterations + 1); // keep pulling the stream until its hydrated
-    }
-  });
+    });
 }
 
 /*

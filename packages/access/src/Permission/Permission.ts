@@ -33,7 +33,9 @@ export function createPermission<
   });
 }
 
-export function permission<Attributes extends BaseAttributes = BaseAttributes>(response: Response<Attributes>): Permission {
+export function permission<Attributes extends BaseAttributes = BaseAttributes>(
+  response: Response<Attributes>
+): Permission {
   if (response.granted === true) {
     return {
       ...response,

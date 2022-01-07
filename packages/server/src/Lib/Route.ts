@@ -18,11 +18,7 @@ export class HttpRoute {
   public readonly regExp: RegExp;
   public readonly params: Parameter[];
 
-  constructor(
-    public readonly method: HttpMethod,
-    public readonly path: string,
-    public readonly actions: HttpAction[]
-  ) {
+  constructor(public readonly method: HttpMethod, public readonly path: string, public readonly actions: HttpAction[]) {
     this.regExp = pathToRegexp(path);
     this.params = parseParams(path);
   }

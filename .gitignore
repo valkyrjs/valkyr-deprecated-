@@ -1,1 +1,7 @@
 node_modules
+
+# Build Output
+
+**/cjs
+**/esm
+**/types

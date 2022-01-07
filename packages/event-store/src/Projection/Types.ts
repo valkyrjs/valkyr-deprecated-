@@ -35,7 +35,7 @@ export type Handler<Event extends EventBase = EventBase, Record extends EventRec
 
 export type Listeners = Record<string, Set<ProjectionHandler> | undefined>;
 
-export type ProjectionHandler<Event extends EventBase = EventBase, Record extends EventRecord<Event> = EventRecord<Event>> = (
-  record: Record,
-  state: State
-) => Promise<void>;
+export type ProjectionHandler<
+  Event extends EventBase = EventBase,
+  Record extends EventRecord<Event> = EventRecord<Event>
+> = (record: Record, state: State) => Promise<void>;

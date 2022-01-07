@@ -15,7 +15,12 @@ export async function setup(accountId: string, db = container.get("Database")): 
         setEmail: true,
         read: {
           owner: createAllFilter(ACCOUNT_FLAGS),
-          admin: ACCOUNT_FLAGS.accountId | ACCOUNT_FLAGS.status | ACCOUNT_FLAGS.alias | ACCOUNT_FLAGS.name | ACCOUNT_FLAGS.email
+          admin:
+            ACCOUNT_FLAGS.accountId |
+            ACCOUNT_FLAGS.status |
+            ACCOUNT_FLAGS.alias |
+            ACCOUNT_FLAGS.name |
+            ACCOUNT_FLAGS.email
         }
       }
     },

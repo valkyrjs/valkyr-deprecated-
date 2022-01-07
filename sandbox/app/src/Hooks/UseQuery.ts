@@ -31,7 +31,10 @@ import { resolveMany, resolveOne } from "../Utils/Query";
  */
 export function useQuery<K extends keyof Collections, T extends Model<K>>(key: K, options?: Many): T[];
 export function useQuery<K extends keyof Collections, T extends Model<K>>(key: K, options?: Single): T | undefined;
-export function useQuery<K extends keyof Collections, T extends Model<K>>(key: K, options: Options = {}): T[] | T | undefined {
+export function useQuery<K extends keyof Collections, T extends Model<K>>(
+  key: K,
+  options: Options = {}
+): T[] | T | undefined {
   const [data, setData] = useState();
 
   useEffect(() => {

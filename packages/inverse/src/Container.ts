@@ -84,8 +84,11 @@ export class Container<T extends Tokens<T>, C extends JSON = JSON> {
    * @param token - Token to retrieve dependency for.
    * @param args  - Arguments to pass to a transient provider.
    */
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  public get<K extends keyof T>(token: K, ...args: ConstructorParameters<T[K]>): T[K] extends Function ? InstanceType<T[K]> : T[K] {
+  public get<K extends keyof T>(
+    token: K,
+    ...args: ConstructorParameters<T[K]>
+  ): // eslint-disable-next-line @typescript-eslint/ban-types
+  T[K] extends Function ? InstanceType<T[K]> : T[K] {
     const provider = this.providers.get(token);
     if (!provider) {
       throw new MissingDependencyError(token);

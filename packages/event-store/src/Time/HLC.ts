@@ -34,7 +34,13 @@ export class HLC {
 
   public last: Timestamp;
 
-  constructor({ time = getTime, maxOffset = 0, timeUpperBound = 0, toleratedForwardClockJump = 0, last }: Options = {}) {
+  constructor({
+    time = getTime,
+    maxOffset = 0,
+    timeUpperBound = 0,
+    toleratedForwardClockJump = 0,
+    last
+  }: Options = {}) {
     this.time = time;
     this.maxTime = timeUpperBound > 0 ? timeUpperBound : Number.MAX_SAFE_INTEGER;
     this.maxOffset = maxOffset;
@@ -108,7 +114,9 @@ export class HLC {
     public readonly type = "ForwardJumpError";
 
     constructor(public readonly timejump: number, public readonly tolerance: number) {
-      super(`HLC Violation: Detected a forward time jump of ${timejump}ms, which exceed the allowed tolerance of ${tolerance}ms.`);
+      super(
+        `HLC Violation: Detected a forward time jump of ${timejump}ms, which exceed the allowed tolerance of ${tolerance}ms.`
+      );
     }
   };
 
@@ -116,7 +124,9 @@ export class HLC {
     public readonly type = "ClockOffsetError";
 
     constructor(public readonly offset: number, public readonly maxOffset: number) {
-      super(`HLC Violation: Received time is ${offset}ms ahead of the wall time, exceeding the 'maxOffset' limit of ${maxOffset}ms.`);
+      super(
+        `HLC Violation: Received time is ${offset}ms ahead of the wall time, exceeding the 'maxOffset' limit of ${maxOffset}ms.`
+      );
     }
   };
 

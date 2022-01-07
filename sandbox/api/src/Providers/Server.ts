@@ -1,5 +1,5 @@
-import { Server } from "@valkyr/server";
 import { Auth } from "@valkyr/auth";
+import { Server } from "@valkyr/server";
 
 import { auth } from "../Middleware/Auth";
 
