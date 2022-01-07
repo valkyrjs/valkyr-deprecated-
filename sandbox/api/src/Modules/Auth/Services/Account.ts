@@ -1,6 +1,5 @@
 import { nanoid } from "nanoid";
-import * as stores from "stores";
-import { Account } from "stores";
+import { Account, events } from "stores";
 
 import { collection } from "../../../Collections";
 import { store } from "../../../Providers/EventStore";
@@ -20,7 +19,7 @@ export async function create(email: string) {
     throw new Error("Account already exists");
   }
 
-  await store.insert(accountId, stores.account.created({ data: { email } }));
+  await store.insert(accountId, events.account.created({ email }));
 
   return getByEmail(email);
 }
@@ -30,7 +29,7 @@ export async function activate(accountId: string) {
   if (state.status === "active") {
     throw new Error("Account is already active");
   }
-  await store.insert(accountId, stores.account.activated({}));
+  await store.insert(accountId, events.account.activated());
 }
 
 export async function name(accountId: string, name: Account["name"]) {
@@ -38,7 +37,7 @@ export async function name(accountId: string, name: Account["name"]) {
   if (state.name === name) {
     throw new Error("Name is already set");
   }
-  await store.insert(accountId, stores.account.nameSet({ data: { name } }));
+  await store.insert(accountId, events.account.nameSet({ name }));
 }
 
 /*
