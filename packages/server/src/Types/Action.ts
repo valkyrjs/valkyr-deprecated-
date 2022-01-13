@@ -4,7 +4,7 @@ import type { Client } from "../Lib/Client";
 
 export type HttpAction = (this: ActionResponse, req: IncomingMessage) => Response;
 
-export type WsAction<Data extends Record<string, unknown> = any> = (
+export type WsAction<Data extends Record<string, any> = any> = (
   this: ActionResponse,
   socket: Client,
   data: Data

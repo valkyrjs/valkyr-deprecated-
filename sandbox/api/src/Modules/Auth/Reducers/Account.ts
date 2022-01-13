@@ -1,4 +1,4 @@
-import { createReducer } from "@valkyr/event-store";
+import { createReducer } from "@valkyr/ledger";
 import type {
   Account,
   AccountActivated,

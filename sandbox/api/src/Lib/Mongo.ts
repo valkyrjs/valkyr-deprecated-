@@ -1,4 +1,4 @@
-import { EventEmitter } from "@valkyr/event-store";
+import { EventEmitter } from "@valkyr/ledger";
 import { MongoClient } from "mongodb";
 
 import { config } from "../Config";

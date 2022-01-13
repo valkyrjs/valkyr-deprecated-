@@ -17,7 +17,7 @@
   "dependencies": {
     "@valkyr/access": "*",
     "@valkyr/auth": "*",
-    "@valkyr/event-store": "*"
+    "@valkyr/ledger": "*"
   },
   "devDependencies": {
     "ts-node": "10.4.0"

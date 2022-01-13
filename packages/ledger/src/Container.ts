@@ -1,7 +1,7 @@
 import { Container } from "@valkyr/inverse";
 
-import type { EntityStream } from "./Services/EntityStream";
+import type { EntitySubscriber } from "./Entity";
 
 export const container = new Container<{
-  EntityStream: EntityStream;
+  EntitySubscriber: EntitySubscriber;
 }>();

@@ -1,8 +1,7 @@
 {
-  "name": "@valkyr/event-cache",
+  "name": "@valkyr/ledger",
   "version": "0.0.0",
-  "description": "A distributed event sourcing solution written in TypeScript.",
-  "repository": "https://github.com/cmdo-toolkit/events.git",
+  "description": "A distributed event sourcing pattern written in TypeScript.",
   "author": "Christoffer Rødvik <dev@kodemon.net>",
   "license": "MIT",
   "main": "./cjs/index.js",
@@ -18,10 +17,10 @@
     "test": "jest --runInBand --verbose"
   },
   "dependencies": {
-    "@valkyr/event-store": "*",
     "@valkyr/inverse": "*",
     "crypto-js": "4.1.1",
-    "eventemitter3": "4.0.7"
+    "eventemitter3": "4.0.7",
+    "nanoid": "3.1.30"
   },
   "devDependencies": {
     "@types/crypto-js": "4.1.0"

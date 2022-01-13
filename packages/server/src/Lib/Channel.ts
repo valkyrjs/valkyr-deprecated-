@@ -38,7 +38,7 @@ export class Channel {
    * ```
    *
    */
-  public emit(type: string, data: Record<string, unknown> = {}) {
+  public emit<Data extends Record<string, any>>(type: string, data: Data = {} as Data) {
     const message = JSON.stringify({ type, data });
     this.server.redis?.publish(this.channelId, message);
     for (const socket of this.sockets) {

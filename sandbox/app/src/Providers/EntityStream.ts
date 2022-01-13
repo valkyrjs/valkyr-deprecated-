@@ -1,11 +1,10 @@
-import { append, container, StreamSubscriptionHandler } from "@valkyr/event-cache";
-import { EventRecord } from "@valkyr/event-store";
+import { append, container, EntitySubscriptionHandler, Event as EventRecord } from "@valkyr/ledger";
 import type { Event } from "stores";
 
 import { collection } from "../Collections";
 import { socket } from "./Socket";
 
-const streams: Record<string, StreamSubscriptionHandler> = {};
+const streams: Record<string, EntitySubscriptionHandler> = {};
 
 /*
  |--------------------------------------------------------------------------------
@@ -13,7 +12,7 @@ const streams: Record<string, StreamSubscriptionHandler> = {};
  |--------------------------------------------------------------------------------
  */
 
-container.set("EntityStream", {
+container.set("EntitySubscriber", {
   subscribe,
   unsubscribe,
   addCachedEvent,
@@ -28,7 +27,7 @@ container.set("EntityStream", {
  |--------------------------------------------------------------------------------
  */
 
-function subscribe(entityId: string, handler: StreamSubscriptionHandler) {
+function subscribe(entityId: string, handler: EntitySubscriptionHandler) {
   socket.streams.join(entityId);
   streams[entityId] = handler;
   pull(entityId);

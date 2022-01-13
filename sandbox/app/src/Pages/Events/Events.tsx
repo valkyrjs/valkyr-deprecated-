@@ -1,4 +1,4 @@
-import { getDate } from "@valkyr/event-store";
+import { getDate } from "@valkyr/ledger";
 import { format } from "date-fns";
 import React, { useState } from "react";
 

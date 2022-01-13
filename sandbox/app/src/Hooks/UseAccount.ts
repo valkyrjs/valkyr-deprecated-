@@ -1,4 +1,4 @@
-import { subscribe } from "@valkyr/event-cache";
+import { subscribe } from "@valkyr/ledger";
 import { useEffect } from "react";
 
 import { auth } from "../Auth";

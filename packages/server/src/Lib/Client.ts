@@ -19,7 +19,7 @@ export class Client {
    *
    * @returns Client
    */
-  public emit(type: string, data: Record<string, unknown> = {}) {
+  public emit<Data extends Record<string, any>>(type: string, data: Data = {} as Data) {
     if (this.socket.readyState === WebSocket.OPEN) {
       this.socket.send(JSON.stringify({ type, data }));
     }
@@ -34,7 +34,7 @@ export class Client {
    *
    * @returns Client
    */
-  public broadcast(type: string, data: Record<string, unknown> = {}) {
+  public broadcast<Data extends Record<string, any>>(type: string, data: Data = {} as Data) {
     const message = JSON.stringify({ type, data });
     for (const client of this.server.io.clients) {
       if (client !== this.socket && client.readyState === WebSocket.OPEN) {

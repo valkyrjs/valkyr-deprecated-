@@ -19,7 +19,7 @@ export async function create(email: string) {
     throw new Error("Account already exists");
   }
 
-  await store.insert(accountId, events.account.created({ email }));
+  await store.insert(events.account.created(accountId, { email }));
 
   return getByEmail(email);
 }
@@ -29,7 +29,7 @@ export async function activate(accountId: string) {
   if (state.status === "active") {
     throw new Error("Account is already active");
   }
-  await store.insert(accountId, events.account.activated());
+  await store.insert(events.account.activated(accountId));
 }
 
 export async function name(accountId: string, name: Account["name"]) {
@@ -37,7 +37,7 @@ export async function name(accountId: string, name: Account["name"]) {
   if (state.name === name) {
     throw new Error("Name is already set");
   }
-  await store.insert(accountId, events.account.nameSet({ name }));
+  await store.insert(events.account.nameSet(accountId, { name }));
 }
 
 /*

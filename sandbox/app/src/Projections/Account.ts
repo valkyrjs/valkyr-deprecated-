@@ -1,4 +1,4 @@
-import { projection } from "@valkyr/event-store";
+import { projection } from "@valkyr/ledger";
 import { AccountCreated } from "stores";
 
 import { collection } from "../Collections";

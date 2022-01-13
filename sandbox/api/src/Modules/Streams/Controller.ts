@@ -1,5 +1,5 @@
-import { EventRecord } from "@valkyr/event-store";
 import type { WsAction } from "@valkyr/server";
+import { Event } from "stores";
 
 import { collection } from "../../Collections";
 
@@ -9,7 +9,7 @@ import { collection } from "../../Collections";
  |--------------------------------------------------------------------------------
  */
 
-export const push: WsAction<{ events: EventRecord[] }> = async function (socket, { events }) {
+export const push: WsAction<{ events: Event[] }> = async function (socket, { events }) {
   // const permission = socket.auth.access.get(descriptor.stream).can("add", descriptor.event.type);
   // if (!permission.granted) {
   //   return this.reject("You are not authorized to add this event to the stream");
