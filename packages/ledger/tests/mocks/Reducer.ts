@@ -1,4 +1,4 @@
-import { createReducer } from "../../src/Lib/Reducer";
+import { createReducer } from "../../src/Reducer";
 import type { Event } from "./Events";
 
 type State = {

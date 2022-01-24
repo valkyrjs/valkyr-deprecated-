@@ -1,4 +1,3 @@
-import { createEventRecord, EventRecord } from "../src/Event";
 import { Event, foo } from "./mocks/Events";
 import { reducer } from "./mocks/Reducer";
 
@@ -8,7 +7,7 @@ import { reducer } from "./mocks/Reducer";
  |--------------------------------------------------------------------------------
  */
 
-const streamId = "xyz";
+const entityId = "xyz";
 
 /*
  |--------------------------------------------------------------------------------
@@ -17,14 +16,14 @@ const streamId = "xyz";
  */
 
 describe("EventReducer", () => {
-  let mockEvents: EventRecord<Event>[];
+  let mockEvents: Event[];
 
   beforeAll(async () => {
-    const fooCreated = createEventRecord(streamId, foo.created({ data: { title: "Bar" } }));
-    const memberAdded1 = createEventRecord(streamId, foo.memberAdded({ data: { name: "John Foo" } }));
-    const memberAdded2 = createEventRecord(streamId, foo.memberAdded({ data: { name: "Jane Foo" } }));
-
-    mockEvents = [fooCreated, memberAdded1, memberAdded2];
+    mockEvents = [
+      foo.created(entityId, { title: "Bar" }),
+      foo.memberAdded(entityId, { name: "John Foo" }),
+      foo.memberAdded(entityId, { name: "Jane Foo" })
+    ];
   });
 
   it("should reduce a list of events into an expected state", () => {

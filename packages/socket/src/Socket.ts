@@ -165,6 +165,9 @@ export class Socket extends EventEmitter {
    */
 
   public async send<T extends Record<string, any>>(type: string, data?: T): Promise<any> {
+    if (this.isConnected === false) {
+      await this.connect();
+    }
     return new Promise((resolve, reject) => {
       this.messages.push(new Message(type, data, { resolve, reject }));
       this.process();

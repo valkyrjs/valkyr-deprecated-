@@ -32,7 +32,9 @@ const permission = new Permission({
 describe("AccessPermission", () => {
   describe("when using attributes .filter method", () => {
     it("should show all attributes when no filter is provided", () => {
-      expect(permission.filter(accounts)).toEqual(accounts.map((account) => ({ name: account.name, password: account.password })));
+      expect(permission.filter(accounts)).toEqual(
+        accounts.map((account) => ({ name: account.name, password: account.password }))
+      );
       expect(permission.filter(accounts[0])).toEqual({ name: accounts[0].name, password: accounts[0].password });
     });
 
@@ -40,7 +42,10 @@ describe("AccessPermission", () => {
       expect(permission.filter(accounts, "owner")).toEqual(
         accounts.map((account) => ({ name: account.name, password: account.password }))
       );
-      expect(permission.filter(accounts[0], "owner")).toEqual({ name: accounts[0].name, password: accounts[0].password });
+      expect(permission.filter(accounts[0], "owner")).toEqual({
+        name: accounts[0].name,
+        password: accounts[0].password
+      });
     });
 
     it("should hide password when filter is set to public", () => {

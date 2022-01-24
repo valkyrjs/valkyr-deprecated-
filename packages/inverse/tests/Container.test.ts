@@ -40,14 +40,18 @@ describe("Container", () => {
       container.where(isProvider("paypal")).set("payments", new PayPal());
       container.where(isProvider("stripe")).set("payments", new Stripe());
 
-      await expect(container.where(isProvider("paypal")).get("payments").create("xyz", "usd", 100)).resolves.toMatchObject({
+      await expect(
+        container.where(isProvider("paypal")).get("payments").create("xyz", "usd", 100)
+      ).resolves.toMatchObject({
         customerId: "xyz",
         provider: "paypal",
         currency: "usd",
         amount: 100
       });
 
-      await expect(container.where(isProvider("stripe")).get("payments").create("xyz", "jpy", 15000)).resolves.toMatchObject({
+      await expect(
+        container.where(isProvider("stripe")).get("payments").create("xyz", "jpy", 15000)
+      ).resolves.toMatchObject({
         customerId: "xyz",
         provider: "stripe",
         currency: "jpy",
@@ -60,7 +64,9 @@ describe("Container", () => {
     });
 
     it("should throw error when sub container does not have a registered dependency", () => {
-      expect(() => container.where(isProvider("paypal")).get("payments")).toThrow(new MissingDependencyError("payments"));
+      expect(() => container.where(isProvider("paypal")).get("payments")).toThrow(
+        new MissingDependencyError("payments")
+      );
     });
   });
 

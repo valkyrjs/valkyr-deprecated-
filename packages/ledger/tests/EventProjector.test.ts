@@ -1,22 +1,19 @@
-import { createEvent, createEventRecord, EventBase, EventRecord } from "../src/Event";
+import { createEvent, createEventRecord, Event as EventBase } from "../src/Event";
 import { Projection, projection, publisher } from "../src/Projection";
 
 type MockEventAdded = EventBase<"MockEventAdded", { entityId: string }, never>;
 
 function getMockedEventRecord() {
   return createEventRecord(
-    "mock",
-    createEvent<MockEventAdded>("MockEventAdded")({
-      data: {
-        entityId: "xyz"
-      }
+    createEvent<MockEventAdded>("MockEventAdded")("mock", {
+      entityId: "xyz"
     })
   );
 }
 
 describe("Event Projector", () => {
   describe("when registered with .once", () => {
-    let mockEvent: EventRecord<MockEventAdded>;
+    let mockEvent: MockEventAdded;
     let mockProjection: Projection<MockEventAdded>;
     let handler: jest.Mock;
 
@@ -50,7 +47,7 @@ describe("Event Projector", () => {
   });
 
   describe("when registered with .on", () => {
-    let mockEvent: EventRecord<MockEventAdded>;
+    let mockEvent: MockEventAdded;
     let mockProjection: Projection<MockEventAdded>;
     let handler: jest.Mock;
 
@@ -84,7 +81,7 @@ describe("Event Projector", () => {
   });
 
   describe("when registered with .all", () => {
-    let mockEvent: EventRecord<MockEventAdded>;
+    let mockEvent: MockEventAdded;
     let mockProjection: Projection<MockEventAdded>;
     let handler: jest.Mock;
 

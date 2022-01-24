@@ -23,7 +23,11 @@ describe("Attributes", () => {
       const profile = getAccessAttributes();
 
       expect(profile.filter("private", users["user-1"])).toEqual(users["user-1"]);
-      expect(profile.filter("friends", users["user-1"])).toEqual({ id: "user-1", firstName: "John", email: "john@doe.com" });
+      expect(profile.filter("friends", users["user-1"])).toEqual({
+        id: "user-1",
+        firstName: "John",
+        email: "john@doe.com"
+      });
       expect(profile.filter("public", users["user-1"])).toEqual({ id: "user-1", firstName: "John" });
     });
   });

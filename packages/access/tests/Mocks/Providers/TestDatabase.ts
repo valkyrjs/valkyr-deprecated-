@@ -45,7 +45,10 @@ export class TestDatabase implements Database {
    * method should retrieve all roles for the given member and combine them into a single
    * permissions object.
    */
-  public async getPermissions<Permissions extends TestRole["permissions"]>(tenantId: string, memberId: string): Promise<Permissions> {
+  public async getPermissions<Permissions extends TestRole["permissions"]>(
+    tenantId: string,
+    memberId: string
+  ): Promise<Permissions> {
     return this.store
       .filter((role) => role.tenantId !== tenantId || !role.members.includes(memberId))
       .reduce((permissions, role) => leftMerge(permissions, role.permissions), {}) as Permissions;
@@ -89,7 +92,11 @@ export class TestDatabase implements Database {
 
 function leftMerge(source: any, data: any): any {
   for (const key in data) {
-    if (typeof data[key] === "object" && !Array.isArray(data[key]) && Object.prototype.toString.call(data[key]) !== "[object Date]") {
+    if (
+      typeof data[key] === "object" &&
+      !Array.isArray(data[key]) &&
+      Object.prototype.toString.call(data[key]) !== "[object Date]"
+    ) {
       source[key] = leftMerge(source[key] || {}, data[key]);
     } else {
       source[key] = data[key];

@@ -40,13 +40,14 @@ export function permission<Attributes extends BaseAttributes = BaseAttributes>(
     return {
       ...response,
       filter: <Data extends Record<string, unknown>>(data: Data | Data[], filter = "$all") => {
-        if (response.attributes === undefined) {
+        const attributes = response.attributes;
+        if (attributes === undefined) {
           return data;
         }
         if (Array.isArray(data)) {
-          return data.map((data) => response.attributes!.filter(filter, data));
+          return data.map((data) => attributes.filter(filter, data));
         }
-        return response.attributes.filter(filter, data);
+        return attributes.filter(filter, data);
       }
     };
   }

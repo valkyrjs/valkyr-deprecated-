@@ -33,7 +33,9 @@ describe("Collection", () => {
 
     it("should throw error if document does not exist", async () => {
       const { collection } = await getMockedCollection();
-      await expect(collection.update({ id: "user-3", name: "James Doe" })).rejects.toThrow(new DocumentNotFoundError("user-3"));
+      await expect(collection.update({ id: "user-3", name: "James Doe" })).rejects.toThrow(
+        new DocumentNotFoundError("user-3")
+      );
     });
   });
 

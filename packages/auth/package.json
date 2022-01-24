@@ -11,17 +11,13 @@
     "security",
     "acl"
   ],
-  "main": "./cjs/index.js",
-  "module": "./esm/index.js",
-  "types": "./types/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "prepublishOnly": "npm run lint && npm run build",
-    "build": "npm run clean && npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc --project tsconfig.json && cmdo output esm -f esm",
-    "build:cjs": "tsc --project tsconfig-cjs.json",
-    "clean": "rm -rf ./cjs ./esm ./types",
-    "lint": "eslint 'src/**/*.ts' --fix",
-    "test": "jest --runInBand --verbose"
+    "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
     "@valkyr/inverse": "*"
