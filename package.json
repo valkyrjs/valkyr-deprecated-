@@ -1,11 +1,18 @@
 {
   "name": "root",
-  "private": true,
+  "files": [],
+  "workspaces": [
+    "./packages/*",
+    "./sandbox/*",
+    "./"
+  ],
   "scripts": {
-    "clean": "lerna run clean",
-    
+    "prepare": "husky install",
+
+    "clean": "rm -rf ./packages/**/dist && rm -rf ./sandbox/**/dist && rm -rf ./packages/**/tsconfig.build.tsbuildinfo",
+
     "setup": "lerna bootstrap",
-    
+
     "build": "lerna run build",
     "build:access": "lerna run build --scope @valkyr/access",
     "build:auth": "lerna run build --scope @valkyr/auth",
@@ -19,11 +26,14 @@
     "build:stores": "lerna run build --scope stores",
 
     "api": "cd ./sandbox/api && npm start",
-    "app": "cd ./sandbox/app && npm start",
+    "app": "cd ./sandbox/nextjs && npm start",
     "web": "cd ./website && npx docusaurus start",
 
-    "lint": "lerna run lint",
-    "test": "jest --runInBand --verbose",
+    "lint": "eslint . --fix",
+    "test": "jest --maxWorkers=100%",
+    "test:ci": "jest --ci --coverage --forceExit --maxWorkers=4",
+    "version": "lerna version $1 --yes --no-push --no-git-tag-version --exact",
+    "publish": "lerna exec --no-private -- npm publish --tag latest --access public",
 
     "snap": "sudo rm -rf /etc/docker && sudo snap refresh"
   },
@@ -38,18 +48,9 @@
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-simple-import-sort": "7.0.0",
+    "husky": "^7.0.4",
     "lerna": "4.0.0",
     "ts-jest": "27.1.2",
     "typescript": "4.5.4"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.ts?$",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ]
   }
 }

@@ -2,6 +2,11 @@
   "root": true,
   "plugins": ["simple-import-sort"],
   "extends": ["eslint:recommended"],
+  "ignorePatterns": [
+    "dist",
+    "*.json",
+    "website"
+  ],
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module"

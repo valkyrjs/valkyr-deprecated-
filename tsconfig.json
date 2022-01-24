@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@valkyr/*": [
+        "valkyr/*/src"
+      ]
+    },
+    "target": "esnext",
+    "incremental": true,
+    "allowSyntheticDefaultImports": true
+  }
+}

@@ -1,7 +1,41 @@
+# IDE - VSCode
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - IntelliJ
+
+.idea/*
+!.idea/inspectionProfiles/
+!.idea/dictionaries/
+!.idea/codeStyles/
+!.idea/modules.xml
+!.idea/*.iml
+!.idea/README.md
+
+# node_modules
+
 node_modules
 
-# Build Output
+# dist & pack
 
-**/cjs
-**/esm
-**/types
+dist
+*.tgz
+
+# Tests
+
+/coverage
+
+# OS
+
+.DS_Store
+
+# Logs
+
+logs
+*.log
+npm-debug.log*
+lerna-debug.log*
