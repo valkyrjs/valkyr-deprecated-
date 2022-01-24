@@ -2,7 +2,7 @@ import React from "react";
 
 import { Pin } from "../../form/components/pin";
 import { useToken } from "../hooks/useToken";
-import s from "./token.module.scss";
+import styles from "./styles/token.module.scss";
 
 type Props = {
   email: string;
@@ -11,12 +11,12 @@ type Props = {
 export function Token({ email }: Props) {
   const [inputs, { submit }] = useToken(email);
   return (
-    <div className={s.container}>
+    <div className={styles.container}>
       <h1>Enter token</h1>
       <p>
         We’ve sent a 6-character code to <b>{email}</b>.
       </p>
-      <Pin className={s.pin} inputs={inputs} size={6} onComplete={submit} />
+      <Pin className={styles.pin} inputs={inputs} size={6} onComplete={submit} />
       <p>Can’t find your code? Check your spam folder!</p>
     </div>
   );

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-import styles from "./pageLoader.module.scss";
+import styles from "./styles/pageLoader.module.scss";
 
 export function PageLoader(): JSX.Element | null {
   return (

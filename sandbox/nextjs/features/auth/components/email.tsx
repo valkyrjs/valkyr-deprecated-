@@ -2,7 +2,7 @@ import React from "react";
 
 import { useEmail } from "../hooks/useEmail";
 import { AuthDispatch } from "../reducer";
-import s from "./email.module.scss";
+import styles from "./styles/email.module.scss";
 
 type Props = {
   dispatch: AuthDispatch;
@@ -11,7 +11,7 @@ type Props = {
 export function Email({ dispatch }: Props) {
   const [register, { submit }] = useEmail(dispatch);
   return (
-    <div className={s.container}>
+    <div className={styles.container}>
       <h1>Sign in</h1>
       <p>Enter your email to get started.</p>
       <form onSubmit={submit}>

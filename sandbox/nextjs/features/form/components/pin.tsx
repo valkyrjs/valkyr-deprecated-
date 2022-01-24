@@ -1,7 +1,7 @@
 import React from "react";
 
 import { InputsRef } from "../hooks/usePin";
-import s from "./pin.module.scss";
+import styles from "./styles/pin.module.scss";
 
 type Props = {
   inputs: InputsRef;
@@ -13,7 +13,7 @@ type Props = {
 
 export function Pin({ inputs, className = "", size = 5, disabled = false, onComplete }: Props): JSX.Element {
   return (
-    <div className={`${s.container} ${className}`.trim()}>
+    <div className={`${styles.container} ${className}`.trim()}>
       {Array.from(Array(size)).map((_, index) => (
         <input
           key={index}
@@ -22,7 +22,7 @@ export function Pin({ inputs, className = "", size = 5, disabled = false, onComp
               inputs.current.set(index, component);
             }
           }}
-          className={s.input}
+          className={styles.input}
           maxLength={1}
           disabled={disabled}
           onPaste={(e) => {
