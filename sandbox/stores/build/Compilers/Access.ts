@@ -34,21 +34,3 @@ export function getAccessExports(stores: Map<string, string>) {
   print.push(`export const access = {\n  ${exports.map((key) => `${key}: ${key}Access`).join(",\n  ")}\n};`);
   return print.join("");
 }
-
-/*
- |--------------------------------------------------------------------------------
- | Utilities
- |--------------------------------------------------------------------------------
- */
-
-function getSortedPaths(map: any) {
-  const paths = [];
-  for (const event in map) {
-    paths.push([event, map[event]]);
-  }
-  return paths.sort((a, b) => (a[1] > b[1] ? 1 : -1));
-}
-
-function lower(str: string): string {
-  return str.charAt(0).toLocaleLowerCase() + str.slice(1);
-}

@@ -1,18 +1,14 @@
 {
+  "private": true,
   "name": "stores",
   "version": "0.0.0",
-  "main": "./cjs/index.js",
-  "module": "./esm/index.js",
-  "types": "./types/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "clean": "rm -rf ./cjs ./esm ./types",
-
-    "build": "npm run clean && npm run build:stores && npm run build:esm && npm run build:cjs",
-    "build:stores": "ts-node --project ./tsconfig-cjs.json ./build/stores.ts",
-    "build:esm": "tsc --project ./tsconfig.json && ts-node --project ./tsconfig-cjs.json ./build/esm.ts",
-    "build:cjs": "tsc --project ./tsconfig-cjs.json",
-
-    "lint": "eslint 'src/**/*.ts' --fix"
+    "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
     "@valkyr/access": "*",

@@ -2,8 +2,7 @@
   "name": "app",
   "scripts": {
     "clean": "rm -rf ./node_modules ./package-lock.json",
-    "start": "rm -rf ./node_modules/.vite && vite",
-    "lint": "eslint 'src/**/*.ts' --fix"
+    "start": "rm -rf ./node_modules/.vite && vite"
   },
   "dependencies": {
     "@valkyr/access": "*",
@@ -25,6 +24,7 @@
     "stores": "*"
   },
   "devDependencies": {
+    "@originjs/vite-plugin-commonjs": "1.0.2",
     "@types/debug": "4.1.7",
     "@types/faker": "5.5.9",
     "@types/react": "17.0.38",
