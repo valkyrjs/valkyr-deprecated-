@@ -8,6 +8,7 @@ checks:
 
 exclude_patterns:
   - "dist/"
+  - "playground/"
   - "**/node_modules/"
   - "**/*.test.ts"
   - "**/*.test.tsx"
