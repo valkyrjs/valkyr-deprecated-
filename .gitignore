@@ -27,11 +27,15 @@ dist
 
 # Tests
 
-/coverage
+coverage
 
 # OS
 
 .DS_Store
+
+# TypeScript
+
+tsconfig.build.tsbuildinfo
 
 # Logs
 
