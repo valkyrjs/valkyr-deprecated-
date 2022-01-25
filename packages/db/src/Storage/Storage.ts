@@ -114,36 +114,30 @@ export class Storage extends EventEmitter<{
    */
 
   public async insert(document: Document): Promise<Document> {
-    return new Promise((resolve, reject) => {
-      this.load().then(() => {
-        this.operations.push({ type: "insert", document, resolve, reject });
-        this.process();
-      });
-    });
+    return this.run("insert", document);
   }
 
   public async update(document: Document): Promise<Document> {
-    return new Promise((resolve, reject) => {
-      this.load().then(() => {
-        this.operations.push({ type: "update", document, resolve, reject });
-        this.process();
-      });
-    });
+    return this.run("update", document);
   }
 
   public async upsert(document: Document): Promise<Document> {
-    return new Promise((resolve, reject) => {
-      this.load().then(() => {
-        this.operations.push({ type: "upsert", document, resolve, reject });
-        this.process();
-      });
-    });
+    return this.run("upsert", document);
   }
 
   public async delete(id: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.load().then(() => {
         this.operations.push({ type: "delete", id, resolve, reject });
+        this.process();
+      });
+    });
+  }
+
+  public async run(type: "insert" | "update" | "upsert", document: Document): Promise<Document> {
+    return new Promise((resolve, reject) => {
+      this.load().then(() => {
+        this.operations.push({ type, document, resolve, reject });
         this.process();
       });
     });
