@@ -1,8 +1,8 @@
-import { permission, Query } from "@valkyr/access";
+import { permissionGranted, Query } from "@valkyr/access";
 
-import { AccountAttributes } from "./Attributes";
-import type { Permissions } from "./Types";
+import { getAccountAttributes } from "./Attributes";
+import type { Permissions } from "./Role";
 
 export const read: Query<never, Permissions["account"]["read"]> = () => {
-  return (filter) => permission({ granted: true, attributes: new AccountAttributes(filter) });
+  return (filter) => permissionGranted(getAccountAttributes(filter));
 };

@@ -16,8 +16,6 @@ export type Filters = {
   public: number;
 };
 
-export class AccountAttributes extends Attributes<typeof ACCOUNT_FLAGS, Filters> {
-  constructor(filters: Filters) {
-    super(ACCOUNT_FLAGS, filters);
-  }
+export function getAccountAttributes(filters: Filters) {
+  return new Attributes(ACCOUNT_FLAGS, filters);
 }
