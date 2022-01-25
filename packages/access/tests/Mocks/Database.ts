@@ -1,12 +1,12 @@
 import { container } from "../../src/Container";
-import { TestRole } from "./Lib/TestRole";
+import { Role } from "../../src/Role";
 import { TestDatabase } from "./Providers/TestDatabase";
 
 export function createMockDatabase() {
   const db = container.set("Database", new TestDatabase()).get("Database");
 
   db.addRole(
-    new TestRole({
+    new Role({
       roleId: "role-1",
       tenantId: "tenant-1",
       name: "Administrator",
@@ -17,7 +17,7 @@ export function createMockDatabase() {
   );
 
   db.addRole(
-    new TestRole({
+    new Role({
       roleId: "role-2",
       tenantId: "tenant-1",
       name: "User",
@@ -28,7 +28,7 @@ export function createMockDatabase() {
   );
 
   db.addRole(
-    new TestRole({
+    new Role({
       roleId: "role-3",
       tenantId: "tenant-2",
       name: "Administrator",

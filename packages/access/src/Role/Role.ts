@@ -3,7 +3,7 @@ import { RolePermission } from "./RolePermission";
 import type { Actions, RoleData } from "./Types";
 import { deepCopy } from "./Utils";
 
-export abstract class Role<
+export class Role<
   Permissions extends Record<string, Actions> = Record<string, Actions>,
   Settings extends Record<string, unknown> = Record<string, unknown>
 > {
@@ -59,7 +59,14 @@ export abstract class Role<
    |--------------------------------------------------------------------------------
    */
 
-  public toJSON() {
+  public toJSON(): {
+    roleId: string;
+    tenantId: string;
+    name: string;
+    settings: Settings;
+    permissions: Permissions;
+    members: string[];
+  } {
     return deepCopy({
       roleId: this.roleId,
       tenantId: this.tenantId,

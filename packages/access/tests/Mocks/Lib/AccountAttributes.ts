@@ -22,8 +22,6 @@ const ACCOUNT_FILTERS = {
  |--------------------------------------------------------------------------------
  */
 
-export class AccountAttributes extends Attributes<typeof ACCOUNT_FLAGS, typeof ACCOUNT_FILTERS> {
-  constructor() {
-    super(ACCOUNT_FLAGS, ACCOUNT_FILTERS);
-  }
+export function getAccountAttributes() {
+  return new Attributes(ACCOUNT_FLAGS, ACCOUNT_FILTERS);
 }

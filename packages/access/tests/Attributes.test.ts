@@ -1,4 +1,4 @@
-import { UserAttributes } from "./Mocks/Lib/UserAttributes";
+import { getUserAttributes } from "./Mocks/Lib/UserAttributes";
 import { users } from "./Mocks/Users";
 
 describe("Attributes", () => {
@@ -64,7 +64,7 @@ describe("Attributes", () => {
 });
 
 function getAccessAttributes() {
-  return UserAttributes.for("user-1")
+  return getUserAttributes("user-1")
     .add("private", ["firstName", "lastName", "email"])
     .add("friends", ["firstName", "email"])
     .add("public", ["firstName"]);

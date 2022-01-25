@@ -1,6 +1,6 @@
 import type { JSONFilters, JSONFlags } from "./Types";
 
-export abstract class Attributes<Flags extends JSONFlags = JSONFlags, Filters extends JSONFilters = JSONFilters> {
+export class Attributes<Flags extends JSONFlags = JSONFlags, Filters extends JSONFilters = JSONFilters> {
   public readonly flags: Flags;
   public readonly filters: Filters;
 

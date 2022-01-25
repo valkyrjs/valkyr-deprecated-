@@ -1,5 +1,5 @@
-import { Permission } from "../src/Permission";
-import { AccountAttributes } from "./Mocks/Lib/AccountAttributes";
+import { permissionGranted } from "../src/Permission";
+import { getAccountAttributes } from "./Mocks/Lib/AccountAttributes";
 
 /*
  |--------------------------------------------------------------------------------
@@ -18,10 +18,8 @@ const accounts = [
   }
 ];
 
-const permission = new Permission({
-  granted: true,
-  attributes: new AccountAttributes()
-});
+const attributes = getAccountAttributes();
+const permission = permissionGranted(attributes);
 
 /*
  |--------------------------------------------------------------------------------

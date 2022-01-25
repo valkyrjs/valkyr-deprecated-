@@ -1,6 +1,5 @@
 import { Operation, RoleData } from "../../../src/Role";
 import type { Database } from "../../../src/Services";
-import { TestRole } from "../Lib/TestRole";
 
 export class TestDatabase implements Database {
   public store: RoleData[] = [];
@@ -12,8 +11,13 @@ export class TestDatabase implements Database {
   /**
    * Retrieve role data from persistent database solution.
    */
-  public async getRole(roleId: string): Promise<RoleData | undefined> {
-    return this.store.find((role) => role.roleId === roleId);
+  public async getRole<Permissions extends RoleData["permissions"]>(
+    roleId: string
+  ): Promise<RoleData<Permissions> | undefined> {
+    const role = this.store.find((role) => role.roleId === roleId);
+    if (role) {
+      return role as RoleData<Permissions>;
+    }
   }
 
   /**
@@ -45,7 +49,7 @@ export class TestDatabase implements Database {
    * method should retrieve all roles for the given member and combine them into a single
    * permissions object.
    */
-  public async getPermissions<Permissions extends TestRole["permissions"]>(
+  public async getPermissions<Permissions extends RoleData["permissions"]>(
     tenantId: string,
     memberId: string
   ): Promise<Permissions> {
@@ -77,7 +81,7 @@ export class TestDatabase implements Database {
       if (role.roleId === roleId) {
         return {
           ...role,
-          members: role.members.reduce((members: string[], id) => {
+          members: role.members.reduce((members: string[], id: string) => {
             if (id !== memberId) {
               members.push(id);
             }

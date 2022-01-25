@@ -9,7 +9,9 @@ export interface Database {
   /**
    * Retrieve role from persistent storage.
    */
-  getRole(roleId: string): Promise<RoleData | undefined | null>;
+  getRole<Permissions extends RoleData["permissions"]>(
+    roleId: string
+  ): Promise<RoleData<Permissions> | undefined | null>;
 
   /**
    * Set permission configuration for the given role.

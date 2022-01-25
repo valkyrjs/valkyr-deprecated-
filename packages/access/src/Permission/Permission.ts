@@ -1,7 +1,7 @@
 import { Attributes as BaseAttributes } from "../Attributes";
 import { container } from "../Container";
 import type { Role } from "../Role";
-import type { Permission, QueryHandler, Response } from "./Types";
+import type { Denied, Granted, QueryHandler } from "./Types";
 
 export const PERMISSION_DENIED_MESSAGE = "Permission denied";
 
@@ -23,33 +23,37 @@ export function createPermission<
       const permissions: Permissions = await container.get("Database").getPermissions(tenantId, memberId);
       const value = permissions[resource][action];
       if (value === undefined) {
-        return permission({ granted: false, message: new PermissionDeniedError(action, resource).message });
+        return permissionDenied(new PermissionDeniedError(action, resource).message);
       }
       if (handler === undefined) {
-        return permission({ granted: true });
+        return permissionGranted();
       }
       return handler(value);
     }
   });
 }
 
-export function permission<Attributes extends BaseAttributes = BaseAttributes>(
-  response: Response<Attributes>
-): Permission {
-  if (response.granted === true) {
-    return {
-      ...response,
-      filter: <Data extends Record<string, unknown>>(data: Data | Data[], filter = "$all") => {
-        const attributes = response.attributes;
-        if (attributes === undefined) {
-          return data;
-        }
-        if (Array.isArray(data)) {
-          return data.map((data) => attributes.filter(filter, data));
-        }
-        return attributes.filter(filter, data);
+export function permissionGranted<Attributes extends BaseAttributes = BaseAttributes>(
+  attributes?: Attributes
+): Granted {
+  return {
+    granted: true,
+    attributes,
+    filter: <Data extends Record<string, unknown>>(data: Data | Data[], filter = "$all") => {
+      if (attributes === undefined) {
+        return data;
       }
-    };
-  }
-  return response;
+      if (Array.isArray(data)) {
+        return data.map((data) => attributes.filter(filter, data));
+      }
+      return attributes.filter(filter, data);
+    }
+  };
+}
+
+export function permissionDenied(message?: string): Denied {
+  return {
+    granted: false,
+    message: message ?? "Access Violation: You are not permitted to perform this action"
+  };
 }

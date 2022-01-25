@@ -37,16 +37,14 @@ export const profiles: Record<string, UserFilter> = {
  |--------------------------------------------------------------------------------
  */
 
-export class UserAttributes extends Attributes<typeof USER_FLAGS, UserFilter> {
-  constructor(privacy: UserFilter) {
-    super(USER_FLAGS, { ...privacy });
-  }
+export function getUserAttributes(userId: string) {
+  return new Attributes(USER_FLAGS, { ...getUserFilter(userId) });
+}
 
-  public static for(userId: string) {
-    const profile = profiles[userId];
-    if (!profile) {
-      throw new Error(`UserAccessProfile Violation: User ${userId} has no valid access profile.`);
-    }
-    return new UserAttributes(profile);
+function getUserFilter(userId: string): UserFilter {
+  const profile = profiles[userId];
+  if (!profile) {
+    throw new Error(`UserAccessProfile Violation: User ${userId} has no valid access profile.`);
   }
+  return profile;
 }
