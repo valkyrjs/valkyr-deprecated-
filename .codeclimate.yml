@@ -1,10 +1,9 @@
 version: "2"
 
 checks:
-  similar-code:
-    enabled: true
+  return-statements:
     config:
-      threshold: 75
+      threshold: 8
 
 exclude_patterns:
   - "dist/"
