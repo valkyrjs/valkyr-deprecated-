@@ -31,7 +31,7 @@
 
     "lint": "eslint . --fix",
     "test": "jest --maxWorkers=100%",
-    "test:ci": "jest --ci --coverage --forceExit --maxWorkers=4",
+    "coverage": "jest --ci --coverage --forceExit --maxWorkers=4",
     "version": "lerna version $1 --yes --no-push --no-git-tag-version --exact",
     "publish": "lerna exec --no-private -- npm publish --tag latest --access public",
 
