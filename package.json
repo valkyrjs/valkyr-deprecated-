@@ -25,8 +25,8 @@
     "build:socket": "lerna run build --scope @valkyr/socket",
     "build:stores": "lerna run build --scope stores",
 
-    "api": "cd ./sandbox/api && npm start",
-    "app": "cd ./sandbox/nextjs && npm start",
+    "api": "cd ./playground/api && npm start",
+    "app": "cd ./playground/app && npm start",
     "web": "cd ./website && npx docusaurus start",
 
     "lint": "eslint . --fix",
