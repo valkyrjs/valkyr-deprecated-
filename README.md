@@ -4,3 +4,30 @@
 # Valkyr
 
 Valkyr SDK. A collection of TypeScript + JavaScript tools and libraries to build full stack software applications.
+
+## Dependencies
+
+| Package       | Instructions                            |
+| ------------- | --------------------------------------- |
+| NodeJS 16 LTS | https://github.com/nvm-sh/nvm           |
+| Docker\*      | https://docs.docker.com/engine/install/ |
+
+> - Docker is only required in development.
+
+### Step 1 - Setup
+
+Install and build dependencies across all project folders:
+
+```sh
+$ npm install
+$ npm run build
+```
+
+### Step 2 - Start
+
+Open up two terminals and run the api and app respectively:
+
+```sh
+$ npm run api # Terminal 1
+$ npm run app # Terminal 2
+```
