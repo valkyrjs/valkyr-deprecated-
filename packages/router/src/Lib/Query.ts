@@ -47,19 +47,7 @@ export class Query extends ValueStore {
    */
   public unset(key?: string | string[]): void {
     if (key !== undefined) {
-      const current: any = { ...this.get() };
-      if (Array.isArray(key)) {
-        for (const k of key) {
-          if (current[k] !== undefined) {
-            delete current[k];
-          }
-        }
-      } else {
-        if (current[key] !== undefined) {
-          delete current[key];
-        }
-      }
-      this.replace(current);
+      this.replace(getSanitizedQuery(key, this.get()));
     } else {
       this.replace({});
     }
@@ -82,4 +70,33 @@ export class Query extends ValueStore {
   public toString(): string {
     return toQueryString(this.get());
   }
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Utilities
+ |--------------------------------------------------------------------------------
+ */
+
+function getSanitizedQuery(key: string | string[], query: JSONQuery): JSONQuery {
+  if (Array.isArray(key)) {
+    return removeKeysFromQuery(key, query);
+  }
+  return removeKeyFromQuery(key, query);
+}
+
+function removeKeysFromQuery(keys: string[], query: JSONQuery) {
+  for (const key of keys) {
+    if (query[key] !== undefined) {
+      delete query[key];
+    }
+  }
+  return query;
+}
+
+function removeKeyFromQuery(key: string, query: JSONQuery): JSONQuery {
+  if (query[key] !== undefined) {
+    delete query[key];
+  }
+  return query;
 }
