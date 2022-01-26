@@ -2,16 +2,12 @@ name: CI
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
     paths:
-      - "packages/**/*.ts"
+      - "packages/**.ts"
       - .github/workflows/ci.yml
   pull_request:
-    branches:
-      - main
     paths:
-      - "packages/**/*.ts"
+      - "packages/**.ts"
       - .github/workflows/ci.yml
 jobs:
   coverage:
