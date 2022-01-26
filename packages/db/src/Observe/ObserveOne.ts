@@ -1,27 +1,25 @@
-import { Query } from "mingo";
-import { RawObject } from "mingo/types";
-
 import { Collection } from "../Collection";
 import type { Document } from "../Storage";
+import { Criteria, isMatch } from "./Utils";
 
 export function observeOne(
   collection: Collection,
-  criteria: RawObject | undefined,
-  cb: (document: Document | undefined) => void
+  criteria: Criteria,
+  onChange: (document: Document | undefined) => void
 ): () => void {
-  collection.findOne(criteria).then(cb);
+  collection.findOne(criteria).then(onChange);
   return collection.storage.onChange((type, document) => {
     switch (type) {
       case "insert":
       case "update": {
-        if (!criteria || new Query(criteria).test(document)) {
-          cb(document);
+        if (isMatch(document, criteria)) {
+          onChange(document);
         }
         break;
       }
       case "delete": {
-        if (!criteria || new Query(criteria).test(document)) {
-          cb(undefined);
+        if (isMatch(document, criteria)) {
+          onChange(undefined);
         }
         break;
       }

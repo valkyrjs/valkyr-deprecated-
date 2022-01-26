@@ -1,66 +1,26 @@
 import { Query } from "mingo";
-import { RawObject } from "mingo/types";
 
-import { InstanceAdapter } from "../Adapters";
 import { addOptions, Collection, Options } from "../Collection";
-import { Document, Storage } from "../Storage";
+import { Document } from "../Storage";
+import { Store } from "./Store";
+import { Criteria } from "./Utils";
 
 export function observe(
   collection: Collection,
-  criteria: RawObject | undefined,
+  criteria: Criteria,
   options: Options | undefined,
-  cb: (documents: Document[]) => void
+  onChange: (documents: Document[]) => void
 ): () => void {
-  const store = new Storage("observer", new InstanceAdapter());
-
-  // ### Initial Query
+  const store = Store.create();
 
   collection.find(criteria, options).then(async (documents) => {
-    for (const document of documents) {
-      await store.insert(document);
-    }
-    cb(store.data);
+    onChange(await store.resolve(documents));
   });
 
-  // ### Change Listener
-
   return collection.storage.onChange(async (type, document) => {
-    const id = document.id;
-
-    let hasChanged = false;
-    switch (type) {
-      case "insert": {
-        if (!criteria || new Query(criteria).test(document)) {
-          await store.insert(document);
-          hasChanged = true;
-        }
-        break;
-      }
-      case "update": {
-        if (store.has(id)) {
-          if (!criteria || new Query(criteria).test(document)) {
-            await store.update(document);
-            hasChanged = true;
-          } else {
-            await store.delete(id);
-            hasChanged = true;
-          }
-        } else if (!criteria || new Query(criteria).test(document)) {
-          await store.insert(document);
-          hasChanged = true;
-        }
-        break;
-      }
-      case "delete": {
-        if (!criteria || new Query(criteria).test(document)) {
-          await store.delete(id);
-          hasChanged = true;
-        }
-        break;
-      }
-    }
+    const hasChanged = await store[type](document, criteria);
     if (hasChanged) {
-      cb(toQueriedData(store.data, options));
+      onChange(toQueriedData(store.data, options));
     }
   });
 }
