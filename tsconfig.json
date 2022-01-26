@@ -4,7 +4,7 @@
     "baseUrl": "./",
     "paths": {
       "@valkyr/*": [
-        "valkyr/*/src"
+        "packages/*"
       ]
     },
     "target": "esnext",
