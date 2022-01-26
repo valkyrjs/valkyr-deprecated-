@@ -14,22 +14,8 @@ import type { Middleware } from "../Types/Middleware";
 export function route(server: Server): Middleware {
   return async (req: IncomingMessage, res: ServerResponse) => {
     try {
-      const result = await resolve(server.routes, req);
-      switch (result.status) {
-        case "success": {
-          handleResponse(res, result);
-          break;
-        }
-        case "redirect": {
-          handleRedirect(res, result);
-          break;
-        }
-        case "error": {
-          handleError(res, result);
-          break;
-        }
-      }
-    } catch (error: any) {
+      await handleRequest(server, req, res);
+    } catch (error) {
       if (error instanceof HttpError) {
         handleResponse(res, error);
       } else {
@@ -46,6 +32,24 @@ export function route(server: Server): Middleware {
  | Utilities
  |--------------------------------------------------------------------------------
  */
+
+async function handleRequest(server: Server, req: IncomingMessage, res: ServerResponse): Promise<void> {
+  const result = await resolve(server.routes, req);
+  switch (result.status) {
+    case "success": {
+      handleResponse(res, result);
+      break;
+    }
+    case "redirect": {
+      handleRedirect(res, result);
+      break;
+    }
+    case "error": {
+      handleError(res, result);
+      break;
+    }
+  }
+}
 
 function handleRedirect(res: ServerResponse, result: HttpRedirect): void {
   res.writeHead(result.code, { location: result.url });
