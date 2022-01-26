@@ -12,7 +12,7 @@ Valkyr SDK. A collection of TypeScript + JavaScript tools and libraries to build
 | NodeJS 16 LTS | https://github.com/nvm-sh/nvm           |
 | Docker\*      | https://docs.docker.com/engine/install/ |
 
-> - Docker is only required in development.
+> *Docker is only required in development as it's used to set up necessary back end services during development that is likely run outside of this space on staging and production environments.
 
 ### Step 1 - Setup
 
