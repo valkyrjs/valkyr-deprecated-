@@ -1,12 +1,21 @@
-name: Tests
+name: CI
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+    paths:
+      - "packages/**/*.ts"
+      - .github/workflows/ci.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/**/*.ts"
+      - .github/workflows/ci.yml
 jobs:
   coverage:
-    name: Test & publish code coverage
+    name: Tests & Code Coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
