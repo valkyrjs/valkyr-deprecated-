@@ -39,14 +39,14 @@ export function permissionGranted<Attributes extends BaseAttributes = BaseAttrib
   return {
     granted: true,
     attributes,
-    filter: <Data extends Record<string, unknown>>(data: Data | Data[], filter = "$all") => {
+    filter: <Data extends Record<string, unknown>>(data: Data | Data[]) => {
       if (attributes === undefined) {
         return data;
       }
       if (Array.isArray(data)) {
-        return data.map((data) => attributes.filter(filter, data));
+        return data.map(attributes.filter);
       }
-      return attributes.filter(filter, data);
+      return attributes.filter(data);
     }
   };
 }

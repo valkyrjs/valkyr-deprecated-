@@ -1,11 +1,16 @@
+import { Attributes } from "../src/Attributes";
 import { permissionGranted } from "../src/Permission";
-import { getAccountAttributes } from "./Mocks/Lib/AccountAttributes";
 
 /*
  |--------------------------------------------------------------------------------
  | Mock
  |--------------------------------------------------------------------------------
  */
+
+const ACCOUNT_FLAGS = {
+  name: 1 << 0,
+  password: 1 << 1
+};
 
 const accounts = [
   {
@@ -18,37 +23,20 @@ const accounts = [
   }
 ];
 
-const attributes = getAccountAttributes();
-const permission = permissionGranted(attributes);
-
 /*
  |--------------------------------------------------------------------------------
  | Unit Tests
  |--------------------------------------------------------------------------------
  */
 
-describe("AccessPermission", () => {
-  describe("when using attributes .filter method", () => {
-    it("should show all attributes when no filter is provided", () => {
-      expect(permission.filter(accounts)).toEqual(
-        accounts.map((account) => ({ name: account.name, password: account.password }))
-      );
-      expect(permission.filter(accounts[0])).toEqual({ name: accounts[0].name, password: accounts[0].password });
-    });
+describe("Permission", () => {
+  it("should show no attributes when permission granted with no filter is provided", () => {
+    const permission = permissionGranted(new Attributes(ACCOUNT_FLAGS));
+    expect(permission.filter(accounts[0])).toEqual({});
+  });
 
-    it("should show all attributes when filter is set to owner", () => {
-      expect(permission.filter(accounts, "owner")).toEqual(
-        accounts.map((account) => ({ name: account.name, password: account.password }))
-      );
-      expect(permission.filter(accounts[0], "owner")).toEqual({
-        name: accounts[0].name,
-        password: accounts[0].password
-      });
-    });
-
-    it("should hide password when filter is set to public", () => {
-      expect(permission.filter(accounts, "public")).toEqual(accounts.map((account) => ({ name: account.name })));
-      expect(permission.filter(accounts[0], "public")).toEqual({ name: accounts[0].name });
-    });
+  it("should show enabled attributes when permission granted", () => {
+    const permission = permissionGranted(new Attributes(ACCOUNT_FLAGS).enable(["name"]));
+    expect(permission.filter(accounts[0])).toEqual({ name: accounts[0].name });
   });
 });

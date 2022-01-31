@@ -1,71 +1,96 @@
-import { getUserAttributes } from "./Mocks/Lib/UserAttributes";
-import { users } from "./Mocks/Users";
+import { Attributes } from "../src/Attributes";
+
+const USER_FLAGS = {
+  firstName: 1 << 0,
+  lastName: 1 << 1,
+  email: 1 << 2
+};
+
+const JOHN = {
+  firstName: "John",
+  lastName: "Doe",
+  email: "john@doe.com"
+};
 
 describe("Attributes", () => {
-  describe("when .add method is used", () => {
-    it("should add expected flags", () => {
-      const profile = getAccessAttributes();
+  it("should create a empty attribute instance", () => {
+    const attributes = new Attributes(USER_FLAGS);
+    expect(attributes.has("firstName")).toBeFalsy();
+    expect(attributes.has("lastName")).toBeFalsy();
+    expect(attributes.has("email")).toBeFalsy();
+  });
 
-      expect(profile.has("private", "firstName")).toBeTruthy();
-      expect(profile.has("private", "lastName")).toBeTruthy();
-      expect(profile.has("private", "email")).toBeTruthy();
+  it("should successfully .enable new flags", () => {
+    const attributes = new Attributes(USER_FLAGS);
 
-      expect(profile.has("friends", "firstName")).toBeTruthy();
-      expect(profile.has("friends", "lastName")).toBeFalsy();
-      expect(profile.has("friends", "email")).toBeTruthy();
+    attributes.enable(["firstName"]);
+    expect(attributes.has("firstName")).toBeTruthy();
+    expect(attributes.has("lastName")).toBeFalsy();
+    expect(attributes.has("email")).toBeFalsy();
 
-      expect(profile.has("public", "firstName")).toBeTruthy();
-      expect(profile.has("public", "lastName")).toBeFalsy();
-      expect(profile.has("public", "email")).toBeFalsy();
+    attributes.enable(["lastName", "email"]);
+    expect(attributes.has("firstName")).toBeTruthy();
+    expect(attributes.has("lastName")).toBeTruthy();
+    expect(attributes.has("email")).toBeTruthy();
+  });
+
+  it("should ignore .enable for already enabled flag", () => {
+    const attributes = new Attributes(USER_FLAGS);
+
+    attributes.enable(["firstName"]);
+    expect(attributes.has("firstName")).toBeTruthy();
+
+    attributes.enable(["firstName"]);
+    expect(attributes.has("firstName")).toBeTruthy();
+  });
+
+  it("should successfully .disable existing flags", () => {
+    const attributes = new Attributes(USER_FLAGS);
+
+    attributes.enable(["firstName"]);
+    expect(attributes.has("firstName")).toBeTruthy();
+
+    attributes.disable(["firstName"]);
+    expect(attributes.has("firstName")).toBeFalsy();
+  });
+
+  it("should ignore .disable for non existent flag", () => {
+    const attributes = new Attributes(USER_FLAGS);
+
+    attributes.disable(["firstName"]);
+    expect(attributes.has("firstName")).toBeFalsy();
+  });
+
+  it("should only provide enabled attributes when .filter", () => {
+    const attributes = new Attributes(USER_FLAGS);
+
+    attributes.enable(["firstName"]);
+    expect(attributes.filter(JOHN)).toEqual({
+      firstName: "John"
     });
 
-    it("should filter expected flags", () => {
-      const profile = getAccessAttributes();
-
-      expect(profile.filter("private", users["user-1"])).toEqual(users["user-1"]);
-      expect(profile.filter("friends", users["user-1"])).toEqual({
-        id: "user-1",
-        firstName: "John",
-        email: "john@doe.com"
-      });
-      expect(profile.filter("public", users["user-1"])).toEqual({ id: "user-1", firstName: "John" });
+    attributes.enable(["firstName", "email"]);
+    expect(attributes.filter(JOHN)).toEqual({
+      firstName: "John",
+      email: "john@doe.com"
     });
   });
 
-  describe("when .del method is used", () => {
-    it("should delete expected flags", () => {
-      const profile = getAccessAttributes();
+  it("should provide a bitflag number when .toNumber is called", () => {
+    const attributes = new Attributes(USER_FLAGS);
 
-      profile.del("friends", ["email"]);
+    expect(attributes.toNumber()).toStrictEqual(0);
 
-      expect(profile.has("private", "firstName")).toBeTruthy();
-      expect(profile.has("private", "lastName")).toBeTruthy();
-      expect(profile.has("private", "email")).toBeTruthy();
+    attributes.enable(["firstName"]);
+    expect(attributes.toNumber()).toStrictEqual(1);
 
-      expect(profile.has("friends", "firstName")).toBeTruthy();
-      expect(profile.has("friends", "lastName")).toBeFalsy();
-      expect(profile.has("friends", "email")).toBeFalsy();
+    attributes.enable(["lastName"]);
+    expect(attributes.toNumber()).toStrictEqual(3);
 
-      expect(profile.has("public", "firstName")).toBeTruthy();
-      expect(profile.has("public", "lastName")).toBeFalsy();
-      expect(profile.has("public", "email")).toBeFalsy();
-    });
+    attributes.enable(["email"]);
+    expect(attributes.toNumber()).toStrictEqual(7);
 
-    it("should filter expected flags", () => {
-      const profile = getAccessAttributes();
-
-      profile.del("friends", ["email"]);
-
-      expect(profile.filter("private", users["user-1"])).toEqual(users["user-1"]);
-      expect(profile.filter("friends", users["user-1"])).toEqual({ id: "user-1", firstName: "John" });
-      expect(profile.filter("public", users["user-1"])).toEqual({ id: "user-1", firstName: "John" });
-    });
+    attributes.disable(["firstName"]);
+    expect(attributes.toNumber()).toStrictEqual(6);
   });
 });
-
-function getAccessAttributes() {
-  return getUserAttributes("user-1")
-    .add("private", ["firstName", "lastName", "email"])
-    .add("friends", ["firstName", "email"])
-    .add("public", ["firstName"]);
-}

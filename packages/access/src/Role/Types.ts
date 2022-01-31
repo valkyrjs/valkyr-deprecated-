@@ -1,10 +1,12 @@
 import type { Role } from "./Role";
 
-export type RoleData<Permissions extends Record<string, Actions> = Record<string, Actions>> = ReturnType<
+export type RoleData<Permissions extends Record<Category, Actions> = Record<Category, Actions>> = ReturnType<
   Role<Permissions>["toJSON"]
 >;
 
-export type Actions = Record<string, Action>;
+export type Category = string;
+
+export type Actions = Record<Category, Action>;
 
 export type Action = Value | Value[];
 
