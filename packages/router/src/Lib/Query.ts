@@ -87,9 +87,7 @@ function getSanitizedQuery(key: string | string[], query: JSONQuery): JSONQuery 
 
 function removeKeysFromQuery(keys: string[], query: JSONQuery) {
   for (const key of keys) {
-    if (query[key] !== undefined) {
-      delete query[key];
-    }
+    removeKeyFromQuery(key, query);
   }
   return query;
 }
