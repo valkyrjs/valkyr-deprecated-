@@ -15,7 +15,9 @@ container.set(
     /**
      * Retrieve role from persistent storage.
      */
-    public async getRole(roleId: string): Promise<RoleData | null> {
+    public async getRole<Permissions extends RoleData["permissions"]>(
+      roleId: string
+    ): Promise<RoleData<Permissions> | null> {
       return socket.send("auth.getRole", { roleId });
     }
 
