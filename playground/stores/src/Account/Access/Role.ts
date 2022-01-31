@@ -5,14 +5,9 @@ export type Permissions = {
     setAlias: boolean;
     setEmail: boolean;
     setName: boolean;
-    read: Filters;
+    read: number; // bitflag value
     close: boolean;
   };
-};
-
-export type Filters = {
-  owner: number;
-  public: number;
 };
 
 export async function getAccountRole(roleId: string, db = container.get("Database")) {
@@ -31,10 +26,7 @@ function getPermissions({ account }: Partial<Permissions>): Permissions {
       setAlias: account?.setAlias === true,
       setName: account?.setAlias === true,
       setEmail: account?.setAlias === true,
-      read: {
-        owner: account?.read?.owner ?? 0,
-        public: account?.read?.public ?? 0
-      },
+      read: account?.read ?? 0,
       close: account?.close === true
     }
   };

@@ -11,11 +11,6 @@ export const ACCOUNT_FLAGS: Record<keyof Account, number> = {
   token: 1 << 5
 };
 
-export type Filters = {
-  owner: number;
-  public: number;
-};
-
-export function getAccountAttributes(filters: Filters) {
-  return new Attributes(ACCOUNT_FLAGS, filters);
+export function getAccountAttributes(flag?: number) {
+  return new Attributes(ACCOUNT_FLAGS, flag);
 }
