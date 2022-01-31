@@ -6,7 +6,7 @@ import { mongo } from "./Lib/Mongo";
 export const collection = {
   accounts: mongo.collection<Account>("accounts"),
   events: mongo.collection<Event>("events"),
-  roles: mongo.collection<RoleData>("roles")
+  roles: mongo.collection<RoleData<any>>("roles")
 };
 
 export async function loadCollections() {
