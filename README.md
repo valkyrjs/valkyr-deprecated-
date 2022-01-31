@@ -1,6 +1,5 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/d12a6788570bda777116/maintainability)](https://codeclimate.com/github/kodemon/valkyr/maintainability)&nbsp;
-[![Test Coverage](https://api.codeclimate.com/v1/badges/d12a6788570bda777116/test_coverage)](https://codeclimate.com/github/kodemon/valkyr/test_coverage)&nbsp;
-[![Netlify Status](https://api.netlify.com/api/v1/badges/9af755b2-7bd2-4291-96f3-223014b961ad/deploy-status)](https://app.netlify.com/sites/hopeful-brown-29f683/deploys)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/d12a6788570bda777116/test_coverage)](https://codeclimate.com/github/kodemon/valkyr/test_coverage)
 
 # Valkyr
 
@@ -15,20 +14,39 @@ Valkyr SDK. A collection of TypeScript + JavaScript tools and libraries to build
 
 > \*Docker is only required in development as it's used to set up necessary back end services during development that is likely run outside of this space on staging and production environments.
 
-### Step 1 - Setup
+### Setup
 
 Install and build dependencies across all project folders:
 
 ```sh
 $ npm install
+```
+
+### Testing
+
+We use jest for testing, just run the following command from root:
+
+```ts
+$ npm test
+```
+
+### Playground
+
+When you want to test package functionality from a product perspective we can jump into the playground environment. Before starting the services make sure to build all the packages first.
+
+```ts
 $ npm run build
 ```
 
-### Step 2 - Start
-
-Open up two terminals and run the api and app respectively:
+Once you have a successfull build then up two terminals and run the api and app respectively:
 
 ```sh
 $ npm run api # Terminal 1
 $ npm run app # Terminal 2
 ```
+
+## Documentation
+
+Go to our [documentation website](https://docs.kodemon.net) for valkyr documentation.
+
+> This is however currently not ready, and this section will be updated once its ready for prime time.
