@@ -14,5 +14,8 @@
   ],
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json"
+  },
+  "peerDependencies": {
+    "valkyr": "^0.0.0"
   }
 }

@@ -25,5 +25,8 @@
   "devDependencies": {
     "@types/ioredis": "4.28.5",
     "@types/ws": "8.2.2"
+  },
+  "peerDependencies": {
+    "valkyr": "^0.0.0"
   }
 }

@@ -1,5 +1,10 @@
 {
-  "name": "root",
+  "name": "valkyr",
+  "version": "0.0.0",
+  "description": "A collection of TypeScript tools and libraries for Valkyr developers to build event sourced real time applications.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
   "files": [],
   "workspaces": [
     "./packages/*",
