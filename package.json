@@ -21,13 +21,10 @@
     "build:access": "lerna run build --scope @valkyr/access",
     "build:auth": "lerna run build --scope @valkyr/auth",
     "build:db": "lerna run build --scope @valkyr/db",
-    "build:event-cache": "lerna run build --scope @valkyr/event-cache",
-    "build:event-store": "lerna run build --scope @valkyr/event-store",
     "build:inverse": "lerna run build --scope @valkyr/inverse",
     "build:router": "lerna run build --scope @valkyr/router",
     "build:server": "lerna run build --scope @valkyr/server",
     "build:socket": "lerna run build --scope @valkyr/socket",
-    "build:stores": "lerna run build --scope stores",
 
     "api": "cd ./playground/api && npm start",
     "app": "cd ./playground/app && npm start",
@@ -37,8 +34,15 @@
     "test": "jest --maxWorkers=100%",
     "coverage": "jest --ci --coverage --forceExit --maxWorkers=4",
 
-    "version": "lerna version $1 --yes --no-push --no-git-tag-version --exact",
-    "publish": "lerna exec --no-private -- npm publish --tag latest --access public",
+    "publish": "npm run publish:access && npm run publish:auth && npm run publish:db && npm run publish:inverse && npm run publish:router && npm run publish:server && npm run publish:socket && npm run publish:utils",
+    "publish:access": "cd ./packages/access && npm publish --tag latest --access public",
+    "publish:auth": "cd ./packages/auth && npm publish --tag latest --access public",
+    "publish:db": "cd ./packages/db && npm publish --tag latest --access public",
+    "publish:inverse": "cd ./packages/inverse && npm publish --tag latest --access public",
+    "publish:router": "cd ./packages/router && npm publish --tag latest --access public",
+    "publish:server": "cd ./packages/server && npm publish --tag latest --access public",
+    "publish:socket": "cd ./packages/socket && npm publish --tag latest --access public",
+    "publish:utils": "cd ./packages/access && npm publish --tag latest --access public",
     
     "snap": "sudo rm -rf /etc/docker && sudo snap refresh"
   },
