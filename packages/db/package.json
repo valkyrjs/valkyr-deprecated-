@@ -2,7 +2,8 @@
   "name": "@valkyr/db",
   "version": "0.0.0",
   "description": "Simple storage solution written in TypeScript.",
-  "author": "Christoffer Rødvik <dev@kodemon.net>",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
   "keywords": [
     "browser",
@@ -22,8 +23,5 @@
     "eventemitter3": "4.0.7",
     "mingo": "5.0.0",
     "nanoid": "3.1.30"
-  },
-  "peerDependencies": {
-    "valkyr": "^0.0.0"
   }
 }

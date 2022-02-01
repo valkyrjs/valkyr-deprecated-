@@ -2,7 +2,8 @@
   "name": "@valkyr/server",
   "version": "0.0.0",
   "description": "Simple node.js server solution written in TypeScript.",
-  "author": "Christoffer Rødvik <dev@kodemon.net>",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
   "keywords": [
     "server",
@@ -25,8 +26,5 @@
   "devDependencies": {
     "@types/ioredis": "4.28.5",
     "@types/ws": "8.2.2"
-  },
-  "peerDependencies": {
-    "valkyr": "^0.0.0"
   }
 }

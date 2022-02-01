@@ -2,7 +2,8 @@
   "name": "@valkyr/inverse",
   "version": "0.0.0",
   "description": "A simple dependency injection service.",
-  "author": "Christoffer Rødvik <dev@kodemon.net>",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
   "keywords": [
     "dependency-injection"
@@ -14,8 +15,5 @@
   ],
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json"
-  },
-  "peerDependencies": {
-    "valkyr": "^0.0.0"
   }
 }

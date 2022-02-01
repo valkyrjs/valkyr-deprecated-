@@ -2,7 +2,8 @@
   "name": "@valkyr/auth",
   "version": "0.0.0",
   "description": "Simple auth solution written in TypeScript.",
-  "author": "Christoffer Rødvik <christoffer@kodemon.net>",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
   "keywords": [
     "authentication",
@@ -20,9 +21,6 @@
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
-    "@valkyr/inverse": "^0.0.0"
-  },
-  "peerDependencies": {
-    "valkyr": "^0.0.0"
+    "@valkyr/inverse": "*"
   }
 }

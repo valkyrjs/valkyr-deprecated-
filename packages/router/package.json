@@ -2,7 +2,8 @@
   "name": "@valkyr/router",
   "version": "0.0.0",
   "description": "Framework agnostic routing solution for single page web applications written in TypeScript.",
-  "author": "Christoffer Rødvik <dev@kodemon.net>",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
   "keywords": [
     "router",
@@ -21,8 +22,5 @@
     "eventemitter3": "4.0.7",
     "history": "5.2.0",
     "path-to-regexp": "6.2.0"
-  },
-  "peerDependencies": {
-    "valkyr": "^0.0.0"
   }
 }

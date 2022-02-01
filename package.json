@@ -15,7 +15,7 @@
     "prepare": "husky install",
 
     "clean": "rm -rf ./packages/**/dist && rm -rf ./sandbox/**/dist && rm -rf ./packages/**/tsconfig.build.tsbuildinfo",
-    "flush": "npm run clean && npx rimraf ./**/node_modules",
+    "flush": "npm run clean && npx rimraf ./**/node_modules && rm -rf package-lock.json",
 
     "build": "lerna run build",
     "build:access": "lerna run build --scope @valkyr/access",

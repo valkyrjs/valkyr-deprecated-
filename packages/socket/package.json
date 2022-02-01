@@ -2,7 +2,8 @@
   "name": "@valkyr/socket",
   "version": "0.0.0",
   "description": "Simple WebSocket client solution for web.",
-  "author": "Christoffer Rødvik <dev@kodemon.net>",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
   "keywords": [
     "client",
@@ -19,8 +20,5 @@
   },
   "dependencies": {
     "eventemitter3": "4.0.7"
-  },
-  "peerDependencies": {
-    "valkyr": "^0.0.0"
   }
 }
