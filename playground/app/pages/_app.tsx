@@ -1,12 +1,12 @@
-import "../Styles/Globals.css";
-import "../Styles/nprogress.css";
+import "../src/Styles/Globals.css";
+import "../src/Styles/nprogress.css";
 
 import Router from "next/router";
 import nProgress from "nprogress";
 import { Fragment, ReactElement } from "react";
 
-import { PageLoader } from "../Features/Loader/PageLoader";
-import { useRouter } from "../Router/Hooks/UseRouter";
+import { PageLoader } from "../src/Features/Loader/PageLoader";
+import { useRouter } from "../src/Router/Hooks/UseRouter";
 
 Router.events.on("routeChangeStart", nProgress.start);
 Router.events.on("routeChangeError", nProgress.done);
