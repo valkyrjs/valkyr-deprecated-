@@ -28,7 +28,7 @@
     "app": "cd ./playground/app && npm start",
     "web": "cd ./website && npx docusaurus start",
 
-    "lint": "eslint . --fix",
+    "lint": "eslint ./packages --ext .ts --fix",
     "test": "jest --maxWorkers=100%",
     "coverage": "jest --ci --coverage --forceExit --maxWorkers=4",
 

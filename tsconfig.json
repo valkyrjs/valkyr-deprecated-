@@ -7,7 +7,7 @@
         "packages/*/src"
       ]
     },
-    "target": "esnext",
+    "target": "es2020",
     "incremental": true,
     "allowSyntheticDefaultImports": true
   }
