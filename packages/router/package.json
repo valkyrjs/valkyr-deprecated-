@@ -19,7 +19,7 @@
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
-    "eventemitter3": "4.0.7",
+    "@valkyr/utils": "*",
     "history": "5.2.0",
     "path-to-regexp": "6.2.0"
   }

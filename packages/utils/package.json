@@ -1,27 +1,22 @@
 {
-  "name": "@valkyr/db",
+  "name": "@valkyr/utils",
   "version": "0.0.0",
-  "description": "Simple storage solution written in TypeScript.",
+  "description": "A simple dependency injection service.",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
   "keywords": [
-    "browser",
-    "database",
-    "mingo",
-    "mongodb"
+    "dependency-injection"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
+  "dependencies": {
+    "eventemitter3": "^4.0.7"
+  },
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json"
-  },
-  "dependencies": {
-    "@valkyr/utils": "*",
-    "mingo": "5.0.0",
-    "nanoid": "3.1.30"
   }
 }

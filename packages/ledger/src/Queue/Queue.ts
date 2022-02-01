@@ -1,4 +1,5 @@
-import { EventEmitter } from "./EventEmitter";
+import { EventEmitter } from "@valkyr/utils";
+
 import type { Filter, Handler, Message, Status } from "./Types";
 
 const DEFAULT_CALLBACK = () => {};

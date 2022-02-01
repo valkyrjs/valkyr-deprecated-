@@ -1,7 +1,7 @@
+import { uuid } from "@valkyr/utils";
 import { WebSocket } from "ws";
 
 import type { Server } from "../Server";
-import { uuid } from "../Utils/Uuid";
 import { Channel } from "./Channel";
 
 export class Client {

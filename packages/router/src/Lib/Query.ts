@@ -1,7 +1,6 @@
+import { Query as JSONQuery, toQueryObject, toQueryString } from "@valkyr/utils";
 import type { History } from "history";
 
-import type { JSONQuery } from "../Types/Query";
-import { toQueryObject, toQueryString } from "../Utils/Query";
 import { ValueStore } from "./ValueStore";
 
 export class Query extends ValueStore {

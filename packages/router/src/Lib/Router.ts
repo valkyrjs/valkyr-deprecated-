@@ -1,4 +1,4 @@
-import EventEmitter from "eventemitter3";
+import { EventEmitter } from "@valkyr/utils";
 import type { BrowserHistory, HashHistory, Location, MemoryHistory } from "history";
 
 import { ActionRejectedError } from "../Errors/Action";

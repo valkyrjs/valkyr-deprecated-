@@ -1,10 +1,9 @@
+import { getParsedParameters, Parameter } from "@valkyr/utils";
 import { pathToRegexp } from "path-to-regexp";
 
 import type { HttpAction, WsAction } from "../Types/Action";
 import type { HttpMethod } from "../Types/Http";
 import { Routes } from "../Types/Routes";
-import type { Parameter } from "./Params";
-import { parseParams } from "./Params";
 
 /*
  |--------------------------------------------------------------------------------
@@ -20,7 +19,7 @@ export class HttpRoute {
 
   constructor(public readonly method: HttpMethod, public readonly path: string, public readonly actions: HttpAction[]) {
     this.regExp = pathToRegexp(path);
-    this.params = parseParams(path);
+    this.params = getParsedParameters(path);
   }
 
   public match(path: string): any {

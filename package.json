@@ -14,7 +14,7 @@
   "scripts": {
     "prepare": "husky install",
 
-    "clean": "rm -rf ./packages/**/dist && rm -rf ./sandbox/**/dist && rm -rf ./packages/**/tsconfig.build.tsbuildinfo",
+    "clean": "rm -rf ./packages/**/dist && rm -rf ./playground/**/dist && rm -rf ./packages/**/tsconfig.build.tsbuildinfo",
     "flush": "npm run clean && npx rimraf ./**/node_modules && rm -rf package-lock.json",
 
     "build": "lerna run build",

@@ -1,11 +1,10 @@
+import { getParameters, toQueryObject } from "@valkyr/utils";
 import { IncomingMessage } from "http";
 
 import { HttpMethod } from "../Types/Http";
 import { RouteMatch } from "../Types/Request";
 import { Routes } from "../Types/Routes";
 import * as response from "./Action";
-import { getParams } from "./Params";
-import { getQuery } from "./Query";
 import { HttpError, HttpRedirect, HttpSuccess } from "./Response";
 import { HttpRoute } from "./Route";
 
@@ -42,8 +41,8 @@ export async function resolve(
 
   const route = result.route;
 
-  message.params = getParams(result.route.params, result.match);
-  message.query = getQuery(search);
+  message.params = getParameters(result.route.params, result.match);
+  message.query = toQueryObject(search);
   message.body = resolveBody.has(message.method) ? await body(message) : {};
 
   for (const action of route.actions) {

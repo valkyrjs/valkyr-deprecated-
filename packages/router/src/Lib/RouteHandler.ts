@@ -1,3 +1,4 @@
+import { getParameters } from "@valkyr/utils";
 import type { History, Location } from "history";
 
 import { ActionRejectedError } from "../Errors/Action";
@@ -6,7 +7,6 @@ import type { Action, Redirect, Request } from "../Types/Action";
 import type { Resolved } from "../Types/Routes";
 import { getRoute } from "../Utils/Routes";
 import { response } from "./Action";
-import { getParams } from "./Params";
 import { Query } from "./Query";
 import type { Router } from "./Router";
 import { State } from "./State";
@@ -52,7 +52,7 @@ export async function handleRoutingRequest(router: Router, location: Location, o
 function getRequest(resolved: Resolved, location: Location, history: History): Request {
   return {
     location,
-    params: getParams(resolved.route.params, resolved.match),
+    params: getParameters(resolved.route.params, resolved.match),
     query: new Query(history, location.search),
     state: new State(location.state)
   };

@@ -1,4 +1,4 @@
-import { EventEmitter } from "eventemitter3";
+import { EventEmitter } from "@valkyr/utils";
 
 import { Message } from "./Message";
 import type { Debounce, Log, Service, Settings } from "./Types";

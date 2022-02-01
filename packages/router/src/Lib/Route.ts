@@ -1,8 +1,7 @@
+import { getParsedParameters, Parameter } from "@valkyr/utils";
 import { pathToRegexp } from "path-to-regexp";
 
 import type { Action } from "../Types/Action";
-import type { Parameter } from "../Types/Params";
-import { parseParams } from "./Params";
 
 export class Route {
   public path: string;
@@ -15,7 +14,7 @@ export class Route {
     this.path = path.replace(/\/$/, "");
     this.actions = actions;
     this.regExp = pathToRegexp(path);
-    this.params = parseParams(path);
+    this.params = getParsedParameters(path);
   }
 
   public base(path = ""): this {

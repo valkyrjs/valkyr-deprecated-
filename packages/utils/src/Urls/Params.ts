@@ -1,5 +1,3 @@
-import type { RequestState } from "../Types/Request";
-
 /*
  |--------------------------------------------------------------------------------
  | Types
@@ -17,7 +15,7 @@ export type Parameter = {
  |--------------------------------------------------------------------------------
  */
 
-export function parseParams(path: string): Parameter[] {
+export function getParsedParameters(path: string): Parameter[] {
   return path.split("/").reduce((list: Parameter[], next: string) => {
     if (next.match(/:/)) {
       list.push({
@@ -29,7 +27,7 @@ export function parseParams(path: string): Parameter[] {
   }, []);
 }
 
-export function getParams(params: Parameter[], match: any): RequestState {
+export function getParameters<Response = any>(params: Parameter[], match: any): Response {
   const result: any = {};
   params.forEach((param, index) => {
     result[param.name] = match[index + 1];
