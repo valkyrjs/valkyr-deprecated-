@@ -1,6 +1,6 @@
 import { createPermission } from "@valkyr/access";
 
-import { read } from "./Queries";
+import { read } from "./Handlers";
 import { Permissions } from "./Role";
 import { setup } from "./Setup";
 

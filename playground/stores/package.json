@@ -2,14 +2,10 @@
   "private": true,
   "name": "stores",
   "version": "0.0.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./src/index.ts",
   "files": [
-    "dist"
+    "src"
   ],
-  "scripts": {
-    "build": "tsc -b ./tsconfig.build.json"
-  },
   "dependencies": {
     "@valkyr/access": "*",
     "@valkyr/auth": "*",
