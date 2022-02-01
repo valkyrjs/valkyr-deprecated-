@@ -7,21 +7,15 @@ export class Role<
   Permissions extends Record<string, Actions> = Record<string, Actions>,
   Settings extends Record<string, unknown> = Record<string, unknown>
 > {
-  public readonly roleId: string;
-  public readonly tenantId: string;
+  public readonly roleId = this.role.roleId;
+  public readonly tenantId = this.role.tenantId;
 
-  public readonly name: string;
-  public readonly settings: Settings;
-  public readonly permissions: Permissions;
-  public readonly members: readonly string[];
+  public readonly name = this.role.name;
+  public readonly settings = this.role.settings;
+  public readonly permissions = this.role.permissions;
+  public readonly members = Object.freeze(this.role.members);
 
-  constructor(role: RoleData<Permissions>) {
-    this.roleId = role.roleId;
-    this.tenantId = role.tenantId;
-    this.name = role.name;
-    this.settings = role.settings as Settings;
-    this.permissions = role.permissions as Permissions;
-    this.members = Object.freeze(role.members);
+  constructor(private readonly role: RoleData<Permissions>) {
     Object.freeze(this);
   }
 

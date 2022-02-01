@@ -1,13 +1,17 @@
 ---
-id: roles
-title: Roles
-sidebar_label: Roles
-slug: /
+id: roles-overview
+title: Overview
+sidebar_label: Overview
+slug: /roles-overview
 ---
 
-# Roles
+# Overview
 
 Our implementation of access control is centered around a permission template which can be used to create access roles. Since permission are tied to code we want to define what permission look like, but we want to be dynamic in how the template content is put together into various assignable entities.
+
+## Permission Template
+
+A permission template is simply used as type inference to more easily intellisense the available values when performing access control reads and modifications.
 
 Lets continue our tutorial by first creating a permission template:
 
@@ -40,7 +44,7 @@ export type Permissions = {
 };
 ```
 
-A permission template is simply used as type inference to more easily intellisense the available values when performing access control reads, or modifications.
+## Role Setup
 
 The next example shows how you would use the above permissions to map it to a role:
 

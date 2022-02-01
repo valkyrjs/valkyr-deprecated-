@@ -1,7 +1,7 @@
 import { Attributes as BaseAttributes } from "../Attributes";
 import { container } from "../Container";
 import type { Role } from "../Role";
-import type { Denied, Granted, QueryHandler } from "./Types";
+import type { Denied, Granted, PermissionHandler } from "./Types";
 
 export const PERMISSION_DENIED_MESSAGE = "Permission denied";
 
@@ -19,7 +19,7 @@ export function createPermission<
   Action extends keyof Permissions[Resource] = keyof Permissions[Resource]
 >() {
   return (tenantId: string, memberId: string) => ({
-    async can<Handler extends QueryHandler>(action: Action, resource: Resource, handler?: Handler) {
+    async can<Handler extends PermissionHandler>(action: Action, resource: Resource, handler?: Handler) {
       const permissions: Permissions = await container.get("Database").getPermissions(tenantId, memberId);
       const value = permissions[resource][action];
       if (value === undefined) {

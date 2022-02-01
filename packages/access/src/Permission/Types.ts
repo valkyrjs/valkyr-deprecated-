@@ -3,8 +3,6 @@ import { Value } from "../Role";
 
 export type Response<Attributes extends BaseAttributes = BaseAttributes> = Granted<Attributes> | Denied;
 
-export type QueryHandler<Props extends Value = any> = (props: Props) => Granted | Denied;
-
 export type Query<Data extends Value, Props extends Value> = (data: Data) => PermissionHandler<Props>;
 
 export type PermissionHandler<Props extends Value = any> = (props: Props) => Granted | Denied;
