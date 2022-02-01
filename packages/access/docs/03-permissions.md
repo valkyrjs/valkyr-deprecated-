@@ -113,7 +113,7 @@ type Permissions = {
 
 ```ts
 function removeEmployee(employee: Employee): PermissionHandler<Permissions["employee"]["remove"]> {
-  return ({ trialEnd }) => {
+  return ({ onProbationEnded }) => {
     if (onProbationEnded === false && employee.hasFinishedProbation === true) {
       return permissionDenied("You cannot remove a employee who has finished their probation period.");
     }
