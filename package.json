@@ -13,10 +13,8 @@
   ],
   "scripts": {
     "prepare": "husky install",
-
     "clean": "rm -rf ./packages/**/dist && rm -rf ./playground/**/dist && rm -rf ./packages/**/tsconfig.build.tsbuildinfo",
     "flush": "npm run clean && npx rimraf ./**/node_modules && rm -rf package-lock.json",
-
     "build": "lerna run build",
     "build:access": "lerna run build --scope @valkyr/access",
     "build:auth": "lerna run build --scope @valkyr/auth",
@@ -25,15 +23,12 @@
     "build:router": "lerna run build --scope @valkyr/router",
     "build:server": "lerna run build --scope @valkyr/server",
     "build:socket": "lerna run build --scope @valkyr/socket",
-
     "api": "cd ./playground/api && npm start",
     "app": "cd ./playground/app && npm start",
     "web": "cd ./website && npx docusaurus start",
-
     "lint": "eslint ./packages --ext .ts --fix",
     "test": "jest --maxWorkers=100%",
     "coverage": "jest --ci --coverage --forceExit --maxWorkers=4",
-
     "publish": "npm run publish:access && npm run publish:auth && npm run publish:db && npm run publish:inverse && npm run publish:router && npm run publish:server && npm run publish:socket && npm run publish:utils",
     "publish:access": "cd ./packages/access && npm publish --tag latest --access public",
     "publish:auth": "cd ./packages/auth && npm publish --tag latest --access public",
@@ -42,8 +37,7 @@
     "publish:router": "cd ./packages/router && npm publish --tag latest --access public",
     "publish:server": "cd ./packages/server && npm publish --tag latest --access public",
     "publish:socket": "cd ./packages/socket && npm publish --tag latest --access public",
-    "publish:utils": "cd ./packages/access && npm publish --tag latest --access public",
-    
+    "publish:utils": "cd ./packages/utils && npm publish --tag latest --access public",
     "snap": "sudo rm -rf /etc/docker && sudo snap refresh"
   },
   "devDependencies": {
