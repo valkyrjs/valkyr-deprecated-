@@ -10,6 +10,7 @@ import { response } from "./Action";
 import { Query } from "./Query";
 import type { Router } from "./Router";
 import { State } from "./State";
+import { ValueStore } from "./ValueStore";
 
 /*
  |--------------------------------------------------------------------------------
@@ -52,7 +53,7 @@ export async function handleRoutingRequest(router: Router, location: Location, o
 function getRequest(resolved: Resolved, location: Location, history: History): Request {
   return {
     location,
-    params: getParameters(resolved.route.params, resolved.match),
+    params: new ValueStore(getParameters(resolved.route.params, resolved.match)),
     query: new Query(history, location.search),
     state: new State(location.state)
   };
