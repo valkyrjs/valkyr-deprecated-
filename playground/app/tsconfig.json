@@ -1,11 +1,18 @@
 {
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "lib": [
+      "es2020",
+      "dom",
+      "dom.iterable"
+    ],
+    "target": "es2020",
+    "module": "es2020",
+    "moduleResolution": "node",
     "allowJs": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
     "noEmit": true,
-    "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react",
     "incremental": true

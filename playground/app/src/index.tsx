@@ -57,3 +57,7 @@ function handleError(err: any): JSX.Element {
     </div>
   );
 }
+
+if (module.hot) {
+  module.hot.accept();
+}
