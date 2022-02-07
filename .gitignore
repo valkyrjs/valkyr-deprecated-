@@ -16,6 +16,10 @@
 !.idea/*.iml
 !.idea/README.md
 
+# Parcel
+
+.parcel-cache
+
 # node_modules
 
 node_modules
