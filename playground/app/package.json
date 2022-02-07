@@ -23,6 +23,7 @@
     "sass": "1.45.2"
   },
   "devDependencies": {
+    "@parcel/transformer-sass": "^2.2.1",
     "@parcel/transformer-typescript-tsc": "^2.2.1",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
