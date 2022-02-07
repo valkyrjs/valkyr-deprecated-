@@ -1,8 +1,9 @@
 const { spawn } = require("child_process");
 const path = require("path");
+const fs = require("fs");
 
 const root = path.resolve(__dirname);
-const pkgs = ["access", "auth", "db", "inverse", "ledger", "router", "server", "socket", "utils"];
+const pkgs = fs.readdirSync(path.join(__dirname, "packages"));
 
 async function main() {
   for (const pkg of pkgs) {
@@ -11,7 +12,6 @@ async function main() {
 }
 
 async function publish(pkg, cwd) {
-  console.log("Publishing", pkg);
   const cursor = spawn("npm", ["publish", "--access", "public"], { stdio: "inherit", cwd });
   return new Promise((resolve, reject) => {
     cursor.on("close", resolve);
@@ -19,6 +19,8 @@ async function publish(pkg, cwd) {
   });
 }
 
-main().finally(() => {
-  process.exit(0);
+main().catch(err => {
+  throw err;
+}).finally(() => {
+  process.exit(1);
 });
