@@ -11,8 +11,7 @@
     "mingo",
     "mongodb"
   ],
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./src/index.ts",
   "files": [
     "dist"
   ],
