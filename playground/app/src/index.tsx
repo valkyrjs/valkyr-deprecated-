@@ -1,16 +1,20 @@
-import "../src/Styles/Globals.css";
-import "../src/Styles/nprogress.css";
+import React, { Fragment, ReactElement } from "react";
+import ReactDOM from "react-dom";
 
-import Router from "next/router";
-import nProgress from "nprogress";
-import { Fragment, ReactElement } from "react";
+import { PageLoader } from "./Features/Loader/PageLoader";
+import { useRouter } from "./Router/Hooks/UseRouter";
 
-import { PageLoader } from "../src/Features/Loader/PageLoader";
-import { useRouter } from "../src/Router/Hooks/UseRouter";
+// Router.events.on("routeChangeStart", nProgress.start);
+// Router.events.on("routeChangeError", nProgress.done);
+// Router.events.on("routeChangeComplete", nProgress.done);
 
-Router.events.on("routeChangeStart", nProgress.start);
-Router.events.on("routeChangeError", nProgress.done);
-Router.events.on("routeChangeComplete", nProgress.done);
+/*
+ |--------------------------------------------------------------------------------
+ | React
+ |--------------------------------------------------------------------------------
+ */
+
+ReactDOM.render(<App />, document.getElementById("app"));
 
 /*
  |--------------------------------------------------------------------------------
@@ -18,7 +22,7 @@ Router.events.on("routeChangeComplete", nProgress.done);
  |--------------------------------------------------------------------------------
  */
 
-export default function App(): ReactElement {
+function App(): ReactElement {
   const view = useRouter(handleError);
   if (!view) {
     return (
