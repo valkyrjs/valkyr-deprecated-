@@ -10,7 +10,7 @@ import { auth } from "../Middleware/Auth";
  */
 
 declare module "@valkyr/server" {
-  interface Client {
+  interface SocketClient {
     auth: Auth;
   }
 }
