@@ -1,9 +1,9 @@
 import type { IncomingMessage, ServerResponse } from "http";
 
-import { resolve } from "../Lib/Request";
-import { HttpError, HttpRedirect, HttpSuccess } from "../Lib/Response";
+import { resolve } from "../Http/Request";
+import { HttpError, HttpRedirect, HttpSuccess } from "../Http/Response";
 import type { Server } from "../Server";
-import type { Middleware } from "../Types/Middleware";
+import type { Middleware } from "./Types";
 
 /*
  |--------------------------------------------------------------------------------

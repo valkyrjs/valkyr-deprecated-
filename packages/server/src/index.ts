@@ -1,4 +1,4 @@
-import type { RequestBody, RequestState } from "./Types/Request";
+import type { RequestBody, RequestState } from "./Http";
 
 /*
  |--------------------------------------------------------------------------------
@@ -20,9 +20,9 @@ declare module "http" {
  |--------------------------------------------------------------------------------
  */
 
-export * from "./Lib/Action";
-export type { Client } from "./Lib/Client";
-export * from "./Lib/Response";
+export type { HttpAction, WsAction } from "./Action";
+export * from "./Action";
+export * from "./Http/Response";
+export type { Middleware } from "./Middleware";
 export { Server } from "./Server";
-export type { HttpAction, WsAction } from "./Types/Action";
-export type { Middleware } from "./Types/Middleware";
+export type { SocketClient } from "./Socket";

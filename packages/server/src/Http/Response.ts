@@ -1,5 +1,5 @@
-import type { RedirectType } from "../Types/Action";
-import type { HttpStatus } from "../Types/Http";
+import { RedirectType } from "../Action";
+import type { HttpStatus } from "./Types";
 
 /*
  |--------------------------------------------------------------------------------

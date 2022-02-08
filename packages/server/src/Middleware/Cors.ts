@@ -9,7 +9,7 @@
 
 import type { IncomingMessage, ServerResponse } from "http";
 
-import type { Middleware } from "../Types/Middleware";
+import { Middleware } from "./Types";
 
 /*
  |--------------------------------------------------------------------------------

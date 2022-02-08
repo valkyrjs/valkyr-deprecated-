@@ -2,9 +2,9 @@ import { uuid } from "@valkyr/utils";
 import { WebSocket } from "ws";
 
 import type { Server } from "../Server";
-import { Channel } from "./Channel";
+import { SocketChannel } from "./Channel";
 
-export class Client {
+export class SocketClient {
   public readonly clientId: string;
 
   constructor(public readonly server: Server, public readonly socket: WebSocket) {
@@ -47,8 +47,8 @@ export class Client {
   /**
    * Broadcast a event to all clients in the provided room except this client.
    */
-  public to(channelId: string): Channel {
-    return new Channel(this.server, channelId, new Map<WebSocket, boolean>().set(this.socket, true));
+  public to(channelId: string): SocketChannel {
+    return new SocketChannel(this.server, channelId, new Map<WebSocket, boolean>().set(this.socket, true));
   }
 
   /**

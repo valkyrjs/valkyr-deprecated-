@@ -1,13 +1,20 @@
 import { getParsedParameters, Parameter } from "@valkyr/utils";
 import { pathToRegexp } from "path-to-regexp";
 
-import type { HttpAction, WsAction } from "../Types/Action";
-import type { HttpMethod } from "../Types/Http";
-import { Routes } from "../Types/Routes";
+import type { HttpAction, WsAction } from "./Action";
+import type { HttpMethod } from "./Http";
 
 /*
  |--------------------------------------------------------------------------------
- | Http Route
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type Routes = Record<HttpMethod, HttpRoute[]> & Record<"on", Map<string, WsRoute>>;
+
+/*
+ |--------------------------------------------------------------------------------
+ | Http
  |--------------------------------------------------------------------------------
  */
 
@@ -29,7 +36,7 @@ export class HttpRoute {
 
 /*
  |--------------------------------------------------------------------------------
- | WebSocket Route
+ | WebSocket
  |--------------------------------------------------------------------------------
  */
 
@@ -41,7 +48,7 @@ export class WsRoute {
 
 /*
  |--------------------------------------------------------------------------------
- | Route Factories
+ | Factories
  |--------------------------------------------------------------------------------
  */
 

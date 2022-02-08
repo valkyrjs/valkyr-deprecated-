@@ -1,18 +1,43 @@
 import { getParameters, toQueryObject } from "@valkyr/utils";
 import { IncomingMessage } from "http";
 
-import { HttpMethod } from "../Types/Http";
-import { RouteMatch } from "../Types/Request";
-import { Routes } from "../Types/Routes";
-import * as response from "./Action";
+import * as response from "../Action";
+import { HttpRoute, Routes } from "../Route";
 import { HttpError, HttpRedirect, HttpSuccess } from "./Response";
-import { HttpRoute } from "./Route";
-
-const resolveBody = new Set(["POST", "PUT", "PATCH"]);
+import { HttpMethod } from "./Types";
 
 /*
  |--------------------------------------------------------------------------------
- | Utilities
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type RequestBody = any;
+
+export type RequestState = {
+  [key: string]: string;
+};
+
+export type RouteMatch = {
+  route: HttpRoute;
+  match: any;
+};
+
+/*
+ |--------------------------------------------------------------------------------
+ | Constants
+ |--------------------------------------------------------------------------------
+ */
+
+const BODY_METHODS = new Map<string, boolean>([
+  ["POST", true],
+  ["PUT", true],
+  ["PATCH", true]
+]);
+
+/*
+ |--------------------------------------------------------------------------------
+ | Request
  |--------------------------------------------------------------------------------
  */
 
@@ -43,7 +68,7 @@ export async function resolve(
 
   message.params = getParameters(result.route.params, result.match);
   message.query = toQueryObject(search);
-  message.body = resolveBody.has(message.method) ? await body(message) : {};
+  message.body = BODY_METHODS.has(message.method) ? await body(message) : {};
 
   for (const action of route.actions) {
     const result = await action.call(response, message);
@@ -62,6 +87,12 @@ export async function resolve(
 
   return new HttpSuccess();
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Utilities
+ |--------------------------------------------------------------------------------
+ */
 
 async function body(req: IncomingMessage): Promise<any> {
   const buffers = [];

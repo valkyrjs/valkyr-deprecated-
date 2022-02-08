@@ -2,7 +2,7 @@ import { WebSocket } from "ws";
 
 import type { Server } from "../Server";
 
-type Clients = Set<WebSocket>;
+type WebSockets = Set<WebSocket>;
 type Excluded = Map<WebSocket, boolean>;
 
 /*
@@ -11,8 +11,8 @@ type Excluded = Map<WebSocket, boolean>;
  |--------------------------------------------------------------------------------
  */
 
-export class Channel {
-  public readonly sockets: Clients = new Set();
+export class SocketChannel {
+  public readonly sockets: WebSockets = new Set();
 
   constructor(public readonly server: Server, public readonly channelId: string, excluded: Excluded = new Map()) {
     const channel = server.channels.get(this.channelId);

@@ -1,21 +1,60 @@
 import * as http from "http";
-import Redis from "ioredis";
+import Redis, { RedisOptions } from "ioredis";
 import { WebSocket, WebSocketServer } from "ws";
 
-import { ActionHandlersNotFoundError } from "./Errors/Server";
-import * as responses from "./Lib/Action";
-import { Channel } from "./Lib/Channel";
-import { Client } from "./Lib/Client";
-import { Message } from "./Lib/Message";
-import { addRouteTo, getInitialRoutes } from "./Lib/Route";
-import { cors } from "./Middleware/Cors";
-import { route } from "./Middleware/Route";
-import type { WsAction } from "./Types/Action";
-import type { Channels } from "./Types/Channel";
-import { Middleware } from "./Types/Middleware";
-import type { Routes } from "./Types/Routes";
-import type { Settings } from "./Types/Server";
-import { getPathname } from "./Utils/Server";
+import type { WsAction } from "./Action";
+import * as responses from "./Action";
+import { cors, CorsOptions, Middleware, route } from "./Middleware";
+import { addRouteTo, getInitialRoutes, Routes } from "./Route";
+import { ActionHandlersNotFoundError, SocketChannel, SocketClient, SocketMessage } from "./Socket";
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type Channels = Map<string, Set<WebSocket>>;
+
+export type Instances = {
+  http: Server;
+  io: WebSocketServer;
+  redis: Redis.Redis;
+};
+
+export type Settings = {
+  /**
+   * Cors options for incoming HTTP requests.
+   */
+  cors?: CorsOptions;
+
+  /**
+   * Redis support is built in for communication between horizontally
+   * scaled server instances.
+   */
+  redis?: RedisOptions;
+
+  /**
+   * Middleware to run on incoming HTTP requests.
+   */
+  middleware?: Middleware[];
+
+  /**
+   * Method triggered when a client connects to the websocket server.
+   */
+  connected?: (client: SocketClient) => void;
+
+  /**
+   * Method triggered when a client disconnects from the websocket server.
+   */
+  disconnected?: (client: SocketClient) => void;
+};
+
+/*
+ |--------------------------------------------------------------------------------
+ | Server
+ |--------------------------------------------------------------------------------
+ */
 
 export class Server {
   public readonly routes: Routes = getInitialRoutes();
@@ -94,14 +133,14 @@ export class Server {
 
   private addConnectionListener(connected: Settings["connected"], disconnected: Settings["disconnected"]) {
     this.io.on("connection", (socket) => {
-      const client = new Client(this, socket);
+      const client = new SocketClient(this, socket);
 
       console.log(`WebSocket Server > Client ${client.clientId} connected.`);
 
       socket.on("message", (data, isBinary) => {
         const message = isBinary ? data : data.toString();
         if (typeof message === "string") {
-          this.handleSocketMessage(client, new Message(message));
+          this.handleSocketMessage(client, new SocketMessage(message));
         }
       });
 
@@ -169,7 +208,7 @@ export class Server {
    * Get a new channel to broadcast messages to.
    */
   public to(channelId: string) {
-    return new Channel(this, channelId);
+    return new SocketChannel(this, channelId);
   }
 
   /*
@@ -178,7 +217,7 @@ export class Server {
    |--------------------------------------------------------------------------------
    */
 
-  private async handleSocketMessage(client: Client, message: Message): Promise<void> {
+  private async handleSocketMessage(client: SocketClient, message: SocketMessage): Promise<void> {
     try {
       for (const action of this.getSocketMessageActions(message.type)) {
         const res = await action.call(responses, client, message.data);
@@ -211,4 +250,14 @@ export class Server {
     }
     return route.actions;
   }
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Utilities
+ |--------------------------------------------------------------------------------
+ */
+
+export function getPathname(req: any): string {
+  return new URL(req.url, req.protocol + "://" + req.headers.host + "/").pathname;
 }
