@@ -7,7 +7,7 @@ export class Event extends Model<Attributes> {
   public static readonly $collection = "events";
 
   public readonly eventId: Attributes["eventId"];
-  public readonly entityId: Attributes["entityId"];
+  public readonly streamId: Attributes["streamId"];
   public readonly type: Attributes["type"];
   public readonly data: Attributes["data"];
   public readonly meta: Attributes["meta"];
@@ -18,7 +18,7 @@ export class Event extends Model<Attributes> {
     super(document);
 
     this.eventId = document.eventId;
-    this.entityId = document.entityId;
+    this.streamId = document.streamId;
     this.type = document.type;
     this.data = document.data;
     this.meta = document.meta;
@@ -31,7 +31,7 @@ export class Event extends Model<Attributes> {
   public toJSON(): Attributes {
     return super.toJSON({
       eventId: this.eventId,
-      entityId: this.entityId,
+      streamId: this.streamId,
       type: this.type,
       data: this.data,
       meta: this.meta,

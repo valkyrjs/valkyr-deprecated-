@@ -38,8 +38,8 @@ export class Streams implements Service {
    */
 
   public async onConnect(): Promise<void> {
-    for (const entityId of Array.from(this.streams)) {
-      this.join(entityId);
+    for (const streamId of Array.from(this.streams)) {
+      this.join(streamId);
     }
   }
 
@@ -49,23 +49,23 @@ export class Streams implements Service {
    |--------------------------------------------------------------------------------
    */
 
-  public async join(entityId: string) {
+  public async join(streamId: string) {
     return this.socket
-      .send("streams.join", { entityId })
+      .send("streams.join", { streamId })
       .then(() => {
-        console.log("joined %s", entityId);
-        this.streams.add(entityId);
+        console.log("joined %s", streamId);
+        this.streams.add(streamId);
         return this;
       })
       .catch((error) => {
-        console.log("error %s %O", entityId, error);
+        console.log("error %s %O", streamId, error);
       });
   }
 
-  public async leave(entityId: string) {
-    return this.socket.send("streams.leave", { entityId }).then(() => {
-      console.log("left %s", entityId);
-      this.streams.delete(entityId);
+  public async leave(streamId: string) {
+    return this.socket.send("streams.leave", { streamId }).then(() => {
+      console.log("left %s", streamId);
+      this.streams.delete(streamId);
       return this;
     });
   }

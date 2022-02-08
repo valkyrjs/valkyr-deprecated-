@@ -9,6 +9,6 @@ import { join, leave, pull, push } from "./Controller";
 // });
 
 route.on("streams.push", [hasData(["events"]), push]);
-route.on("streams.pull", [hasData(["entityId"]), pull]);
-route.on("streams.join", [hasData(["entityId"]), join]);
-route.on("streams.leave", [hasData(["entityId"]), leave]);
+route.on("streams.pull", [hasData(["streamId"]), pull]);
+route.on("streams.join", [hasData(["streamId"]), join]);
+route.on("streams.leave", [hasData(["streamId"]), leave]);

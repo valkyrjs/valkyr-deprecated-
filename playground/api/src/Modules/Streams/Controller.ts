@@ -17,7 +17,7 @@ export const push: WsAction<{ events: Event[] }> = async function (socket, { eve
   for (const event of events) {
     try {
       // await store.insert(event);
-      socket.to(`stream:${event.entityId}`).emit("event", event);
+      socket.to(`stream:${event.streamId}`).emit("event", event);
     } catch (error) {
       return this.reject(400, error.message);
     }
@@ -31,12 +31,12 @@ export const push: WsAction<{ events: Event[] }> = async function (socket, { eve
  |--------------------------------------------------------------------------------
  */
 
-export const pull: WsAction<{ entityId: string; recorded?: string }> = async function (_, { entityId, recorded }) {
+export const pull: WsAction<{ streamId: string; recorded?: string }> = async function (_, { streamId, recorded }) {
   // const permission = socket.auth.access.get(stream).can("get", "events");
   // if (!permission.granted) {
   //   return this.reject("You are not authorized to get events on this stream");
   // }
-  const filter: any = { entityId };
+  const filter: any = { streamId };
   if (recorded) {
     filter.recorded = {
       $gt: recorded
@@ -51,12 +51,12 @@ export const pull: WsAction<{ entityId: string; recorded?: string }> = async fun
  |--------------------------------------------------------------------------------
  */
 
-export const join: WsAction<{ entityId: string }> = async function (socket, { entityId }) {
+export const join: WsAction<{ streamId: string }> = async function (socket, { streamId }) {
   // const permission = socket.auth.access.get(streamId).can("join", "stream");
   // if (!permission.granted) {
   //   return this.reject("You are not authorized to join this stream");
   // }
-  socket.join(`stream:${entityId}`);
+  socket.join(`stream:${streamId}`);
   return this.resolve();
 };
 
@@ -66,7 +66,7 @@ export const join: WsAction<{ entityId: string }> = async function (socket, { en
  |--------------------------------------------------------------------------------
  */
 
-export const leave: WsAction<{ entityId: string }> = async function (socket, { entityId }) {
-  socket.leave(`stream:${entityId}`);
+export const leave: WsAction<{ streamId: string }> = async function (socket, { streamId }) {
+  socket.leave(`stream:${streamId}`);
   return this.resolve();
 };

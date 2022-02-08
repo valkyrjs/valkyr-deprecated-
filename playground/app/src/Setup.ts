@@ -15,7 +15,7 @@ export async function setup(): Promise<void> {
 }
 
 async function dependencies(): Promise<void> {
-  await Promise.all([import("./Providers/Auth"), import("./Providers/EntityStream")]);
+  await Promise.all([import("./Providers/Auth"), import("./Providers/Stream")]);
 }
 
 async function event() {

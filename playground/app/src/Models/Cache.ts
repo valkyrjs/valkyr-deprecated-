@@ -1,7 +1,7 @@
 import { Document, Model } from "@valkyr/db";
 
 type Attributes = Document & {
-  entityId: string;
+  streamId: string;
   type: string;
   created: string;
 };
@@ -9,14 +9,14 @@ type Attributes = Document & {
 export class Cache extends Model<Attributes> {
   public static readonly $collection = "cache";
 
-  public readonly entityId: Attributes["entityId"];
+  public readonly streamId: Attributes["streamId"];
   public readonly type: Attributes["type"];
   public readonly created: Attributes["created"];
 
   constructor(document: Attributes) {
     super(document);
 
-    this.entityId = document.entityId;
+    this.streamId = document.streamId;
     this.type = document.type;
     this.created = document.created;
 
@@ -31,7 +31,7 @@ export class Cache extends Model<Attributes> {
 
   public toJSON(): Attributes {
     return super.toJSON({
-      entityId: this.entityId,
+      streamId: this.streamId,
       type: this.type,
       created: this.created
     });

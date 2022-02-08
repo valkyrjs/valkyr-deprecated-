@@ -11,7 +11,7 @@ export const add: WsAction<Event> = async function (socket, event) {
   // }
   try {
     // await store.insert(event);
-    socket.to(`stream:${event.entityId}`).emit("event", event);
+    socket.to(`stream:${event.streamId}`).emit("event", event);
     return this.resolve();
   } catch (error) {
     return this.reject(400, error.message);

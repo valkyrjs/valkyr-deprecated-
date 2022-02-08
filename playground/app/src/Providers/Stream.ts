@@ -1,10 +1,10 @@
-import { append, container, EntitySubscriptionHandler } from "@valkyr/ledger";
+import { append, container, StreamSubscriptionHandler } from "@valkyr/ledger";
 import type { Event } from "stores";
 
 import { collection } from "../Collections";
 import { socket } from "./Socket";
 
-const streams: Record<string, EntitySubscriptionHandler> = {};
+const streams: Record<string, StreamSubscriptionHandler> = {};
 
 /*
  |--------------------------------------------------------------------------------
@@ -12,11 +12,11 @@ const streams: Record<string, EntitySubscriptionHandler> = {};
  |--------------------------------------------------------------------------------
  */
 
-container.set("EntitySubscriber", {
+container.set("StreamSubscriber", {
   subscribe,
   unsubscribe,
-  addCachedEvent,
-  getCachedStatus,
+  addEvent,
+  getEventStatus,
   setCursor,
   getCursor
 });
@@ -27,14 +27,14 @@ container.set("EntitySubscriber", {
  |--------------------------------------------------------------------------------
  */
 
-function subscribe(entityId: string, handler: EntitySubscriptionHandler) {
-  socket.streams.join(entityId);
-  streams[entityId] = handler;
-  pull(entityId);
+function subscribe(streamId: string, handler: StreamSubscriptionHandler) {
+  socket.streams.join(streamId);
+  streams[streamId] = handler;
+  pull(streamId);
 }
 
-function unsubscribe(entityId: string): void {
-  socket.streams.leave(entityId);
+function unsubscribe(streamId: string): void {
+  socket.streams.leave(streamId);
 }
 
 /*
@@ -43,13 +43,13 @@ function unsubscribe(entityId: string): void {
  |--------------------------------------------------------------------------------
  */
 
-async function getCachedStatus({ eventId, entityId, type, created }: Event) {
+async function getEventStatus({ eventId, streamId, type, created }: Event) {
   const cache = await collection.cache.findById(eventId);
   if (cache) {
     return { exists: true, outdated: true };
   }
   const count = await collection.cache.count({
-    entityId,
+    streamId,
     type,
     created: {
       $gt: created
@@ -58,8 +58,8 @@ async function getCachedStatus({ eventId, entityId, type, created }: Event) {
   return { exists: false, outdated: count > 0 };
 }
 
-async function addCachedEvent({ eventId, entityId, type, created }: Event) {
-  await collection.cache.upsert({ id: eventId, entityId, type, created });
+async function addEvent({ eventId, streamId, type, created }: Event) {
+  await collection.cache.upsert({ id: eventId, streamId, type, created });
 }
 
 /*
@@ -68,12 +68,12 @@ async function addCachedEvent({ eventId, entityId, type, created }: Event) {
  |--------------------------------------------------------------------------------
  */
 
-async function setCursor(entityId: string, at: string) {
-  await collection.cursors.upsert({ id: entityId, at });
+async function setCursor(streamId: string, at: string) {
+  await collection.cursors.upsert({ id: streamId, at });
 }
 
-async function getCursor(entityId: string) {
-  const stream = await collection.cursors.findOne({ id: entityId });
+async function getCursor(streamId: string) {
+  const stream = await collection.cursors.findOne({ id: streamId });
   if (stream) {
     return stream.at;
   }
@@ -94,18 +94,18 @@ async function getCursor(entityId: string) {
  * A simple itteration guard is added so that we can escape out of a potential
  * infinite loop.
  */
-async function pull(entityId: string, itterations = 0) {
+async function pull(streamId: string, itterations = 0) {
   if (itterations > 10) {
     throw new Error(
       `Event Stream Violation: Escaping pull operation, infinite loop candidate detected after ${itterations} pull itterations.`
     );
   }
-  socket.send("streams.pull", { entityId, recorded: await getCursor(entityId) }).then(async (events: Event[]) => {
+  socket.send("streams.pull", { streamId, recorded: await getCursor(streamId) }).then(async (events: Event[]) => {
     if (events.length > 0) {
       for (const event of events) {
         await append(event);
       }
-      return pull(entityId, itterations + 1); // keep pulling the stream until its hydrated
+      return pull(streamId, itterations + 1); // keep pulling the stream until its hydrated
     }
   });
 }

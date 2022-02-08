@@ -28,7 +28,7 @@ export const account = createReducer<Account, Event>(
       case "AccountCreated": {
         return {
           ...state,
-          accountId: event.entityId,
+          accountId: event.streamId,
           email: event.data.email
         };
       }
