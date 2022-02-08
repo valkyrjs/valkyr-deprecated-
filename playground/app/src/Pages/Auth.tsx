@@ -9,7 +9,7 @@ export function Auth() {
   return (
     <div className={styles.container}>
       <div className={styles.logo}>
-        <Image src={assets.logo.toolkit} alt="Valkyr Logo" width={70} height={70} />
+        <img src={assets.logo.toolkit} alt="Valkyr Logo" width={70} height={70} />
         Valkyr Toolkit
       </div>
       {step === "email" ? <Email dispatch={dispatch} /> : <Token email={email as string} />}
