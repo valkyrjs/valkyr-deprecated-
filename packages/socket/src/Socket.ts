@@ -1,18 +1,25 @@
 import { EventEmitter } from "@valkyr/utils";
 
 import { Message } from "./Message";
-import type { Debounce, Log, Service, Settings } from "./Types";
+import type { Service, ServiceClass } from "./Service";
+import { Store } from "./Store";
 
 const RECONNECT_INCREMENT = 1250; // 1.25 seconds
 const MAX_RECONNECT_DELAY = 1000 * 30; // 30 seconds
 const HEARTBEAT_INVERVAL = 1000 * 10; // 10 seconds
+
+/*
+ |--------------------------------------------------------------------------------
+ | Socket
+ |--------------------------------------------------------------------------------
+ */
 
 export class Socket extends EventEmitter {
   public readonly uri: string;
   public readonly services: Service[] = [];
   public readonly log?: Log;
 
-  public messages: Message[] = [];
+  public store = new Store();
 
   private _ws?: WebSocket;
   private _reconnectDelay = 0;
@@ -50,6 +57,13 @@ export class Socket extends EventEmitter {
 
   public get isConnected() {
     return this._ws?.readyState === WebSocket.OPEN;
+  }
+
+  public get ws() {
+    if (!this._ws) {
+      throw new Error("No WS instance available!");
+    }
+    return this._ws;
   }
 
   /*
@@ -164,43 +178,70 @@ export class Socket extends EventEmitter {
    |--------------------------------------------------------------------------------
    */
 
-  public async send<T extends Record<string, any>>(type: string, data?: T): Promise<any> {
+  public async send<T extends Record<string, any>>(type: string, data: T = {} as T, persist = false): Promise<any> {
     if (this.isConnected === false) {
       await this.connect();
     }
     return new Promise((resolve, reject) => {
-      this.messages.push(new Message(type, data, { resolve, reject }));
+      this.store.push(Message.create(type, data, { resolve, reject }), persist);
       this.process();
     });
   }
 
   private process(): void {
-    if (!this.isConnected) {
+    if (this.isConnected === false || this._ws === undefined) {
       return; // awaiting connection ...
     }
-    const message = this.messages.shift();
+    const message = this.store.next();
     if (message) {
-      if (this._ws) {
-        if (message.type === "ping") {
-          this.log?.("heartbeat", `[${message.uuid}] sent`);
-        } else {
-          this.log?.("outgoing", `[${message.uuid}] ${message.type}`, message.data);
-        }
-        this._ws.send(message.toString());
-      }
-      this.once(message.uuid, (res: any) => {
-        switch (res.status) {
-          case "rejected": {
-            message.reject(res.message);
-            break;
-          }
-          case "resolved": {
-            message.resolve(res.data);
-            break;
-          }
-        }
-      });
-      this.process();
+      this.transmit(message);
+      this.response(message);
     }
   }
+
+  private transmit(message: Message) {
+    if (message.type === "ping") {
+      this.log?.("heartbeat", `[${message.uuid}] sent`);
+    } else {
+      this.log?.("outgoing", `[${message.uuid}] ${message.type}`, message.data);
+    }
+    this.ws.send(message.toString());
+  }
+
+  private response(message: Message) {
+    this.once(message.uuid, (res: any) => {
+      switch (res.status) {
+        case "rejected": {
+          message.reject(res.message);
+          break;
+        }
+        case "resolved": {
+          message.resolve(res.data);
+          break;
+        }
+      }
+      this.process();
+    });
+  }
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+type Settings = {
+  uri: string;
+  services?: {
+    [key: string]: ServiceClass;
+  };
+  log?: Log;
+};
+
+type Debounce = {
+  reconnect: NodeJS.Timeout | undefined;
+  heartbeat: NodeJS.Timeout | undefined;
+};
+
+type Log = (type: string, ...args: any[]) => void;

@@ -1,20 +1,40 @@
 import { uuid } from "@valkyr/utils";
-import type { MessagePromise } from "./Types";
+
+/*
+ |--------------------------------------------------------------------------------
+ | Constants
+ |--------------------------------------------------------------------------------
+ */
+
+const EMPTY_PROMISE: MessagePromise = {
+  resolve() {},
+  reject() {}
+};
+
+/*
+ |--------------------------------------------------------------------------------
+ | Message
+ |--------------------------------------------------------------------------------
+ */
 
 export class Message {
-  public readonly uuid: string;
-  public readonly type: string;
-  public readonly data: Record<string, unknown>;
+  public readonly uuid = uuid();
 
-  public readonly resolve: MessagePromise["resolve"];
-  public readonly reject: MessagePromise["reject"];
+  public readonly resolve = this.promise.resolve;
+  public readonly reject = this.promise.reject;
 
-  constructor(type: string, data: Record<string, unknown> | undefined, promise: MessagePromise) {
-    this.uuid = uuid();
-    this.type = type;
-    this.data = data ?? {};
-    this.resolve = promise.resolve;
-    this.reject = promise.reject;
+  private constructor(
+    public readonly type: string,
+    public readonly data: MessageData,
+    public readonly promise: MessagePromise
+  ) {}
+
+  public static create(type: string, data: MessageData, promise: MessagePromise) {
+    return new Message(type, data, promise);
+  }
+
+  public static from({ type, data }: MessageJSON) {
+    return new Message(type, data, EMPTY_PROMISE);
   }
 
   public print() {
@@ -37,3 +57,22 @@ export class Message {
     });
   }
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type MessageJSON = {
+  uuid: string;
+  type: string;
+  data: MessageData;
+};
+
+type MessageData = Record<string, unknown>;
+
+export type MessagePromise = {
+  resolve: (value?: void | PromiseLike<void> | undefined) => void;
+  reject: (reason?: string) => void;
+};
