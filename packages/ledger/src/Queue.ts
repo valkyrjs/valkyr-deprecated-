@@ -1,8 +1,18 @@
 import { EventEmitter } from "@valkyr/utils";
 
-import type { Filter, Handler, Message, Status } from "./Types";
+/*
+ |--------------------------------------------------------------------------------
+ | Constants
+ |--------------------------------------------------------------------------------
+ */
 
 const DEFAULT_CALLBACK = () => {};
+
+/*
+ |--------------------------------------------------------------------------------
+ | Queue
+ |--------------------------------------------------------------------------------
+ */
 
 export class Queue<T> extends EventEmitter<{
   idle: () => void;
@@ -61,13 +71,13 @@ export class Queue<T> extends EventEmitter<{
 
     this.setStatus("working");
 
-    const entity = this.queue.shift();
-    if (!entity) {
+    const job = this.queue.shift();
+    if (!job) {
       return this.setStatus("drained");
     }
 
-    this.handle(entity.message)
-      .then(entity.callback)
+    this.handle(job.message)
+      .then(job.callback)
       .catch((report) => {
         if (Array.isArray(report)) {
           for (const error of report) {
@@ -90,3 +100,20 @@ export class Queue<T> extends EventEmitter<{
     return this;
   }
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+type Status = "idle" | "working" | "drained";
+
+type Handler<T> = (message: T) => Promise<any> | Promise<any[]>;
+
+type Message<T> = {
+  message: T;
+  callback: (...args: any[]) => any;
+};
+
+type Filter<T> = (job: T) => boolean;

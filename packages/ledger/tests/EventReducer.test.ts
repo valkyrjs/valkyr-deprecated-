@@ -7,7 +7,7 @@ import { reducer } from "./mocks/Reducer";
  |--------------------------------------------------------------------------------
  */
 
-const entityId = "xyz";
+const streamId = "xyz";
 
 /*
  |--------------------------------------------------------------------------------
@@ -20,9 +20,9 @@ describe("EventReducer", () => {
 
   beforeAll(async () => {
     mockEvents = [
-      foo.created(entityId, { title: "Bar" }),
-      foo.memberAdded(entityId, { name: "John Foo" }),
-      foo.memberAdded(entityId, { name: "Jane Foo" })
+      foo.created(streamId, { title: "Bar" }),
+      foo.memberAdded(streamId, { name: "John Foo" }),
+      foo.memberAdded(streamId, { name: "Jane Foo" })
     ];
   });
 

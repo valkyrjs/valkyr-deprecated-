@@ -1,12 +1,12 @@
 import { createEvent, createEventRecord, Event as EventBase } from "../src/Event";
 import { Projection, projection, publisher } from "../src/Projection";
 
-type MockEventAdded = EventBase<"MockEventAdded", { entityId: string }, never>;
+type MockEventAdded = EventBase<"MockEventAdded", { streamId: string }, never>;
 
 function getMockedEventRecord() {
   return createEventRecord(
     createEvent<MockEventAdded>("MockEventAdded")("mock", {
-      entityId: "xyz"
+      streamId: "xyz"
     })
   );
 }

@@ -1,22 +1,11 @@
 import type { Event } from "../Event";
 import type { Queue } from "../Queue";
 
-export interface EntitySubscriber {
-  subscribe(entityId: string, handler: EntitySubscriptionHandler): void;
-  unsubscribe(entityId: string): void;
+export type StreamSubscriptionHandler = (event: Event) => void;
 
-  addCachedEvent(event: Event): Promise<void>;
-  getCachedStatus(event: Event): Promise<CacheStatus>;
+export type Streams = Record<string, StreamObserver>;
 
-  setCursor(entityId: string, commit: string): Promise<void>;
-  getCursor(entityId: string): Promise<string | undefined>;
-}
-
-export type EntitySubscriptionHandler = (event: Event) => void;
-
-export type Entities = Record<string, EntityObserver>;
-
-export type EntityObserver = {
+export type StreamObserver = {
   /**
    * Number of subscribers observing changes to the stream. When this count
    * is 0 or less we can remove the observer from the streams tracker.
@@ -32,12 +21,12 @@ export type EntityObserver = {
   queue: Queue<Event>;
 };
 
-export type CacheStatus = {
+export type EventStatus = {
   exists: boolean;
   outdated: boolean;
 };
 
-export type EntityCursor = {
+export type StreamCursor = {
   id: string;
   at: string;
 };

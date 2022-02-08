@@ -18,11 +18,11 @@ interface Event {
   eventId: string;
 
   /**
-   * Identifier representing the entity in which many individual events/transactions
+   * Identifier representing the stream in which many individual events/transactions
    * belongs to and is used to generate a specific aggregate state representation of
    * that particular identity.
    */
-  entityId: string;
+  streamId: string;
 
   /**
    * Event identifier describing the intent of the event in a past tense format.
@@ -46,7 +46,7 @@ interface Event {
    * the event was created.
    *
    * This value is used to identify the date of its creation as well as a sorting
-   * key when performing reduction logic to generate aggregate state for the entity
+   * key when performing reduction logic to generate aggregate state for the stream
    * in which the event belongs.
    */
   created: string;
@@ -65,19 +65,19 @@ interface Event {
 
 ## Creating Events
 
-To create an event we usually want to go through something referred to as a command or action. A command is a preliminary operation checking to see if an event can be created. This can be anything from looking at the current aggregate state of an entity, checking the users access to performing the command or any number of things we want to verify before allowing an event to go through.
+To create an event we usually want to go through something referred to as a command or action. A command is a preliminary operation checking to see if an event can be created. This can be anything from looking at the current aggregate state of a stream, checking the users access to performing the command or any number of things we want to verify before allowing an event to go through.
 
 An quick example of what a command could look like:
 
 ```ts
-async function updateAccountEmail(entityId: string, email: string) {
-  const events = await ledger.events(entityId);
+async function updateAccountEmail(streamId: string, email: string) {
+  const events = await ledger.events(streamId);
 
   const state = account.reduce(events);
   if (email === state.email) {
     throw new Error("Email has not changed.");
   }
 
-  await ledger.append(accountEmailSet(entityId, { email }));
+  await ledger.append(accountEmailSet(streamId, { email }));
 }
 ```
