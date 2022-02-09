@@ -2,11 +2,10 @@ import { EventEmitter } from "@valkyr/utils";
 
 import { Message } from "./Message";
 import type { Service, ServiceClass } from "./Service";
-import { Store } from "./Store";
 
 const RECONNECT_INCREMENT = 1250; // 1.25 seconds
 const MAX_RECONNECT_DELAY = 1000 * 30; // 30 seconds
-const HEARTBEAT_INVERVAL = 1000 * 10; // 10 seconds
+const HEARTBEAT_INVERVAL = 1000 * 30; // 30 seconds
 
 /*
  |--------------------------------------------------------------------------------
@@ -19,7 +18,7 @@ export class Socket extends EventEmitter {
   public readonly services: Service[] = [];
   public readonly log?: Log;
 
-  public store = new Store();
+  public readonly messages: Message[] = [];
 
   private _ws?: WebSocket;
   private _reconnectDelay = 0;
@@ -178,12 +177,12 @@ export class Socket extends EventEmitter {
    |--------------------------------------------------------------------------------
    */
 
-  public async send<T extends Record<string, any>>(type: string, data: T = {} as T, persist = false): Promise<any> {
+  public async send<T extends Record<string, any>>(type: string, data?: T): Promise<any> {
     if (this.isConnected === false) {
       await this.connect();
     }
     return new Promise((resolve, reject) => {
-      this.store.push(Message.create(type, data, { resolve, reject }), persist);
+      this.messages.push(Message.create(type, data ?? {}, { resolve, reject }));
       this.process();
     });
   }
@@ -192,8 +191,8 @@ export class Socket extends EventEmitter {
     if (this.isConnected === false || this._ws === undefined) {
       return; // awaiting connection ...
     }
-    const message = this.store.next();
-    if (message) {
+    const message = this.messages.shift();
+    if (message !== undefined) {
       this.transmit(message);
       this.response(message);
     }
