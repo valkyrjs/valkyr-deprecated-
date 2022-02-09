@@ -20,9 +20,9 @@ declare module "http" {
  |--------------------------------------------------------------------------------
  */
 
-export type { HttpAction, WsAction } from "./Action";
 export * from "./Action";
 export * from "./Http/Response";
 export type { Middleware } from "./Middleware";
 export { Server } from "./Server";
 export type { SocketClient } from "./Socket";
+export type { HttpAction, WsAction } from "./Types";

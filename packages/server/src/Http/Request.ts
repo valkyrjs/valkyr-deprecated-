@@ -2,26 +2,10 @@ import { getParameters, toQueryObject } from "@valkyr/utils";
 import { IncomingMessage } from "http";
 
 import * as response from "../Action";
-import { HttpRoute, Routes } from "../Route";
+import { HttpRoute } from "../Route";
+import type { Routes } from "../Types";
 import { HttpError, HttpRedirect, HttpSuccess } from "./Response";
-import { HttpMethod } from "./Types";
-
-/*
- |--------------------------------------------------------------------------------
- | Types
- |--------------------------------------------------------------------------------
- */
-
-export type RequestBody = any;
-
-export type RequestState = {
-  [key: string]: string;
-};
-
-export type RouteMatch = {
-  route: HttpRoute;
-  match: any;
-};
+import type { HttpMethod, RouteMatch } from "./Types";
 
 /*
  |--------------------------------------------------------------------------------

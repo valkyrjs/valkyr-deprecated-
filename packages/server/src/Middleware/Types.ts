@@ -1,10 +1,10 @@
 import { IncomingMessage, ServerResponse } from "http";
 
-export type CorsOptions = {
-  origin: string;
-  methods: string;
-  optionsSuccessStatus: number;
-};
+/*
+ |--------------------------------------------------------------------------------
+ | Middleware
+ |--------------------------------------------------------------------------------
+ */
 
 /**
  * Middleware operations to handle for each incoming request.
@@ -17,3 +17,15 @@ export type CorsOptions = {
  * @param res - Outgoing http response.
  */
 export type Middleware = (req: IncomingMessage, res: ServerResponse) => Promise<void>;
+
+/*
+ |--------------------------------------------------------------------------------
+ | Cors
+ |--------------------------------------------------------------------------------
+ */
+
+export type CorsOptions = {
+  origin: string;
+  methods: string;
+  optionsSuccessStatus: number;
+};

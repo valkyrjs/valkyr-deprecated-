@@ -1,54 +1,12 @@
 import * as http from "http";
-import Redis, { RedisOptions } from "ioredis";
+import Redis from "ioredis";
 import { WebSocket, WebSocketServer } from "ws";
 
-import type { WsAction } from "./Action";
 import * as responses from "./Action";
-import { cors, CorsOptions, Middleware, route } from "./Middleware";
-import { addRouteTo, getInitialRoutes, Routes } from "./Route";
+import { cors, Middleware, route } from "./Middleware";
+import { addRouteTo, getInitialRoutes } from "./Route";
 import { ActionHandlersNotFoundError, SocketChannel, SocketClient, SocketMessage } from "./Socket";
-
-/*
- |--------------------------------------------------------------------------------
- | Types
- |--------------------------------------------------------------------------------
- */
-
-export type Channels = Map<string, Set<WebSocket>>;
-
-export type Instances = {
-  http: Server;
-  io: WebSocketServer;
-  redis: Redis.Redis;
-};
-
-export type Settings = {
-  /**
-   * Cors options for incoming HTTP requests.
-   */
-  cors?: CorsOptions;
-
-  /**
-   * Redis support is built in for communication between horizontally
-   * scaled server instances.
-   */
-  redis?: RedisOptions;
-
-  /**
-   * Middleware to run on incoming HTTP requests.
-   */
-  middleware?: Middleware[];
-
-  /**
-   * Method triggered when a client connects to the websocket server.
-   */
-  connected?: (client: SocketClient) => void;
-
-  /**
-   * Method triggered when a client disconnects from the websocket server.
-   */
-  disconnected?: (client: SocketClient) => void;
-};
+import type { Channels, Routes, ServerSettings, WsAction } from "./Types";
 
 /*
  |--------------------------------------------------------------------------------
@@ -64,7 +22,7 @@ export class Server {
   public readonly io: WebSocketServer;
   public readonly redis?: Redis.Redis;
 
-  constructor({ redis, middleware = [], connected, disconnected, ...settings }: Settings) {
+  constructor({ redis, middleware = [], connected, disconnected, ...settings }: ServerSettings) {
     this.http = http.createServer(this.getRequestListener([cors(settings.cors), ...middleware, route(this)]));
     this.io = new WebSocketServer({ noServer: true });
 
@@ -131,7 +89,7 @@ export class Server {
     });
   }
 
-  private addConnectionListener(connected: Settings["connected"], disconnected: Settings["disconnected"]) {
+  private addConnectionListener(connected: ServerSettings["connected"], disconnected: ServerSettings["disconnected"]) {
     this.io.on("connection", (socket) => {
       const client = new SocketClient(this, socket);
 

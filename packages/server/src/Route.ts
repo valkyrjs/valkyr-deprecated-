@@ -1,16 +1,8 @@
 import { getParsedParameters, Parameter } from "@valkyr/utils";
 import { pathToRegexp } from "path-to-regexp";
 
-import type { HttpAction, WsAction } from "./Action";
 import type { HttpMethod } from "./Http";
-
-/*
- |--------------------------------------------------------------------------------
- | Types
- |--------------------------------------------------------------------------------
- */
-
-export type Routes = Record<HttpMethod, HttpRoute[]> & Record<"on", Map<string, WsRoute>>;
+import type { HttpAction, RouteData, Routes, WsAction } from "./Types";
 
 /*
  |--------------------------------------------------------------------------------
@@ -74,7 +66,7 @@ export function addRouteTo(routes: Routes) {
       routes.delete.push(new HttpRoute("delete", path, actions));
     },
 
-    on(path: string, actions: WsAction[]): void {
+    on<Data extends RouteData = RouteData>(path: string, actions: WsAction<Data>[]): void {
       routes.on.set(path, new WsRoute(path, actions));
     }
   };

@@ -9,19 +9,7 @@
 
 import type { IncomingMessage, ServerResponse } from "http";
 
-import { Middleware } from "./Types";
-
-/*
- |--------------------------------------------------------------------------------
- | Types
- |--------------------------------------------------------------------------------
- */
-
-type Options = {
-  origin: string;
-  methods: string;
-  optionsSuccessStatus: number;
-};
+import { CorsOptions, Middleware } from "./Types";
 
 /*
  |--------------------------------------------------------------------------------
@@ -29,7 +17,7 @@ type Options = {
  |--------------------------------------------------------------------------------
  */
 
-export function cors(options: Options = defaultOptions()): Middleware {
+export function cors(options: CorsOptions = defaultOptions()): Middleware {
   return async (req: IncomingMessage, res: ServerResponse) => {
     const headers = [];
     const method = req.method && req.method.toUpperCase && req.method.toUpperCase();
@@ -198,7 +186,7 @@ function configureExposedHeaders(options: any) {
  |--------------------------------------------------------------------------------
  */
 
-function defaultOptions(): Options {
+function defaultOptions(): CorsOptions {
   return {
     origin: "*",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",

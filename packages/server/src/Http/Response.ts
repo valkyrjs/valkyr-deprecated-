@@ -1,4 +1,4 @@
-import { RedirectType } from "../Action";
+import type { RedirectType } from "../Types";
 import type { HttpStatus } from "./Types";
 
 /*

@@ -1,22 +1,5 @@
 import { InvalidSocketMessageBodyError } from "./Errors";
-
-/*
- |--------------------------------------------------------------------------------
- | Types
- |--------------------------------------------------------------------------------
- */
-
-type Body = {
-  uuid: string;
-  type: string;
-  data: Record<string, unknown>;
-};
-
-type ValidatedMessage = {
-  uuid: string;
-  type: string;
-  data?: Record<string, unknown>;
-};
+import type { MessageBody, ValidatedMessage } from "./Types";
 
 /*
  |--------------------------------------------------------------------------------
@@ -55,7 +38,7 @@ export class SocketMessage {
  |--------------------------------------------------------------------------------
  */
 
-function getValidatedMessageBody(body: Partial<Body>) {
+function getValidatedMessageBody(body: Partial<MessageBody>) {
   const missing: string[] = [];
   for (const key of REQUIRED_KEYS) {
     if (body[key] === undefined) {
