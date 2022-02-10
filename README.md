@@ -32,13 +32,9 @@ $ npm test
 
 ### Playground
 
-When you want to test package functionality from a product perspective we can jump into the playground environment. Before starting the services make sure to build all the packages first.
+When you want to test package functionality from a product perspective we can jump into the playground environment.
 
-```ts
-$ npm run build
-```
-
-Once you have a successfull build then up two terminals and run the api and app respectively:
+Open up two terminals and run the api and app respectively:
 
 ```sh
 $ npm run api # Terminal 1
