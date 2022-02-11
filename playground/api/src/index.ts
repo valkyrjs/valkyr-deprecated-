@@ -13,7 +13,6 @@ import { server } from "./Providers/Server";
   await database();
   await providers();
   await modules();
-  await projections();
   await start();
 })();
 
@@ -39,7 +38,7 @@ async function database(): Promise<void> {
  */
 
 async function providers(): Promise<void> {
-  await Promise.all([import("./Providers/Auth"), import("./Providers/EventStore")]);
+  await Promise.all([import("./Providers/Access"), import("./Providers/Auth")]);
 }
 
 /*
@@ -51,21 +50,11 @@ async function providers(): Promise<void> {
 async function modules() {
   await Promise.all([
     import("./Modules/Api"),
-    import("./Modules/Auth"),
+    import("./Modules/Account"),
     import("./Modules/Channels"),
     import("./Modules/Events"),
     import("./Modules/Streams")
   ]);
-}
-
-/*
- |--------------------------------------------------------------------------------
- | Projections
- |--------------------------------------------------------------------------------
- */
-
-async function projections() {
-  await Promise.all([import("./Projections/Account")]);
 }
 
 /*

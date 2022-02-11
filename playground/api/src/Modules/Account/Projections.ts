@@ -9,7 +9,7 @@ import type {
 } from "stores";
 import { access } from "stores";
 
-import { collection } from "../Collections";
+import { collection } from "../../Collections";
 
 projection.on<AccountCreated>("AccountCreated", async ({ streamId, data: { email } }) => {
   await collection.accounts.insertOne({

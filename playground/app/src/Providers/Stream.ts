@@ -100,7 +100,7 @@ async function pull(streamId: string, itterations = 0) {
       `Event Stream Violation: Escaping pull operation, infinite loop candidate detected after ${itterations} pull itterations.`
     );
   }
-  socket.send("streams.pull", { streamId, recorded: await getCursor(streamId) }).then(async (events: Event[]) => {
+  socket.send("streams:pull", { streamId, recorded: await getCursor(streamId) }).then(async (events: Event[]) => {
     if (events.length > 0) {
       for (const event of events) {
         await append(event);

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 import { router } from "../../../Router";
 import { InputsRef, usePin } from "../../Form/Hooks/UsePin";
-import { login } from "../Auth";
+import { sign } from "../Auth";
 
 type Actions = {
   submit(): void;
@@ -19,7 +19,7 @@ export function useToken(email: string): [InputsRef, Actions] {
     inputs,
     {
       submit() {
-        login(email, data())
+        sign(email, data())
           .then(() => {
             router.reload();
           })

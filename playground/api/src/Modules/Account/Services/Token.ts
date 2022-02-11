@@ -5,7 +5,7 @@ import { config } from "../../../Config";
 
 const generateToken = customAlphabet(config.auth.token.letters, config.auth.token.length);
 
-export async function create(type: "email" | "sms" | "console", accountId: string) {
+export async function createAccountToken(type: "email" | "sms" | "console", accountId: string) {
   const token = generateToken();
   await collection.accounts.updateOne({ accountId }, { $set: { token } });
   switch (type) {
@@ -23,6 +23,6 @@ export async function create(type: "email" | "sms" | "console", accountId: strin
   return token;
 }
 
-export async function remove(accountId: string) {
+export async function removeAccountToken(accountId: string) {
   return collection.accounts.updateOne({ accountId }, { $set: { token: "" } });
 }

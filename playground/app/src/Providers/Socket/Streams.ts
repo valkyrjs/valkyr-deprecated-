@@ -51,7 +51,7 @@ export class Streams implements Service {
 
   public async join(streamId: string) {
     return this.socket
-      .send("streams.join", { streamId })
+      .send("streams:join", { streamId })
       .then(() => {
         console.log("joined %s", streamId);
         this.streams.add(streamId);
@@ -63,7 +63,7 @@ export class Streams implements Service {
   }
 
   public async leave(streamId: string) {
-    return this.socket.send("streams.leave", { streamId }).then(() => {
+    return this.socket.send("streams:leave", { streamId }).then(() => {
       console.log("left %s", streamId);
       this.streams.delete(streamId);
       return this;

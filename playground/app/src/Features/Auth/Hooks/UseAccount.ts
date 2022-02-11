@@ -11,7 +11,7 @@ export function useAccount() {
     if (auth.isAuthenticated) {
       return subscribe(auth.auditor);
     }
-  });
+  }, [auth.auditor]);
 
   return account;
 }

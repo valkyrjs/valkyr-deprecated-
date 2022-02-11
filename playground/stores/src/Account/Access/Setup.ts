@@ -5,7 +5,6 @@ import { getAccountAttributes } from "./Attributes";
 export async function setup(accountId: string, db = container.get("Database")): Promise<void> {
   await db.addRole({
     roleId: accountId,
-    tenantId: accountId,
     name: "Account",
     settings: {},
     permissions: {

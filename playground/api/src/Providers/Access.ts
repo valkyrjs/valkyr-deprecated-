@@ -65,20 +65,21 @@ container.set(
      * method should retrieve all roles for the given member and combine them into a single
      * permissions object.
      */
-    public async getPermissions<Permissions extends RoleData["permissions"]>(
-      tenantId: string,
-      memberId: string
-    ): Promise<Permissions> {
+    public async getPermissions<Permissions extends RoleData["permissions"]>(memberId: string): Promise<Permissions> {
       return collection.roles
-        .find({ tenantId, members: memberId })
+        .find({ members: memberId })
         .toArray()
         .then((roles) => roles.reduce((permissions, role) => extend(permissions, role), {} as Permissions));
+    }
+
+    public async addMember(roleId: string, memberId: string): Promise<void> {
+      throw new Error("Method not implemented.");
     }
 
     /**
      * Add a member to given role.
      */
-    public async addMember(roleId: string, memberId: string): Promise<void> {
+    public async delMember(roleId: string, memberId: string): Promise<void> {
       await collection.roles.updateOne(
         { roleId },
         {
@@ -92,7 +93,7 @@ container.set(
     /**
      * Remove a member from given role.
      */
-    public async delMember(roleId: string, memberId: string): Promise<void> {
+    public async removeMember(roleId: string, memberId: string): Promise<void> {
       await collection.roles.updateOne(
         { roleId },
         {

@@ -11,7 +11,7 @@ import { reducers } from "../Reducers";
  |--------------------------------------------------------------------------------
  */
 
-export async function create(email: string) {
+export async function createAccount(email: string) {
   const accountId = nanoid();
 
   const state = await store.reduce(accountId, reducers.account);
@@ -21,10 +21,10 @@ export async function create(email: string) {
 
   await store.insert(events.account.created(accountId, { email }));
 
-  return getByEmail(email);
+  return getAccountByEmail(email);
 }
 
-export async function activate(accountId: string) {
+export async function activateAccount(accountId: string) {
   const state = await getAccountState(accountId);
   if (state.status === "active") {
     throw new Error("Account is already active");
@@ -32,7 +32,7 @@ export async function activate(accountId: string) {
   await store.insert(events.account.activated(accountId));
 }
 
-export async function name(accountId: string, name: Account["name"]) {
+export async function setAccountName(accountId: string, name: Account["name"]) {
   const state = await getAccountState(accountId);
   if (state.name === name) {
     throw new Error("Name is already set");
@@ -46,19 +46,19 @@ export async function name(accountId: string, name: Account["name"]) {
  |--------------------------------------------------------------------------------
  */
 
-export async function getByEmailOrCreate(email: string) {
-  const account = await getByEmail(email);
-  if (account) {
-    return account;
+export async function getAccountByEmailOrCreate(email: string) {
+  const account = await getAccountByEmail(email);
+  if (account === null) {
+    return createAccount(email);
   }
-  return create(email);
+  return account;
 }
 
-export async function getByUsername(username: string) {
+export async function getAccountByUsername(username: string) {
   return collection.accounts.findOne({ username });
 }
 
-export async function getByEmail(email: string) {
+export async function getAccountByEmail(email: string) {
   return collection.accounts.findOne({ email });
 }
 
