@@ -18,9 +18,9 @@ export function createPermission<
   Resource extends keyof Permissions = keyof Permissions,
   Action extends keyof Permissions[Resource] = keyof Permissions[Resource]
 >() {
-  return (tenantId: string, memberId: string) => ({
+  return (memberId: string) => ({
     async can<Handler extends PermissionHandler>(action: Action, resource: Resource, handler?: Handler) {
-      const permissions: Permissions = await container.get("Database").getPermissions(tenantId, memberId);
+      const permissions: Permissions = await container.get("Database").getPermissions(memberId);
       const value = permissions[resource][action];
       if (value === undefined) {
         return permissionDenied(new PermissionDeniedError(action, resource).message);

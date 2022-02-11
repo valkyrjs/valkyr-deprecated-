@@ -7,14 +7,21 @@ slug: /roles-api-role
 
 ## Role Class
 
-| Attribute   | Type     | Description                                                 |
-| ----------- | -------- | ----------------------------------------------------------- |
-| roleId      | string   | Unique primary role identifier                              |
-| tenantId    | string   | Which tenant/parent this role is under                      |
-| name        | string   | Human readable role identifier                              |
-| settings    | object   | Dynamic settings useful for UI descriptors and the like     |
-| permissions | object   | Permission template values                                  |
-| members     | string[] | List of user/client/member ids that is assigned to the role |
+| Attribute   | Type     | Description                                             |
+| ----------- | -------- | ------------------------------------------------------- |
+| roleId      | string   | Unique primary role identifier                          |
+| name        | string   | Human readable role identifier                          |
+| settings    | object   | Dynamic settings useful for UI descriptors and the like |
+| permissions | object   | Permission template values                              |
+| members     | string[] | List of member ids that is assigned to the role         |
+
+:::note
+
+A `member` should be a entity of a specific subset of data.
+
+As an example `accountA` should be `memberX` of `groupZ`. When we fetch permissions, we pull multiple roles that `memberX` is assigned to and combine them into one permission object. So its vital to keep member ids confined to the specific group or groups that they belong.
+
+:::
 
 ## Role Methods
 

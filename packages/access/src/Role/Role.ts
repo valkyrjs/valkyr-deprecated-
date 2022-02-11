@@ -8,7 +8,6 @@ export class Role<
   Settings extends Record<string, unknown> = Record<string, unknown>
 > {
   public readonly roleId = this.role.roleId;
-  public readonly tenantId = this.role.tenantId;
 
   public readonly name = this.role.name;
   public readonly settings = this.role.settings;
@@ -55,7 +54,6 @@ export class Role<
 
   public toJSON(): {
     roleId: string;
-    tenantId: string;
     name: string;
     settings: Settings;
     permissions: Permissions;
@@ -63,7 +61,6 @@ export class Role<
   } {
     return deepCopy({
       roleId: this.roleId,
-      tenantId: this.tenantId,
       name: this.name,
       settings: this.settings,
       permissions: this.permissions,

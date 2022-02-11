@@ -24,7 +24,7 @@ export interface Database {
    * method should retrieve all roles for the given member and combine them into a single
    * permissions object.
    */
-  getPermissions<Permissions extends RoleData["permissions"]>(tenantId: string, memberId: string): Promise<Permissions>;
+  getPermissions<Permissions extends RoleData["permissions"]>(memberId: string): Promise<Permissions>;
 
   /**
    * Add a member to given role.
