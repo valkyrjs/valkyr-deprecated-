@@ -22,5 +22,5 @@ async function publish(pkg, cwd) {
 main().catch(err => {
   throw err;
 }).finally(() => {
-  process.exit(1);
+  process.exit(0);
 });
