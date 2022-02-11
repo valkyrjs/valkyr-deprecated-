@@ -49,12 +49,9 @@ export class TestDatabase implements Database {
    * method should retrieve all roles for the given member and combine them into a single
    * permissions object.
    */
-  public async getPermissions<Permissions extends RoleData["permissions"]>(
-    tenantId: string,
-    memberId: string
-  ): Promise<Permissions> {
+  public async getPermissions<Permissions extends RoleData["permissions"]>(memberId: string): Promise<Permissions> {
     return this.store
-      .filter((role) => role.tenantId !== tenantId || !role.members.includes(memberId))
+      .filter((role) => !role.members.includes(memberId))
       .reduce((permissions, role) => leftMerge(permissions, role.permissions), {}) as Permissions;
   }
 
