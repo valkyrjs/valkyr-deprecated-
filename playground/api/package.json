@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "clean": "rm -rf ./node_modules ./package-lock.json",
-    "start": "docker-compose up -d && ts-node-dev src/index.ts"
+    "start": "docker compose up -d && ts-node-dev src/index.ts"
   },
   "dependencies": {
     "@valkyr/access": "*",
