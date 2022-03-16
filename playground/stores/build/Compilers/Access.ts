@@ -11,7 +11,11 @@ export async function getAccess(src: string) {
   const dir = await fs.promises.opendir(src);
   for await (const dirent of dir) {
     if (dirent.isDirectory()) {
-      access.set(dirent.name, `${src}/${dirent.name}`);
+      const storePath = `${src}/${dirent.name}`;
+      const store = await fs.promises.readdir(storePath);
+      if (store.includes("Access.ts")) {
+        access.set(dirent.name, storePath);
+      }
     }
   }
   return access;

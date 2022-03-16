@@ -79,7 +79,7 @@ function getExportPrint(stores: string[], events: string[]) {
 
   print.push(`export type Event =\n  | ${events.join("\n  | ")};\n\n`);
   print.push(`export {\n  ${events.join(",\n  ")}\n};\n\n`);
-  print.push(`export const events = {\n  ${stores.join(",\n")}\n};\n`);
+  print.push(`export const events = {\n  ${stores.join(",\n  ")}\n};`);
 
   return print.join("");
 }

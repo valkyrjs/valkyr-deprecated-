@@ -1,5 +1,5 @@
 export type Account = {
-  accountId: string;
+  id: string;
   status: Status;
   alias: string;
   name: Name;

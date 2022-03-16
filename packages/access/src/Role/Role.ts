@@ -7,6 +7,7 @@ export class Role<
   Permissions extends Record<string, Actions> = Record<string, Actions>,
   Settings extends Record<string, unknown> = Record<string, unknown>
 > {
+  public readonly tenantId = this.role.tenantId;
   public readonly roleId = this.role.roleId;
 
   public readonly name = this.role.name;
@@ -53,6 +54,7 @@ export class Role<
    */
 
   public toJSON(): {
+    tenantId: string;
     roleId: string;
     name: string;
     settings: Settings;
