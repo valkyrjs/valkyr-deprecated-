@@ -1,7 +1,7 @@
 import React from "react";
 
 import { assets } from "../Assets";
-import { Email, Token, useAuth } from "../Features/Auth";
+import { Email, Token, useAuth } from "../Modules/Auth";
 import styles from "../Styles/Pages/Auth.module.scss";
 
 export function Auth() {
@@ -9,7 +9,7 @@ export function Auth() {
   return (
     <div className={styles.container}>
       <div className={styles.logo}>
-        <img src={assets.logo.toolkit} alt="Valkyr Logo" width={70} height={70} />
+        <img src={assets.logo.toolkit.toString()} alt="Valkyr Logo" width={70} height={70} />
         Valkyr Toolkit
       </div>
       {step === "email" ? <Email dispatch={dispatch} /> : <Token email={email as string} />}

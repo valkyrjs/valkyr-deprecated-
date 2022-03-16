@@ -1,7 +1,7 @@
 import React, { Fragment, ReactElement } from "react";
 import ReactDOM from "react-dom";
 
-import { PageLoader } from "./Features/Loader/PageLoader";
+import { PageLoader } from "./Modules/Loader/PageLoader";
 import { useRouter } from "./Router/Hooks/UseRouter";
 
 // Router.events.on("routeChangeStart", nProgress.start);

@@ -1,4 +1,6 @@
-import { resolve } from "./Features/Auth/Auth";
+import "./Routes";
+
+import { resolve } from "./Modules/Auth";
 import { socket } from "./Providers/Socket";
 
 /*

@@ -1,4 +1,4 @@
-import { append, container, StreamSubscriptionHandler } from "@valkyr/ledger";
+import { append, container, publisher, StreamSubscriptionHandler } from "@valkyr/ledger";
 import type { Event } from "stores";
 
 import { collection } from "../Collections";
@@ -108,6 +108,11 @@ async function pull(streamId: string, itterations = 0) {
       return pull(streamId, itterations + 1); // keep pulling the stream until its hydrated
     }
   });
+}
+
+export function push(event: Event) {
+  publisher.project(event, { hydrated: false, outdated: false });
+  socket.send("streams:push", { events: [event] });
 }
 
 /*

@@ -2,6 +2,7 @@ import { Event } from "stores";
 
 import { collection } from "../../Collections";
 import { hasData } from "../../Policies/hasData";
+import { store } from "../../Providers/EventStore";
 import { route } from "../../Providers/Server";
 
 // store.on("saved", (descriptor) => {
@@ -25,7 +26,7 @@ route.on<{ events: Event[] }>("streams:push", [
     // }
     for (const event of events) {
       try {
-        // await store.insert(event);
+        await store.insert(event);
         socket.to(`stream:${event.streamId}`).emit("event", event);
       } catch (error) {
         return this.reject(400, error.message);

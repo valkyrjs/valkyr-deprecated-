@@ -1,9 +1,9 @@
 import { Collection as DBCollection } from "@valkyr/db";
 
-import { Account } from "./Models/Account";
 import { Cache } from "./Models/Cache";
 import { Cursor } from "./Models/Cursor";
 import { Event } from "./Models/Event";
+import { Account } from "./Modules/Account/Models/Account";
 import { adapter } from "./Providers/IdbAdapter";
 
 export type Collection = keyof typeof collection;

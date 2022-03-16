@@ -1,7 +1,10 @@
 import { Document, Model } from "@valkyr/db";
+import { Account as Aggregate, events } from "stores";
+
+import { push } from "../../../Providers/Stream";
 
 type Attributes = Document & {
-  name?: string;
+  name?: Aggregate["name"];
   email: string;
 };
 
@@ -14,7 +17,10 @@ export class Account extends Model<Attributes> {
   constructor(document: Attributes) {
     super(document);
 
-    this.name = document.name;
+    this.name = {
+      given: document.name?.given ?? "",
+      family: document.name?.family ?? ""
+    };
     this.email = document.email;
 
     Object.freeze(this);
@@ -26,14 +32,18 @@ export class Account extends Model<Attributes> {
    |--------------------------------------------------------------------------------
    */
 
-  public setName(name: string) {
-    console.log("Event Cache", this.id, name);
-    // return stores.account.setAlias({ accountId: this.id, alias: name });
+  public setName(name: Attributes["name"]) {
+    if (name.given === this.name?.given && name.family === this.name?.family) {
+      return console.info("Name has not changed, skipping...");
+    }
+    push(events.account.nameSet(this.id, { name }));
   }
 
   public setEmail(email: string) {
-    console.log("Event Cache", this.id, email);
-    // return stores.account.setEmail({ accountId: this.id, email });
+    if (email === this.email) {
+      return console.info("Email has not changed, skipping...");
+    }
+    push(events.account.emailSet(this.id, { email }));
   }
 
   /*

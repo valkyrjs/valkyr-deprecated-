@@ -7,7 +7,7 @@ const generateToken = customAlphabet(config.auth.token.letters, config.auth.toke
 
 export async function createAccountToken(type: "email" | "sms" | "console", accountId: string) {
   const token = generateToken();
-  await collection.accounts.updateOne({ accountId }, { $set: { token } });
+  await collection.accounts.updateOne({ id: accountId }, { $set: { token } });
   switch (type) {
     case "email": {
       throw new Error("Email is not yet supported");
@@ -24,5 +24,5 @@ export async function createAccountToken(type: "email" | "sms" | "console", acco
 }
 
 export async function removeAccountToken(accountId: string) {
-  return collection.accounts.updateOne({ accountId }, { $set: { token: "" } });
+  return collection.accounts.updateOne({ id: accountId }, { $set: { token: "" } });
 }
