@@ -37,6 +37,7 @@ When you want to test package functionality from a product perspective we can ju
 Open up two terminals and run the api and app respectively:
 
 ```sh
+$ npm run stores # Any terminal
 $ npm run api # Terminal 1
 $ npm run app # Terminal 2
 ```

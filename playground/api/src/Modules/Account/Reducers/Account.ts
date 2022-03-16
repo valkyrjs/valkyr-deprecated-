@@ -13,7 +13,7 @@ type Event = AccountCreated | AccountActivated | AccountAliasSet | AccountNameSe
 
 export const account = createReducer<Account, Event>(
   {
-    accountId: "",
+    id: "",
     status: "onboarding",
     alias: "",
     name: {

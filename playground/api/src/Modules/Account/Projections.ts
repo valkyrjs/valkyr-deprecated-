@@ -13,7 +13,7 @@ import { collection } from "../../Collections";
 
 projection.on<AccountCreated>("AccountCreated", async ({ streamId, data: { email } }) => {
   await collection.accounts.insertOne({
-    accountId: streamId,
+    id: streamId,
     status: "onboarding",
     alias: "",
     name: {

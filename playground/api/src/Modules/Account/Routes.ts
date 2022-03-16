@@ -30,7 +30,7 @@ route.on<{ email: string }>("account:create", [
       if (account === null) {
         return this.reject(400, "Could not retrieve account details.");
       }
-      await createAccountToken("console", account.accountId);
+      await createAccountToken("console", account.id);
       return this.resolve();
     } catch (error) {
       return this.reject(500, error.message);
@@ -63,7 +63,7 @@ route.on<{ email: string }>("account:login", [
       if (account === null) {
         return this.reject(400, "Account does not exist.");
       }
-      await createAccountToken("console", account.accountId);
+      await createAccountToken("console", account.id);
       return this.resolve();
     } catch (error) {
       return this.reject(500, error.message);
@@ -96,12 +96,12 @@ route.on<{ email: string; token: string }>("account:signature", [
     }
 
     if (account.status === "onboarding") {
-      await activateAccount(account.accountId);
+      await activateAccount(account.id);
     }
 
-    await removeAccountToken(account.accountId);
+    await removeAccountToken(account.id);
 
-    return this.resolve({ token: jwt.sign({ auditor: account.accountId }, config.auth.secret) });
+    return this.resolve({ token: jwt.sign({ auditor: account.id }, config.auth.secret) });
   }
 ]);
 

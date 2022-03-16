@@ -1,2 +1,2 @@
 export * from "./Aggregate";
-export { Auditor } from "./Events";
+export * from "./Auditor";

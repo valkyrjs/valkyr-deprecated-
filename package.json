@@ -18,6 +18,7 @@
     "publish": "node publish.js",
     "api": "cd ./playground/api && npm start",
     "app": "cd ./playground/app && npm start",
+    "stores": "cd ./playground/stores && npm run build",
     "web": "cd ./website && npx docusaurus start",
     "lint": "eslint ./packages --ext .ts --fix",
     "test": "jest --maxWorkers=100%",
