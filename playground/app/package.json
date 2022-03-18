@@ -22,11 +22,13 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.2.1",
-    "@parcel/transformer-typescript-tsc": "^2.2.1",
+    "@parcel/transformer-sass": "2.3.2",
+    "@parcel/transformer-typescript-tsc": "2.3.2",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
-    "parcel": "latest",
+    "parcel": "2.3.2",
+    "postcss": "^8.4.12",
+    "postcss-modules": "^4.3.1",
     "sass": "^1.45.2",
     "sharp": "^0.29.3"
   }
