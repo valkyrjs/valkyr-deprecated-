@@ -7,15 +7,18 @@ import { Adapter, Document, Storage } from "../Storage";
 import { addOptions } from "./Query";
 import type { Options } from "./Types";
 
-export class Collection<M extends ModelClass = ModelClass> {
+export class Collection<D extends Document = Document> {
   public readonly name: string;
-  public readonly model: M;
   public readonly storage: Storage;
 
-  constructor(model: M, adapter: Adapter) {
-    this.name = model.$collection;
-    this.model = model;
+  private constructor(name: string, adapter: Adapter) {
+    this.name = name;
     this.storage = new Storage(this.name, adapter);
+  }
+
+  public static create<M extends ModelClass>(model: M, adapter: Adapter) {
+    const collection = new this(model.$name, adapter);
+    model.$collection = collection;
   }
 
   /*
@@ -24,16 +27,16 @@ export class Collection<M extends ModelClass = ModelClass> {
    |--------------------------------------------------------------------------------
    */
 
-  public async insert(document: ReturnType<InstanceType<M>["toJSON"]>) {
-    return this.toModel(await this.storage.insert(document));
+  public async insert(document: D) {
+    return this.storage.insert(document);
   }
 
-  public async update(document: Document & Partial<ReturnType<InstanceType<M>["toJSON"]>>) {
-    return this.toModel(await this.storage.update(document));
+  public async update(document: Document & Partial<D>) {
+    return this.storage.update(document);
   }
 
-  public async upsert(document: ReturnType<InstanceType<M>["toJSON"]>) {
-    return this.toModel(await this.storage.upsert(document));
+  public async upsert(document: D) {
+    return this.storage.upsert(document);
   }
 
   public async delete(id: string) {
@@ -48,40 +51,32 @@ export class Collection<M extends ModelClass = ModelClass> {
 
   public observe(criteria: RawObject = {}, options?: Options) {
     let unsubscribe: () => void;
-    let next: (value: InstanceType<M>[]) => void;
+    let next: (value: Document[]) => void;
     return {
-      subscribe: (_next: (value: InstanceType<M>[]) => void) => {
+      subscribe: (_next: (value: Document[]) => void) => {
         next = _next;
-        unsubscribe = observe(this, criteria, options, (documents: Document[]) => {
-          next(documents.map((document) => this.toModel(document)));
-        });
+        unsubscribe = observe(this, criteria, options, next);
         return { unsubscribe };
       },
       filter: (criteria: RawObject, options?: Options) => {
         unsubscribe();
-        unsubscribe = observe(this, criteria, options, (documents: Document[]) => {
-          next(documents.map((document) => this.toModel(document)));
-        });
+        unsubscribe = observe(this, criteria, options, next);
       }
     };
   }
 
   public observeOne(criteria: RawObject = {}) {
     let unsubscribe: () => void;
-    let next: (value?: InstanceType<M>) => void;
+    let next: (value?: Document) => void;
     return {
-      subscribe: (_next: (value?: InstanceType<M>) => void) => {
+      subscribe: (_next: (value?: Document) => void) => {
         next = _next;
-        unsubscribe = observeOne(this, criteria, (document: Document | undefined) => {
-          next(document ? this.toModel(document) : undefined);
-        });
+        unsubscribe = observeOne(this, criteria, next);
         return { unsubscribe };
       },
       filter: (criteria: RawObject) => {
         unsubscribe();
-        unsubscribe = observeOne(this, criteria, (document: Document | undefined) => {
-          next(document ? this.toModel(document) : undefined);
-        });
+        unsubscribe = observeOne(this, criteria, next);
       }
     };
   }
@@ -101,10 +96,7 @@ export class Collection<M extends ModelClass = ModelClass> {
    * retrieve the document directly from the collections document Map.
    */
   public async findById(id: string) {
-    const document = this.storage.documents.get(id);
-    if (document) {
-      return this.toModel(document);
-    }
+    return this.storage.documents.get(id);
   }
 
   /**
@@ -115,8 +107,7 @@ export class Collection<M extends ModelClass = ModelClass> {
    */
   public async find(criteria: RawObject = {}, options?: Options) {
     return this.query(criteria, options).then((cursor) => {
-      const documents = cursor.all() as Document[];
-      return documents.map((document) => this.toModel(document));
+      return cursor.all() as Document[];
     });
   }
 
@@ -130,7 +121,7 @@ export class Collection<M extends ModelClass = ModelClass> {
     return this.query(criteria, options).then((cursor) => {
       const documents = cursor.all() as Document[];
       if (documents.length > 0) {
-        return this.toModel(documents[0]);
+        return documents[0];
       }
     });
   }
@@ -159,15 +150,5 @@ export class Collection<M extends ModelClass = ModelClass> {
       return addOptions(cursor, options);
     }
     return cursor;
-  }
-
-  /*
-   |--------------------------------------------------------------------------------
-   | Utilities
-   |--------------------------------------------------------------------------------
-   */
-
-  private toModel(document: Document) {
-    return new this.model(document) as InstanceType<M>;
   }
 }

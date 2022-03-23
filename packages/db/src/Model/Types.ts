@@ -1,6 +1,8 @@
+import type { Collection } from "../Collection";
 import type { Model } from "./Model";
 
 export type ModelClass<T extends Model = Model> = {
   new (document: any): T;
-  $collection: string;
+  $name: string;
+  $collection: Collection;
 };
