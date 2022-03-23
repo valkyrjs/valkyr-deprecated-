@@ -1,4 +1,6 @@
-import { Document, Model } from "@valkyr/db";
+import { Collection, Document, Model } from "@valkyr/db";
+
+import { adapter } from "../Providers/IdbAdapter";
 
 type Attributes = Document & {
   streamId: string;
@@ -7,7 +9,7 @@ type Attributes = Document & {
 };
 
 export class Cache extends Model<Attributes> {
-  public static readonly $collection = "cache";
+  public static readonly $name = "cache" as const;
 
   public readonly streamId: Attributes["streamId"];
   public readonly type: Attributes["type"];
@@ -24,10 +26,10 @@ export class Cache extends Model<Attributes> {
   }
 
   /*
-   |--------------------------------------------------------------------------------
-   | Serializer
-   |--------------------------------------------------------------------------------
-   */
+ |--------------------------------------------------------------------------------
+ | Serializer
+ |--------------------------------------------------------------------------------
+ */
 
   public toJSON(): Attributes {
     return super.toJSON({
@@ -37,3 +39,5 @@ export class Cache extends Model<Attributes> {
     });
   }
 }
+
+Collection.create(Cache, adapter);

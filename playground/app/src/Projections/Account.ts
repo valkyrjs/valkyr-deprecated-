@@ -1,17 +1,17 @@
 import { projection } from "@valkyr/ledger";
 import { AccountCreated, AccountNameSet } from "stores";
 
-import { collection } from "../Collections";
+import { Account } from "../Models/Account";
 
 projection.on<AccountCreated>("AccountCreated", async ({ streamId, data: { email } }) => {
-  await collection.accounts.insert({
+  await Account.insert({
     id: streamId,
     email
   });
 });
 
 projection.on<AccountNameSet>("AccountNameSet", async ({ streamId, data: { name } }) => {
-  await collection.accounts.update({
+  await Account.update({
     id: streamId,
     name
   });

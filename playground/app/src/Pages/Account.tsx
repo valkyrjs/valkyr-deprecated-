@@ -1,8 +1,8 @@
 import React from "react";
 
+import { Account } from "../Models/Account";
 import { useAccount } from "../Modules/Account";
 import { useAccountForm } from "../Modules/Account/Hooks/UseAccountForm";
-import { Account } from "../Modules/Account/Models/Account";
 import styles from "../Styles/Pages/Home.module.scss";
 
 export function AccountPage() {

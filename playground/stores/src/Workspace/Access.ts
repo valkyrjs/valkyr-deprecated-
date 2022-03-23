@@ -118,8 +118,7 @@ function getPermissions({ workspace, todo }: Partial<Permissions>): Permissions 
 
 export const WORKSPACE_FLAGS: Record<keyof Workspace, number> = {
   id: 1 << 0,
-  name: 1 << 1,
-  members: 1 << 2
+  name: 1 << 1
 };
 
 export function getWorkspaceFlags(flag?: number) {

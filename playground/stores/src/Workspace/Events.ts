@@ -1,7 +1,7 @@
 import { createEvent, Event } from "@valkyr/ledger";
 
 import type { Account } from "../Account";
-import type { Auditor } from "../Member";
+import type { Auditor } from "../WorkspaceMember";
 import type { Workspace } from "./Aggregate";
 
 export type WorkspaceCreated = Event<"WorkspaceCreated", Pick<Workspace, "name">, { auditor: Account["id"] }>;

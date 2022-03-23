@@ -1,12 +1,14 @@
-import { Model } from "@valkyr/db";
-import type { EntityCursor } from "@valkyr/ledger";
+import { Collection, Model } from "@valkyr/db";
+import type { StreamCursor } from "@valkyr/ledger";
 
-export class Cursor extends Model<EntityCursor> {
-  public static readonly $collection = "cursors";
+import { adapter } from "../Providers/IdbAdapter";
 
-  public readonly at: EntityCursor["at"];
+export class Cursor extends Model<StreamCursor> {
+  public static readonly $name = "cursors" as const;
 
-  constructor(document: EntityCursor) {
+  public readonly at: StreamCursor["at"];
+
+  constructor(document: StreamCursor) {
     super(document);
 
     this.at = document.at;
@@ -15,14 +17,16 @@ export class Cursor extends Model<EntityCursor> {
   }
 
   /*
-   |--------------------------------------------------------------------------------
-   | Serializer
-   |--------------------------------------------------------------------------------
-   */
+ |--------------------------------------------------------------------------------
+ | Serializer
+ |--------------------------------------------------------------------------------
+ */
 
-  public toJSON(): EntityCursor {
+  public toJSON(): StreamCursor {
     return super.toJSON({
       at: this.at
     });
   }
 }
+
+Collection.create(Cursor, adapter);

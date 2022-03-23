@@ -1,10 +1,12 @@
-import { Model } from "@valkyr/db";
+import { Collection, Model } from "@valkyr/db";
 import { Event as EventAttributes } from "@valkyr/ledger";
+
+import { adapter } from "../Providers/IdbAdapter";
 
 type Attributes = { id: string } & EventAttributes;
 
 export class Event extends Model<Attributes> {
-  public static readonly $collection = "events";
+  public static readonly $name = "events" as const;
 
   public readonly eventId: Attributes["eventId"];
   public readonly streamId: Attributes["streamId"];
@@ -40,3 +42,5 @@ export class Event extends Model<Attributes> {
     });
   }
 }
+
+Collection.create(Event, adapter);

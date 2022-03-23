@@ -1,6 +1,7 @@
+import { ModelClass } from "@valkyr/db";
 import { useEffect, useState } from "react";
 
-import { Collections, Many, Model, Options, resolveMany, resolveOne, Single } from "../Utils/Query";
+import { Many, Options, resolveMany, resolveOne, Single } from "../Utils/Query";
 
 /**
  * Perform a query against a registered database collection.
@@ -28,20 +29,20 @@ import { Collections, Many, Model, Options, resolveMany, resolveOne, Single } fr
  *
  * @returns Instanced collection model(s)
  */
-export function useQuery<K extends keyof Collections, T extends Model<K>>(key: K, options?: Many): T[];
-export function useQuery<K extends keyof Collections, T extends Model<K>>(key: K, options?: Single): T | undefined;
-export function useQuery<K extends keyof Collections, T extends Model<K>>(
-  key: K,
+export function useQuery<K extends ModelClass>(model: K, options?: Many): InstanceType<K>[];
+export function useQuery<K extends ModelClass>(model: K, options?: Single): InstanceType<K> | undefined;
+export function useQuery<K extends ModelClass>(
+  model: K,
   options: Options = {}
-): T[] | T | undefined {
+): InstanceType<K>[] | InstanceType<K> | undefined {
   const [data, setData] = useState();
 
   useEffect(() => {
     if (options.singleton === true) {
-      return resolveOne(key, options, setData);
+      return resolveOne(model, options, setData);
     }
-    return resolveMany(key, options, setData);
-  }, [key, JSON.stringify(options)]);
+    return resolveMany(model, options, setData);
+  }, [model, JSON.stringify(options)]);
 
   return data ? data : options.singleton === true ? undefined : [];
 }

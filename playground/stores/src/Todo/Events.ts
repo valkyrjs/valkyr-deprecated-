@@ -1,6 +1,6 @@
 import { createEvent, Event } from "@valkyr/ledger";
 
-import type { Auditor } from "../Member";
+import type { Auditor } from "../WorkspaceMember";
 import type { Todo } from "./Aggregate";
 
 export type TodoCreated = Event<"TodoCreated", Pick<Todo, "workspaceId" | "name">, Auditor>;

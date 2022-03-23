@@ -1,7 +1,8 @@
 import { append, container, publisher, StreamSubscriptionHandler } from "@valkyr/ledger";
 import type { Event } from "stores";
 
-import { collection } from "../Collections";
+import { Cache } from "../Models/Cache";
+import { Cursor } from "../Models/Cursor";
 import { socket } from "./Socket";
 
 const streams: Record<string, StreamSubscriptionHandler> = {};
@@ -44,11 +45,11 @@ function unsubscribe(streamId: string): void {
  */
 
 async function getEventStatus({ eventId, streamId, type, created }: Event) {
-  const cache = await collection.cache.findById(eventId);
+  const cache = await Cache.findById(eventId);
   if (cache) {
     return { exists: true, outdated: true };
   }
-  const count = await collection.cache.count({
+  const count = await Cache.count({
     streamId,
     type,
     created: {
@@ -59,7 +60,7 @@ async function getEventStatus({ eventId, streamId, type, created }: Event) {
 }
 
 async function addEvent({ eventId, streamId, type, created }: Event) {
-  await collection.cache.upsert({ id: eventId, streamId, type, created });
+  await Cache.upsert({ id: eventId, streamId, type, created });
 }
 
 /*
@@ -69,11 +70,11 @@ async function addEvent({ eventId, streamId, type, created }: Event) {
  */
 
 async function setCursor(streamId: string, at: string) {
-  await collection.cursors.upsert({ id: streamId, at });
+  await Cursor.upsert({ id: streamId, at });
 }
 
 async function getCursor(streamId: string) {
-  const stream = await collection.cursors.findOne({ id: streamId });
+  const stream = await Cursor.findOne({ id: streamId });
   if (stream) {
     return stream.at;
   }

@@ -1,5 +1,5 @@
+import { Account } from "../../../Models/Account";
 import { useForm } from "../../Form/Hooks/UseForm";
-import { Account } from "../Models/Account";
 
 type State = ReturnType<typeof useForm>["register"];
 

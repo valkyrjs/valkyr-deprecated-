@@ -21,7 +21,11 @@ async function dependencies(): Promise<void> {
 }
 
 async function event() {
-  await Promise.all([import("./Projections/Account")]);
+  await Promise.all([
+    import("./Projections/Account"),
+    import("./Projections/Workspace"),
+    import("./Projections/WorkspaceMember")
+  ]);
 }
 
 async function auth() {

@@ -1,7 +1,8 @@
-import { Document, Model } from "@valkyr/db";
+import { Collection, Document, Model } from "@valkyr/db";
 import { Account as Aggregate, events } from "stores";
 
-import { push } from "../../../Providers/Stream";
+import { adapter } from "../Providers/IdbAdapter";
+import { push } from "../Providers/Stream";
 
 type Attributes = Document & {
   name?: Aggregate["name"];
@@ -9,7 +10,7 @@ type Attributes = Document & {
 };
 
 export class Account extends Model<Attributes> {
-  public static readonly $collection = "accounts";
+  public static readonly $name = "accounts" as const;
 
   public readonly name: Attributes["name"];
   public readonly email: Attributes["email"];
@@ -27,10 +28,10 @@ export class Account extends Model<Attributes> {
   }
 
   /*
-   |--------------------------------------------------------------------------------
-   | Actions
-   |--------------------------------------------------------------------------------
-   */
+ |--------------------------------------------------------------------------------
+ | Actions
+ |--------------------------------------------------------------------------------
+ */
 
   public setName(name: Attributes["name"]) {
     if (name.given === this.name?.given && name.family === this.name?.family) {
@@ -47,10 +48,10 @@ export class Account extends Model<Attributes> {
   }
 
   /*
-   |--------------------------------------------------------------------------------
-   | Serializer
-   |--------------------------------------------------------------------------------
-   */
+ |--------------------------------------------------------------------------------
+ | Serializer
+ |--------------------------------------------------------------------------------
+ */
 
   public toJSON(): Attributes {
     return super.toJSON({
@@ -59,3 +60,5 @@ export class Account extends Model<Attributes> {
     });
   }
 }
+
+Collection.create(Account, adapter);

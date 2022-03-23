@@ -1,14 +1,8 @@
-import type { Options as QueryOptions } from "@valkyr/db";
-
-import { Collection, collection } from "../Collections";
+import type { ModelClass, Options as QueryOptions } from "@valkyr/db";
 
 export type RecordMap<T> = {
   [P in keyof T]: T[P];
 };
-
-export type Collections = RecordMap<typeof collection>;
-
-export type Model<K extends keyof Collections> = InstanceType<Collections[K]["model"]>;
 
 export type Options = {
   filter?: any;
@@ -27,22 +21,22 @@ export type Many = Options & {
   singleton?: false | undefined;
 };
 
-export function resolveOne(key: Collection, { filter, observe = true }: Options, setData: React.Dispatch<any>) {
+export function resolveOne(model: ModelClass, { filter, observe = true }: Options, setData: React.Dispatch<any>) {
   if (observe) {
-    return collection[key].observeOne(filter).subscribe(setData).unsubscribe;
+    return model.$collection.observeOne(filter).subscribe(setData).unsubscribe;
   }
-  collection[key].findOne(filter).then(setData);
+  model.$collection.findOne(filter).then(setData);
 }
 
 export function resolveMany(
-  key: Collection,
+  model: ModelClass,
   { filter, observe = true, ...other }: Options,
   setData: React.Dispatch<any>
 ) {
   if (observe) {
-    return collection[key].observe(filter, getQueryOptions(other)).subscribe(setData).unsubscribe;
+    return model.$collection.observe(filter, getQueryOptions(other)).subscribe(setData).unsubscribe;
   }
-  collection[key].find(filter).then(setData);
+  model.$collection.find(filter).then(setData);
 }
 
 export function getQueryOptions({ sort, skip, limit }: Options): Options | undefined {

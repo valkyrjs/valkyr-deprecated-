@@ -19,7 +19,7 @@ export async function getGeneral(src: string) {
 
 export function getGeneralExports(stores: string[]) {
   const exports = [];
-  for (const name of stores) {
+  for (const name of stores.sort()) {
     exports.push(`export * from "./${name}";`);
   }
   return exports.join("\n");

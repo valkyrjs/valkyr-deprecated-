@@ -1,3 +1,4 @@
+import camelcase from "camelcase";
 import * as fs from "fs";
 
 /*
@@ -23,18 +24,38 @@ export async function getAccess(src: string) {
 
 export function getAccessImports(src: string, stores: Map<string, string>) {
   let imports = "";
-  for (const [store, path] of stores) {
-    imports += `import { access as ${store.toLowerCase()}Access } from "${path.replace(src, ".")}/Access";\n`;
+  for (const [store, path] of getSortedStores(stores)) {
+    imports += `import { access as ${camelcase(store)}Access } from "${path.replace(src, ".")}/Access";\n`;
   }
   return imports + "\n";
 }
 
 export function getAccessExports(stores: Map<string, string>) {
   const exports = [];
-  for (const [store] of stores) {
-    exports.push(store.toLowerCase());
+  for (const [store] of getSortedStores(stores)) {
+    exports.push(camelcase(store));
   }
   const print = [];
   print.push(`export const access = {\n  ${exports.map((key) => `${key}: ${key}Access`).join(",\n  ")}\n};`);
   return print.join("");
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Utilities
+ |--------------------------------------------------------------------------------
+ */
+
+function getSortedStores(stores: Map<string, string>): [string, string][] {
+  const list: string[] = [];
+  for (const [store] of stores) {
+    list.push(store);
+  }
+  return list.sort().map((store) => {
+    const path = stores.get(store);
+    if (path === undefined) {
+      throw new Error(`Access Build Violation: Could not retrieve path from '${store}' store`);
+    }
+    return [store, path];
+  });
 }

@@ -1,3 +1,4 @@
+import camelcase from "camelcase";
 import * as fs from "fs";
 
 const EXPORT_REGEX = /export type [a-zA-Z]+/gm;
@@ -20,12 +21,12 @@ export async function getEvents(path: string, root: string, events: EventMap = {
   const dir = await fs.promises.opendir(path);
   for await (const dirent of dir) {
     if (dirent.isFile() && dirent.name === "Events.ts") {
-      const name = path.split("/").pop()?.toLowerCase();
+      const name = path.split("/").pop();
       if (name === undefined) {
         throw new Error("Event Violation: Failed to extract store name.");
       }
       events[path.replace(root + "/", "")] = {
-        name,
+        name: camelcase(name),
         path: `${path}/${dirent.name}`.replace(root, ".").replace(".ts", ""),
         events: getExports(path + "/" + dirent.name)
       };
@@ -39,7 +40,7 @@ export async function getEvents(path: string, root: string, events: EventMap = {
 
 export function getEventImports(events: EventMap) {
   let imports = "";
-  for (const key in events) {
+  for (const key of getSortedEventKeys(events)) {
     const entry = events[key];
     imports += `import {\n  ${entry.events.join(",\n  ")},\n  events as ${entry.name}Events\n} from "${entry.path}";\n`;
   }
@@ -49,7 +50,7 @@ export function getEventImports(events: EventMap) {
 export function getEventExports(events: EventMap) {
   let stores: string[] = [];
   let exports: string[] = [];
-  for (const key in events) {
+  for (const key of getSortedEventKeys(events)) {
     stores = stores.concat(`${events[key].name}: ${events[key].name}Events`);
     exports = exports.concat(events[key].events);
   }
@@ -61,6 +62,14 @@ export function getEventExports(events: EventMap) {
  | Utilities
  |--------------------------------------------------------------------------------
  */
+
+function getSortedEventKeys(events: EventMap): string[] {
+  const keys: string[] = [];
+  for (const key in events) {
+    keys.push(key);
+  }
+  return keys.sort();
+}
 
 function getExports(path: string) {
   const content = fs.readFileSync(path).toString("utf8");
