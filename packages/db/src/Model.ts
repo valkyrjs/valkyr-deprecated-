@@ -1,11 +1,14 @@
 import { RawObject } from "mingo/types";
 
-import type { Collection, Options } from "../Collection";
-import type { Document } from "../Storage";
-import type { ModelClass } from "./Types";
+import type { Collection, Options } from "./Collection";
+import type { Document } from "./Storage";
+
+export type ModelClass<T, D> = {
+  new (document: D): T;
+  $collection: Collection;
+};
 
 export abstract class Model<D extends Document = Document> {
-  public static readonly $name: string;
   public static readonly $collection: Collection;
 
   public readonly id: string;
@@ -14,12 +17,8 @@ export abstract class Model<D extends Document = Document> {
     this.id = document.id;
   }
 
-  public get $name(): string {
-    return (this.constructor as ModelClass).$name;
-  }
-
-  public get $collection(): Collection {
-    return (this.constructor as ModelClass).$collection;
+  public get $collection(): Collection<D> {
+    return (this as any).constructor.$collection;
   }
 
   /*
@@ -28,25 +27,34 @@ export abstract class Model<D extends Document = Document> {
    |--------------------------------------------------------------------------------
    */
 
-  public static async insert<M extends Model>(this: ModelClass<M>, document: ReturnType<M["toJSON"]>): Promise<M> {
+  public static async insert<D extends Document, T extends Model<D>>(
+    this: ModelClass<T, D>,
+    document: ReturnType<T["toJSON"]>
+  ): Promise<T> {
     const data = await this.$collection.insert(document);
-    return new this(data);
+    return new this(data as any);
   }
 
-  public static async update<M extends Model>(
-    this: ModelClass<M>,
-    document: Document & Partial<ReturnType<M["toJSON"]>>
-  ): Promise<M> {
+  public static async update<D extends Document, T extends Model<D>>(
+    this: ModelClass<T, D>,
+    document: Document & Partial<ReturnType<T["toJSON"]>>
+  ): Promise<T> {
     const data = await this.$collection.update(document);
-    return new this(data);
+    return new this(data as any);
   }
 
-  public static async upsert<M extends Model>(this: ModelClass<M>, document: ReturnType<M["toJSON"]>): Promise<M> {
+  public static async upsert<D extends Document, T extends Model<D>>(
+    this: ModelClass<T, D>,
+    document: ReturnType<T["toJSON"]>
+  ): Promise<T> {
     const data = await this.$collection.upsert(document);
-    return new this(data);
+    return new this(data as any);
   }
 
-  public static async delete<M extends Model>(this: ModelClass<M>, id: string): Promise<void> {
+  public static async delete<D extends Document, T extends Model<D>>(
+    this: ModelClass<T, D>,
+    id: string
+  ): Promise<void> {
     return this.$collection.delete(id);
   }
 
@@ -56,31 +64,34 @@ export abstract class Model<D extends Document = Document> {
    |--------------------------------------------------------------------------------
    */
 
-  public static async findById<M extends Model>(this: ModelClass<M>, id: string): Promise<M | undefined> {
+  public static async findById<D extends Document, T extends Model<D>>(
+    this: ModelClass<T, D>,
+    id: string
+  ): Promise<T | undefined> {
     const document = await this.$collection.findById(id);
     if (document !== undefined) {
-      return new this(document);
+      return new this(document as any);
     }
   }
 
-  public static async find<M extends Model>(
-    this: ModelClass<M>,
+  public static async find<D extends Document, T extends Model<D>>(
+    this: ModelClass<T, D>,
     criteria: RawObject = {},
     options?: Options
-  ): Promise<M[]> {
+  ): Promise<T[]> {
     return this.$collection
       .find(criteria, options)
-      .then((documents) => documents.map((document) => new this(document)));
+      .then((documents) => documents.map((document) => new this(document as any)));
   }
 
-  public static async findOne<M extends Model>(
-    this: ModelClass<M>,
+  public static async findOne<D extends Document, T extends Model<D>>(
+    this: ModelClass<T, D>,
     criteria: RawObject = {},
     options?: Options
-  ): Promise<M | undefined> {
+  ): Promise<T | undefined> {
     const document = this.$collection.findOne(criteria, options);
     if (document !== undefined) {
-      return new this(document);
+      return new this(document as any);
     }
   }
 
