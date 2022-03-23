@@ -8,7 +8,7 @@ import { push } from "../Providers/Stream";
 type Attributes = WorkspaceMemberAttributes;
 
 export class WorkspaceMember extends Model<Attributes> {
-  public static readonly $name = "workspace-members" as const;
+  public static readonly $collection = new Collection<Attributes>("workspace-members", adapter);
 
   public readonly workspaceId: Attributes["workspaceId"];
   public readonly accountId: Attributes["accountId"];
@@ -50,5 +50,3 @@ export class WorkspaceMember extends Model<Attributes> {
     });
   }
 }
-
-Collection.create(WorkspaceMember, adapter);

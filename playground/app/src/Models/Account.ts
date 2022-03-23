@@ -10,7 +10,7 @@ type Attributes = Document & {
 };
 
 export class Account extends Model<Attributes> {
-  public static readonly $name = "accounts" as const;
+  public static readonly $collection = new Collection<Attributes>("accounts", adapter);
 
   public readonly name: Attributes["name"];
   public readonly email: Attributes["email"];
@@ -60,5 +60,3 @@ export class Account extends Model<Attributes> {
     });
   }
 }
-
-Collection.create(Account, adapter);

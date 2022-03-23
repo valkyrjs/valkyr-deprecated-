@@ -6,7 +6,7 @@ import { adapter } from "../Providers/IdbAdapter";
 type Attributes = { id: string } & EventAttributes;
 
 export class Event extends Model<Attributes> {
-  public static readonly $name = "events" as const;
+  public static readonly $collection = new Collection<Attributes>("events", adapter);
 
   public readonly eventId: Attributes["eventId"];
   public readonly streamId: Attributes["streamId"];
@@ -42,5 +42,3 @@ export class Event extends Model<Attributes> {
     });
   }
 }
-
-Collection.create(Event, adapter);

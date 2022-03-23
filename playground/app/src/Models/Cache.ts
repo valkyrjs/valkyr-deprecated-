@@ -9,7 +9,7 @@ type Attributes = Document & {
 };
 
 export class Cache extends Model<Attributes> {
-  public static readonly $name = "cache" as const;
+  public static readonly $collection = new Collection<Attributes>("cache", adapter);
 
   public readonly streamId: Attributes["streamId"];
   public readonly type: Attributes["type"];
@@ -39,5 +39,3 @@ export class Cache extends Model<Attributes> {
     });
   }
 }
-
-Collection.create(Cache, adapter);

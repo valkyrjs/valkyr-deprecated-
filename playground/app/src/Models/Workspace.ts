@@ -9,7 +9,7 @@ import { WorkspaceMember } from "./WorkspaceMember";
 type Attributes = WorkspaceAttributes;
 
 export class Workspace extends Model<Attributes> {
-  public static readonly $name = "workspaces" as const;
+  public static readonly $collection = new Collection<Attributes>("workspaces", adapter);
 
   public readonly name: Attributes["name"];
 
@@ -35,5 +35,3 @@ export class Workspace extends Model<Attributes> {
     });
   }
 }
-
-Collection.create(Workspace, adapter);

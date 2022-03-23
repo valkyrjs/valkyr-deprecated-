@@ -4,7 +4,7 @@ import type { StreamCursor } from "@valkyr/ledger";
 import { adapter } from "../Providers/IdbAdapter";
 
 export class Cursor extends Model<StreamCursor> {
-  public static readonly $name = "cursors" as const;
+  public static readonly $collection = new Collection<StreamCursor>("cursors", adapter);
 
   public readonly at: StreamCursor["at"];
 
@@ -28,5 +28,3 @@ export class Cursor extends Model<StreamCursor> {
     });
   }
 }
-
-Collection.create(Cursor, adapter);
