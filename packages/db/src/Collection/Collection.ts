@@ -145,4 +145,11 @@ export class Collection<D extends Document = Document> {
     }
     return cursor;
   }
+
+  /**
+   * Removes all documents from the storage instance.
+   */
+  public flush(): void {
+    this.storage.flush();
+  }
 }

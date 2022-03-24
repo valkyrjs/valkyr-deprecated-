@@ -2,6 +2,7 @@ export type Adapter = {
   set(name: string, documents: Document[]): Promise<void>;
   get(name: string): Promise<Document[]>;
   del(name: string): Promise<void>;
+  flush(): void;
 };
 
 export type Document = {

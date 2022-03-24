@@ -107,6 +107,11 @@ export class Storage extends EventEmitter<{
     return this;
   }
 
+  public flush(): void {
+    this.documents.clear();
+    this.adapter.flush();
+  }
+
   /*
    |--------------------------------------------------------------------------------
    | Mutators

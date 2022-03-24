@@ -12,4 +12,7 @@ export class MemoryAdapter implements Adapter {
   public async del(name: string) {
     cache.delete(name);
   }
+  public flush() {
+    cache.clear();
+  }
 }

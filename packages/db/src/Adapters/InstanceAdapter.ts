@@ -12,4 +12,7 @@ export class InstanceAdapter implements Adapter {
   public async del(name: string) {
     this.cache.delete(name);
   }
+  public flush() {
+    this.cache.clear();
+  }
 }
