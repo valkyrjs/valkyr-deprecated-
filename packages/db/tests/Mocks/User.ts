@@ -1,4 +1,4 @@
-import type { Document } from "../../src";
+import { Collection, Document, MemoryAdapter } from "../../src";
 import { Model } from "../../src";
 
 export type Attributes = Document & {
@@ -7,7 +7,7 @@ export type Attributes = Document & {
 };
 
 export class User extends Model<Attributes> {
-  public static readonly $collection = "users";
+  public static readonly $collection = new Collection<Attributes>("users", new MemoryAdapter());
 
   public readonly name: Attributes["name"];
   public readonly email: Attributes["email"];
