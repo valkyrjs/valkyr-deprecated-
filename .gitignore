@@ -16,8 +16,9 @@
 !.idea/*.iml
 !.idea/README.md
 
-# Parcel
+# Development
 
+.docker
 .parcel-cache
 
 # node_modules

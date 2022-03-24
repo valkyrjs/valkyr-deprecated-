@@ -1,3 +1,3 @@
 export function setPageTitle(title: string): void {
-  document.title = `Toolkit | ${title}`;
+  document.title = `Valkyr | ${title}`;
 }

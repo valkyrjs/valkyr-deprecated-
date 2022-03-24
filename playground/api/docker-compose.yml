@@ -6,4 +6,4 @@ services:
     ports:
       - 27027:27017
     volumes:
-      - ./.docker/mongo:/data/db
+      - ../../.docker/mongo:/data/db

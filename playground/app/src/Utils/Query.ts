@@ -21,22 +21,26 @@ export type Many = Options & {
   singleton?: false | undefined;
 };
 
-export function resolveOne(model: ModelClass, { filter, observe = true }: Options, setData: React.Dispatch<any>) {
+export function resolveOne<M extends ModelClass>(
+  model: M,
+  { filter, observe = true }: Options,
+  setData: React.Dispatch<any>
+) {
   if (observe) {
-    return model.$collection.observeOne(filter).subscribe(setData).unsubscribe;
+    return model.observeOne(filter).subscribe(setData).unsubscribe;
   }
-  model.$collection.findOne(filter).then(setData);
+  model.findOne(filter).then(setData);
 }
 
-export function resolveMany(
-  model: ModelClass,
+export function resolveMany<M extends ModelClass>(
+  model: M,
   { filter, observe = true, ...other }: Options,
   setData: React.Dispatch<any>
 ) {
   if (observe) {
-    return model.$collection.observe(filter, getQueryOptions(other)).subscribe(setData).unsubscribe;
+    return model.observe(filter, getQueryOptions(other)).subscribe(setData).unsubscribe;
   }
-  model.$collection.find(filter).then(setData);
+  model.find(filter).then(setData);
 }
 
 export function getQueryOptions({ sort, skip, limit }: Options): Options | undefined {

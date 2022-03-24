@@ -1,4 +1,4 @@
-import { ModelClass } from "@valkyr/db";
+import type { ModelClass } from "@valkyr/db";
 import { useEffect, useState } from "react";
 
 import { Many, Options, resolveMany, resolveOne, Single } from "../Utils/Query";
@@ -29,12 +29,12 @@ import { Many, Options, resolveMany, resolveOne, Single } from "../Utils/Query";
  *
  * @returns Instanced collection model(s)
  */
-export function useQuery<K extends ModelClass>(model: K, options?: Many): InstanceType<K>[];
-export function useQuery<K extends ModelClass>(model: K, options?: Single): InstanceType<K> | undefined;
-export function useQuery<K extends ModelClass>(
-  model: K,
+export function useQuery<M extends ModelClass>(model: M, options?: Many): InstanceType<M>[];
+export function useQuery<M extends ModelClass>(model: M, options?: Single): InstanceType<M> | undefined;
+export function useQuery<M extends ModelClass>(
+  model: M,
   options: Options = {}
-): InstanceType<K>[] | InstanceType<K> | undefined {
+): InstanceType<M>[] | InstanceType<M> | undefined {
   const [data, setData] = useState();
 
   useEffect(() => {
