@@ -7,6 +7,7 @@ export function createMockDatabase() {
 
   db.addRole(
     new Role({
+      tenantId: "tenant-1",
       roleId: "role-1",
       name: "Administrator",
       settings: {},
@@ -17,6 +18,7 @@ export function createMockDatabase() {
 
   db.addRole(
     new Role({
+      tenantId: "tenant-1",
       roleId: "role-2",
       name: "User",
       settings: {},
@@ -27,6 +29,7 @@ export function createMockDatabase() {
 
   db.addRole(
     new Role({
+      tenantId: "tenant-1",
       roleId: "role-3",
       name: "Administrator",
       settings: {},
