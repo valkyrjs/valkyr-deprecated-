@@ -6,7 +6,7 @@ import { Timestamp } from "./Timestamp";
  |--------------------------------------------------------------------------------
  */
 
-export type Options = {
+type Options = {
   time?: typeof getTime;
   maxOffset?: number;
   timeUpperBound?: number;

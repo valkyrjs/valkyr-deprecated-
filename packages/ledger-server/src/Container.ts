@@ -1,7 +1,6 @@
 import { Container } from "@valkyr/inverse";
-
-import type { StreamSubscriber } from "./Stream";
+import { Db } from "mongodb";
 
 export const container = new Container<{
-  StreamSubscriber: StreamSubscriber;
+  Database: Db;
 }>();

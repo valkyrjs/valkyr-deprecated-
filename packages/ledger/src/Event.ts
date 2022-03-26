@@ -20,7 +20,7 @@ export function createEvent<E extends Event>(type: E["type"]): EventFactory<E> {
   return function (streamId: string, data: E["data"] = {}, meta: E["meta"] = {}) {
     const timestamp = getLogicalTimestamp();
     return {
-      eventId: nanoid(),
+      id: nanoid(),
       streamId,
       type,
       data,
@@ -60,12 +60,12 @@ type EventFactory<E extends Event> = E["data"] extends never
   ? (streamId: string, data: E["data"]) => E
   : (streamId: string, data: E["data"], meta: E["meta"]) => E;
 
-export interface Event<EventType = unknown, EventData = unknown | never, EventMeta = unknown | never> {
+export interface Event<EventType = string, EventData = unknown | never, EventMeta = unknown | never> {
   /**
    * A unique event identifier correlating its identity in the **event store**
    * _(database)_.
    */
-  eventId: string;
+  id: string;
 
   /**
    * Identifier representing the stream in which many individual events/transactions

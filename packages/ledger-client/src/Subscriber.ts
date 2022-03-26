@@ -1,8 +1,8 @@
-import { container } from "../Container";
-import { Event } from "../Event";
-import { publisher } from "../Projection";
-import { Queue } from "../Queue";
-import type { StreamObserver, Streams } from "./Interface";
+import { Event, publisher, Queue, StreamObserver, Streams } from "@valkyr/ledger";
+
+import { Cache } from "./Models/Cache";
+import { Cursor } from "./Models/Cursor";
+import { remote } from "./Remote";
 
 const streams: Streams = {};
 
@@ -37,11 +37,11 @@ export async function append(event: Event): Promise<void> {
  * Decrement observer amount by 1 and delete the stream stream observer if the
  * remaining subscribers is 0 or less.
  */
-function unsubscribe(streamId: string, stream = container.get("StreamSubscriber")) {
+function unsubscribe(streamId: string) {
   const observer = streams[streamId];
   observer.subscribers -= 1;
   if (observer.subscribers < 1) {
-    stream.unsubscribe(streamId);
+    remote.unsubscribe(streamId);
     delete streams[streamId];
   }
 }
@@ -49,21 +49,21 @@ function unsubscribe(streamId: string, stream = container.get("StreamSubscriber"
 /**
  * Retrieve a stream observer or create a new one if it does not exist.
  */
-function getObserver(streamId: string, subscriber = container.get("StreamSubscriber")): StreamObserver {
+function getObserver(streamId: string): StreamObserver {
   if (streams[streamId]) {
     return streams[streamId];
   }
   streams[streamId] = {
     subscribers: 0,
     queue: new Queue<Event>(async (event) => {
-      const { exists, outdated } = await subscriber.getEventStatus(event);
+      const { exists, outdated } = await Cache.status(event);
       if (!exists) {
-        await subscriber.addEvent(event);
-        await subscriber.setCursor(event.streamId, event.recorded);
+        await Cache.add(event);
+        await Cursor.set(event.streamId, event.recorded);
         await publisher.project(event, { hydrated: true, outdated });
       }
     })
   };
-  subscriber.subscribe(streamId, streams[streamId].queue.push);
+  remote.subscribe(streamId, streams[streamId].queue.push);
   return streams[streamId];
 }
