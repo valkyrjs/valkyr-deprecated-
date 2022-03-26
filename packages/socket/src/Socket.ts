@@ -1,11 +1,28 @@
 import { EventEmitter } from "@valkyr/utils";
 
 import { Message } from "./Message";
-import type { Service, ServiceClass } from "./Service";
 
 const RECONNECT_INCREMENT = 1250; // 1.25 seconds
 const MAX_RECONNECT_DELAY = 1000 * 30; // 30 seconds
 const HEARTBEAT_INVERVAL = 1000 * 30; // 30 seconds
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+type Settings = {
+  uri: string;
+  log?: Log;
+};
+
+type Debounce = {
+  reconnect: NodeJS.Timeout | undefined;
+  heartbeat: NodeJS.Timeout | undefined;
+};
+
+type Log = (type: string, ...args: any[]) => void;
 
 /*
  |--------------------------------------------------------------------------------
@@ -15,7 +32,6 @@ const HEARTBEAT_INVERVAL = 1000 * 30; // 30 seconds
 
 export class Socket extends EventEmitter {
   public readonly uri: string;
-  public readonly services: Service[] = [];
   public readonly log?: Log;
 
   public readonly messages: Message[] = [];
@@ -27,17 +43,11 @@ export class Socket extends EventEmitter {
     heartbeat: undefined
   };
 
-  constructor({ uri, log, services = {} }: Settings) {
+  constructor({ uri, log }: Settings) {
     super();
 
     this.uri = uri;
     this.log = log;
-
-    for (const key in services) {
-      const instance = services[key].create(this);
-      this.services.push(instance);
-      (this as any)[key] = instance;
-    }
 
     this.connect = this.connect.bind(this);
     this.ping = this.ping.bind(this);
@@ -117,9 +127,6 @@ export class Socket extends EventEmitter {
   public onConnect(resolve: () => void): () => Promise<void> {
     return async () => {
       this._reconnectDelay = 0;
-      for (const service of this.services) {
-        await service.onConnect();
-      }
       this.ping();
       this.process();
       resolve();
@@ -173,7 +180,21 @@ export class Socket extends EventEmitter {
 
   /*
    |--------------------------------------------------------------------------------
-   | Message Queue
+   | Channels
+   |--------------------------------------------------------------------------------
+   */
+
+  public async join(channelId: string): Promise<void> {
+    await this.send("join", { channelId });
+  }
+
+  public async leave(channelId: string): Promise<void> {
+    await this.send("leave", { channelId });
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Messages
    |--------------------------------------------------------------------------------
    */
 
@@ -223,24 +244,3 @@ export class Socket extends EventEmitter {
     });
   }
 }
-
-/*
- |--------------------------------------------------------------------------------
- | Types
- |--------------------------------------------------------------------------------
- */
-
-type Settings = {
-  uri: string;
-  services?: {
-    [key: string]: ServiceClass;
-  };
-  log?: Log;
-};
-
-type Debounce = {
-  reconnect: NodeJS.Timeout | undefined;
-  heartbeat: NodeJS.Timeout | undefined;
-};
-
-type Log = (type: string, ...args: any[]) => void;
