@@ -1,4 +1,4 @@
-export { InstanceAdapter, MemoryAdapter } from "./Adapters";
+export { IndexedDbAdapter, InstanceAdapter, MemoryAdapter } from "./Adapters";
 export type { Options } from "./Collection";
 export { Collection } from "./Collection";
 export type { ModelClass } from "./Model";

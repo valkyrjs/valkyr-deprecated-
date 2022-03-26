@@ -1,7 +1,7 @@
 {
   "name": "@valkyr/db",
   "version": "0.0.0",
-  "description": "Simple storage solution written in TypeScript.",
+  "description": "Simple client side storage solution written in TypeScript.",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "@valkyr/utils": "*",
-    "mingo": "5.0.0",
-    "nanoid": "3.1.30"
+    "idb-keyval": "^6.1.0",
+    "mingo": "^6.0.5",
+    "nanoid": "^3.3.1"
   }
 }
