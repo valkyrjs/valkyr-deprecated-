@@ -22,9 +22,11 @@ declare module "http" {
 
 export const auth: Middleware = async function (req, res) {
   if (req.headers.authorization) {
+    console.log(req.headers.authorization);
     try {
-      req.auth = await Auth.resolve(req.headers.authorization);
+      req.auth = await Auth.resolve(req.headers.authorization.replace("Bearer ", ""));
     } catch (err) {
+      console.log(err);
       sendUnauthorizedResponse(res, err);
     }
   } else {

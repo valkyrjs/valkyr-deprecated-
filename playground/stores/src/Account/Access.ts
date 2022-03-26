@@ -1,5 +1,5 @@
 import { Attributes, container, createPermission, permissionGranted, PermissionHandler, Role } from "@valkyr/access";
-import { uuid } from "@valkyr/utils";
+import { nanoid } from "@valkyr/utils";
 
 import type { Account } from "./Aggregate";
 
@@ -36,7 +36,7 @@ export async function getAccountRole(roleId: string, db = container.get("Databas
 async function createAccountRole(accountId: string, db = container.get("Database")): Promise<void> {
   await db.addRole({
     tenantId: accountId,
-    roleId: uuid(),
+    roleId: nanoid(),
     name: "Owner",
     settings: {},
     permissions: {

@@ -1,5 +1,5 @@
 import { Attributes, container, createPermission, Role } from "@valkyr/access";
-import { uuid } from "@valkyr/utils";
+import { nanoid } from "@valkyr/utils";
 
 import type { Workspace } from "./Aggregate";
 
@@ -36,7 +36,7 @@ export async function getWorkspaceRole(roleId: string, db = container.get("Datab
 export async function createAdminRole(workspaceId: string, db = container.get("Database")): Promise<void> {
   await db.addRole({
     tenantId: workspaceId,
-    roleId: uuid(),
+    roleId: nanoid(),
     name: "Admin",
     settings: {},
     permissions: {
@@ -59,7 +59,7 @@ export async function createAdminRole(workspaceId: string, db = container.get("D
 export async function createMemberRole(workspaceId: string, db = container.get("Database")): Promise<void> {
   await db.addRole({
     tenantId: workspaceId,
-    roleId: uuid(),
+    roleId: nanoid(),
     name: "Member",
     settings: {},
     permissions: {

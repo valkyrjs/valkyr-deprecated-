@@ -1,6 +1,6 @@
 import { Collection, Model } from "@valkyr/db";
 import { ledger } from "@valkyr/ledger-client";
-import { uuid } from "@valkyr/utils";
+import { nanoid } from "@valkyr/utils";
 import { events, Member, Workspace as WorkspaceAttributes } from "stores";
 
 import { adapter } from "../Providers/IdbAdapter";
@@ -23,7 +23,7 @@ export class Workspace extends Model<Attributes> {
   }
 
   public static create(name: string, accountId: string) {
-    ledger.push(events.workspace.created(uuid(), { name }, { auditor: accountId }));
+    ledger.push(events.workspace.created(nanoid(), { name }, { auditor: accountId }));
   }
 
   public toJSON(): Attributes {
@@ -46,7 +46,7 @@ class Members {
       events.workspace.member.added(
         this.workspace.id,
         {
-          id: uuid(),
+          id: nanoid(),
           accountId
         },
         {

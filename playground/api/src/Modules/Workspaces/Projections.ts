@@ -1,5 +1,5 @@
 import { projection } from "@valkyr/ledger-server";
-import { uuid } from "@valkyr/utils";
+import { nanoid } from "@valkyr/utils";
 import type { WorkspaceCreated } from "stores";
 
 import { collection } from "../../Collections";
@@ -10,7 +10,7 @@ projection.on<WorkspaceCreated>("WorkspaceCreated", async ({ streamId, data: { n
     name,
     members: [
       {
-        id: uuid(),
+        id: nanoid(),
         accountId: auditor
       }
     ]

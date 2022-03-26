@@ -1,9 +1,8 @@
 import React from "react";
 
-import { useQuery } from "../Hooks/UseQuery";
 import { useWorkspaceForm } from "../Hooks/UseWorkspaceForm";
-import { Workspace } from "../Models/Workspace";
-import { auth, Avatar } from "../Modules/Auth";
+import { useWorkspaces } from "../Hooks/UseWorkspaces";
+import { Avatar } from "../Modules/Auth";
 import styles from "../Styles/Pages/Home.module.scss";
 
 export function Home(): JSX.Element | null {
@@ -17,7 +16,7 @@ export function Home(): JSX.Element | null {
 }
 
 function Workspaces() {
-  const workspaces = useQuery(Workspace, { filter: { "members.accountId": auth.auditor } });
+  const workspaces = useWorkspaces();
   return <pre>{JSON.stringify(workspaces, null, 2)}</pre>;
 }
 
