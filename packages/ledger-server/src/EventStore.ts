@@ -1,5 +1,4 @@
-import { createEventRecord, publisher, ReduceHandler } from "@valkyr/ledger";
-import type { Event } from "stores";
+import { AggregateRootClass, createEventRecord, Event, publisher } from "@valkyr/ledger";
 
 import { db } from "./Database";
 
@@ -30,14 +29,19 @@ export async function insert(event: Event) {
  *
  * @returns Aggregate state of the stream
  */
-export async function reduce<Reduce extends ReduceHandler>(
+export async function reduce<AggregateRoot extends AggregateRootClass>(
   streamId: string,
-  reduce: Reduce
-): Promise<ReturnType<Reduce> | undefined> {
+  aggregate: AggregateRoot
+): Promise<InstanceType<AggregateRoot> | undefined> {
   const events = await db.getStream(streamId);
-  if (events.length) {
-    return reduce(events);
+  if (events.length === 0) {
+    return undefined;
   }
+  const instance = new aggregate();
+  for (const event of events) {
+    instance.apply(event);
+  }
+  return instance as InstanceType<AggregateRoot>;
 }
 
 /**

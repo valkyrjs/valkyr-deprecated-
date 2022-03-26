@@ -1,3 +1,4 @@
+export * from "./Aggregate";
 export * from "./Event";
 export * from "./Projection";
 export * from "./Queue";
