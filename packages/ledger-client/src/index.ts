@@ -1,4 +1,4 @@
-import { IndexDbAdapter } from "@valkyr/db";
+import { IndexedDbAdapter } from "@valkyr/db";
 import { Socket } from "@valkyr/socket";
 
 import { container } from "./Container";
@@ -9,7 +9,7 @@ export * from "./Models/Cache";
 export * from "./Models/Cursor";
 export * from "@valkyr/ledger";
 
-async function setup(socket: Socket, database = new IndexDbAdapter()) {
+async function setup(socket: Socket, database = new IndexedDbAdapter()) {
   container.set("Database", database);
   container.set("Socket", socket);
 }
