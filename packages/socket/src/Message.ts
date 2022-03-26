@@ -1,4 +1,4 @@
-import { uuid } from "@valkyr/utils";
+import { nanoid } from "@valkyr/utils";
 
 /*
  |--------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ const EMPTY_PROMISE: MessagePromise = {
  */
 
 export class Message {
-  public readonly uuid = uuid();
+  public readonly uuid = nanoid();
 
   public readonly resolve = this.promise.resolve;
   public readonly reject = this.promise.reject;

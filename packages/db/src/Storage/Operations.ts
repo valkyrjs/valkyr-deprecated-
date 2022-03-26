@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { nanoid } from "@valkyr/utils";
 
 import { DocumentNotFoundError, DuplicateDocumentError } from "./Errors";
 import { Storage } from "./Storage";

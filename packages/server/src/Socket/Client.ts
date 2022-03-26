@@ -1,4 +1,4 @@
-import { uuid } from "@valkyr/utils";
+import { nanoid } from "@valkyr/utils";
 import { WebSocket } from "ws";
 
 import type { Server } from "../Server";
@@ -8,7 +8,7 @@ export class SocketClient {
   public readonly clientId: string;
 
   constructor(public readonly server: Server, public readonly socket: WebSocket) {
-    this.clientId = uuid();
+    this.clientId = nanoid();
   }
 
   /**
