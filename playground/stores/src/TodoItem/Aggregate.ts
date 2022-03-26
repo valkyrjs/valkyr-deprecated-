@@ -1,13 +1,13 @@
 import type { Todo } from "../Todo";
-import { Member } from "../Workspace";
+import type { WorkspaceMember } from "../Workspace";
 
 export type TodoItem = {
   id: string;
   todoId: Todo["id"];
   isDone: boolean;
   data: string;
-  assignedTo: Member["id"];
-  createdBy: Member["id"];
+  assignedTo: WorkspaceMember["id"];
+  createdBy: WorkspaceMember["id"];
   createdAt: number;
   updatedAt: number;
   completedAt: number;

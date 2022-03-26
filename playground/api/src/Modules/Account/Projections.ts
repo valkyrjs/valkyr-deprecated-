@@ -1,5 +1,6 @@
 import { projection } from "@valkyr/ledger-server";
-import type {
+import {
+  account,
   AccountActivated,
   AccountAliasSet,
   AccountClosed,
@@ -7,9 +8,8 @@ import type {
   AccountEmailSet,
   AccountNameSet
 } from "stores";
-import { access } from "stores";
 
-import { collection } from "../../Collections";
+import { collection } from "../../Database/Collections";
 
 projection.on<AccountCreated>("AccountCreated", async ({ streamId, data: { email } }) => {
   await collection.accounts.insertOne({
@@ -23,7 +23,7 @@ projection.on<AccountCreated>("AccountCreated", async ({ streamId, data: { email
     email,
     token: ""
   });
-  await access.account.setup(streamId);
+  await account.access.setup(streamId);
 });
 
 projection.on<AccountActivated>("AccountActivated", async ({ streamId }) => {

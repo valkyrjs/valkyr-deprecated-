@@ -1,6 +1,6 @@
 import { container, Database, extend, Operation, RoleData } from "@valkyr/access";
 
-import { collection } from "../Collections";
+import { collection } from "../Database/Collections";
 
 container.set(
   "Database",

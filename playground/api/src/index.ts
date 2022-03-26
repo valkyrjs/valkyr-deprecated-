@@ -1,7 +1,7 @@
 import { ledger } from "@valkyr/ledger-server";
 
 import { config } from "./Config";
-import { mongo } from "./Lib/Mongo";
+import { mongo } from "./Database/Mongo";
 import { server } from "./Providers/Server";
 
 /*

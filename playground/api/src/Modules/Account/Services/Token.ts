@@ -1,7 +1,7 @@
 import { customAlphabet } from "nanoid";
 
-import { collection } from "../../../Collections";
 import { config } from "../../../Config";
+import { collection } from "../../../Database/Collections";
 
 const generateToken = customAlphabet(config.auth.token.letters, config.auth.token.length);
 

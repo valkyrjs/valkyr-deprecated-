@@ -1,8 +1,6 @@
 import { Attributes, container, createPermission, permissionGranted, PermissionHandler, Role } from "@valkyr/access";
 import { nanoid } from "@valkyr/utils";
 
-import type { Account } from "./Aggregate";
-
 /*
  |--------------------------------------------------------------------------------
  | Access
@@ -85,7 +83,7 @@ function getPermissions({ account }: Partial<Permissions>): Permissions {
  |--------------------------------------------------------------------------------
  */
 
-export const ACCOUNT_FLAGS: Record<keyof Account, number> = {
+export const ACCOUNT_FLAGS: Record<string, number> = {
   id: 1 << 0,
   status: 1 << 1,
   alias: 1 << 2,

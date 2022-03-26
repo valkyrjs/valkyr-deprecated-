@@ -1,7 +1,7 @@
 import { container } from "@valkyr/access";
 import { Auth } from "@valkyr/auth";
 import * as jwt from "jsonwebtoken";
-import { access, Account } from "stores";
+import { Account, account } from "stores";
 
 import { config } from "../../Config";
 import { hasData } from "../../Policies/hasData";
@@ -175,7 +175,7 @@ route.on<{ name: Account["name"] }>("account:setName", [
   async function (socket, { name }) {
     try {
       const auditor = socket.auth.auditor;
-      const permission = await access.account.for(auditor).can("setName", "account");
+      const permission = await account.access.for(auditor).can("setName", "account");
       if (permission.granted === false) {
         return this.reject(503, permission.message);
       }

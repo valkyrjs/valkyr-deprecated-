@@ -1,6 +1,6 @@
 import { ledger, publisher } from "@valkyr/ledger-server";
 
-import { collection } from "../../Collections";
+import { collection } from "../../Database/Collections";
 import { route } from "../../Providers/Server";
 
 /*

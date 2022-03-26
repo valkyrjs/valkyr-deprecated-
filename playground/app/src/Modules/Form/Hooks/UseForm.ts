@@ -5,7 +5,12 @@ import type { Inputs, Options, Props } from "../Types";
 
 type Actions<Data extends JSON> = {
   register(name: string): Props;
+
   data(): Data;
+  data(filter: string[]): Data;
+  data(filter: string): string;
+  data(filter?: string | string[]): Data | string;
+
   clear(): void;
 };
 
@@ -31,17 +36,36 @@ export function useForm<Data extends JSON>({ focus, defaultValues = {} }: Option
         }
       };
     },
-    data(): Data {
-      const data: JSON = {};
-      for (const key in inputs.current) {
-        data[key] = inputs.current[key].value;
+    data(filter?: string | string[]): Data | string {
+      if (filter) {
+        if (Array.isArray(filter)) {
+          return getDataByFilter(filter, inputs.current);
+        }
+        console.log(filter, inputs.current);
+        return inputs.current[filter].value;
       }
-      return data as Data;
+      return getData(inputs.current);
     },
     clear(): void {
       for (const key in inputs.current) {
         inputs.current[key].value = "";
       }
     }
-  };
+  } as Actions<Data>;
+}
+
+function getDataByFilter(keys: string[], inputs: Inputs) {
+  const data: any = {};
+  for (const key of keys) {
+    data[key] = inputs[key].value;
+  }
+  return data;
+}
+
+function getData(inputs: Inputs) {
+  const data: any = {};
+  for (const key in inputs) {
+    data[key] = inputs[key].value;
+  }
+  return data;
 }

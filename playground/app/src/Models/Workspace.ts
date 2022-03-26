@@ -1,11 +1,18 @@
 import { Collection, Model } from "@valkyr/db";
 import { ledger } from "@valkyr/ledger-client";
 import { nanoid } from "@valkyr/utils";
-import { events, Member, Workspace as WorkspaceAttributes } from "stores";
+import { Member, Workspace as WorkspaceAttributes, workspace } from "stores";
 
 import { adapter } from "../Providers/IdbAdapter";
+import { remote } from "../Remote";
 
 type Attributes = WorkspaceAttributes;
+
+/*
+ |--------------------------------------------------------------------------------
+ | Workspace
+ |--------------------------------------------------------------------------------
+ */
 
 export class Workspace extends Model<Attributes> {
   public static readonly $collection = new Collection<Attributes>("workspaces", adapter);
@@ -22,9 +29,32 @@ export class Workspace extends Model<Attributes> {
     Object.freeze(this);
   }
 
+  /*
+   |--------------------------------------------------------------------------------
+   | Actions
+   |--------------------------------------------------------------------------------
+   */
+
+  /**
+   * Create a new workspace with an initial member connected to a valid account.
+   *
+   * @param name      - Name of the workspace.
+   * @param accountId - Account id to assign as initial member.
+   */
   public static create(name: string, accountId: string) {
-    ledger.push(events.workspace.created(nanoid(), { name }, { auditor: accountId }));
+    const member: Member = {
+      id: nanoid(),
+      accountId,
+      name: ""
+    };
+    ledger.push(workspace.created(nanoid(), { name, members: [member] }, { auditor: member.id }));
   }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Serializer
+   |--------------------------------------------------------------------------------
+   */
 
   public toJSON(): Attributes {
     return super.toJSON({
@@ -34,35 +64,62 @@ export class Workspace extends Model<Attributes> {
   }
 }
 
+/*
+ |--------------------------------------------------------------------------------
+ | Members
+ |--------------------------------------------------------------------------------
+ */
+
 class Members {
   constructor(public readonly workspace: Workspace, public readonly members: Member[]) {}
 
-  public async add(accountId: string, auditor: string) {
-    const hasMember = this.members.find((member) => member.accountId === accountId);
-    if (hasMember !== undefined) {
-      throw new Error(`Workspace Member Violation: Account ${accountId} is already a member of this workspace.`);
-    }
-    ledger.push(
-      events.workspace.member.added(
-        this.workspace.id,
-        {
-          id: nanoid(),
-          accountId
-        },
-        {
-          auditor
-        }
-      )
-    );
+  /*
+   |--------------------------------------------------------------------------------
+   | Actions
+   |--------------------------------------------------------------------------------
+   */
+
+  /**
+   * Send a member invite to the provided email.
+   *
+   * @param email - Email to send invite to.
+   */
+  public async invite(email: string) {
+    return remote.post(`/workspaces/${this.workspace.id}/invite`, { email });
   }
 
+  /**
+   * Remove a member from the parent workspace.
+   *
+   * @param id      - Identifier of the member being removed.
+   * @param auditor - Member who is removing the member.
+   */
+  public async remove(id: string, auditor: string) {
+    ledger.push(workspace.member.removed(this.workspace.id, { id }, { auditor }));
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Queries
+   |--------------------------------------------------------------------------------
+   */
+
+  /**
+   * Get a member from the members array.
+   *
+   * @param id - Identifier of the member.
+   *
+   * @returns Member details if exists
+   */
   public get(id: string) {
     return this.members.find((member) => member.id === id);
   }
 
-  public async remove(id: string, auditor: string) {
-    ledger.push(events.workspace.member.removed(this.workspace.id, { id }, { auditor }));
-  }
+  /*
+   |--------------------------------------------------------------------------------
+   | Serializer
+   |--------------------------------------------------------------------------------
+   */
 
   public toJSON(): Member[] {
     return this.members;

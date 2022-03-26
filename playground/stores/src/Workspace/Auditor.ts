@@ -1,5 +1,5 @@
-import { Member } from "./Aggregate";
+import type { WorkspaceMember } from "./Aggregate";
 
 export type Auditor = {
-  auditor: Member["id"];
+  auditor: WorkspaceMember["id"];
 };

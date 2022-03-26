@@ -1,8 +1,6 @@
 import { Attributes, container, createPermission, Role } from "@valkyr/access";
 import { nanoid } from "@valkyr/utils";
 
-import type { Workspace } from "./Aggregate";
-
 /*
  |--------------------------------------------------------------------------------
  | Access
@@ -116,7 +114,7 @@ function getPermissions({ workspace, todo }: Partial<Permissions>): Permissions 
  |--------------------------------------------------------------------------------
  */
 
-export const WORKSPACE_FLAGS: Record<keyof Workspace, number> = {
+export const WORKSPACE_FLAGS: Record<string, number> = {
   id: 1 << 0,
   name: 1 << 1,
   members: 1 << 2

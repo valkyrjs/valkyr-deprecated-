@@ -1,6 +1,6 @@
 import { Collection, Document, Model } from "@valkyr/db";
 import { ledger } from "@valkyr/ledger-client";
-import { Account as Aggregate, events } from "stores";
+import { Account as Aggregate, account } from "stores";
 
 import { adapter } from "../Providers/IdbAdapter";
 
@@ -28,30 +28,30 @@ export class Account extends Model<Attributes> {
   }
 
   /*
- |--------------------------------------------------------------------------------
- | Actions
- |--------------------------------------------------------------------------------
- */
+   |--------------------------------------------------------------------------------
+   | Actions
+   |--------------------------------------------------------------------------------
+   */
 
   public setName(name: Attributes["name"]) {
     if (name.given === this.name?.given && name.family === this.name?.family) {
       return console.info("Name has not changed, skipping...");
     }
-    ledger.push(events.account.nameSet(this.id, { name }));
+    ledger.push(account.nameSet(this.id, { name }));
   }
 
   public setEmail(email: string) {
     if (email === this.email) {
       return console.info("Email has not changed, skipping...");
     }
-    ledger.push(events.account.emailSet(this.id, { email }));
+    ledger.push(account.emailSet(this.id, { email }));
   }
 
   /*
- |--------------------------------------------------------------------------------
- | Serializer
- |--------------------------------------------------------------------------------
- */
+   |--------------------------------------------------------------------------------
+   | Serializer
+   |--------------------------------------------------------------------------------
+   */
 
   public toJSON(): Attributes {
     return super.toJSON({
