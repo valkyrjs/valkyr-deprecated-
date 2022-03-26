@@ -1,8 +1,8 @@
+import { ledger } from "@valkyr/ledger-server";
 import { nanoid } from "nanoid";
 import { Account, events } from "stores";
 
 import { collection } from "../../../Collections";
-import { store } from "../../../Providers/EventStore";
 import { reducers } from "../Reducers";
 
 /*
@@ -14,12 +14,12 @@ import { reducers } from "../Reducers";
 export async function createAccount(email: string) {
   const accountId = nanoid();
 
-  const state = await store.reduce(accountId, reducers.account);
+  const state = await ledger.reduce(accountId, reducers.account);
   if (state) {
     throw new Error("Account already exists");
   }
 
-  await store.insert(events.account.created(accountId, { email }));
+  await ledger.insert(events.account.created(accountId, { email }));
 
   return getAccountByEmail(email);
 }
@@ -29,7 +29,7 @@ export async function activateAccount(accountId: string) {
   if (state.status === "active") {
     throw new Error("Account is already active");
   }
-  await store.insert(events.account.activated(accountId));
+  await ledger.insert(events.account.activated(accountId));
 }
 
 export async function setAccountName(accountId: string, name: Account["name"]) {
@@ -37,7 +37,7 @@ export async function setAccountName(accountId: string, name: Account["name"]) {
   if (state.name === name) {
     throw new Error("Name is already set");
   }
-  await store.insert(events.account.nameSet(accountId, { name }));
+  await ledger.insert(events.account.nameSet(accountId, { name }));
 }
 
 /*
@@ -69,7 +69,7 @@ export async function getAccountByEmail(email: string) {
  */
 
 async function getAccountState(accountId: string) {
-  const state = await store.reduce(accountId, reducers.account);
+  const state = await ledger.reduce(accountId, reducers.account);
   if (state === undefined) {
     throw new Error("Account not found");
   }

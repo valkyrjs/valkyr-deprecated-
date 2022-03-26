@@ -1,9 +1,9 @@
 import { Collection, Model } from "@valkyr/db";
+import { ledger } from "@valkyr/ledger-client";
 import { uuid } from "@valkyr/utils";
 import { events, Workspace as WorkspaceAttributes } from "stores";
 
 import { adapter } from "../Providers/IdbAdapter";
-import { push } from "../Providers/Stream";
 import { WorkspaceMember } from "./WorkspaceMember";
 
 type Attributes = WorkspaceAttributes;
@@ -22,7 +22,7 @@ export class Workspace extends Model<Attributes> {
   }
 
   public static create(name: string, accountId: string) {
-    push(events.workspace.created(uuid(), { name }, { auditor: accountId }));
+    ledger.push(events.workspace.created(uuid(), { name }, { auditor: accountId }));
   }
 
   public async addMember(accountId: string, auditor: string) {

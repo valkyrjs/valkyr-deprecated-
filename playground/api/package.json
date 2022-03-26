@@ -8,23 +8,17 @@
   "dependencies": {
     "@valkyr/access": "*",
     "@valkyr/auth": "*",
-    "@valkyr/ledger": "*",
-    "@valkyr/server": "*",
+    "@valkyr/ledger-server": "*",
     "@valkyr/utils": "*",
-    "chalk": "5.0.0",
-    "dotenv": "10.0.0",
-    "eventemitter3": "4.0.7",
-    "jsonwebtoken": "8.5.1",
-    "mongodb": "4.2.2",
-    "nanoid": "3.1.30",
+    "chalk": "^5.0.1",
+    "dotenv": "^16.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.4.1",
+    "nanoid": "^3.3.1",
     "stores": "*"
   },
   "devDependencies": {
-    "@swc/core": "1.2.124",
-    "@swc/helpers": "0.3.2",
-    "@types/eventemitter3": "2.0.2",
-    "@types/jsonwebtoken": "8.5.6",
-    "@types/mongodb": "4.0.6",
-    "ts-node-dev": "1.1.8"
+    "@types/jsonwebtoken": "^8.5.8",
+    "ts-node-dev": "^1.1.8"
   }
 }

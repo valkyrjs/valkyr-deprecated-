@@ -1,4 +1,4 @@
-import { subscribe } from "@valkyr/ledger";
+import { ledger } from "@valkyr/ledger-client";
 import { useEffect } from "react";
 
 import { useQuery } from "../../../Hooks/UseQuery";
@@ -10,7 +10,7 @@ export function useAccount() {
 
   useEffect(() => {
     if (auth.isAuthenticated) {
-      return subscribe(auth.auditor);
+      return ledger.subscribe(auth.auditor);
     }
   }, [auth.auditor]);
 

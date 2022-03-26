@@ -8,5 +8,9 @@
     {
       "mode": "auto"
     }
+  ],
+  "cSpell.words": [
+    "upsert",
+    "valkyr"
   ]
 }

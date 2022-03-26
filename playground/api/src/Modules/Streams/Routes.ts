@@ -1,8 +1,7 @@
+import { ledger } from "@valkyr/ledger-server";
 import { Event } from "stores";
 
-import { collection } from "../../Collections";
 import { hasData } from "../../Policies/hasData";
-import { store } from "../../Providers/EventStore";
 import { route } from "../../Providers/Server";
 
 // store.on("saved", (descriptor) => {
@@ -26,7 +25,7 @@ route.on<{ events: Event[] }>("streams:push", [
     // }
     for (const event of events) {
       try {
-        await store.insert(event);
+        await ledger.insert(event);
         socket.to(`stream:${event.streamId}`).emit("event", event);
       } catch (error) {
         return this.reject(400, error.message);
@@ -49,13 +48,7 @@ route.on<{ streamId: string; recorded?: string }>("streams:pull", [
     // if (!permission.granted) {
     //   return this.reject("You are not authorized to get events on this stream");
     // }
-    const filter: any = { streamId };
-    if (recorded) {
-      filter.recorded = {
-        $gt: recorded
-      };
-    }
-    return this.resolve(await collection.events.find(filter).sort({ recorded: 1 }).toArray());
+    return this.resolve(await ledger.pull(streamId, recorded));
   }
 ]);
 

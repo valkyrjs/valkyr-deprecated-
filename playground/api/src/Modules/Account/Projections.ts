@@ -1,4 +1,4 @@
-import { projection } from "@valkyr/ledger";
+import { projection } from "@valkyr/ledger-server";
 import type {
   AccountActivated,
   AccountAliasSet,

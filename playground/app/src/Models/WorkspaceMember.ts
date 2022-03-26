@@ -1,9 +1,9 @@
 import { Collection, Model } from "@valkyr/db";
+import { ledger } from "@valkyr/ledger-client";
 import { uuid } from "@valkyr/utils";
 import { events, WorkspaceMember as WorkspaceMemberAttributes } from "stores";
 
 import { adapter } from "../Providers/IdbAdapter";
-import { push } from "../Providers/Stream";
 
 type Attributes = WorkspaceMemberAttributes;
 
@@ -36,11 +36,11 @@ export class WorkspaceMember extends Model<Attributes> {
       throw new Error(`Workspace Member Violation: Account ${accountId} is already a member of this workspace.`);
     }
     const memberId = uuid();
-    push(events.workspaceMember.added(memberId, { workspaceId, accountId }, { auditor: auditor ?? memberId }));
+    ledger.push(events.workspaceMember.added(memberId, { workspaceId, accountId }, { auditor: auditor ?? memberId }));
   }
 
   public async remove(auditor: string) {
-    push(events.workspaceMember.removed(this.id, {}, { auditor }));
+    ledger.push(events.workspaceMember.removed(this.id, {}, { auditor }));
   }
 
   public toJSON(): Attributes {

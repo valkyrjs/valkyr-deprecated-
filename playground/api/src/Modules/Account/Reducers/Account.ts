@@ -1,4 +1,4 @@
-import { createReducer } from "@valkyr/ledger";
+import { createReducer } from "@valkyr/ledger-server";
 import type {
   Account,
   AccountActivated,

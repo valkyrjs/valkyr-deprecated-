@@ -1,22 +1,9 @@
 import { RoleData } from "@valkyr/access";
-import type { Account, Event } from "stores";
+import type { Account } from "stores";
 
 import { mongo } from "./Lib/Mongo";
 
 export const collection = {
   accounts: mongo.collection<Account>("accounts"),
-  events: mongo.collection<Event>("events"),
   roles: mongo.collection<RoleData<any>>("roles")
 };
-
-export async function loadCollections() {
-  await loadEventsIndexes();
-}
-
-async function loadEventsIndexes() {
-  await collection.events.createIndexes([
-    { name: "id", key: { eventId: 1 }, unique: true },
-    { name: "subscription", key: { streamId: 1, recorded: 1 }, unique: true },
-    { name: "outdated", key: { streamId: 1, type: 1, created: 1 } }
-  ]);
-}

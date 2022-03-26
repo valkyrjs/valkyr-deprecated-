@@ -1,4 +1,5 @@
-import { loadCollections } from "./Collections";
+import { ledger } from "@valkyr/ledger-server";
+
 import { config } from "./Config";
 import { mongo } from "./Lib/Mongo";
 import { server } from "./Providers/Server";
@@ -28,7 +29,6 @@ import { server } from "./Providers/Server";
 
 async function database(): Promise<void> {
   await mongo.connect();
-  await loadCollections();
 }
 
 /*
@@ -38,6 +38,7 @@ async function database(): Promise<void> {
  */
 
 async function providers(): Promise<void> {
+  await ledger.setup(mongo.db);
   await Promise.all([import("./Providers/Access"), import("./Providers/Auth")]);
 }
 

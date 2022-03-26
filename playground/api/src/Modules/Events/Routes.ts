@@ -1,4 +1,4 @@
-import { publisher } from "@valkyr/ledger";
+import { ledger, publisher } from "@valkyr/ledger-server";
 
 import { collection } from "../../Collections";
 import { route } from "../../Providers/Server";
@@ -26,7 +26,7 @@ route.on("events:rehydrate", [
         return new Promise<void>((resolve) => resolve());
       })
     );
-    const events = await collection.events.find({}, { sort: { date: 1 } }).toArray();
+    const events = await ledger.events();
     for (const event of events) {
       await publisher.project(event, { outdated: false, hydrated: true });
     }

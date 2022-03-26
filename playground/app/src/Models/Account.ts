@@ -1,8 +1,8 @@
 import { Collection, Document, Model } from "@valkyr/db";
+import { ledger } from "@valkyr/ledger-client";
 import { Account as Aggregate, events } from "stores";
 
 import { adapter } from "../Providers/IdbAdapter";
-import { push } from "../Providers/Stream";
 
 type Attributes = Document & {
   name?: Aggregate["name"];
@@ -37,14 +37,14 @@ export class Account extends Model<Attributes> {
     if (name.given === this.name?.given && name.family === this.name?.family) {
       return console.info("Name has not changed, skipping...");
     }
-    push(events.account.nameSet(this.id, { name }));
+    ledger.push(events.account.nameSet(this.id, { name }));
   }
 
   public setEmail(email: string) {
     if (email === this.email) {
       return console.info("Email has not changed, skipping...");
     }
-    push(events.account.emailSet(this.id, { email }));
+    ledger.push(events.account.emailSet(this.id, { email }));
   }
 
   /*

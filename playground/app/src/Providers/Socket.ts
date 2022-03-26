@@ -1,8 +1,6 @@
-import { Services, Socket } from "@valkyr/socket";
+import { Socket } from "@valkyr/socket";
 
-import { config } from "../../Config";
-import { Channels } from "./Channels";
-import { Streams } from "./Streams";
+import { config } from "../Config";
 
 /*
  |--------------------------------------------------------------------------------
@@ -11,16 +9,8 @@ import { Streams } from "./Streams";
  */
 
 export const socket = new Socket({
-  uri: config.socket,
-  services: {
-    channels: Channels,
-    streams: Streams
-  }
-}) as Socket &
-  Services<{
-    channels: Channels;
-    streams: Streams;
-  }>;
+  uri: config.socket
+});
 
 /*
  |--------------------------------------------------------------------------------
