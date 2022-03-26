@@ -1,6 +1,6 @@
+import { router } from "@valkyr/react";
 import { useEffect } from "react";
 
-import { router } from "../../../Router";
 import { InputsRef, usePin } from "../../Form/Hooks/UsePin";
 import { sign } from "../Auth";
 

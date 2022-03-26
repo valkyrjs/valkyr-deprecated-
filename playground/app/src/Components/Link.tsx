@@ -1,6 +1,6 @@
+import { router } from "@valkyr/react";
 import React from "react";
 
-import { router } from "../Router";
 import { isRelative } from "../Utils/Url";
 
 type Props = {

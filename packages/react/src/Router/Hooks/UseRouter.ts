@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { setup } from "../../Setup";
 import { router } from "../Router";
 
-export function useRouter(onError: (err: any) => JSX.Element | undefined): JSX.Element | null {
+export function useRouter(
+  setup: () => Promise<void>,
+  onError: (err: any) => JSX.Element | undefined
+): JSX.Element | null {
   const [view, setView] = useState<JSX.Element | null>(null);
 
   useEffect(() => {

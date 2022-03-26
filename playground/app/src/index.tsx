@@ -1,8 +1,9 @@
+import { useRouter } from "@valkyr/react";
 import React, { Fragment, ReactElement } from "react";
 import ReactDOM from "react-dom";
 
 import { PageLoader } from "./Modules/Loader/PageLoader";
-import { useRouter } from "./Router/Hooks/UseRouter";
+import { setup } from "./Setup";
 
 // Router.events.on("routeChangeStart", nProgress.start);
 // Router.events.on("routeChangeError", nProgress.done);
@@ -23,7 +24,7 @@ ReactDOM.render(<App />, document.getElementById("app"));
  */
 
 function App(): ReactElement {
-  const view = useRouter(handleError);
+  const view = useRouter(setup, handleError);
   if (!view) {
     return (
       <Fragment>

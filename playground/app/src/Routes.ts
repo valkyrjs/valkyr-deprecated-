@@ -1,8 +1,8 @@
-import { Route } from "@valkyr/router";
+import { Route, router } from "@valkyr/react";
 
+import { renderAuthorized } from "./Middleware/RenderAuthorized";
 import { AccountPage } from "./Pages/Account";
 import { Home } from "./Pages/Home";
-import { renderAuthorized, router } from "./Router";
 
 router.register([
   new Route("/", [renderAuthorized([Home], "Home")]),

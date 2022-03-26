@@ -1,0 +1,24 @@
+{
+  "name": "@valkyr/react",
+  "version": "0.0.0",
+  "description": "A valkyr toolkit for react applications.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "keywords": [
+    "dependency-injection"
+  ],
+  "main": "./src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@valkyr/router": "*"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.43"
+  },
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json"
+  }
+}
