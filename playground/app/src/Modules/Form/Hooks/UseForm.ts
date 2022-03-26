@@ -6,6 +6,7 @@ import type { Inputs, Options, Props } from "../Types";
 type Actions<Data extends JSON> = {
   register(name: string): Props;
   data(): Data;
+  clear(): void;
 };
 
 export function useForm<Data extends JSON>({ focus, defaultValues = {} }: Options<Data> = {}): Actions<Data> {
@@ -36,6 +37,11 @@ export function useForm<Data extends JSON>({ focus, defaultValues = {} }: Option
         data[key] = inputs.current[key].value;
       }
       return data as Data;
+    },
+    clear(): void {
+      for (const key in inputs.current) {
+        inputs.current[key].value = "";
+      }
     }
   };
 }

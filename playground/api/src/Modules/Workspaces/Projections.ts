@@ -1,11 +1,11 @@
-import { projection } from "@valkyr/ledger-client";
+import { projection } from "@valkyr/ledger-server";
 import { uuid } from "@valkyr/utils";
-import { WorkspaceCreated } from "stores";
+import type { WorkspaceCreated } from "stores";
 
-import { Workspace } from "../Models/Workspace";
+import { collection } from "../../Collections";
 
 projection.on<WorkspaceCreated>("WorkspaceCreated", async ({ streamId, data: { name }, meta: { auditor } }) => {
-  await Workspace.insert({
+  await collection.workspaces.insertOne({
     id: streamId,
     name,
     members: [

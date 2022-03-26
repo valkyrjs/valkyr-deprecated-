@@ -54,7 +54,8 @@ async function modules() {
     import("./Modules/Account"),
     import("./Modules/Channels"),
     import("./Modules/Events"),
-    import("./Modules/Streams")
+    import("./Modules/Streams"),
+    import("./Modules/Workspaces")
   ]);
 }
 

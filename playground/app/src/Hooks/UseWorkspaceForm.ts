@@ -21,6 +21,7 @@ export function useWorkspaceForm(): [State, Actions] {
         event.preventDefault();
         const { name } = form.data();
         Workspace.create(name, auth.auditor);
+        form.clear();
       }
     }
   ];
