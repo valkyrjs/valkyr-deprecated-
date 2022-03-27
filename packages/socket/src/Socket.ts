@@ -4,7 +4,7 @@ import { Message } from "./Message";
 
 const RECONNECT_INCREMENT = 1250; // 1.25 seconds
 const MAX_RECONNECT_DELAY = 1000 * 30; // 30 seconds
-const HEARTBEAT_INVERVAL = 1000 * 30; // 30 seconds
+const HEARTBEAT_INTERVAL = 1000 * 30; // 30 seconds
 
 /*
  |--------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ export class Socket extends EventEmitter {
       clearTimeout(heartbeat);
     }
     this.send("ping").finally(() => {
-      this._debounce.heartbeat = setTimeout(this.ping, HEARTBEAT_INVERVAL);
+      this._debounce.heartbeat = setTimeout(this.ping, HEARTBEAT_INTERVAL);
     });
   }
 

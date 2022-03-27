@@ -20,28 +20,10 @@ import { ValueStore } from "./ValueStore";
 
 export async function handleRoutingRequest(router: Router, location: Location, origin?: Location) {
   const resolved = getRoute(location.pathname);
-  if (resolved) {
-    const route = resolved.route;
-    const request = getRequest(resolved, location, router.history);
-    const response = await getResponse(request, route.actions, router.setProgress);
-
-    if (!response) {
-      throw new RenderActionMissingError(route.path);
-    }
-
-    switch (response.status) {
-      case "redirect": {
-        redirect(response, origin, router.goTo);
-        break;
-      }
-      case "render": {
-        router.setCurrentRoute(request).setProgress(0);
-        return response.components;
-      }
-    }
-  } else {
+  if (resolved === undefined) {
     throw new RouteNotFoundError(location.pathname);
   }
+  return getRoutingResponse(resolved, router, location, origin);
 }
 
 /*
@@ -49,6 +31,25 @@ export async function handleRoutingRequest(router: Router, location: Location, o
  | Router
  |--------------------------------------------------------------------------------
  */
+
+async function getRoutingResponse(resolved: Resolved, router: Router, location: Location, origin?: Location) {
+  const route = resolved.route;
+  const request = getRequest(resolved, location, router.history);
+  const response = await getResponse(request, route.actions, router.setProgress);
+  if (!response) {
+    throw new RenderActionMissingError(route.path);
+  }
+  switch (response.status) {
+    case "redirect": {
+      redirect(response, origin, router.goTo);
+      break;
+    }
+    case "render": {
+      router.setCurrentRoute(request).setProgress(0);
+      return response.components;
+    }
+  }
+}
 
 function getRequest(resolved: Resolved, location: Location, history: History): Request {
   return {

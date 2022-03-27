@@ -3,7 +3,7 @@
   Cross-origin Resource Sharing 
   
   This implementation is copied from https://github.com/expressjs/cors and modified
-  for use with the cmdo-http middleware.
+  for use with the @valkyr/server middleware.
 
  */
 
