@@ -18,8 +18,11 @@
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
+    "@valkyr/inverse": "*",
+    "@valkyr/ledger": "*",
     "@valkyr/utils": "*",
     "ioredis": "4.28.2",
+    "mongodb": "^4.4.1",
     "path-to-regexp": "6.2.0",
     "ws": "8.4.0"
   },

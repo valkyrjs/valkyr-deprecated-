@@ -14,7 +14,7 @@ import { db } from "./Database";
  */
 export async function insert(event: Event) {
   const record = createEventRecord(event);
-  await db.collection.insertOne(record);
+  await db.events.insertOne(record);
   await publisher.project(record, { hydrated: false, outdated: false });
 }
 
@@ -59,5 +59,5 @@ export async function reduce<AggregateRoot extends AggregateRootClass>(
  * @returns Outdated state of the event
  */
 export async function outdated({ streamId, type, created }: Event): Promise<boolean> {
-  return db.collection.count({ streamId, type, created: { $gt: created } }).then((count) => count > 0);
+  return db.events.count({ streamId, type, created: { $gt: created } }).then((count) => count > 0);
 }

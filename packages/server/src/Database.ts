@@ -3,7 +3,7 @@ import type { Event } from "@valkyr/ledger";
 import { container } from "./Container";
 
 export const db = {
-  get collection() {
+  get events() {
     return container.get("Database").collection<Event>("events");
   },
 
@@ -22,7 +22,7 @@ export const db = {
         [direction === 1 ? "$gt" : "$lt"]: created
       };
     }
-    return db.collection.find(filter).sort("created").toArray();
+    return db.events.find(filter).sort("created").toArray();
   },
 
   /**
@@ -41,7 +41,7 @@ export const db = {
         [direction === 1 ? "$gt" : "$lt"]: created
       };
     }
-    return db.collection.find(filter).sort({ created: direction }).toArray();
+    return db.events.find(filter).sort({ created: direction }).toArray();
   },
 
   async getRecorded(streamId: string, recorded?: string) {
@@ -51,6 +51,6 @@ export const db = {
         $gt: recorded
       };
     }
-    return db.collection.find(filter).sort({ recorded: 1 }).toArray();
+    return db.events.find(filter).sort({ recorded: 1 }).toArray();
   }
 };

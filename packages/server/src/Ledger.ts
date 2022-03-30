@@ -15,7 +15,7 @@ export async function loadCollections() {
 }
 
 async function loadEventsIndexes() {
-  await db.collection.createIndexes([
+  await db.events.createIndexes([
     { name: "id", key: { eventId: 1 }, unique: true },
     { name: "subscription", key: { streamId: 1, recorded: 1 }, unique: true },
     { name: "outdated", key: { streamId: 1, type: 1, created: 1 } }

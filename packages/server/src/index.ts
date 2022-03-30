@@ -1,3 +1,5 @@
+export * from "@valkyr/ledger";
+
 import type { RequestBody, RequestState } from "./Http";
 
 /*
@@ -22,6 +24,7 @@ declare module "http" {
 
 export * from "./Action";
 export * from "./Http/Response";
+export * from "./Ledger";
 export type { Middleware } from "./Middleware";
 export { Server } from "./Server";
 export type { SocketClient } from "./Socket";
