@@ -6,4 +6,5 @@ export type AggregateRootClass<T extends AggregateRoot = AggregateRoot> = {
 
 export abstract class AggregateRoot {
   public abstract apply(event: Event): void;
+  public abstract toJSON(): any;
 }
