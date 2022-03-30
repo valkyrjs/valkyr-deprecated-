@@ -1,4 +1,4 @@
-import { Event, ledger } from "@valkyr/ledger-server";
+import { Event, ledger } from "@valkyr/server";
 
 import { hasData } from "../../Policies/hasData";
 import { route } from "../../Providers/Server";

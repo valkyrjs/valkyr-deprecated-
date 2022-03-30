@@ -1,7 +1,7 @@
 import { Collection, Model } from "@valkyr/db";
 import { ledger } from "@valkyr/ledger-client";
 import { nanoid } from "@valkyr/utils";
-import { Member, Workspace as WorkspaceAttributes, workspace } from "stores";
+import { Workspace as WorkspaceAttributes, workspace, WorkspaceMember } from "stores";
 
 import { adapter } from "../Providers/IdbAdapter";
 import { remote } from "../Remote";
@@ -42,7 +42,7 @@ export class Workspace extends Model<Attributes> {
    * @param accountId - Account id to assign as initial member.
    */
   public static create(name: string, accountId: string) {
-    const member: Member = {
+    const member: WorkspaceMember = {
       id: nanoid(),
       accountId,
       name: ""
@@ -71,7 +71,7 @@ export class Workspace extends Model<Attributes> {
  */
 
 class Members {
-  constructor(public readonly workspace: Workspace, public readonly members: Member[]) {}
+  constructor(public readonly workspace: Workspace, public readonly members: WorkspaceMember[]) {}
 
   /*
    |--------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ class Members {
    |--------------------------------------------------------------------------------
    */
 
-  public toJSON(): Member[] {
+  public toJSON(): WorkspaceMember[] {
     return this.members;
   }
 }

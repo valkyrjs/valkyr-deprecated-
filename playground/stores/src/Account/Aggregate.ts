@@ -60,4 +60,14 @@ export class Account extends AggregateRoot {
       }
     }
   }
+
+  public toJSON() {
+    return {
+      id: this.id,
+      status: this.status,
+      name: this.name,
+      alias: this.alias,
+      email: this.email
+    };
+  }
 }

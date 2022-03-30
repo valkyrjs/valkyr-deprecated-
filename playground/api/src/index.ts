@@ -1,4 +1,4 @@
-import { ledger } from "@valkyr/ledger-server";
+import { ledger } from "@valkyr/server";
 
 import { config } from "./Config";
 import { mongo } from "./Database/Mongo";

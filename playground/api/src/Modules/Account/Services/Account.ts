@@ -1,4 +1,4 @@
-import { ledger } from "@valkyr/ledger-server";
+import { ledger } from "@valkyr/server";
 import { nanoid } from "nanoid";
 import { Account, account } from "stores";
 

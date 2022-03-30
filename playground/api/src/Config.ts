@@ -12,7 +12,7 @@ export const config = {
     }
   },
   mongo: {
-    name: process.env.MONGO_STREAMS_NAME || "toolkit",
+    name: process.env.MONGO_STREAMS_NAME || "valkyr",
     uri: process.env.MONGO_STREAMS_URI || "mongodb://localhost:27027"
   }
 };

@@ -1,4 +1,4 @@
-import { projection } from "@valkyr/ledger-server";
+import { projection } from "@valkyr/server";
 import {
   account,
   AccountActivated,

@@ -23,15 +23,55 @@ export type WorkspaceMember = {
 export class Workspace extends AggregateRoot {
   public id = "";
   public name = "";
-  public members: WorkspaceMember[] = [];
+  public members = new Members();
 
   public apply(event: WorkspaceEvent): void {
     switch (event.type) {
       case "WorkspaceCreated": {
         this.id = event.streamId;
         this.name = event.data.name;
-        this.members = event.data.members;
+        this.members.add(event.data.members);
       }
     }
+  }
+
+  public toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      members: this.members.toJSON()
+    };
+  }
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Aggregates
+ |--------------------------------------------------------------------------------
+ */
+
+class Members {
+  public members: WorkspaceMember[] = [];
+
+  public add(members: WorkspaceMember[]) {
+    for (const member of members) {
+      this.members.push(member);
+    }
+  }
+
+  public getByAccount(id: string) {
+    return this.members.find((member) => member.accountId === id);
+  }
+
+  public getByMember(id: string) {
+    return this.members.find((member) => member.id === id);
+  }
+
+  public remove(id: string) {
+    this.members = this.members.filter((member) => member.id !== id);
+  }
+
+  public toJSON() {
+    return this.members;
   }
 }

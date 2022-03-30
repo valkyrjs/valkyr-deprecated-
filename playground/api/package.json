@@ -8,7 +8,7 @@
   "dependencies": {
     "@valkyr/access": "*",
     "@valkyr/auth": "*",
-    "@valkyr/ledger-server": "*",
+    "@valkyr/server": "*",
     "@valkyr/utils": "*",
     "chalk": "^5.0.1",
     "dotenv": "^16.0.0",
