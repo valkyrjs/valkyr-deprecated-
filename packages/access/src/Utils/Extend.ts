@@ -9,11 +9,7 @@
 export function extend(source: any, target: any): any {
   const result = { ...source };
   for (const key in target) {
-    if (isExtendable(target[key])) {
-      result[key] = extend(source[key] || {}, target[key]);
-    } else {
-      result[key] = target[key];
-    }
+    result[key] = getTargetValue(target[key], source[key]);
   }
   return result;
 }
@@ -35,4 +31,11 @@ function isNotArray(value: any): boolean {
 
 function isNotDate(value: any): boolean {
   return Object.prototype.toString.call(value) === "[object Date]";
+}
+
+function getTargetValue(target: any, source: any = {}) {
+  if (isExtendable(target)) {
+    return extend(source, target);
+  }
+  return target;
 }
