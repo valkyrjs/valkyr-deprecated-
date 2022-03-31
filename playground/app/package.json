@@ -13,7 +13,7 @@
     "@valkyr/access": "*",
     "@valkyr/auth": "*",
     "@valkyr/db": "*",
-    "@valkyr/ledger-client": "*",
+    "@valkyr/client": "*",
     "@valkyr/react": "*",
     "@valkyr/socket": "*",
     "idb-keyval": "^6.1.0",

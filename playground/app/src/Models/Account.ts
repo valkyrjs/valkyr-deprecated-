@@ -1,5 +1,5 @@
 import { Collection, Document, Model } from "@valkyr/db";
-import { ledger } from "@valkyr/ledger-client";
+import { ledger } from "@valkyr/client";
 import { Account as Aggregate, account } from "stores";
 
 import { adapter } from "../Providers/IdbAdapter";

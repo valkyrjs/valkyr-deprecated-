@@ -1,6 +1,6 @@
 import "./Routes";
 
-import { ledger } from "@valkyr/ledger-client";
+import { ledger } from "@valkyr/client";
 
 import { resolve } from "./Modules/Auth";
 import { adapter } from "./Providers/IdbAdapter";

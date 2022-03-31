@@ -1,4 +1,4 @@
-import { ledger } from "@valkyr/ledger-client";
+import { ledger } from "@valkyr/client";
 import { useEffect } from "react";
 
 import { useQuery } from "../../../Hooks/UseQuery";

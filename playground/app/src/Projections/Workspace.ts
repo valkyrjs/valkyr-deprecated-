@@ -1,4 +1,4 @@
-import { projection } from "@valkyr/ledger-client";
+import { projection } from "@valkyr/client";
 import { WorkspaceCreated } from "stores";
 
 import { Workspace } from "../Models/Workspace";

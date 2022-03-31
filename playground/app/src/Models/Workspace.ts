@@ -1,5 +1,5 @@
 import { Collection, Model } from "@valkyr/db";
-import { ledger } from "@valkyr/ledger-client";
+import { ledger } from "@valkyr/client";
 import { nanoid } from "@valkyr/utils";
 import { Workspace as WorkspaceAttributes, workspace, WorkspaceMember } from "stores";
 

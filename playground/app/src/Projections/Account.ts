@@ -1,4 +1,4 @@
-import { projection } from "@valkyr/ledger-client";
+import { projection } from "@valkyr/client";
 import { AccountCreated, AccountNameSet } from "stores";
 
 import { Account } from "../Models/Account";
