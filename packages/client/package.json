@@ -1,7 +1,7 @@
 {
-  "name": "@valkyr/ledger-client",
+  "name": "@valkyr/client",
   "version": "0.0.0",
-  "description": "A client side solution for @valkyr/ledger.",
+  "description": "A client side solution for @valkyr applications.",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
