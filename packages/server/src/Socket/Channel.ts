@@ -14,17 +14,33 @@ type Excluded = Map<WebSocket, boolean>;
 export class SocketChannel {
   public readonly sockets: WebSockets = new Set();
 
-  constructor(public readonly server: Server, public readonly channelId: string, excluded: Excluded = new Map()) {
+  constructor(
+    public readonly server: Server,
+    public readonly channelId: string,
+    public readonly excluded: Excluded = new Map()
+  ) {
     const channel = server.channels.get(this.channelId);
     if (channel) {
       for (const socket of channel) {
-        if (socket.readyState === WebSocket.CLOSING || socket.readyState === WebSocket.CLOSED) {
-          server.leave(this.channelId, socket); // clean up disconnected sockets
-        } else if (!excluded.has(socket)) {
-          this.sockets.add(socket);
-        }
+        this.add(socket);
       }
     }
+  }
+
+  /**
+   * Add a socket to the channel.
+   *
+   * @param socket - WebSocket to add to the channel.
+   *
+   * @returns SocketChannel
+   */
+  public add(socket: WebSocket): this {
+    if (isSocketAvailable(socket) && this.excluded.has(socket) === false) {
+      this.sockets.add(socket);
+    } else if (this.excluded.has(socket)) {
+      this.server.leave(this.channelId, socket); // clean up disconnected sockets
+    }
+    return this;
   }
 
   /**
@@ -38,7 +54,7 @@ export class SocketChannel {
    * ```
    *
    */
-  public emit<Data extends Record<string, any>>(type: string, data: Data = {} as Data) {
+  public emit<Data extends Record<string, any>>(type: string, data: Data = {} as Data): void {
     const message = JSON.stringify({ type, data });
     this.server.redis?.publish(this.channelId, message);
     for (const socket of this.sockets) {
@@ -47,4 +63,15 @@ export class SocketChannel {
       }
     }
   }
+}
+
+/**
+ * Check if provided socket is available to receive new messages.
+ *
+ * @param socket - Socket to validate.
+ *
+ * @returns Socket availability
+ */
+function isSocketAvailable(socket: WebSocket) {
+  return socket.readyState === WebSocket.CLOSING || socket.readyState === WebSocket.CLOSED;
 }
