@@ -1,12 +1,13 @@
 import { createEvent, Event } from "@valkyr/ledger";
 
 import type { Auditor } from "../Workspace";
-import type { TodoItem } from "./Aggregate";
+import type { TodoItemState } from "./Aggregate";
 
-export type TodoItemAdded = Event<"TodoItemAdded", Pick<TodoItem, "data">, Auditor>;
-export type TodoItemDataSet = Event<"TodoItemDataSet", Pick<TodoItem, "id" | "data">, Auditor>;
-export type TodoItemDone = Event<"TodoItemDone", Pick<TodoItem, "id">, Auditor>;
-export type TodoItemUndone = Event<"TodoItemUndone", Pick<TodoItem, "id">, Auditor>;
+/*
+ |--------------------------------------------------------------------------------
+ | Events
+ |--------------------------------------------------------------------------------
+ */
 
 export const events = {
   added: createEvent<TodoItemAdded>("TodoItemAdded"),
@@ -14,3 +15,22 @@ export const events = {
   done: createEvent<TodoItemDone>("TodoItemDone"),
   undone: createEvent<TodoItemUndone>("TodoItemUndone")
 };
+
+/*
+ |--------------------------------------------------------------------------------
+ | Events Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type TodoItemAdded = Event<"TodoItemAdded", Pick<TodoItemState, "data">, Auditor>;
+export type TodoItemDataSet = Event<"TodoItemDataSet", Pick<TodoItemState, "id" | "data">, Auditor>;
+export type TodoItemDone = Event<"TodoItemDone", Pick<TodoItemState, "id">, Auditor>;
+export type TodoItemUndone = Event<"TodoItemUndone", Pick<TodoItemState, "id">, Auditor>;
+
+/*
+ |--------------------------------------------------------------------------------
+ | Events Union
+ |--------------------------------------------------------------------------------
+ */
+
+export type TodoItemEvent = TodoItemAdded | TodoItemDataSet | TodoItemDone | TodoItemUndone;

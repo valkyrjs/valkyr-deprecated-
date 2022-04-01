@@ -41,7 +41,7 @@ export class Workspace extends AggregateRoot {
     }
   }
 
-  public toJSON() {
+  public toJSON(): WorkspaceState {
     return {
       id: this.id,
       name: this.name,

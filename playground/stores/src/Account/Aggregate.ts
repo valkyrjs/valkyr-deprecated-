@@ -69,7 +69,7 @@ export class Account extends AggregateRoot {
     }
   }
 
-  public toJSON() {
+  public toJSON(): AccountState {
     return {
       id: this.id,
       status: this.status,

@@ -1,7 +1,7 @@
 import type { Todo } from "../Todo";
 import type { WorkspaceMember } from "../Workspace";
 
-export type TodoItem = {
+export type TodoItemState = {
   id: string;
   todoId: Todo["id"];
   isDone: boolean;

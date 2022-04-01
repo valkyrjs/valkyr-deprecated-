@@ -1,7 +1,29 @@
-import { Event } from "@valkyr/ledger";
+import { createEvent, Event } from "@valkyr/ledger";
 
 import type { WorkspaceMember, WorkspaceState } from "./Aggregate";
 import type { Auditor } from "./Auditor";
+
+/*
+ |--------------------------------------------------------------------------------
+ | Events
+ |--------------------------------------------------------------------------------
+ */
+
+export const events = {
+  created: createEvent<WorkspaceCreated>("WorkspaceCreated"),
+  nameSet: createEvent<WorkspaceNameSet>("WorkspaceNameSet"),
+  removed: createEvent<WorkspaceRemoved>("WorkspaceRemoved"),
+  member: {
+    added: createEvent<WorkspaceMemberAdded>("WorkspaceMemberAdded"),
+    removed: createEvent<WorkspaceMemberRemoved>("WorkspaceMemberRemoved")
+  }
+};
+
+/*
+ |--------------------------------------------------------------------------------
+ | Events Types
+ |--------------------------------------------------------------------------------
+ */
 
 export type WorkspaceCreated = Event<"WorkspaceCreated", Pick<WorkspaceState, "name" | "members">, Auditor>;
 export type WorkspaceNameSet = Event<"WorkspaceNameSet", Pick<WorkspaceState, "name">, Auditor>;
@@ -11,7 +33,7 @@ export type WorkspaceMemberRemoved = Event<"WorkspaceMemberRemoved", Pick<Worksp
 
 /*
  |--------------------------------------------------------------------------------
- | Event Exports
+ | Events Union
  |--------------------------------------------------------------------------------
  */
 
