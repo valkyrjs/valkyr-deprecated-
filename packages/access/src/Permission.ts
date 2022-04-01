@@ -52,8 +52,12 @@ export function createPermission<
   Permissions extends Role["permissions"] = Role["permissions"],
   Resource extends keyof Permissions = keyof Permissions
 >() {
-  return <R extends Resource>(resource: R, memberId: string) => ({
-    async can<A extends keyof Permissions[R], Handler extends PermissionHandler>(action: A, handler?: Handler) {
+  return <R extends Resource>(resource: R) => ({
+    async can<A extends keyof Permissions[R], Handler extends PermissionHandler>(
+      memberId: string,
+      action: A,
+      handler?: Handler
+    ) {
       const permissions: Permissions = await db.getPermissions(memberId);
       const value = permissions[resource][action];
       if (value === undefined || value === false) {

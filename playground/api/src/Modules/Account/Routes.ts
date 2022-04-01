@@ -178,7 +178,7 @@ route.on<{ name: Account.State["name"] }>("account:setName", [
   async function (socket, { name }) {
     try {
       const auditor = socket.auth.auditor;
-      const permission = await account.access.for("account", auditor).can("setName");
+      const permission = await account.access.for("account").can(auditor, "setName");
       if (permission.granted === false) {
         return this.reject(403, permission.message);
       }
