@@ -25,6 +25,11 @@ export const server = new Server({
   middleware: [auth],
   connected: (client) => {
     client.auth = Auth.guest();
+  },
+  disconnected: (client) => {
+    if (client.auth.isAuthenticated) {
+      client.leave(client.auth.auditor);
+    }
   }
 });
 

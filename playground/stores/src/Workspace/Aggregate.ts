@@ -4,9 +4,15 @@ import type { WorkspaceEvent } from "./Events";
 
 /*
  |--------------------------------------------------------------------------------
- | Types
+ | State
  |--------------------------------------------------------------------------------
  */
+
+export type WorkspaceState = {
+  id: string;
+  name: string;
+  members: WorkspaceMember[];
+};
 
 export type WorkspaceMember = {
   id: string;
@@ -57,6 +63,10 @@ class Members {
     for (const member of members) {
       this.members.push(member);
     }
+  }
+
+  public getAccountIds() {
+    return this.members.map((member) => member.accountId);
   }
 
   public getByAccount(id: string) {

@@ -121,6 +121,7 @@ route.on<{ token: string }>("account:resolve", [
   async function (socket, { token }) {
     try {
       socket.auth = await Auth.resolve(token);
+      socket.join(socket.auth.auditor);
     } catch (err) {
       return this.reject(400, err.message);
     }
@@ -158,7 +159,10 @@ route.on<{ tenantId: string }>("account:permissions", [
 
 route.on("account:logout", [
   async function (socket) {
-    socket.auth = await Auth.guest();
+    if (socket.auth.isAuthenticated) {
+      socket.leave(socket.auth.auditor);
+      socket.auth = await Auth.guest();
+    }
     return this.resolve();
   }
 ]);

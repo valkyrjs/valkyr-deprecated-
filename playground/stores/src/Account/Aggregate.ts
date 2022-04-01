@@ -4,9 +4,17 @@ import { AccountEvent } from "./Events";
 
 /*
  |--------------------------------------------------------------------------------
- | Types
+ | State
  |--------------------------------------------------------------------------------
  */
+
+export type AccountState = {
+  id: string;
+  status: Status;
+  name: Name;
+  alias: string;
+  email: string;
+};
 
 type Status = "onboarding" | "active" | "closed";
 

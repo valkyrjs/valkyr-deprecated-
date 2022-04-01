@@ -1,12 +1,12 @@
-import { Collection, Document, Model } from "@valkyr/db";
 import { ledger } from "@valkyr/client";
-import { Account as Aggregate, account } from "stores";
+import { Collection, Document, Model } from "@valkyr/db";
+import { account, AccountState } from "stores";
 
 import { adapter } from "../Providers/IdbAdapter";
 
 type Attributes = Document & {
-  name?: Aggregate["name"];
-  email: string;
+  name?: AccountState["name"];
+  email: AccountState["email"];
 };
 
 export class Account extends Model<Attributes> {

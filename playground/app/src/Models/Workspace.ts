@@ -1,12 +1,12 @@
-import { Collection, Model } from "@valkyr/db";
 import { ledger } from "@valkyr/client";
+import { Collection, Model } from "@valkyr/db";
 import { nanoid } from "@valkyr/utils";
-import { Workspace as WorkspaceAttributes, workspace, WorkspaceMember } from "stores";
+import { workspace, WorkspaceMember, WorkspaceState } from "stores";
 
 import { adapter } from "../Providers/IdbAdapter";
 import { remote } from "../Remote";
 
-type Attributes = WorkspaceAttributes;
+type Attributes = WorkspaceState;
 
 /*
  |--------------------------------------------------------------------------------

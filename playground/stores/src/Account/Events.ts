@@ -1,77 +1,12 @@
 import { Event } from "@valkyr/ledger";
 
-import { Account } from "./Aggregate";
+import { AccountState } from "./Aggregate";
 
-/*
- |--------------------------------------------------------------------------------
- | Account Creation
- |--------------------------------------------------------------------------------
- */
-
-export type AccountCreated = Event<
-  "AccountCreated",
-  {
-    email: Account["email"];
-  },
-  never
->;
-
-/*
- |--------------------------------------------------------------------------------
- | Account Status
- |--------------------------------------------------------------------------------
- */
-
+export type AccountCreated = Event<"AccountCreated", Pick<AccountState, "email">, never>;
 export type AccountActivated = Event<"AccountActivated", never, never>;
-
-/*
- |--------------------------------------------------------------------------------
- | Account Alias
- |--------------------------------------------------------------------------------
- */
-
-export type AccountAliasSet = Event<
-  "AccountAliasSet",
-  {
-    alias: Account["alias"];
-  },
-  never
->;
-
-/*
- |--------------------------------------------------------------------------------
- | Account Name
- |--------------------------------------------------------------------------------
- */
-
-export type AccountNameSet = Event<
-  "AccountNameSet",
-  {
-    name: Account["name"];
-  },
-  never
->;
-
-/*
- |--------------------------------------------------------------------------------
- | Account Email
- |--------------------------------------------------------------------------------
- */
-
-export type AccountEmailSet = Event<
-  "AccountEmailSet",
-  {
-    email: Account["email"];
-  },
-  never
->;
-
-/*
- |--------------------------------------------------------------------------------
- | Account Closure
- |--------------------------------------------------------------------------------
- */
-
+export type AccountAliasSet = Event<"AccountAliasSet", Pick<AccountState, "alias">, never>;
+export type AccountNameSet = Event<"AccountNameSet", Pick<AccountState, "name">, never>;
+export type AccountEmailSet = Event<"AccountEmailSet", Pick<AccountState, "email">, never>;
 export type AccountClosed = Event<"AccountClosed", never, never>;
 
 /*

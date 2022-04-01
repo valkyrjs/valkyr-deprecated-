@@ -1,60 +1,13 @@
 import { Event } from "@valkyr/ledger";
 
-import type { Workspace, WorkspaceMember } from "./Aggregate";
+import type { WorkspaceMember, WorkspaceState } from "./Aggregate";
 import type { Auditor } from "./Auditor";
 
-/*
- |--------------------------------------------------------------------------------
- | Workspace Creation
- |--------------------------------------------------------------------------------
- */
-
-export type WorkspaceCreated = Event<
-  "WorkspaceCreated",
-  {
-    name: Workspace["name"];
-    members: WorkspaceMember[];
-  },
-  Auditor
->;
-
-/*
- |--------------------------------------------------------------------------------
- | Workspace Details
- |--------------------------------------------------------------------------------
- */
-
-export type WorkspaceNameSet = Event<
-  "WorkspaceNameSet",
-  {
-    name: Workspace["name"];
-  },
-  Auditor
->;
-
-/*
- |--------------------------------------------------------------------------------
- | Workspace Removal
- |--------------------------------------------------------------------------------
- */
-
+export type WorkspaceCreated = Event<"WorkspaceCreated", Pick<WorkspaceState, "name" | "members">, Auditor>;
+export type WorkspaceNameSet = Event<"WorkspaceNameSet", Pick<WorkspaceState, "name">, Auditor>;
 export type WorkspaceRemoved = Event<"WorkspaceRemoved", never, never>;
-
-/*
- |--------------------------------------------------------------------------------
- | Workspace Memberships
- |--------------------------------------------------------------------------------
- */
-
 export type WorkspaceMemberAdded = Event<"WorkspaceMemberAdded", WorkspaceMember, Auditor>;
-
-export type WorkspaceMemberRemoved = Event<
-  "WorkspaceMemberRemoved",
-  {
-    id: WorkspaceMember["id"];
-  },
-  Auditor
->;
+export type WorkspaceMemberRemoved = Event<"WorkspaceMemberRemoved", Pick<WorkspaceMember, "id">, Auditor>;
 
 /*
  |--------------------------------------------------------------------------------

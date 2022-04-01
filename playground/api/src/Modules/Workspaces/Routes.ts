@@ -46,6 +46,13 @@ route.post("/workspaces/:workspaceId/invite", [
       return this.reject(403, "You are not a member of this workspace.");
     }
 
+    const invite = await collection.invites.findOne({ workspaceId, email });
+    if (invite !== null) {
+      return this.reject(400, "Workspace invite for this email has already been issued.", {
+        email
+      });
+    }
+
     // access check comes here ...
 
     await collection.invites.insertOne({
@@ -54,6 +61,7 @@ route.post("/workspaces/:workspaceId/invite", [
       email,
       auditor: member.id
     });
+
     return this.resolve();
   }
 ]);
