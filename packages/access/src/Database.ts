@@ -27,10 +27,7 @@ export const db = {
    * Set permission configuration for the given role.
    */
   async setPermissions(roleId: string, operations: Operation<any, any>[]): Promise<void> {
-    const update: any = {};
-    const $set: any = {};
-    const $unset: any = {};
-
+    const $set: Record<string, unknown> = {};
     for (const operation of operations) {
       switch (operation.type) {
         case "set": {
@@ -44,21 +41,14 @@ export const db = {
           if (action) {
             path += `.${action}`;
           }
-          $unset[path] = "";
+          $set[path] = "";
           break;
         }
       }
     }
-
     if (Object.keys($set).length) {
-      update.$set = $set;
+      await this.roles.updateOne({ roleId }, { $set }, { upsert: true });
     }
-
-    if (Object.keys($unset).length) {
-      update.$set = $unset;
-    }
-
-    await this.roles.updateOne({ roleId }, update, { upsert: true });
   },
 
   /**
