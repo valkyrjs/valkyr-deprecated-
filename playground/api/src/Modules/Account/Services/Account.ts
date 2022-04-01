@@ -13,7 +13,7 @@ import { collection } from "../../../Database/Collections";
 export async function createAccount(email: string) {
   const accountId = nanoid();
 
-  const state = await ledger.reduce(accountId, Account);
+  const state = await ledger.reduce(accountId, Account.Account);
   if (state) {
     throw new Error("Account already exists");
   }
@@ -31,7 +31,7 @@ export async function activateAccount(accountId: string) {
   await ledger.insert(account.activated(accountId));
 }
 
-export async function setAccountName(accountId: string, name: Account["name"]) {
+export async function setAccountName(accountId: string, name: Account.State["name"]) {
   const state = await getAccountState(accountId);
   if (state.name === name) {
     throw new Error("Name is already set");
@@ -68,7 +68,7 @@ export async function getAccountByEmail(email: string) {
  */
 
 async function getAccountState(accountId: string) {
-  const state = await ledger.reduce(accountId, Account);
+  const state = await ledger.reduce(accountId, Account.Account);
   if (state === undefined) {
     throw new Error("Account not found");
   }

@@ -1,6 +1,6 @@
 import { AggregateRoot } from "@valkyr/ledger";
 
-import type { WorkspaceEvent } from "./Events";
+import { Event } from "./Events";
 
 /*
  |--------------------------------------------------------------------------------
@@ -8,13 +8,13 @@ import type { WorkspaceEvent } from "./Events";
  |--------------------------------------------------------------------------------
  */
 
-export type WorkspaceState = {
+export type State = {
   id: string;
   name: string;
-  members: WorkspaceMember[];
+  members: Member[];
 };
 
-export type WorkspaceMember = {
+export type Member = {
   id: string;
   accountId: string;
   name: string;
@@ -31,7 +31,7 @@ export class Workspace extends AggregateRoot {
   public name = "";
   public members = new Members();
 
-  public apply(event: WorkspaceEvent): void {
+  public apply(event: Event): void {
     switch (event.type) {
       case "WorkspaceCreated": {
         this.id = event.streamId;
@@ -41,7 +41,7 @@ export class Workspace extends AggregateRoot {
     }
   }
 
-  public toJSON(): WorkspaceState {
+  public toJSON(): State {
     return {
       id: this.id,
       name: this.name,
@@ -57,9 +57,9 @@ export class Workspace extends AggregateRoot {
  */
 
 class Members {
-  public members: WorkspaceMember[] = [];
+  public members: Member[] = [];
 
-  public add(members: WorkspaceMember[]) {
+  public add(members: Member[]) {
     for (const member of members) {
       this.members.push(member);
     }

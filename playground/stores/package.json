@@ -3,9 +3,6 @@
   "name": "stores",
   "version": "0.0.0",
   "main": "./src/index.ts",
-  "files": [
-    "src"
-  ],
   "scripts": {
     "build": "ts-node ./build/stores.ts"
   },

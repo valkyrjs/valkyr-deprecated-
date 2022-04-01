@@ -1,17 +1,9 @@
 import { projection } from "@valkyr/server";
-import {
-  account,
-  AccountActivated,
-  AccountAliasSet,
-  AccountClosed,
-  AccountCreated,
-  AccountEmailSet,
-  AccountNameSet
-} from "stores";
+import { Account, account } from "stores";
 
 import { collection } from "../../Database/Collections";
 
-projection.on<AccountCreated>("AccountCreated", async ({ streamId, data: { email } }) => {
+projection.on<Account.Created>("AccountCreated", async ({ streamId, data: { email } }) => {
   await collection.accounts.insertOne({
     id: streamId,
     status: "onboarding",
@@ -26,22 +18,22 @@ projection.on<AccountCreated>("AccountCreated", async ({ streamId, data: { email
   await account.access.setup(streamId);
 });
 
-projection.on<AccountActivated>("AccountActivated", async ({ streamId }) => {
+projection.on<Account.Activated>("AccountActivated", async ({ streamId }) => {
   await collection.accounts.updateOne({ id: streamId }, { $set: { status: "active" } });
 });
 
-projection.on<AccountAliasSet>("AccountAliasSet", async ({ streamId, data: { alias } }) => {
+projection.on<Account.AliasSet>("AccountAliasSet", async ({ streamId, data: { alias } }) => {
   await collection.accounts.updateOne({ id: streamId }, { $set: { alias } });
 });
 
-projection.on<AccountNameSet>("AccountNameSet", async ({ streamId, data: { name } }) => {
+projection.on<Account.NameSet>("AccountNameSet", async ({ streamId, data: { name } }) => {
   await collection.accounts.updateOne({ id: streamId }, { $set: { name } });
 });
 
-projection.on<AccountEmailSet>("AccountEmailSet", async ({ streamId, data: { email } }) => {
+projection.on<Account.EmailSet>("AccountEmailSet", async ({ streamId, data: { email } }) => {
   await collection.accounts.updateOne({ id: streamId }, { $set: { email } });
 });
 
-projection.on<AccountClosed>("AccountClosed", async ({ streamId }) => {
+projection.on<Account.Closed>("AccountClosed", async ({ streamId }) => {
   await collection.accounts.updateOne({ id: streamId }, { $set: { status: "closed" } });
 });

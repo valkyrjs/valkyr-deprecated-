@@ -36,7 +36,7 @@ route.post("/workspaces/:workspaceId/invite", [
   isRequestAuthenticated,
   hasBody(["email"]),
   async function ({ params: { workspaceId }, body: { email }, auth }) {
-    const state = await ledger.reduce(workspaceId, Workspace);
+    const state = await ledger.reduce(workspaceId, Workspace.Workspace);
     if (state === undefined) {
       return this.reject(404, "Workspace does not exist, or has been removed.");
     }

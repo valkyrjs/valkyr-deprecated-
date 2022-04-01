@@ -1,6 +1,6 @@
 import { AggregateRoot } from "@valkyr/ledger";
 
-import { AccountEvent } from "./Events";
+import { Event } from "./Events";
 
 /*
  |--------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ import { AccountEvent } from "./Events";
  |--------------------------------------------------------------------------------
  */
 
-export type AccountState = {
+export type State = {
   id: string;
   status: Status;
   name: Name;
@@ -39,7 +39,7 @@ export class Account extends AggregateRoot {
   public alias = "";
   public email = "";
 
-  public apply(event: AccountEvent): void {
+  public apply(event: Event): void {
     switch (event.type) {
       case "AccountCreated": {
         this.id = event.streamId;
@@ -69,7 +69,7 @@ export class Account extends AggregateRoot {
     }
   }
 
-  public toJSON(): AccountState {
+  public toJSON(): State {
     return {
       id: this.id,
       status: this.status,

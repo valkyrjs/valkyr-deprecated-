@@ -1,16 +1,16 @@
 import { projection } from "@valkyr/client";
-import { AccountCreated, AccountNameSet } from "stores";
+import { Account as Acct } from "stores";
 
 import { Account } from "../Models/Account";
 
-projection.on<AccountCreated>("AccountCreated", async ({ streamId, data: { email } }) => {
+projection.on<Acct.Created>("AccountCreated", async ({ streamId, data: { email } }) => {
   await Account.insert({
     id: streamId,
     email
   });
 });
 
-projection.on<AccountNameSet>("AccountNameSet", async ({ streamId, data: { name } }) => {
+projection.on<Acct.NameSet>("AccountNameSet", async ({ streamId, data: { name } }) => {
   await Account.update({
     id: streamId,
     name

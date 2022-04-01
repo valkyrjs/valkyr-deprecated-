@@ -1,17 +1,7 @@
 import { createReducer } from "@valkyr/server";
-import type {
-  Account,
-  AccountActivated,
-  AccountAliasSet,
-  AccountClosed,
-  AccountCreated,
-  AccountEmailSet,
-  AccountNameSet
-} from "stores";
+import type { Account } from "stores";
 
-type Event = AccountCreated | AccountActivated | AccountAliasSet | AccountNameSet | AccountEmailSet | AccountClosed;
-
-export const account = createReducer<Account, Event>(
+export const account = createReducer<Account.State, Account.Event>(
   {
     id: "",
     status: "onboarding",
@@ -20,8 +10,7 @@ export const account = createReducer<Account, Event>(
       family: "",
       given: ""
     },
-    email: "",
-    token: ""
+    email: ""
   },
   (state, event) => {
     switch (event.type) {

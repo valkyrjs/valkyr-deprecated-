@@ -1,12 +1,12 @@
 import { ledger } from "@valkyr/client";
 import { Collection, Document, Model } from "@valkyr/db";
-import { account, AccountState } from "stores";
+import { Account as Acct, account } from "stores";
 
 import { adapter } from "../Providers/IdbAdapter";
 
 type Attributes = Document & {
-  name?: AccountState["name"];
-  email: AccountState["email"];
+  name?: Acct.State["name"];
+  email: Acct.State["email"];
 };
 
 export class Account extends Model<Attributes> {

@@ -173,7 +173,7 @@ route.on("account:logout", [
  |--------------------------------------------------------------------------------
  */
 
-route.on<{ name: Account["name"] }>("account:setName", [
+route.on<{ name: Account.State["name"] }>("account:setName", [
   isSocketAuthenticated,
   hasData(["name"]),
   async function (socket, { name }) {

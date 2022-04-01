@@ -1,10 +1,10 @@
 import decode from "jwt-decode";
-import { Auditor } from "stores";
+import { Workspace } from "stores";
 
 type Status = "authenticated" | "unauthenticated";
 
 type Data = {
-  auditor: Auditor;
+  auditor: Workspace.Auditor;
 };
 
 export const auth = {

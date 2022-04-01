@@ -1,7 +1,7 @@
-import { WorkspaceMember } from "stores";
+import { Workspace as Wksp } from "stores";
 
 export type Workspace = {
   id: string;
   name: string;
-  members: WorkspaceMember[];
+  members: Wksp.Member[];
 };

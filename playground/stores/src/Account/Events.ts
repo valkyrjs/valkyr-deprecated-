@@ -1,6 +1,6 @@
-import { createEvent, Event } from "@valkyr/ledger";
+import { createEvent, Event as LedgerEvent } from "@valkyr/ledger";
 
-import { AccountState } from "./Aggregate";
+import { State } from "./Aggregate";
 
 /*
  |--------------------------------------------------------------------------------
@@ -9,12 +9,12 @@ import { AccountState } from "./Aggregate";
  */
 
 export const events = {
-  created: createEvent<AccountCreated>("AccountCreated"),
-  activated: createEvent<AccountActivated>("AccountActivated"),
-  aliasSet: createEvent<AccountAliasSet>("AccountAliasSet"),
-  nameSet: createEvent<AccountNameSet>("AccountNameSet"),
-  emailSet: createEvent<AccountEmailSet>("AccountEmailSet"),
-  closed: createEvent<AccountClosed>("AccountClosed")
+  created: createEvent<Created>("AccountCreated"),
+  activated: createEvent<Activated>("AccountActivated"),
+  aliasSet: createEvent<AliasSet>("AccountAliasSet"),
+  nameSet: createEvent<NameSet>("AccountNameSet"),
+  emailSet: createEvent<EmailSet>("AccountEmailSet"),
+  closed: createEvent<Closed>("AccountClosed")
 };
 
 /*
@@ -23,12 +23,12 @@ export const events = {
  |--------------------------------------------------------------------------------
  */
 
-export type AccountCreated = Event<"AccountCreated", Pick<AccountState, "email">, never>;
-export type AccountActivated = Event<"AccountActivated", never, never>;
-export type AccountAliasSet = Event<"AccountAliasSet", Pick<AccountState, "alias">, never>;
-export type AccountNameSet = Event<"AccountNameSet", Pick<AccountState, "name">, never>;
-export type AccountEmailSet = Event<"AccountEmailSet", Pick<AccountState, "email">, never>;
-export type AccountClosed = Event<"AccountClosed", never, never>;
+export type Created = LedgerEvent<"AccountCreated", Pick<State, "email">, never>;
+export type Activated = LedgerEvent<"AccountActivated", never, never>;
+export type AliasSet = LedgerEvent<"AccountAliasSet", Pick<State, "alias">, never>;
+export type NameSet = LedgerEvent<"AccountNameSet", Pick<State, "name">, never>;
+export type EmailSet = LedgerEvent<"AccountEmailSet", Pick<State, "email">, never>;
+export type Closed = LedgerEvent<"AccountClosed", never, never>;
 
 /*
  |--------------------------------------------------------------------------------
@@ -36,10 +36,4 @@ export type AccountClosed = Event<"AccountClosed", never, never>;
  |--------------------------------------------------------------------------------
  */
 
-export type AccountEvent =
-  | AccountCreated
-  | AccountActivated
-  | AccountAliasSet
-  | AccountNameSet
-  | AccountEmailSet
-  | AccountClosed;
+export type Event = Created | Activated | AliasSet | NameSet | EmailSet | Closed;
