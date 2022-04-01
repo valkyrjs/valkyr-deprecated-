@@ -17,20 +17,3 @@ export class TestRole extends Role<{
     };
   }
 }
-
-export async function mockRoles() {
-  await Promise.all([
-    TestRole.create({
-      tenantId: "tenant-1",
-      name: "Administrator"
-    }),
-    TestRole.create({
-      tenantId: "tenant-1",
-      name: "User"
-    }),
-    TestRole.create({
-      tenantId: "tenant-1",
-      name: "Administrator"
-    })
-  ]);
-}
