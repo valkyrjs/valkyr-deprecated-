@@ -1,24 +1,28 @@
 import { MongoClient } from "mongodb";
 import { MongoMemoryServer } from "mongodb-memory-server";
 
-import { access } from "../../src";
-
 export class MongoDbTestContainer {
   private constructor(public readonly server: MongoMemoryServer, public readonly client: MongoClient) {}
 
   public static async start() {
     const server = await MongoMemoryServer.create();
     const client = await MongoClient.connect(server.getUri());
-
-    await access.setup(client.db(server.instanceInfo!.dbName));
-
     return new MongoDbTestContainer(server, client);
   }
 
+  public get name() {
+    if (this.server.instanceInfo === undefined) {
+      throw new Error("MongoDbTestContainer Violation: Could not resolve database name");
+    }
+    return this.server.instanceInfo.dbName;
+  }
+
+  public get db() {
+    return this.client.db(this.name);
+  }
+
   public get collection() {
-    return this.client
-      .db(this.server.instanceInfo!.dbName)
-      .collection.bind(this.client.db(this.server.instanceInfo!.dbName));
+    return this.db.collection.bind(this.db);
   }
 
   public async stop() {

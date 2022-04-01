@@ -1,14 +1,13 @@
 {
-  "name": "@valkyr/access",
+  "name": "@valkyr/testing",
   "version": "0.0.0",
-  "description": "Simple access control solution written in TypeScript.",
+  "description": "Testing tools for @valkyr packages.",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
   "keywords": [
-    "access-control",
-    "security",
-    "acl"
+    "unit-testing",
+    "testing"
   ],
   "main": "./src/index.ts",
   "files": [
@@ -17,12 +16,8 @@
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json"
   },
-  "dependencies": {
-    "@valkyr/inverse": "*",
-    "@valkyr/testing": "*",
-    "@valkyr/utils": "*"
-  },
   "devDependencies": {
+    "mongodb-memory-server": "^8.4.2",
     "mongodb": "^4.4.1"
   }
 }

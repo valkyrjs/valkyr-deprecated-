@@ -1,4 +1,6 @@
-import { MongoDbTestContainer } from "./Mocks/Database";
+import { MongoDbTestContainer } from "@valkyr/testing";
+
+import { access } from "../src";
 import { TestRole } from "./Mocks/TestRole";
 
 let container: MongoDbTestContainer;
@@ -6,6 +8,7 @@ let roleId: string;
 
 beforeEach(async () => {
   container = await MongoDbTestContainer.start();
+  await access.setup(container.db);
   roleId = await TestRole.create({
     tenantId: "tenant-1",
     name: "Administrator"
