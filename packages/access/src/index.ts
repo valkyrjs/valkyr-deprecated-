@@ -1,6 +1,27 @@
-export { Attributes } from "./Attributes";
-export { container } from "./Container";
-export { createPermission, permissionDenied, permissionGranted, PermissionHandler } from "./Permission";
-export { Operation, Role, RoleData } from "./Role";
-export type { Database } from "./Services";
-export { extend } from "./Utils/Extend";
+import type { Db } from "mongodb";
+
+import { container } from "./Container";
+
+export * from "./Attributes";
+export * from "./Permission";
+export * from "./Role";
+
+/*
+ |--------------------------------------------------------------------------------
+ | Setup
+ |--------------------------------------------------------------------------------
+ */
+
+async function setup(database: Db) {
+  container.set("Database", database);
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Access
+ |--------------------------------------------------------------------------------
+ */
+
+export const access = {
+  setup
+};

@@ -1,3 +1,4 @@
+import { access } from "@valkyr/access";
 import { ledger } from "@valkyr/server";
 
 import { config } from "./Config";
@@ -38,8 +39,9 @@ async function database(): Promise<void> {
  */
 
 async function providers(): Promise<void> {
+  await access.setup(mongo.db);
   await ledger.setup(mongo.db);
-  await Promise.all([import("./Providers/Access"), import("./Providers/Auth")]);
+  await Promise.all([import("./Providers/Auth")]);
 }
 
 /*

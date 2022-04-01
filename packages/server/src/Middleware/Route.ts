@@ -15,12 +15,13 @@ export function route(server: Server): Middleware {
   return async (req: IncomingMessage, res: ServerResponse) => {
     try {
       await handleRequest(server, req, res);
-    } catch (error) {
-      if (error instanceof HttpError) {
-        handleResponse(res, error);
+    } catch (err) {
+      if (err instanceof HttpError) {
+        handleResponse(res, err);
       } else {
-        handleResponse(res, new HttpError(500, "Internal server error", error));
+        handleResponse(res, new HttpError(500, "Internal server error", err));
       }
+      console.log(err);
     } finally {
       res.end();
     }

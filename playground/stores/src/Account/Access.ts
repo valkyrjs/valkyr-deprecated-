@@ -1,85 +1,15 @@
-import { Attributes, container, createPermission, permissionGranted, PermissionHandler, Role } from "@valkyr/access";
-import { nanoid } from "@valkyr/utils";
+import {
+  Attributes,
+  createPermission,
+  getPermissions,
+  permissionGranted,
+  PermissionHandler,
+  Role
+} from "@valkyr/access";
 
 /*
  |--------------------------------------------------------------------------------
- | Access
- |--------------------------------------------------------------------------------
- */
-
-export const access = {
-  setup: async (accountId: string) => {
-    await createAccountRole(accountId);
-  },
-  for: createPermission<Permissions>(),
-  read
-};
-
-/*
- |--------------------------------------------------------------------------------
- | Role
- |--------------------------------------------------------------------------------
- */
-
-export async function getAccountRole(roleId: string, db = container.get("Database")) {
-  const data = await db.getRole<Permissions>(roleId);
-  if (data) {
-    return new Role<Permissions>({
-      ...data,
-      permissions: getPermissions(data.permissions)
-    });
-  }
-}
-
-async function createAccountRole(accountId: string, db = container.get("Database")): Promise<void> {
-  await db.addRole({
-    tenantId: accountId,
-    roleId: nanoid(),
-    name: "Owner",
-    settings: {},
-    permissions: {
-      account: {
-        setAlias: true,
-        setName: true,
-        setEmail: true,
-        read: getAccountAttributes().enable(["id", "name", "alias", "email", "status"]).toNumber()
-      }
-    },
-    members: [accountId]
-  });
-}
-
-/*
- |--------------------------------------------------------------------------------
- | Permissions
- |--------------------------------------------------------------------------------
- */
-
-export type Permissions = {
-  account: {
-    setAlias: boolean;
-    setEmail: boolean;
-    setName: boolean;
-    read: number; // bitflag value
-    close: boolean;
-  };
-};
-
-function getPermissions({ account }: Partial<Permissions>): Permissions {
-  return {
-    account: {
-      setAlias: account?.setAlias === true,
-      setName: account?.setAlias === true,
-      setEmail: account?.setAlias === true,
-      read: account?.read ?? 0,
-      close: account?.close === true
-    }
-  };
-}
-
-/*
- |--------------------------------------------------------------------------------
- | Attributes
+ | Bitflags
  |--------------------------------------------------------------------------------
  */
 
@@ -92,8 +22,67 @@ export const ACCOUNT_FLAGS: Record<string, number> = {
   token: 1 << 5
 };
 
-export function getAccountAttributes(flag?: number) {
-  return new Attributes(ACCOUNT_FLAGS, flag);
+/*
+ |--------------------------------------------------------------------------------
+ | Role
+ |--------------------------------------------------------------------------------
+ */
+
+export class AccountRole extends Role<{
+  account: {
+    setAlias: boolean;
+    setEmail: boolean;
+    setName: boolean;
+    read: number; // bitflag value
+    close: boolean;
+  };
+}> {
+  public static getAttributes(flag?: number) {
+    return new Attributes(ACCOUNT_FLAGS, flag);
+  }
+
+  public static getPermissions({ account }: Partial<AccountRole["permissions"]>): AccountRole["permissions"] {
+    return {
+      account: {
+        setAlias: account?.setAlias === true,
+        setName: account?.setAlias === true,
+        setEmail: account?.setAlias === true,
+        read: account?.read ?? 0,
+        close: account?.close === true
+      }
+    };
+  }
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Access
+ |--------------------------------------------------------------------------------
+ */
+
+export const access = {
+  setup: async (accountId: string) => {
+    await createAccountRole(accountId);
+  },
+  for: createPermission<AccountRole["permissions"]>(),
+  permissions: getPermissions<AccountRole["permissions"]>(),
+  read
+};
+
+async function createAccountRole(accountId: string) {
+  await AccountRole.create({
+    tenantId: accountId,
+    name: "Owner",
+    permissions: {
+      account: {
+        setAlias: true,
+        setName: true,
+        setEmail: true,
+        read: AccountRole.getAttributes().enable(["id", "name", "alias", "email", "status"]).toNumber()
+      }
+    },
+    members: [accountId]
+  });
 }
 
 /*
@@ -102,6 +91,6 @@ export function getAccountAttributes(flag?: number) {
  |--------------------------------------------------------------------------------
  */
 
-export function read(): PermissionHandler<Permissions["account"]["read"]> {
-  return (flag) => permissionGranted(getAccountAttributes(flag));
+export function read(): PermissionHandler<AccountRole["permissions"]["account"]["read"]> {
+  return (flag) => permissionGranted(AccountRole.getAttributes(flag));
 }

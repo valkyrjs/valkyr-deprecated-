@@ -53,7 +53,10 @@ route.post("/workspaces/:workspaceId/invite", [
       });
     }
 
-    // access check comes here ...
+    const permission = await workspace.access.for("workspace", member.id).can("addMember");
+    if (permission.granted === false) {
+      return this.reject(403, permission.message);
+    }
 
     await collection.invites.insertOne({
       workspaceId,

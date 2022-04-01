@@ -1,4 +1,3 @@
-import { container } from "@valkyr/access";
 import { Auth } from "@valkyr/auth";
 import * as jwt from "jsonwebtoken";
 import { Account, account } from "stores";
@@ -143,7 +142,7 @@ route.on<{ tenantId: string }>("account:permissions", [
   isSocketAuthenticated,
   hasData(["tenantId"]),
   async function (socket) {
-    return this.resolve(await container.get("Database").getPermissions(socket.auth.auditor));
+    return this.resolve(await account.access.permissions(socket.auth.auditor));
   }
 ]);
 
@@ -179,9 +178,9 @@ route.on<{ name: Account.State["name"] }>("account:setName", [
   async function (socket, { name }) {
     try {
       const auditor = socket.auth.auditor;
-      const permission = await account.access.for(auditor).can("setName", "account");
+      const permission = await account.access.for("account", auditor).can("setName");
       if (permission.granted === false) {
-        return this.reject(503, permission.message);
+        return this.reject(403, permission.message);
       }
       await setAccountName(auditor, name);
       return this.resolve();

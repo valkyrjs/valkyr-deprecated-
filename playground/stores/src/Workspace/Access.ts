@@ -1,18 +1,15 @@
-import { Attributes, container, createPermission, Role } from "@valkyr/access";
-import { nanoid } from "@valkyr/utils";
+import { Attributes, createPermission, getPermissions, Role } from "@valkyr/access";
 
 /*
  |--------------------------------------------------------------------------------
- | Access
+ | Bitflags
  |--------------------------------------------------------------------------------
  */
 
-export const access = {
-  setup: async (workspaceId: string) => {
-    await createAdminRole(workspaceId);
-    await createMemberRole(workspaceId);
-  },
-  for: createPermission<Permissions>()
+export const WORKSPACE_FLAGS: Record<string, number> = {
+  id: 1 << 0,
+  name: 1 << 1,
+  members: 1 << 2
 };
 
 /*
@@ -21,22 +18,62 @@ export const access = {
  |--------------------------------------------------------------------------------
  */
 
-export async function getWorkspaceRole(roleId: string, db = container.get("Database")) {
-  const data = await db.getRole<Permissions>(roleId);
-  if (data) {
-    return new Role<Permissions>({
-      ...data,
-      permissions: getPermissions(data.permissions)
-    });
+export class WorkspaceRole extends Role<{
+  workspace: {
+    setName: boolean;
+    addMember: boolean;
+    delete: boolean;
+  };
+  todo: {
+    create: boolean;
+    assign: boolean;
+    setData: boolean;
+    delete: boolean;
+  };
+}> {
+  public static getAttributes(flag?: number) {
+    return new Attributes(WORKSPACE_FLAGS, flag);
+  }
+
+  public static getPermissions({
+    workspace,
+    todo
+  }: Partial<WorkspaceRole["permissions"]>): WorkspaceRole["permissions"] {
+    return {
+      workspace: {
+        setName: workspace?.setName === true,
+        addMember: workspace?.addMember === true,
+        delete: workspace?.delete === true
+      },
+      todo: {
+        create: todo?.create === true,
+        assign: todo?.assign === true,
+        setData: todo?.setData === true,
+        delete: todo?.delete === true
+      }
+    };
   }
 }
 
-export async function createAdminRole(workspaceId: string, db = container.get("Database")): Promise<void> {
-  await db.addRole({
+/*
+ |--------------------------------------------------------------------------------
+ | Access
+ |--------------------------------------------------------------------------------
+ */
+
+export const access = {
+  setup: async (workspaceId: string, members: string[]) => {
+    await createAdminRole(workspaceId, members);
+    await createMemberRole(workspaceId);
+  },
+  for: createPermission<WorkspaceRole["permissions"]>(),
+  permissions: getPermissions<WorkspaceRole["permissions"]>()
+};
+
+export async function createAdminRole(workspaceId: string, members: string[]): Promise<void> {
+  await WorkspaceRole.create({
     tenantId: workspaceId,
-    roleId: nanoid(),
     name: "Admin",
-    settings: {},
     permissions: {
       workspace: {
         setName: true,
@@ -50,16 +87,14 @@ export async function createAdminRole(workspaceId: string, db = container.get("D
         delete: true
       }
     },
-    members: []
+    members
   });
 }
 
-export async function createMemberRole(workspaceId: string, db = container.get("Database")): Promise<void> {
-  await db.addRole({
+export async function createMemberRole(workspaceId: string): Promise<void> {
+  await WorkspaceRole.create({
     tenantId: workspaceId,
-    roleId: nanoid(),
     name: "Member",
-    settings: {},
     permissions: {
       todo: {
         create: true,
@@ -67,59 +102,6 @@ export async function createMemberRole(workspaceId: string, db = container.get("
         setData: true,
         delete: true
       }
-    },
-    members: []
-  });
-}
-
-/*
- |--------------------------------------------------------------------------------
- | Permissions
- |--------------------------------------------------------------------------------
- */
-
-export type Permissions = {
-  workspace: {
-    setName: boolean;
-    addMember: boolean;
-    delete: boolean;
-  };
-  todo: {
-    create: boolean;
-    assign: boolean;
-    setData: boolean;
-    delete: boolean;
-  };
-};
-
-function getPermissions({ workspace, todo }: Partial<Permissions>): Permissions {
-  return {
-    workspace: {
-      setName: workspace?.setName === true,
-      addMember: workspace?.addMember === true,
-      delete: workspace?.delete === true
-    },
-    todo: {
-      create: todo?.create === true,
-      assign: todo?.assign === true,
-      setData: todo?.setData === true,
-      delete: todo?.delete === true
     }
-  };
-}
-
-/*
- |--------------------------------------------------------------------------------
- | Attributes
- |--------------------------------------------------------------------------------
- */
-
-export const WORKSPACE_FLAGS: Record<string, number> = {
-  id: 1 << 0,
-  name: 1 << 1,
-  members: 1 << 2
-};
-
-export function getWorkspaceFlags(flag?: number) {
-  return new Attributes(WORKSPACE_FLAGS, flag);
+  });
 }

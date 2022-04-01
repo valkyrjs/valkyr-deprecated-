@@ -22,12 +22,12 @@
     "@valkyr/ledger": "*",
     "@valkyr/utils": "*",
     "ioredis": "4.28.2",
-    "mongodb": "^4.4.1",
     "path-to-regexp": "6.2.0",
     "ws": "8.4.0"
   },
   "devDependencies": {
     "@types/ioredis": "4.28.5",
-    "@types/ws": "8.2.2"
+    "@types/ws": "8.2.2",
+    "mongodb": "^4.4.1"
   }
 }

@@ -1,6 +1,6 @@
-type MappedFlags = Record<string, number>;
+type BitFlags = Record<string, number>;
 
-export class Attributes<Flags extends MappedFlags = MappedFlags> {
+export class Attributes<Flags extends BitFlags = BitFlags> {
   constructor(public readonly flags: Flags, private flag = 0) {}
 
   /**

@@ -18,6 +18,10 @@
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
-    "@valkyr/inverse": "*"
+    "@valkyr/inverse": "*",
+    "@valkyr/utils": "*"
+  },
+  "devDependencies": {
+    "mongodb": "^4.4.1"
   }
 }

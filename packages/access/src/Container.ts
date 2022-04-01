@@ -1,7 +1,6 @@
 import { Container } from "@valkyr/inverse";
-
-import { Database } from "./Services";
+import type { Db } from "mongodb";
 
 export const container = new Container<{
-  Database: Database;
+  Database: Db;
 }>();
