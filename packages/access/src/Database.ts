@@ -2,7 +2,7 @@ import { extend } from "@valkyr/utils";
 
 import { container } from "./Container";
 import type { RoleData } from "./Role";
-import type { Operation } from "./RolePermission";
+import { Operation, permissionOperation } from "./RolePermission";
 
 export const db = {
   get roles() {
@@ -27,15 +27,12 @@ export const db = {
    * Set permission configuration for the given role.
    */
   async setPermissions(roleId: string, operations: Operation<any, any>[]): Promise<void> {
-    let $set: Record<string, unknown> = {};
-    for (const operation of operations) {
-      $set = {
-        ...$set,
-        ...getPermissionUpdate(operation)
-      };
-    }
-    if (Object.keys($set).length) {
-      await this.roles.updateOne({ roleId }, { $set }, { upsert: true });
+    if (operations.length > 0) {
+      let update: Record<string, unknown> = {};
+      for (const operation of operations) {
+        update = permissionOperation[operation.type](update, operation as any);
+      }
+      await this.roles.updateOne({ roleId }, update, { upsert: true });
     }
   },
 
@@ -80,24 +77,3 @@ export const db = {
     );
   }
 };
-
-function getPermissionUpdate(operation: Operation<any, any>) {
-  const $set: Record<string, unknown> = {};
-  switch (operation.type) {
-    case "set": {
-      const { resource, action, data = true } = operation;
-      $set[`permissions.${resource}.${action}`] = data;
-      break;
-    }
-    case "unset": {
-      const { resource, action } = operation;
-      let path = `permissions.${resource}`;
-      if (action) {
-        path += `.${action}`;
-      }
-      $set[path] = "";
-      break;
-    }
-  }
-  return $set;
-}

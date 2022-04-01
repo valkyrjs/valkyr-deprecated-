@@ -68,3 +68,36 @@ export class RolePermission<
     await db.setPermissions(this.roleId, this.operations);
   }
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Utilities
+ |--------------------------------------------------------------------------------
+ */
+
+export const permissionOperation = {
+  set(update: Record<string, any>, operation: SetOperation<any, any, any>) {
+    const { resource, action, data = true } = operation;
+    return {
+      ...update,
+      $set: {
+        ...(update.$set ?? {}),
+        [`permissions.${resource}.${action}`]: data
+      }
+    };
+  },
+  unset(update: Record<string, any>, operation: UnsetOperation<any, any>) {
+    const { resource, action } = operation;
+    let path = `permissions.${resource}`;
+    if (action) {
+      path += `.${action}`;
+    }
+    return {
+      ...update,
+      $unset: {
+        ...(update.$unset ?? {}),
+        [path]: ""
+      }
+    };
+  }
+};
