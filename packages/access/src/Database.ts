@@ -27,24 +27,12 @@ export const db = {
    * Set permission configuration for the given role.
    */
   async setPermissions(roleId: string, operations: Operation<any, any>[]): Promise<void> {
-    const $set: Record<string, unknown> = {};
+    let $set: Record<string, unknown> = {};
     for (const operation of operations) {
-      switch (operation.type) {
-        case "set": {
-          const { resource, action, data = true } = operation;
-          $set[`permissions.${resource}.${action}`] = data;
-          break;
-        }
-        case "unset": {
-          const { resource, action } = operation;
-          let path = `permissions.${resource}`;
-          if (action) {
-            path += `.${action}`;
-          }
-          $set[path] = "";
-          break;
-        }
-      }
+      $set = {
+        ...$set,
+        ...getPermissionUpdate(operation)
+      };
     }
     if (Object.keys($set).length) {
       await this.roles.updateOne({ roleId }, { $set }, { upsert: true });
@@ -92,3 +80,24 @@ export const db = {
     );
   }
 };
+
+function getPermissionUpdate(operation: Operation<any, any>) {
+  const $set: Record<string, unknown> = {};
+  switch (operation.type) {
+    case "set": {
+      const { resource, action, data = true } = operation;
+      $set[`permissions.${resource}.${action}`] = data;
+      break;
+    }
+    case "unset": {
+      const { resource, action } = operation;
+      let path = `permissions.${resource}`;
+      if (action) {
+        path += `.${action}`;
+      }
+      $set[path] = "";
+      break;
+    }
+  }
+  return $set;
+}
