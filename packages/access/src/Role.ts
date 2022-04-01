@@ -19,7 +19,7 @@ type RoleSettings<P extends RolePermissions> = {
   tenantId: RoleData["tenantId"];
   name: RoleData["name"];
   settings?: RoleData["settings"];
-  permissions: RoleData<P>["permissions"];
+  permissions?: RoleData<P>["permissions"];
   members?: RoleData["members"];
 };
 
@@ -47,15 +47,17 @@ export class Role<
     Object.freeze(this);
   }
 
-  public static async create<P extends RolePermissions>(settings: RoleSettings<P>) {
+  public static async create<P extends RolePermissions>(settings: RoleSettings<P>): Promise<string> {
+    const roleId = nanoid();
     await db.addRole({
       tenantId: settings.tenantId,
-      roleId: nanoid(),
+      roleId,
       name: settings.name,
       settings: settings.settings ?? {},
-      permissions: settings.permissions,
+      permissions: settings.permissions ?? {},
       members: settings.members ?? []
     });
+    return roleId;
   }
 
   /**

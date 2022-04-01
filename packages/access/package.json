@@ -22,6 +22,7 @@
     "@valkyr/utils": "*"
   },
   "devDependencies": {
+    "mongodb-memory-server": "^8.4.2",
     "mongodb": "^4.4.1"
   }
 }

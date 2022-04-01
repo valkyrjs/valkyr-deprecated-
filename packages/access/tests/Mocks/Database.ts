@@ -1,42 +1,28 @@
-import { container } from "../../src/Container";
-import { Role } from "../../src/Role";
-import { TestDatabase } from "./Providers/TestDatabase";
+import { MongoClient } from "mongodb";
+import { MongoMemoryServer } from "mongodb-memory-server";
 
-export function createMockDatabase() {
-  const db = container.set("Database", new TestDatabase()).get("Database");
+import { access } from "../../src";
 
-  db.addRole(
-    new Role({
-      tenantId: "tenant-1",
-      roleId: "role-1",
-      name: "Administrator",
-      settings: {},
-      permissions: {},
-      members: []
-    }).toJSON()
-  );
+export class MongoDbTestContainer {
+  private constructor(public readonly server: MongoMemoryServer, public readonly client: MongoClient) {}
 
-  db.addRole(
-    new Role({
-      tenantId: "tenant-1",
-      roleId: "role-2",
-      name: "User",
-      settings: {},
-      permissions: {},
-      members: []
-    }).toJSON()
-  );
+  public static async start() {
+    const server = await MongoMemoryServer.create();
+    const client = await MongoClient.connect(server.getUri());
 
-  db.addRole(
-    new Role({
-      tenantId: "tenant-1",
-      roleId: "role-3",
-      name: "Administrator",
-      settings: {},
-      permissions: {},
-      members: []
-    }).toJSON()
-  );
+    await access.setup(client.db(server.instanceInfo!.dbName));
 
-  return db;
+    return new MongoDbTestContainer(server, client);
+  }
+
+  public get collection() {
+    return this.client
+      .db(this.server.instanceInfo!.dbName)
+      .collection.bind(this.client.db(this.server.instanceInfo!.dbName));
+  }
+
+  public async stop() {
+    await this.client.close();
+    await this.server.stop();
+  }
 }
