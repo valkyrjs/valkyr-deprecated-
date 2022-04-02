@@ -1,4 +1,4 @@
-import { AggregateRoot } from "@valkyr/ledger";
+import { Aggregate, AggregateRoot } from "@valkyr/ledger";
 
 import { Event } from "./Events";
 
@@ -36,7 +36,9 @@ export class Workspace extends AggregateRoot {
       case "WorkspaceCreated": {
         this.id = event.streamId;
         this.name = event.data.name;
-        this.members.add(event.data.members);
+        for (const member of event.data.members) {
+          this.members.add(member);
+        }
       }
     }
   }
@@ -56,32 +58,16 @@ export class Workspace extends AggregateRoot {
  |--------------------------------------------------------------------------------
  */
 
-class Members {
-  public members: Member[] = [];
-
-  public add(members: Member[]) {
-    for (const member of members) {
-      this.members.push(member);
-    }
-  }
-
+class Members extends Aggregate<Member> {
   public getAccountIds() {
-    return this.members.map((member) => member.accountId);
+    return this.index.map((member) => member.accountId);
   }
 
   public getByAccount(id: string) {
-    return this.members.find((member) => member.accountId === id);
+    return this.index.find((member) => member.accountId === id);
   }
 
   public getByMember(id: string) {
-    return this.members.find((member) => member.id === id);
-  }
-
-  public remove(id: string) {
-    this.members = this.members.filter((member) => member.id !== id);
-  }
-
-  public toJSON() {
-    return this.members;
+    return this.get(id);
   }
 }

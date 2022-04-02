@@ -27,6 +27,7 @@ export const events = {
 export type Created = LedgerEvent<"WorkspaceCreated", Pick<State, "name" | "members">, Auditor>;
 export type NameSet = LedgerEvent<"WorkspaceNameSet", Pick<State, "name">, Auditor>;
 export type Removed = LedgerEvent<"WorkspaceRemoved", never, never>;
+
 export type MemberAdded = LedgerEvent<"WorkspaceMemberAdded", Member, Auditor>;
 export type MemberRemoved = LedgerEvent<"WorkspaceMemberRemoved", Pick<Member, "id">, Auditor>;
 
