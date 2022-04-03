@@ -2,7 +2,7 @@ import { router } from "@valkyr/react";
 import { useEffect } from "react";
 
 import { auth } from "../../../Auth";
-import { InputsRef, usePin } from "../../../Components/Pin";
+import { InputsRef, usePin } from "../../../Hooks/UsePin";
 
 type Actions = {
   submit(): void;

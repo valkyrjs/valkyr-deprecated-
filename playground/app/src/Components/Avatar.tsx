@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-import { Link } from "../../../Components/Link";
-import { useAccount } from "../../../Hooks/UseAccount";
+import { useAccount } from "../Hooks/UseAccount";
+import { Link } from "./Link";
 
 /*
  |--------------------------------------------------------------------------------
@@ -17,6 +17,12 @@ export function Avatar() {
   }
   return <Guest />;
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Inner Components
+ |--------------------------------------------------------------------------------
+ */
 
 function Account({ email }: { email: string }) {
   return (

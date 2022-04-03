@@ -2,9 +2,8 @@
   "name": "app",
   "version": "0.0.0",
   "description": "A space where we test out the functionality of our packages. It also serves as a sample space for various ways we can create applications.",
-  "source": "src/index.html",
   "scripts": {
-    "start": "parcel --port 3000",
+    "start": "parcel ./src/index.html --port 3000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

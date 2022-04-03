@@ -24,6 +24,12 @@ export const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
   }
+
+  input {
+    &:focus {
+      outline: none;
+    }
+  }
 `;
 
 function shadeColor(color: string, percent: number): string {

@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
+import { Avatar } from "../Components/Avatar";
 import { Workspace as WorkspaceInstance } from "../Data";
 import { useInviteForm } from "../Hooks/UseInviteForm";
 import { useWorkspaceForm } from "../Hooks/UseWorkspaceForm";
 import { useWorkspaces } from "../Hooks/UseWorkspaces";
-import { Avatar } from "../Modules/Auth";
 
 /*
  |--------------------------------------------------------------------------------
@@ -22,6 +22,12 @@ export function Home(): JSX.Element | null {
     </S.Container>
   );
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Inner Components
+ |--------------------------------------------------------------------------------
+ */
 
 function Workspaces() {
   const workspaces = useWorkspaces();
