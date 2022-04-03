@@ -1,17 +1,3 @@
-import { atob } from "./Atob";
-
-function b64DecodeUnicode(str: string) {
-  return decodeURIComponent(
-    atob(str).replace(/(.)/g, function (m, p) {
-      let code = p.charCodeAt(0).toString(16).toUpperCase();
-      if (code.length < 2) {
-        code = "0" + code;
-      }
-      return "%" + code;
-    })
-  );
-}
-
 export function base64UrlDecode(str: string) {
   let output = str.replace(/-/g, "+").replace(/_/g, "/");
   switch (output.length % 4) {
@@ -31,4 +17,16 @@ export function base64UrlDecode(str: string) {
   } catch (err) {
     return atob(output);
   }
+}
+
+function b64DecodeUnicode(str: string) {
+  return decodeURIComponent(
+    atob(str).replace(/(.)/g, function (m, p) {
+      let code = p.charCodeAt(0).toString(16).toUpperCase();
+      if (code.length < 2) {
+        code = "0" + code;
+      }
+      return "%" + code;
+    })
+  );
 }
