@@ -5,6 +5,7 @@ import { container } from "./Container";
 import { remote } from "./Remote";
 import { subscribe } from "./Subscriber";
 
+export * from "./JsonWebToken";
 export * from "./Models/Cache";
 export * from "./Models/Cursor";
 export * from "@valkyr/ledger";
