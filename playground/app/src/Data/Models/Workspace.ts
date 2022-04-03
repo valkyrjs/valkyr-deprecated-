@@ -3,7 +3,7 @@ import { Collection, Model } from "@valkyr/db";
 import { nanoid } from "@valkyr/utils";
 import { Workspace as Wksp, workspace } from "stores";
 
-import { adapter } from "../Providers/IdbAdapter";
+import { adapter } from "../Adapter";
 import { remote } from "../Remote";
 
 type Attributes = Wksp.State;

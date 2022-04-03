@@ -1,8 +1,8 @@
 import { router } from "@valkyr/react";
 import { useEffect } from "react";
 
-import { InputsRef, usePin } from "../../Form/Hooks/UsePin";
-import { sign } from "../Auth";
+import { auth } from "../../../Auth";
+import { InputsRef, usePin } from "../../../Components/Pin";
 
 type Actions = {
   submit(): void;
@@ -19,7 +19,8 @@ export function useToken(email: string): [InputsRef, Actions] {
     inputs,
     {
       submit() {
-        sign(email, data())
+        auth
+          .sign(email, data())
           .then(() => {
             router.reload();
           })

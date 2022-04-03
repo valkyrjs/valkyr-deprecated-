@@ -1,9 +1,9 @@
 import React from "react";
 
+import { Workspace as WorkspaceInstance } from "../Data";
 import { useInviteForm } from "../Hooks/UseInviteForm";
 import { useWorkspaceForm } from "../Hooks/UseWorkspaceForm";
 import { useWorkspaces } from "../Hooks/UseWorkspaces";
-import { Workspace as WorkspaceInstance } from "../Models/Workspace";
 import { Avatar } from "../Modules/Auth";
 import styles from "../Styles/Pages/Home.module.scss";
 

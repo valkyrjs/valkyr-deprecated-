@@ -2,7 +2,7 @@ import { ledger } from "@valkyr/client";
 import { Collection, Document, Model } from "@valkyr/db";
 import { Account as Acct, account } from "stores";
 
-import { adapter } from "../Providers/IdbAdapter";
+import { adapter } from "../Adapter";
 
 type Attributes = Document & {
   name?: Acct.State["name"];

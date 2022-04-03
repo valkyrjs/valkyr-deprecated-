@@ -1,6 +1,6 @@
-import { Workspace } from "../Models/Workspace";
-import { auth } from "../Modules/Auth";
-import { useForm } from "../Modules/Form/Hooks/UseForm";
+import { auth } from "../Auth";
+import { Workspace } from "../Data";
+import { useForm } from "./UseForm";
 
 type State = ReturnType<typeof useForm>["register"];
 

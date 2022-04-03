@@ -1,5 +1,5 @@
-import { auth } from "./Auth";
-import { config } from "./Config";
+import { auth } from "../Auth";
+import { config } from "../Config";
 
 type SuccessResponse<Data = any> = {
   status: "success";

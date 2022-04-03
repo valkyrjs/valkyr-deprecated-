@@ -1,7 +1,17 @@
-import { useRef } from "react";
+import { InputHTMLAttributes, useRef } from "react";
 
-import { JSON } from "../../../Types";
-import type { Inputs, Options, Props } from "../Types";
+import { JSON } from "../Types";
+
+export type Props = InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>;
+
+export type Inputs = {
+  [name: string]: HTMLInputElement | HTMLTextAreaElement;
+};
+
+export type Options<Data> = {
+  focus?: keyof Data;
+  defaultValues?: any;
+};
 
 type Actions<Data extends JSON> = {
   register(name: string): Props;

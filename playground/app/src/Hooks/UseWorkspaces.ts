@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 
 import { auth } from "../Auth";
-import { Workspace } from "../Models/Workspace";
-import { remote } from "../Remote";
+import { remote, Workspace } from "../Data";
 import { useQuery } from "./UseQuery";
 
 export function useWorkspaces() {

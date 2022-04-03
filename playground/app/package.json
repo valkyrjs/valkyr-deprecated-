@@ -17,19 +17,18 @@
     "@valkyr/react": "*",
     "@valkyr/socket": "*",
     "idb-keyval": "^6.1.0",
-    "jwt-decode": "3.1.2",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.4.0",
-    "@parcel/transformer-typescript-tsc": "^2.4.0",
-    "@types/react": "^17.0.39",
-    "@types/react-dom": "^17.0.11",
-    "parcel": "^2.4.0",
+    "@parcel/transformer-sass": "^2.4.1",
+    "@parcel/transformer-typescript-tsc": "^2.4.1",
+    "@types/react": "^17.0.43",
+    "@types/react-dom": "^17.0.14",
+    "parcel": "^2.4.1",
     "postcss": "^8.4.12",
     "postcss-modules": "^4.3.1",
-    "sass": "^1.45.2",
+    "sass": "^1.49.11",
     "sharp": "^0.29.3"
   }
 }

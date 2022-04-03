@@ -1,4 +1,3 @@
-export * from "./Auth";
 export { Avatar } from "./Components/Avatar";
 export { Email } from "./Components/Email";
 export { Token } from "./Components/Token";

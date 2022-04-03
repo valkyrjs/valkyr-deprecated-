@@ -1,5 +1,5 @@
-import { useForm } from "../../Form/Hooks/UseForm";
-import { create } from "../Auth";
+import { auth } from "../../../Auth";
+import { useForm } from "../../../Hooks/UseForm";
 import type { AuthDispatch } from "../Reducer";
 
 type State = ReturnType<typeof useForm>["register"];
@@ -23,7 +23,7 @@ export function useEmail(dispatch: AuthDispatch): [State, Actions] {
         if (email === "") {
           return alert("ENTER AN EMAIL");
         }
-        create(email).then(() => {
+        auth.create(email).then(() => {
           dispatch({ type: "SHOW_PIN", email });
         });
       }

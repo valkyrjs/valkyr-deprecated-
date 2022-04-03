@@ -1,8 +1,8 @@
 import { useRouter } from "@valkyr/react";
 import React, { Fragment, ReactElement } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
-import { PageLoader } from "./Modules/Loader/PageLoader";
+import { PageLoader } from "./Components/Loader";
 import { setup } from "./Setup";
 
 // Router.events.on("routeChangeStart", nProgress.start);
@@ -15,7 +15,7 @@ import { setup } from "./Setup";
  |--------------------------------------------------------------------------------
  */
 
-ReactDOM.render(<App />, document.getElementById("app"));
+createRoot(document.getElementById("app")).render(<App />);
 
 /*
  |--------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ function App(): ReactElement {
  |--------------------------------------------------------------------------------
  */
 
-function handleError(err: any): JSX.Element {
+function handleError(err: any): ReactElement {
   return (
     <div className="flex h-screen">
       <div className="m-auto">

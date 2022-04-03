@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Link } from "../../../Components/Link";
-import { useAccount } from "../../Account/Hooks/UseAccount";
+import { useAccount } from "../../../Hooks/UseAccount";
 
 export function Avatar() {
   const account = useAccount();
