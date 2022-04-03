@@ -2,8 +2,9 @@ import { useRouter } from "@valkyr/react";
 import React, { Fragment, ReactElement } from "react";
 import { createRoot } from "react-dom/client";
 
-import { PageLoader } from "./Components/Loader";
+import { PageLoader } from "./Components/PageLoader";
 import { setup } from "./Setup";
+import { GlobalStyle } from "./Styles";
 
 // Router.events.on("routeChangeStart", nProgress.start);
 // Router.events.on("routeChangeError", nProgress.done);
@@ -28,11 +29,17 @@ function App(): ReactElement {
   if (!view) {
     return (
       <Fragment>
+        <GlobalStyle />
         <PageLoader />
       </Fragment>
     );
   }
-  return view;
+  return (
+    <Fragment>
+      <GlobalStyle />
+      {view}
+    </Fragment>
+  );
 }
 
 /*

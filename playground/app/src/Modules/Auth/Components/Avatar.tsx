@@ -1,7 +1,14 @@
 import React from "react";
+import styled from "styled-components";
 
 import { Link } from "../../../Components/Link";
 import { useAccount } from "../../../Hooks/UseAccount";
+
+/*
+ |--------------------------------------------------------------------------------
+ | Component
+ |--------------------------------------------------------------------------------
+ */
 
 export function Avatar() {
   const account = useAccount();
@@ -13,12 +20,30 @@ export function Avatar() {
 
 function Account({ email }: { email: string }) {
   return (
-    <div>
+    <S.Container>
       Hi, {email}. <Link href="/account">Account</Link>
-    </div>
+    </S.Container>
   );
 }
 
 function Guest() {
-  return <div>Guest</div>;
+  return <S.Container>Guest</S.Container>;
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Styles
+ |--------------------------------------------------------------------------------
+ */
+
+const S = {
+  Container: styled.div`
+    h1 {
+      font-size: 38px;
+      text-transform: uppercase;
+    }
+    p {
+      text-align: center;
+    }
+  `
+};

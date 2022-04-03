@@ -1,7 +1,20 @@
-import React from "react";
+import React, { MutableRefObject, useRef } from "react";
+import styled from "styled-components";
 
-import { InputsRef } from "./Hooks";
-import s from "./Pin.module.scss";
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type Inputs = Map<number, HTMLInputElement>;
+export type InputsRef = MutableRefObject<Inputs>;
+
+export type Actions = {
+  clear(): void;
+  focus(index: number): void;
+  data(): string;
+};
 
 type Props = {
   inputs: InputsRef;
@@ -11,9 +24,15 @@ type Props = {
   onComplete?: () => void;
 };
 
-export function Pin({ inputs, className = "", size = 5, disabled = false, onComplete }: Props): JSX.Element {
+/*
+ |--------------------------------------------------------------------------------
+ | Component
+ |--------------------------------------------------------------------------------
+ */
+
+export function Pin({ inputs, className, size = 5, disabled = false, onComplete }: Props): JSX.Element {
   return (
-    <div className={`${s.container} ${className}`.trim()}>
+    <S.Container className={className}>
       {Array.from(Array(size)).map((_, index) => (
         <input
           key={index}
@@ -74,6 +93,55 @@ export function Pin({ inputs, className = "", size = 5, disabled = false, onComp
           }}
         />
       ))}
-    </div>
+    </S.Container>
   );
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Styles
+ |--------------------------------------------------------------------------------
+ */
+
+const S = {
+  Container: styled.div`
+    display: flex;
+    flex-direction: row;
+    input {
+      text-align: center;
+    }
+  `
+};
+
+/*
+ |--------------------------------------------------------------------------------
+ | Hooks
+ |--------------------------------------------------------------------------------
+ */
+
+export function usePin(): [InputsRef, Actions] {
+  const inputs = useRef<Inputs>(new Map());
+  return [
+    inputs,
+    {
+      clear() {
+        inputs.current.forEach((input) => {
+          input.value = "";
+        });
+      },
+      focus(index: number) {
+        inputs.current.get(index)?.focus();
+      },
+      data(): string {
+        let data = "";
+        for (const key of inputs.current.keys()) {
+          const value = inputs.current.get(key)?.value;
+          if (value) {
+            data += value;
+          }
+        }
+        return data;
+      }
+    }
+  ];
 }

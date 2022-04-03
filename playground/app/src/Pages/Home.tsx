@@ -1,19 +1,25 @@
 import React from "react";
+import styled from "styled-components";
 
 import { Workspace as WorkspaceInstance } from "../Data";
 import { useInviteForm } from "../Hooks/UseInviteForm";
 import { useWorkspaceForm } from "../Hooks/UseWorkspaceForm";
 import { useWorkspaces } from "../Hooks/UseWorkspaces";
 import { Avatar } from "../Modules/Auth";
-import styles from "../Styles/Pages/Home.module.scss";
+
+/*
+ |--------------------------------------------------------------------------------
+ | Component
+ |--------------------------------------------------------------------------------
+ */
 
 export function Home(): JSX.Element | null {
   return (
-    <div className={styles.container}>
+    <S.Container>
       <Avatar />
       <WorkspaceForm />
       <Workspaces />
-    </div>
+    </S.Container>
   );
 }
 
@@ -57,3 +63,27 @@ function WorkspaceForm() {
     </form>
   );
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Styles
+ |--------------------------------------------------------------------------------
+ */
+
+const S = {
+  Container: styled.div`
+    padding: 40px;
+
+    h1 {
+      margin: 0 0 10px 0;
+    }
+
+    > div {
+      margin-bottom: 30px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  `
+};

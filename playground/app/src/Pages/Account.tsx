@@ -3,14 +3,19 @@ import React from "react";
 import { Account } from "../Data";
 import { useAccount } from "../Hooks/UseAccount";
 import { useAccountForm } from "../Hooks/UseAccountForm";
-import styles from "../Styles/Pages/Home.module.scss";
+
+/*
+ |--------------------------------------------------------------------------------
+ | Component
+ |--------------------------------------------------------------------------------
+ */
 
 export function AccountPage() {
   const account = useAccount();
 
   if (!account) {
     return (
-      <div className={styles.container}>
+      <div>
         <h1>Account</h1>
         Loading
       </div>
@@ -18,7 +23,7 @@ export function AccountPage() {
   }
 
   return (
-    <div className={styles.container}>
+    <div>
       <h1>Account</h1>
       <AccountForm account={account} />
     </div>
