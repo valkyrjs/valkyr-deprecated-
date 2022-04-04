@@ -1,4 +1,5 @@
-import { auth } from "../../../Auth";
+import { auth } from "@valkyr/client";
+
 import { useForm } from "../../../Hooks/UseForm";
 import type { AuthDispatch } from "../Reducer";
 

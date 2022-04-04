@@ -1,9 +1,9 @@
 import "./Routes";
 
-import { ledger } from "@valkyr/client";
+import { client } from "@valkyr/client";
 
-import { auth } from "./Auth";
-import { adapter, data, socket } from "./Data";
+import { config } from "./Config";
+import { adapter, data } from "./Data";
 
 /*
  |--------------------------------------------------------------------------------
@@ -12,8 +12,10 @@ import { adapter, data, socket } from "./Data";
  */
 
 export async function setup(): Promise<void> {
-  await socket.connect();
-  await ledger.setup(socket, adapter);
+  await client.setup({
+    api: config.api,
+    socket: config.socket,
+    database: adapter
+  });
   await data.setup();
-  await auth.setup();
 }

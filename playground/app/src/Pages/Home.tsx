@@ -30,7 +30,13 @@ export function Home(): JSX.Element | null {
  */
 
 function Workspaces() {
-  const workspaces = useWorkspaces();
+  const [workspaces, loading, error] = useWorkspaces();
+  if (loading) {
+    return <div>Loading</div>;
+  }
+  if (error) {
+    return <div>{error.message}</div>;
+  }
   return (
     <div>
       <h1>Workspaces</h1>

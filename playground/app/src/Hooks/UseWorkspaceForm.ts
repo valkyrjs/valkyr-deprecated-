@@ -1,4 +1,5 @@
-import { auth } from "../Auth";
+import { auth } from "@valkyr/client";
+
 import { Workspace } from "../Data";
 import { useForm } from "./UseForm";
 

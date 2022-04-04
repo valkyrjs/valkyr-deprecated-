@@ -1,6 +1,7 @@
 import type { ModelClass } from "@valkyr/db";
 import { useEffect, useState } from "react";
 
+import { ApiErrorResponse } from "../Data";
 import { Many, Options, resolveMany, resolveOne, Single } from "../Utils/Query";
 
 /**
@@ -29,20 +30,45 @@ import { Many, Options, resolveMany, resolveOne, Single } from "../Utils/Query";
  *
  * @returns Instanced collection model(s)
  */
-export function useQuery<M extends ModelClass>(model: M, options?: Many): InstanceType<M>[];
-export function useQuery<M extends ModelClass>(model: M, options?: Single): InstanceType<M> | undefined;
+export function useQuery<M extends ModelClass>(
+  model: M,
+  options?: Many
+): [InstanceType<M>[], boolean, ApiErrorResponse | undefined];
+export function useQuery<M extends ModelClass>(
+  model: M,
+  options?: Single
+): [InstanceType<M> | undefined, boolean, ApiErrorResponse | undefined];
 export function useQuery<M extends ModelClass>(
   model: M,
   options: Options = {}
-): InstanceType<M>[] | InstanceType<M> | undefined {
+): [InstanceType<M>[] | InstanceType<M> | undefined, boolean, ApiErrorResponse | undefined] {
   const [data, setData] = useState();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<ApiErrorResponse | undefined>();
 
   useEffect(() => {
-    if (options.singleton === true) {
-      return resolveOne(model, options, setData);
+    if (options.sync !== undefined) {
+      options
+        .sync()
+        .then(() => {
+          setLoading(false);
+          if (options.singleton === true) {
+            return resolveOne(model, options, setData);
+          }
+          return resolveMany(model, options, setData);
+        })
+        .catch((err) => {
+          setError(err);
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
+      if (options.singleton === true) {
+        return resolveOne(model, options, setData);
+      }
+      return resolveMany(model, options, setData);
     }
-    return resolveMany(model, options, setData);
   }, [model, JSON.stringify(options)]);
 
-  return data ? data : options.singleton === true ? undefined : [];
+  return [data ? data : options.singleton === true ? undefined : [], loading, error];
 }

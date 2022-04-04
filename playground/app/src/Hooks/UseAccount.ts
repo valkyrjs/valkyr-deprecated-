@@ -1,7 +1,6 @@
-import { ledger } from "@valkyr/client";
+import { auth, ledger } from "@valkyr/client";
 import { useEffect } from "react";
 
-import { auth } from "../Auth";
 import { Account } from "../Data";
 import { useQuery } from "./UseQuery";
 

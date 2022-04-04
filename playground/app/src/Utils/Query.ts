@@ -11,6 +11,7 @@ export type Options = {
   limit?: QueryOptions["limit"];
   observe?: boolean;
   singleton?: boolean;
+  sync?: () => Promise<any>;
 };
 
 export type Single = Options & {

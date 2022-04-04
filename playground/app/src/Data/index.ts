@@ -1,8 +1,6 @@
 export * from "./Adapter";
 export * from "./Models/Account";
 export * from "./Models/Workspace";
-export * from "./Remote";
-export * from "./Socket";
 
 /*
  |--------------------------------------------------------------------------------

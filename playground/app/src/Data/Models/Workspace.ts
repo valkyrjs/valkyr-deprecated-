@@ -1,12 +1,26 @@
-import { ledger } from "@valkyr/client";
+import { ledger, remote } from "@valkyr/client";
 import { Collection, Model } from "@valkyr/db";
 import { nanoid } from "@valkyr/utils";
 import { Workspace as Wksp, workspace } from "stores";
 
 import { adapter } from "../Adapter";
-import { remote } from "../Remote";
 
 type Attributes = Wksp.State;
+
+/*
+ |--------------------------------------------------------------------------------
+ | Remote
+ |--------------------------------------------------------------------------------
+ */
+
+class WorkspaceResolver {
+  public async index() {
+    const workspaces = await remote.get<Attributes[]>("/workspaces");
+    for (const workspace of workspaces) {
+      Workspace.upsert(workspace);
+    }
+  }
+}
 
 /*
  |--------------------------------------------------------------------------------
@@ -16,6 +30,8 @@ type Attributes = Wksp.State;
 
 export class Workspace extends Model<Attributes> {
   public static readonly $collection = new Collection<Attributes>("workspaces", adapter);
+
+  public static readonly resolve = new WorkspaceResolver();
 
   public readonly name: Attributes["name"];
   public readonly members: Members;
