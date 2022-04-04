@@ -1,35 +1,11 @@
-import type { RedirectType } from "../Types";
-import type { HttpStatus } from "./Types";
-
-/*
- |--------------------------------------------------------------------------------
- | Response
- |--------------------------------------------------------------------------------
- */
-
-abstract class HttpResponse {
-  public status: HttpStatus;
-
-  constructor(status: HttpStatus) {
-    this.status = status;
-  }
-}
-
 /*
  |--------------------------------------------------------------------------------
  | Success
  |--------------------------------------------------------------------------------
  */
 
-export class HttpSuccess extends HttpResponse {
-  public readonly status = "success" as const;
-
-  public data?: any;
-
-  constructor(data?: any) {
-    super("success");
-    this.data = data;
-  }
+export class HttpSuccess {
+  constructor(public readonly data?: any) {}
 
   public get code(): number {
     if (this.data !== undefined) {
@@ -38,11 +14,8 @@ export class HttpSuccess extends HttpResponse {
     return 204;
   }
 
-  public toJSON(): Pick<HttpSuccess, "status" | "data"> {
-    return {
-      status: this.status,
-      data: this.data
-    };
+  public toJSON(): any {
+    return this.data;
   }
 }
 
@@ -52,46 +25,17 @@ export class HttpSuccess extends HttpResponse {
  |--------------------------------------------------------------------------------
  */
 
-export class HttpRedirect extends HttpResponse {
-  public readonly status = "redirect" as const;
-
-  public type: RedirectType;
-  public url: string;
-
+export class HttpRedirect {
   /**
    * Create a new HttpRedirect instance.
    *
+   * @param code - Type of redirect, 301 = Permanent, 307 = Temporary
    * @param url  - Url to redirect the request to.
-   * @param type - (Optional) Type of redirect. Default: TEMPORARY
    */
-  constructor(url: string, type: RedirectType = "TEMPORARY") {
-    super("redirect");
-    this.type = type;
-    this.url = url;
-  }
+  constructor(public readonly code: 301 | 307, public readonly url: string) {}
 
-  /**
-   * Retrieve the HTTP/S code for the redirect type.
-   *
-   * @returns HTTP/S 3xx
-   */
-  public get code(): number {
-    switch (this.type) {
-      case "TEMPORARY": {
-        return 307;
-      }
-      default: {
-        return 301;
-      }
-    }
-  }
-
-  public toJSON(): Pick<HttpRedirect, "status" | "type" | "url"> {
-    return {
-      status: this.status,
-      type: this.type,
-      url: this.url
-    };
+  public toJSON(): string {
+    return this.url;
   }
 }
 
@@ -101,33 +45,21 @@ export class HttpRedirect extends HttpResponse {
  |--------------------------------------------------------------------------------
  */
 
-export class HttpError extends HttpResponse {
-  public readonly status = "error" as const;
-
-  public code: number; // HTTP/S 4xx
-  public message: string;
-  public details: any;
-
+export class HttpError {
   /**
    * Create a new HttpError instance.
    *
    * @param code    - Error code.
    * @param message - Error message.
-   * @param details - (Optional) Additional details.
+   * @param data    - (Optional) Additional error data.
    */
-  constructor(code: number, message: string, details = {}) {
-    super("error");
-    this.code = code;
-    this.message = message;
-    this.details = details;
-  }
+  constructor(public readonly code: number, public readonly message: string, public readonly data = {}) {}
 
-  public toJSON(): Pick<HttpError, "status" | "code" | "message" | "details"> {
+  public toJSON(): Pick<HttpError, "code" | "message" | "data"> {
     return {
-      status: this.status,
       code: this.code,
       message: this.message,
-      details: this.details
+      data: this.data
     };
   }
 }

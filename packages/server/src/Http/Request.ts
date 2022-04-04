@@ -61,7 +61,7 @@ export async function resolve(
         return new HttpError(result.code, result.message, result.data);
       }
       case "redirect": {
-        return new HttpRedirect(result.url, result.type);
+        return new HttpRedirect(result.type === "PERMANENT" ? 301 : 307, result.url);
       }
       case "resolved": {
         return new HttpSuccess(result.data);

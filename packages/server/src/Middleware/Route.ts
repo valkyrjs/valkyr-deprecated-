@@ -36,19 +36,14 @@ export function route(server: Server): Middleware {
 
 async function handleRequest(server: Server, req: IncomingMessage, res: ServerResponse): Promise<void> {
   const result = await resolve(server.routes, req);
-  switch (result.status) {
-    case "success": {
-      handleResponse(res, result);
-      break;
-    }
-    case "redirect": {
-      handleRedirect(res, result);
-      break;
-    }
-    case "error": {
-      handleError(res, result);
-      break;
-    }
+  if (result instanceof HttpSuccess) {
+    return handleResponse(res, result);
+  }
+  if (result instanceof HttpRedirect) {
+    return handleRedirect(res, result);
+  }
+  if (result instanceof HttpError) {
+    return handleError(res, result);
   }
 }
 
