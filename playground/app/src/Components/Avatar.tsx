@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
+import { Account as Model } from "../Data";
 import { useAccount } from "../Hooks/UseAccount";
 import { Link } from "./Link";
 
@@ -11,9 +12,9 @@ import { Link } from "./Link";
  */
 
 export function Avatar() {
-  const account = useAccount();
-  if (account) {
-    return <Account email={account.email} />;
+  const [account] = useAccount();
+  if (account !== undefined) {
+    return <Welcome account={account} />;
   }
   return <Guest />;
 }
@@ -24,10 +25,10 @@ export function Avatar() {
  |--------------------------------------------------------------------------------
  */
 
-function Account({ email }: { email: string }) {
+function Welcome({ account }: { account: Model }) {
   return (
     <S.Container>
-      Hi, {email}. <Link href="/account">Account</Link>
+      Hi, {account.name?.given ?? account.email}. <Link href="/account">Account</Link>
     </S.Container>
   );
 }

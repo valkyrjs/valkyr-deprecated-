@@ -11,15 +11,28 @@ import { useAccountForm } from "../Hooks/UseAccountForm";
  */
 
 export function AccountPage() {
-  const account = useAccount();
+  const [account, loading, error] = useAccount();
 
-  if (!account) {
+  if (loading === true) {
     return (
       <div>
         <h1>Account</h1>
         Loading
       </div>
     );
+  }
+
+  if (error !== undefined) {
+    return (
+      <div>
+        <h1>Account</h1>
+        {error.message}
+      </div>
+    );
+  }
+
+  if (account === undefined) {
+    return <div>Account not found</div>;
   }
 
   return (
