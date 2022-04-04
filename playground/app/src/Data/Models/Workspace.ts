@@ -17,7 +17,7 @@ class WorkspaceResolver {
   public async index() {
     const workspaces = await remote.get<Attributes[]>("/workspaces");
     for (const workspace of workspaces) {
-      Workspace.upsert(workspace);
+      await Workspace.upsert(workspace);
     }
   }
 }
