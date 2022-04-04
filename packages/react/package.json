@@ -13,6 +13,7 @@
     "dist"
   ],
   "dependencies": {
+    "@valkyr/client": "*",
     "@valkyr/router": "*"
   },
   "devDependencies": {

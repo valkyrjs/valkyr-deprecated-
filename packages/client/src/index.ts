@@ -1,4 +1,5 @@
 import { Adapter, IndexedDbAdapter } from "@valkyr/db";
+import { projection } from "@valkyr/ledger";
 import { Socket } from "@valkyr/socket";
 
 import { auth } from "./Auth";
@@ -10,8 +11,8 @@ export * from "./Auth";
 export * from "./Jwt";
 export * from "./Models/Cache";
 export * from "./Models/Cursor";
+export * as Query from "./Query";
 export * from "./Remote";
-export * from "@valkyr/ledger";
 
 type Config = {
   api: string;
@@ -35,6 +36,7 @@ export const client = {
 };
 
 export const ledger = {
+  projection,
   subscribe,
   push: remote.push.bind(remote)
 };
