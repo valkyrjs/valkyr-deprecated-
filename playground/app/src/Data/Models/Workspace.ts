@@ -9,29 +9,12 @@ type Attributes = Wksp.State;
 
 /*
  |--------------------------------------------------------------------------------
- | Remote
- |--------------------------------------------------------------------------------
- */
-
-class WorkspaceResolver {
-  public async index() {
-    const workspaces = await remote.get<Attributes[]>("/workspaces");
-    for (const workspace of workspaces) {
-      await Workspace.upsert(workspace);
-    }
-  }
-}
-
-/*
- |--------------------------------------------------------------------------------
  | Workspace
  |--------------------------------------------------------------------------------
  */
 
 export class Workspace extends Model<Attributes> {
   public static readonly $collection = new Collection<Attributes>("workspaces", adapter);
-
-  public static readonly resolve = new WorkspaceResolver();
 
   public readonly name: Attributes["name"];
   public readonly members: Members;
@@ -88,6 +71,16 @@ export class Workspace extends Model<Attributes> {
 
 class Members {
   constructor(public readonly workspace: Workspace, public readonly members: Wksp.Member[]) {}
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Accessors
+   |--------------------------------------------------------------------------------
+   */
+
+  public get size() {
+    return this.members.length;
+  }
 
   /*
    |--------------------------------------------------------------------------------

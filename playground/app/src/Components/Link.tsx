@@ -1,7 +1,13 @@
 import { router } from "@valkyr/react";
-import React from "react";
+import styled from "styled-components";
 
 import { isRelative } from "~Utils/Url";
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
 
 type Props = {
   children: React.ReactNode;
@@ -10,17 +16,45 @@ type Props = {
   href: string;
 };
 
+/*
+ |--------------------------------------------------------------------------------
+ | Component
+ |--------------------------------------------------------------------------------
+ */
+
 /**
  * Renders an HTML `a` tag which invokes the router when clicked.
  * This allows simplifies use of the router but also provides the correct standard markup for links.
  */
 export function Link({ children, className, target = "_self", href }: Props): JSX.Element {
   return (
-    <a className={className} href={href} onClick={handleClick(href)} target={target}>
+    <S.Link className={className} href={href} onClick={handleClick(href)} target={target}>
       {children}
-    </a>
+    </S.Link>
   );
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Styles
+ |--------------------------------------------------------------------------------
+ */
+
+const S = {
+  Link: styled.div`
+    color: blue;
+    &:hover {
+      cursor: pointer;
+      color: green;
+    }
+  `
+};
+
+/*
+ |--------------------------------------------------------------------------------
+ | Utilities
+ |--------------------------------------------------------------------------------
+ */
 
 /**
  * Handle link click event.

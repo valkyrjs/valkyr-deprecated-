@@ -13,7 +13,7 @@ import { Link } from "./Link";
  */
 
 export function Avatar() {
-  const [account] = useAccount();
+  const account = useAccount();
   if (account !== undefined) {
     return <Welcome account={account} />;
   }

@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Account } from "~Data";
 import { useAccount } from "~Hooks/UseAccount";
 import { useAccountForm } from "~Hooks/UseAccountForm";
@@ -11,30 +9,10 @@ import { useAccountForm } from "~Hooks/UseAccountForm";
  */
 
 export function AccountPage() {
-  const [account, loading, error] = useAccount();
-
-  if (loading === true) {
-    return (
-      <div>
-        <h1>Account</h1>
-        Loading
-      </div>
-    );
-  }
-
-  if (error !== undefined) {
-    return (
-      <div>
-        <h1>Account</h1>
-        {error.message}
-      </div>
-    );
-  }
-
+  const account = useAccount();
   if (account === undefined) {
     return <div>Account not found</div>;
   }
-
   return (
     <div>
       <h1>Account</h1>

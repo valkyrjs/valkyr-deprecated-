@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { Account } from "~Data";
 
 export function useAccount() {
-  const state = useQuery(Account, { filter: { id: auth.auditor }, singleton: true });
+  const account = useQuery(Account, { filter: { id: auth.auditor }, limit: 1 });
 
   useEffect(() => {
     if (auth.is("authenticated")) {
@@ -13,5 +13,5 @@ export function useAccount() {
     }
   }, [auth.auditor]);
 
-  return state;
+  return account;
 }

@@ -16,13 +16,12 @@ import { route } from "../../Providers/Server";
 route.get("/workspaces", [
   isRequestAuthenticated,
   async function ({ auth }) {
-    return this.resolve(
-      await collection.workspaces
-        .find({
-          "members.accountId": auth.auditor
-        })
-        .toArray()
-    );
+    const workspaces = await collection.workspaces
+      .find({
+        "members.accountId": auth.auditor
+      })
+      .toArray();
+    return this.resolve(workspaces.map((workspace) => workspace.id));
   }
 ]);
 

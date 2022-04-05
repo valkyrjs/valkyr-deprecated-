@@ -1,13 +1,16 @@
 import { auth } from "@valkyr/client";
-import { useQuery } from "@valkyr/react";
+import { useQuery, useSubscriber } from "@valkyr/react";
 
 import { Workspace } from "~Data";
 
 export function useWorkspaces() {
-  return useQuery(Workspace, {
+  const workspaces = useQuery(Workspace, {
     filter: {
       "members.accountId": auth.auditor
-    },
-    sync: Workspace.resolve.index
+    }
   });
+
+  useSubscriber(workspaces, "/workspaces");
+
+  return workspaces;
 }
