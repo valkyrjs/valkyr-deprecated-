@@ -2,7 +2,7 @@ import { auth, ledger } from "@valkyr/client";
 import { useQuery } from "@valkyr/react";
 import { useEffect } from "react";
 
-import { Account } from "../Data";
+import { Account } from "~Data";
 
 export function useAccount() {
   const state = useQuery(Account, { filter: { id: auth.auditor }, singleton: true });

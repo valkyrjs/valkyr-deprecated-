@@ -1,7 +1,7 @@
 import { Action } from "@valkyr/react";
 
-import { Auth } from "../Pages/Auth";
-import { setPageTitle } from "../Utils/Dom";
+import { Auth } from "~Pages/Auth";
+import { setPageTitle } from "~Utils/Dom";
 
 export function renderAuthorized(components: any[], title: string): Action {
   return async function () {

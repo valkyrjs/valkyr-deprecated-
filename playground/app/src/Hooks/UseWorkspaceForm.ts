@@ -1,6 +1,7 @@
 import { auth } from "@valkyr/client";
 
-import { Workspace } from "../Data";
+import { Workspace } from "~Data";
+
 import { useForm } from "./UseForm";
 
 type State = ReturnType<typeof useForm>["register"];

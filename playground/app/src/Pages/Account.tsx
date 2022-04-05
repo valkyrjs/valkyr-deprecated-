@@ -1,8 +1,8 @@
 import React from "react";
 
-import { Account } from "../Data";
-import { useAccount } from "../Hooks/UseAccount";
-import { useAccountForm } from "../Hooks/UseAccountForm";
+import { Account } from "~Data";
+import { useAccount } from "~Hooks/UseAccount";
+import { useAccountForm } from "~Hooks/UseAccountForm";
 
 /*
  |--------------------------------------------------------------------------------

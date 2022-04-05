@@ -1,7 +1,7 @@
 import { router } from "@valkyr/react";
 import React from "react";
 
-import { isRelative } from "../Utils/Url";
+import { isRelative } from "~Utils/Url";
 
 type Props = {
   children: React.ReactNode;

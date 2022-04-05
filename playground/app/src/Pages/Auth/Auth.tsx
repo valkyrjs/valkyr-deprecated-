@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-import { assets } from "../../Assets";
-import { color } from "../../Styles";
+import { assets } from "~Assets";
+import { color } from "~Styles";
+
 import { Email } from "./Components/Email";
 import { Token } from "./Components/Token";
 import { useAuth } from "./Hooks/UseAuth";

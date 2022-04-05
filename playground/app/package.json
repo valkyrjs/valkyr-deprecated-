@@ -1,9 +1,10 @@
 {
   "name": "app",
   "version": "0.0.0",
+  "private": true,
   "description": "A space where we test out the functionality of our packages. It also serves as a sample space for various ways we can create applications.",
   "scripts": {
-    "start": "parcel ./src/index.html --port 3000",
+    "start": "webpack serve",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -20,11 +21,18 @@
     "styled-components": "^5.3.5"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.4.1",
-    "@parcel/transformer-typescript-tsc": "^2.4.1",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.5",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",
-    "parcel": "^2.4.1",
-    "sharp": "^0.29.3"
+    "@types/webpack": "^5.28.0",
+    "@types/webpack-env": "^1.16.3",
+    "html-webpack-plugin": "^5.5.0",
+    "react-refresh": "^0.12.0",
+    "react-refresh-typescript": "^2.0.4",
+    "sharp": "^0.29.3",
+    "ts-loader": "^9.2.8",
+    "webpack": "^5.71.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4"
   }
 }

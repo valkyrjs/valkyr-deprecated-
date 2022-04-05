@@ -1,4 +1,5 @@
-import { Account } from "../Data";
+import { Account } from "~Data";
+
 import { useForm } from "./UseForm";
 
 type State = ReturnType<typeof useForm>["register"];

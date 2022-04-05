@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-import { Account as Model } from "../Data";
-import { useAccount } from "../Hooks/UseAccount";
+import { Account as Model } from "~Data";
+import { useAccount } from "~Hooks/UseAccount";
+
 import { Link } from "./Link";
 
 /*

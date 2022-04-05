@@ -1,6 +1,7 @@
 import { auth } from "@valkyr/client";
 
-import { useForm } from "../../../Hooks/UseForm";
+import { useForm } from "~Hooks/UseForm";
+
 import type { AuthDispatch } from "../Reducer";
 
 type State = ReturnType<typeof useForm>["register"];
