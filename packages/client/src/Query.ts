@@ -11,48 +11,19 @@ export type RecordMap<T> = {
 };
 
 export type Options = {
-  /**
-   * Mongo query filter used to filter out the returned data. Default: undefined
-   */
   filter?: any;
-
-  /**
-   * Sort options for array results. Default: undefined
-   */
   sort?: QueryOptions["sort"];
-
-  /**
-   * Return records after the provided entry number. Default: undefined
-   */
   skip?: QueryOptions["skip"];
-
-  /**
-   * Limit the number of instances returned. Default: undefined
-   */
   limit?: QueryOptions["limit"];
-
-  /**
-   * Should we update the resolved result when data changes? Default: true
-   */
   observe?: boolean;
-
-  /**
-   * Should we return a single instance or array of instances? Default: false
-   */
-  singleton?: boolean;
-
-  /**
-   * Remote sync method to run before resolving the local data. Default: undefined
-   */
-  sync?: () => Promise<any>;
 };
 
 export type Single = Options & {
-  singleton: true;
+  limit: 1;
 };
 
 export type Many = Options & {
-  singleton?: false | undefined;
+  limit?: number;
 };
 
 /*

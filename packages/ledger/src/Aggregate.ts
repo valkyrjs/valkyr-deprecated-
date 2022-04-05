@@ -14,10 +14,14 @@ export abstract class AggregateRoot {
 }
 
 export abstract class Aggregate<T extends Entity> {
-  public store = new Map<string, T>();
+  private store = new Map<string, T>();
 
   public get index() {
     return Array.from(this.store.values());
+  }
+
+  public get size() {
+    return this.store.size;
   }
 
   public add(entity: T) {
