@@ -1,6 +1,6 @@
 import { InputHTMLAttributes, useRef } from "react";
 
-import { JSON } from "../Types";
+export type FormData = Record<string, unknown>;
 
 export type Props = InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement>;
 
@@ -13,7 +13,7 @@ export type Options<Data> = {
   defaultValues?: any;
 };
 
-type Actions<Data extends JSON> = {
+type Actions<Data extends FormData> = {
   register(name: string): Props;
 
   data(): Data;
@@ -24,7 +24,7 @@ type Actions<Data extends JSON> = {
   clear(): void;
 };
 
-export function useForm<Data extends JSON>({ focus, defaultValues = {} }: Options<Data> = {}): Actions<Data> {
+export function useForm<Data extends FormData>({ focus, defaultValues = {} }: Options<Data> = {}): Actions<Data> {
   const inputs = useRef<Inputs>({});
   return {
     register(name: string) {
