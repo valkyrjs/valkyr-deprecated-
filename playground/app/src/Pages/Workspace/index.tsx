@@ -3,6 +3,8 @@ import styled from "styled-components";
 
 import { useWorkspace } from "~Hooks/UseWorkspace";
 
+import { WorkspaceInvites } from "./Components/WorkspaceInvites";
+
 /*
  |--------------------------------------------------------------------------------
  | Component
@@ -17,6 +19,7 @@ export function Workspace() {
   return (
     <S.Container>
       <div>{workspace.name}</div>
+      <WorkspaceInvites workspaceId={workspace.id} />
     </S.Container>
   );
 }

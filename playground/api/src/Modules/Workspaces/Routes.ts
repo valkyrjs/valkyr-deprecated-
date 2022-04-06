@@ -1,10 +1,11 @@
 import { ledger } from "@valkyr/server";
 import { nanoid } from "@valkyr/utils";
-import { Workspace, workspace } from "stores";
+import { workspace } from "stores";
 
 import { collection } from "../../Database/Collections";
 import { hasBody } from "../../Policies/hasBody";
 import { isRequestAuthenticated } from "../../Policies/isAuthenticated";
+import { isWorkspaceMember } from "../../Policies/isWorkspaceMember";
 import { route } from "../../Providers/Server";
 
 /*
@@ -34,17 +35,8 @@ route.get("/workspaces", [
 route.post("/workspaces/:workspaceId/invite", [
   isRequestAuthenticated,
   hasBody(["email"]),
-  async function ({ params: { workspaceId }, body: { email }, auth }) {
-    const state = await ledger.reduce(workspaceId, Workspace.Workspace);
-    if (state === undefined) {
-      return this.reject(404, "Workspace does not exist, or has been removed.");
-    }
-
-    const member = state.members.getByAccount(auth.auditor);
-    if (member === undefined) {
-      return this.reject(403, "You are not a member of this workspace.");
-    }
-
+  isWorkspaceMember((req) => req.params.workspaceId),
+  async function ({ params: { workspaceId }, body: { email }, state: { memberId } }) {
     const invite = await collection.invites.findOne({ workspaceId, email });
     if (invite !== null) {
       return this.reject(400, "Workspace invite for this email has already been issued.", {
@@ -52,7 +44,7 @@ route.post("/workspaces/:workspaceId/invite", [
       });
     }
 
-    const permission = await workspace.access.for("workspace").can(member.id, "addMember");
+    const permission = await workspace.access.for("workspace").can(memberId, "addMember");
     if (permission.granted === false) {
       return this.reject(403, permission.message);
     }
@@ -61,7 +53,7 @@ route.post("/workspaces/:workspaceId/invite", [
       workspaceId,
       token: nanoid(),
       email,
-      auditor: member.id
+      auditor: memberId
     });
 
     return this.resolve();
@@ -103,5 +95,13 @@ route.post("/invites/:token/accept", [
       )
     );
     return this.resolve();
+  }
+]);
+
+route.get("/workspaces/:workspaceId/invites", [
+  isRequestAuthenticated,
+  isWorkspaceMember((req) => req.params.workspaceId),
+  async function ({ params: { workspaceId } }) {
+    return this.resolve(await collection.invites.find({ workspaceId }).toArray());
   }
 ]);
