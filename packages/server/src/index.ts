@@ -13,6 +13,7 @@ declare module "http" {
     params: RequestState;
     query: RequestState;
     body: RequestBody;
+    state: RequestState;
   }
 }
 

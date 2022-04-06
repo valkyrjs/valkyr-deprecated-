@@ -16,9 +16,7 @@ export type HttpMethod = "post" | "get" | "put" | "patch" | "delete";
 
 export type RequestBody = Record<string, any>;
 
-export type RequestState = {
-  [key: string]: string;
-};
+export type RequestState = Record<string, string>;
 
 export type RouteMatch = {
   route: HttpRoute;

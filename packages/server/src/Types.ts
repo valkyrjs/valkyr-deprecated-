@@ -2,7 +2,7 @@ import type { IncomingMessage } from "http";
 import type { Redis, RedisOptions } from "ioredis";
 import type { WebSocket, WebSocketServer } from "ws";
 
-import type { HttpMethod } from "./Http";
+import type { HttpMethod, RequestState } from "./Http";
 import type { CorsOptions, Middleware } from "./Middleware";
 import type { HttpRoute, WsRoute } from "./Route";
 import type { Server } from "./Server";
@@ -69,7 +69,7 @@ export type Response = Promise<Rejected | Redirect | Accepted | Resolved>;
 type ActionResponse = {
   reject(code: number, message: string, data?: any): Rejected;
   redirect(url: string, type?: RedirectType): Redirect;
-  accept(): Accepted;
+  accept(state?: RequestState): Accepted;
   resolve(data?: any): Resolved;
 };
 
@@ -88,6 +88,7 @@ export type Redirect = {
 
 export type Accepted = {
   status: "accepted";
+  state?: RequestState;
 };
 
 export type Resolved = {

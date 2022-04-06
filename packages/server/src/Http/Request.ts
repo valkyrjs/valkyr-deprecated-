@@ -53,6 +53,7 @@ export async function resolve(
   message.params = getParameters(result.route.params, result.match);
   message.query = toQueryObject(search);
   message.body = BODY_METHODS.has(message.method) ? await body(message) : {};
+  message.state = {};
 
   for (const action of route.actions) {
     const result = await action.call(response, message);
@@ -62,6 +63,15 @@ export async function resolve(
       }
       case "redirect": {
         return new HttpRedirect(result.type === "PERMANENT" ? 301 : 307, result.url);
+      }
+      case "accepted": {
+        if (result.state) {
+          message.state = {
+            ...message.state,
+            ...result.state
+          };
+        }
+        break;
       }
       case "resolved": {
         return new HttpSuccess(result.data);
