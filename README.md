@@ -30,6 +30,14 @@ We use jest for testing, just run the following command from root:
 $ npm test
 ```
 
+### Development
+
+Before booting up the playground we need to run some development service dependencies using docker:
+
+```ts
+$ docker compose up
+```
+
 ### Playground
 
 When you want to test package functionality from a product perspective we can jump into the playground environment.
@@ -37,7 +45,6 @@ When you want to test package functionality from a product perspective we can ju
 Open up two terminals and run the api and app respectively:
 
 ```sh
-$ npm run stores # Any terminal
 $ npm run api # Terminal 1
 $ npm run app # Terminal 2
 ```
@@ -47,3 +54,16 @@ $ npm run app # Terminal 2
 Go to our [documentation website](https://docs.kodemon.net) for valkyr documentation.
 
 > This is however currently not ready, and this section will be updated once its ready for prime time.
+
+Running documentation locally you need to do a separate install:
+
+```sh
+$ npm install
+```
+
+Then you can run it from either the root or website folder:
+
+```sh
+$ npm run web // from project root
+$ npm start   // from website folder
+```

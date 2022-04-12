@@ -1,9 +1,0 @@
-version: "3"
-services:
-  cmdo_mongo:
-    image: mongo
-    container_name: mongo_valkyr
-    ports:
-      - 27027:27017
-    volumes:
-      - ../../.docker/mongo:/data/db

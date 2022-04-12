@@ -16,15 +16,14 @@
     "clean": "rm -rf ./packages/**/dist && rm -rf ./playground/**/dist && rm -rf ./packages/**/tsconfig.build.tsbuildinfo && rm -rf .parcel-cache",
     "flush": "npm run clean && npx rimraf ./**/node_modules && rm -rf package-lock.json",
     "publish": "node publish.js",
-    "api": "cd ./playground/api && npm start",
-    "app": "cd ./playground/app && npm start",
-    "web": "cd ./website && npx docusaurus start",
+    "api": "npm start --prefix playground/api",
+    "app": "npm start --prefix playground/app",
+    "web": "npm start --prefix website",
     "lint": "eslint ./packages --ext .ts --fix",
     "test": "jest --maxWorkers=100% --detectOpenHandles",
     "coverage": "jest --ci --coverage --forceExit --maxWorkers=4"
   },
   "devDependencies": {
-    "@docusaurus/types": "^2.0.0-beta.18",
     "@types/jest": "27.4.1",
     "@types/node": "16.10.3",
     "@typescript-eslint/eslint-plugin": "5.17.0",
