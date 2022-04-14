@@ -5,7 +5,7 @@ import { Socket } from "@valkyr/socket";
 import { auth } from "./Auth";
 import { container } from "./Container";
 import { remote } from "./Remote";
-import { subscribe } from "./Subscriber";
+import { append, subscribe } from "./Subscriber";
 
 export * from "./Auth";
 export * from "./Jwt";
@@ -29,6 +29,8 @@ async function setup(config: Config) {
 
   await auth.setup();
   await socket.connect();
+
+  socket.on("event", append);
 }
 
 export const client = {
