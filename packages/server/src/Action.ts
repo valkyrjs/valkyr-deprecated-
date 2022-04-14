@@ -1,3 +1,4 @@
+import { RequestState } from "./Http";
 import { Accepted, Redirect, RedirectType, Rejected, Resolved } from "./Types";
 
 /*
@@ -23,9 +24,10 @@ export function redirect(url: string, type: RedirectType = "PERMANENT"): Redirec
   };
 }
 
-export function accept(): Accepted {
+export function accept(state?: RequestState): Accepted {
   return {
-    status: "accepted"
+    status: "accepted",
+    state
   };
 }
 

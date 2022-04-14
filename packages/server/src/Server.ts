@@ -1,9 +1,11 @@
 import * as http from "http";
-import Redis from "ioredis";
+import Redis, { RedisOptions } from "ioredis";
 import { WebSocket, WebSocketServer } from "ws";
 
 import * as responses from "./Action";
+import { Ledger } from "./Ledger";
 import { cors, Middleware, route } from "./Middleware";
+import { Mongo } from "./Mongo";
 import { addRouteTo, getInitialRoutes } from "./Route";
 import { ActionHandlersNotFoundError, SocketChannel, SocketClient, SocketMessage } from "./Socket";
 import type { Channels, Routes, ServerSettings, WsAction } from "./Types";
@@ -20,26 +22,37 @@ export class Server {
 
   public readonly http: http.Server;
   public readonly io: WebSocketServer;
+
+  public readonly mongo: Mongo;
   public readonly redis?: Redis.Redis;
 
-  constructor({ redis, middleware = [], connected, disconnected, ...settings }: ServerSettings) {
+  public readonly ledger = new Ledger(this);
+
+  constructor({ mongo, middleware = [], connected, disconnected, ...settings }: ServerSettings) {
     this.http = http.createServer(this.getRequestListener([cors(settings.cors), ...middleware, route(this)]));
     this.io = new WebSocketServer({ noServer: true });
 
     this.addUpgradeListener();
     this.addConnectionListener(connected, disconnected);
 
-    if (redis) {
-      this.redis = new Redis(redis);
-      this.redis.on("message", (channel: string, message: string) => {
-        const { type, data } = JSON.parse(message);
-        if (channel === "broadcast") {
-          this.broadcast(type, data, false);
-        } else {
-          this.to(channel).emit(type, data);
-        }
-      });
+    this.mongo = new Mongo(mongo.name, mongo.uri);
+
+    if (settings.redis) {
+      this.redis = this.createRedisInstance(settings.redis);
     }
+  }
+
+  private createRedisInstance(config: RedisOptions) {
+    const redis = new Redis(config);
+    redis.on("message", (channel: string, message: string) => {
+      const { type, data } = JSON.parse(message);
+      if (channel === "broadcast") {
+        this.broadcast(type, data, false);
+      } else {
+        this.to(channel).emit(type, data);
+      }
+    });
+    return redis;
   }
 
   /*
@@ -48,12 +61,30 @@ export class Server {
    |--------------------------------------------------------------------------------
    */
 
-  get route() {
+  public get route() {
     return addRouteTo(this.routes);
   }
 
-  get listen() {
-    return this.http.listen.bind(this.http);
+  public get db() {
+    return this.mongo.db;
+  }
+
+  public get collection() {
+    return this.mongo.collection;
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Startup
+   |--------------------------------------------------------------------------------
+   */
+
+  public async listen(port: number) {
+    await this.mongo.connect();
+    await this.ledger.setup();
+    return new Promise<void>((resolve) => {
+      this.http.listen(port, resolve);
+    });
   }
 
   /*

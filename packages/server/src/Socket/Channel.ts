@@ -58,7 +58,7 @@ export class SocketChannel {
     const message = JSON.stringify({ type, data });
     this.server.redis?.publish(this.channelId, message);
     for (const socket of this.sockets) {
-      if (socket.readyState === WebSocket.OPEN) {
+      if (isSocketAvailable(socket)) {
         socket.send(message);
       }
     }
@@ -73,5 +73,5 @@ export class SocketChannel {
  * @returns Socket availability
  */
 function isSocketAvailable(socket: WebSocket) {
-  return socket.readyState === WebSocket.CLOSING || socket.readyState === WebSocket.CLOSED;
+  return socket.readyState !== WebSocket.CLOSING && socket.readyState !== WebSocket.CLOSED;
 }

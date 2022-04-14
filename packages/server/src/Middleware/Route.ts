@@ -21,7 +21,7 @@ export function route(server: Server): Middleware {
       } else {
         handleResponse(res, new HttpError(500, "Internal server error", err));
       }
-      console.log(err);
+      console.error(err);
     } finally {
       res.end();
     }
@@ -53,7 +53,7 @@ function handleRedirect(res: ServerResponse, result: HttpRedirect): void {
 
 function handleError(res: ServerResponse, result: HttpError): void {
   if (result.code === 500) {
-    console.log(result);
+    console.error(result);
   }
   handleResponse(res, result);
 }

@@ -15,6 +15,11 @@ import type { SocketClient } from "./Socket";
  */
 
 export type ServerSettings = {
+  mongo: {
+    name: string;
+    uri: string;
+  };
+
   /**
    * Cors options for incoming HTTP requests.
    */

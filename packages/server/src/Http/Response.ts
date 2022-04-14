@@ -1,3 +1,5 @@
+type ResponseData = Record<string, unknown>;
+
 /*
  |--------------------------------------------------------------------------------
  | Success
@@ -5,7 +7,7 @@
  */
 
 export class HttpSuccess {
-  constructor(public readonly data?: any) {}
+  constructor(public readonly data: ResponseData = {}) {}
 
   public get code(): number {
     if (this.data !== undefined) {
@@ -25,6 +27,8 @@ export class HttpSuccess {
  |--------------------------------------------------------------------------------
  */
 
+type RedirectCode = 301 | 307;
+
 export class HttpRedirect {
   /**
    * Create a new HttpRedirect instance.
@@ -32,7 +36,7 @@ export class HttpRedirect {
    * @param code - Type of redirect, 301 = Permanent, 307 = Temporary
    * @param url  - Url to redirect the request to.
    */
-  constructor(public readonly code: 301 | 307, public readonly url: string) {}
+  constructor(public readonly code: RedirectCode, public readonly url: string) {}
 
   public toJSON(): string {
     return this.url;
@@ -53,7 +57,7 @@ export class HttpError {
    * @param message - Error message.
    * @param data    - (Optional) Additional error data.
    */
-  constructor(public readonly code: number, public readonly message: string, public readonly data = {}) {}
+  constructor(public readonly code: number, public readonly message: string, public readonly data: ResponseData = {}) {}
 
   public toJSON(): Pick<HttpError, "code" | "message" | "data"> {
     return {
