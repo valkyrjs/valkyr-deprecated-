@@ -5,7 +5,7 @@
       "dom",
       "dom.iterable"
     ],
-    "target": "es6",
+    "target": "es2020",
     "module": "commonjs",
     "moduleResolution": "node",
     "strict": true,
