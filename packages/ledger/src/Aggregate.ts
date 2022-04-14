@@ -13,8 +13,10 @@ export abstract class AggregateRoot {
   public abstract toJSON(): any;
 }
 
-export abstract class Aggregate<T extends Entity> {
+export abstract class Aggregate<R extends AggregateRoot, T extends Entity> {
   private store = new Map<string, T>();
+
+  constructor(protected root: R) {}
 
   public get index() {
     return Array.from(this.store.values());
