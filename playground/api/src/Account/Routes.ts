@@ -2,10 +2,10 @@ import { Auth } from "@valkyr/auth";
 import * as jwt from "jsonwebtoken";
 import { Account, account } from "stores";
 
-import { config } from "../../Config";
-import { hasData } from "../../Policies/hasData";
-import { isSocketAuthenticated } from "../../Policies/isAuthenticated";
-import { route } from "../../Providers/Server";
+import { config } from "../Config";
+import { hasData } from "../Policies/hasData";
+import { isSocketAuthenticated } from "../Policies/isAuthenticated";
+import { route } from "../Server";
 import { activateAccount, getAccountByEmail, getAccountByEmailOrCreate, setAccountName } from "./Services/Account";
 import { createAccountToken, removeAccountToken } from "./Services/Token";
 

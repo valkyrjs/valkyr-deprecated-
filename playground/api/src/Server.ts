@@ -1,7 +1,8 @@
 import { Auth } from "@valkyr/auth";
 import { Server } from "@valkyr/server";
 
-import { auth } from "../Middleware/Auth";
+import { auth } from "./Auth/Middleware";
+import { config } from "./Config";
 
 /*
  |--------------------------------------------------------------------------------
@@ -22,6 +23,7 @@ declare module "@valkyr/server" {
  */
 
 export const server = new Server({
+  mongo: config.mongo,
   middleware: [auth],
   connected: (client) => {
     client.auth = Auth.guest();
@@ -34,3 +36,5 @@ export const server = new Server({
 });
 
 export const route = server.route;
+
+export const ledger = server.ledger;

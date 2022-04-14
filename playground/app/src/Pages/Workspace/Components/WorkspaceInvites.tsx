@@ -2,25 +2,19 @@ import styled from "styled-components";
 
 import { useWorkspaceInvites } from "~Hooks/UseWorkspaceInvites";
 
+import { WorkspaceInviteForm } from "./WorkspaceInviteForm";
+
 type Props = {
   workspaceId: string;
 };
 
 export function WorkspaceInvites({ workspaceId }: Props) {
-  const [invites, loading, error] = useWorkspaceInvites(workspaceId);
-
-  if (loading === true) {
-    return <div>Loading</div>;
-  }
-
-  if (error !== undefined) {
-    return <div>{error.message}</div>;
-  }
-
+  const invites = useWorkspaceInvites(workspaceId);
   return (
     <div>
+      <WorkspaceInviteForm workspaceId={workspaceId} />
       {invites.map((invite) => (
-        <S.Invite key={invite.token}>
+        <S.Invite key={invite.email}>
           {invite.email}
           <S.Button
             onClick={() => {

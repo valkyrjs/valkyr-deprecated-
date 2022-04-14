@@ -10,3 +10,13 @@ ledger.projection.on<Wksp.Created>("WorkspaceCreated", async ({ streamId, data: 
     members
   });
 });
+
+ledger.projection.on<Wksp.InviteCreated>("WorkspaceInviteCreated", async ({ streamId, data }) => {
+  const workspace = await Workspace.findById(streamId);
+  if (workspace && workspace.invites.get(data.id) === undefined) {
+    await Workspace.update({
+      id: streamId,
+      invites: [...(workspace.invites.getAll() ?? []), data]
+    });
+  }
+});

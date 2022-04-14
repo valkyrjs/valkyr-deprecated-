@@ -1,8 +1,8 @@
-import { ledger } from "@valkyr/server";
 import { nanoid } from "nanoid";
 import { Account, account } from "stores";
 
-import { collection } from "../../../Database/Collections";
+import { ledger } from "../../Server";
+import { accounts } from "../Model";
 
 /*
  |--------------------------------------------------------------------------------
@@ -54,11 +54,11 @@ export async function getAccountByEmailOrCreate(email: string) {
 }
 
 export async function getAccountByUsername(username: string) {
-  return collection.accounts.findOne({ username });
+  return accounts.findOne({ username });
 }
 
 export async function getAccountByEmail(email: string) {
-  return collection.accounts.findOne({ email });
+  return accounts.findOne({ email });
 }
 
 /*

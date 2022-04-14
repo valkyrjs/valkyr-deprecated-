@@ -5,7 +5,12 @@ import { Workspace as Wksp, workspace } from "stores";
 
 import { adapter } from "../Adapter";
 
-type Attributes = Wksp.State;
+type Attributes = {
+  id: Wksp.State["id"];
+  name: Wksp.State["name"];
+  invites?: Wksp.State["invites"];
+  members: Wksp.State["members"];
+};
 
 /*
  |--------------------------------------------------------------------------------
@@ -17,12 +22,14 @@ export class Workspace extends Model<Attributes> {
   public static readonly $collection = new Collection<Attributes>("workspaces", adapter);
 
   public readonly name: Attributes["name"];
+  public readonly invites: Invites;
   public readonly members: Members;
 
   constructor(document: Attributes) {
     super(document);
 
     this.name = document.name;
+    this.invites = new Invites(this, document.invites ?? []);
     this.members = new Members(this, document.members);
 
     Object.freeze(this);
@@ -69,6 +76,53 @@ export class Workspace extends Model<Attributes> {
  |--------------------------------------------------------------------------------
  */
 
+class Invites {
+  constructor(public readonly workspace: Workspace, public readonly invites: Wksp.Invite[]) {}
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Accessors
+   |--------------------------------------------------------------------------------
+   */
+
+  public get size() {
+    return this.invites.length;
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Actions
+   |--------------------------------------------------------------------------------
+   */
+
+  /**
+   * Create a new workspace invite for the given email.
+   *
+   * @param email - Email to send invite to.
+   */
+  public async create(email: string) {
+    return remote.post(`/workspaces/${this.workspace.id}/invite`, { email });
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Queries
+   |--------------------------------------------------------------------------------
+   */
+
+  public getAll() {
+    return this.invites;
+  }
+
+  public get(id: string) {
+    return this.invites.find((invite) => invite.id === id);
+  }
+
+  public getByEmail(email: string) {
+    return this.invites.find((invite) => invite.email === email);
+  }
+}
+
 class Members {
   constructor(public readonly workspace: Workspace, public readonly members: Wksp.Member[]) {}
 
@@ -87,15 +141,6 @@ class Members {
    | Actions
    |--------------------------------------------------------------------------------
    */
-
-  /**
-   * Send a member invite to the provided email.
-   *
-   * @param email - Email to send invite to.
-   */
-  public async invite(email: string) {
-    return remote.post(`/workspaces/${this.workspace.id}/invite`, { email });
-  }
 
   /**
    * Remove a member from the parent workspace.

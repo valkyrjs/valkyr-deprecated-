@@ -28,7 +28,7 @@ export function useInviteForm(workspaceId: string): [State, Actions] {
             if (!email) {
               throw new Error("Must provided email");
             }
-            workspace.members.invite(email).then(console.log).catch(console.log);
+            workspace.invites.create(email).then(console.log).catch(console.log);
             form.clear();
           })
           .catch(console.log);

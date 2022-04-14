@@ -1,9 +1,7 @@
 import { access } from "@valkyr/access";
-import { ledger } from "@valkyr/server";
 
 import { config } from "./Config";
-import { mongo } from "./Database/Mongo";
-import { server } from "./Providers/Server";
+import { server } from "./Server";
 
 /*
  |--------------------------------------------------------------------------------
@@ -12,25 +10,10 @@ import { server } from "./Providers/Server";
  */
 
 (async function main(): Promise<void> {
-  await database();
   await providers();
   await modules();
   await start();
 })();
-
-/*
- |--------------------------------------------------------------------------------
- | Database Loader
- |--------------------------------------------------------------------------------
- |
- | Establish a connection to the database that is kept alive while the server
- | is running.
- | 
- */
-
-async function database(): Promise<void> {
-  await mongo.connect();
-}
 
 /*
  |--------------------------------------------------------------------------------
@@ -39,8 +22,7 @@ async function database(): Promise<void> {
  */
 
 async function providers(): Promise<void> {
-  await access.setup(mongo.db);
-  await ledger.setup(mongo.db);
+  await access.setup(server.db);
   await Promise.all([import("./Providers/Auth")]);
 }
 
@@ -52,12 +34,12 @@ async function providers(): Promise<void> {
 
 async function modules() {
   await Promise.all([
-    import("./Modules/Api"),
-    import("./Modules/Account"),
-    import("./Modules/Channels"),
-    import("./Modules/Events"),
-    import("./Modules/Streams"),
-    import("./Modules/Workspaces")
+    import("./Api"),
+    import("./Account"),
+    import("./Channels"),
+    import("./Events"),
+    import("./Streams"),
+    import("./Workspace")
   ]);
 }
 
@@ -68,7 +50,7 @@ async function modules() {
  */
 
 async function start(): Promise<void> {
-  server.listen(config.port, () => {
+  server.listen(config.port).then(() => {
     console.log(`Server listening on port ${config.port}`);
   });
 }

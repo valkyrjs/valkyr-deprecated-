@@ -1,13 +1,14 @@
 import { projection } from "@valkyr/server";
 import { Workspace, workspace } from "stores";
 
-import { collection } from "../../Database/Collections";
+import { workspaces } from "./Model";
 
 projection.on<Workspace.Created>("WorkspaceCreated", async ({ streamId, data: { name, members } }) => {
   await Promise.all([
-    collection.workspaces.insertOne({
+    workspaces.insertOne({
       id: streamId,
       name,
+      invites: [],
       members
     }),
     workspace.access.setup(
@@ -18,7 +19,7 @@ projection.on<Workspace.Created>("WorkspaceCreated", async ({ streamId, data: { 
 });
 
 projection.on<Workspace.MemberAdded>("WorkspaceMemberAdded", async ({ streamId, data }) => {
-  await collection.workspaces.updateOne(
+  await workspaces.updateOne(
     {
       id: streamId
     },

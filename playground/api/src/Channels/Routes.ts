@@ -1,5 +1,5 @@
-import { hasData } from "../../Policies/hasData";
-import { route } from "../../Providers/Server";
+import { hasData } from "../Policies/hasData";
+import { route } from "../Server";
 
 /*
  |--------------------------------------------------------------------------------

@@ -1,13 +1,13 @@
 import { customAlphabet } from "nanoid";
 
-import { config } from "../../../Config";
-import { collection } from "../../../Database/Collections";
+import { config } from "../../Config";
+import { accounts } from "../Model";
 
 const generateToken = customAlphabet(config.auth.token.letters, config.auth.token.length);
 
 export async function createAccountToken(type: "email" | "sms" | "console", accountId: string) {
   const token = generateToken();
-  await collection.accounts.updateOne({ id: accountId }, { $set: { token } });
+  await accounts.updateOne({ id: accountId }, { $set: { token } });
   switch (type) {
     case "email": {
       throw new Error("Email is not yet supported");
@@ -24,5 +24,5 @@ export async function createAccountToken(type: "email" | "sms" | "console", acco
 }
 
 export async function removeAccountToken(accountId: string) {
-  return collection.accounts.updateOne({ id: accountId }, { $set: { token: "" } });
+  return accounts.updateOne({ id: accountId }, { $set: { token: "" } });
 }

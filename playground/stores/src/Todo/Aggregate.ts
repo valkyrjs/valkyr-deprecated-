@@ -36,7 +36,7 @@ export class Todo extends AggregateRoot {
   public id = "";
   public workspaceId = "";
   public name = "";
-  public items = new Items();
+  public items = new Items(this);
 
   public apply(event: Event) {
     switch (event.type) {
@@ -100,4 +100,4 @@ export class Todo extends AggregateRoot {
  |--------------------------------------------------------------------------------
  */
 
-class Items extends Aggregate<Item> {}
+class Items extends Aggregate<Todo, Item> {}

@@ -11,7 +11,13 @@ import { Event } from "./Events";
 export type State = {
   id: string;
   name: string;
+  invites: Invite[];
   members: Member[];
+};
+
+export type Invite = {
+  id: string;
+  email: string;
 };
 
 export type Member = {
@@ -29,7 +35,8 @@ export type Member = {
 export class Workspace extends AggregateRoot {
   public id = "";
   public name = "";
-  public members = new Members();
+  public invites = new Invites(this);
+  public members = new Members(this);
 
   public apply(event: Event): void {
     switch (event.type) {
@@ -39,6 +46,15 @@ export class Workspace extends AggregateRoot {
         for (const member of event.data.members) {
           this.members.add(member);
         }
+        break;
+      }
+      case "WorkspaceInviteCreated": {
+        this.invites.add(event.data);
+        break;
+      }
+      case "WorkspaceInviteRemoved": {
+        this.invites.remove(event.data);
+        break;
       }
     }
   }
@@ -47,6 +63,7 @@ export class Workspace extends AggregateRoot {
     return {
       id: this.id,
       name: this.name,
+      invites: this.invites.toJSON(),
       members: this.members.toJSON()
     };
   }
@@ -58,7 +75,13 @@ export class Workspace extends AggregateRoot {
  |--------------------------------------------------------------------------------
  */
 
-class Members extends Aggregate<Member> {
+class Invites extends Aggregate<Workspace, Invite> {
+  public getByEmail(email: string) {
+    return this.index.find((invite) => invite.email === email);
+  }
+}
+
+class Members extends Aggregate<Workspace, Member> {
   public getAccountIds() {
     return this.index.map((member) => member.accountId);
   }

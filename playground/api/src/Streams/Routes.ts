@@ -1,7 +1,7 @@
-import { Event, ledger } from "@valkyr/server";
+import { Event } from "@valkyr/server";
 
-import { hasData } from "../../Policies/hasData";
-import { route } from "../../Providers/Server";
+import { hasData } from "../Policies/hasData";
+import { ledger, route } from "../Server";
 
 // store.on("saved", (descriptor) => {
 //   for (const stream of descriptor.streams) {

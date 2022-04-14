@@ -1,4 +1,4 @@
-import { route } from "../../Providers/Server";
+import { route } from "../Server";
 
 /*
  |--------------------------------------------------------------------------------
