@@ -1,76 +1,36 @@
-import { nanoid } from "nanoid";
-import { Account, account } from "stores";
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
-import { ledger } from "../../Server";
-import { accounts } from "../Model";
+import { Account, AccountDocument } from "../Model";
 
-/*
- |--------------------------------------------------------------------------------
- | Write
- |--------------------------------------------------------------------------------
- */
+@Injectable()
+export class AccountService {
+  constructor(@InjectModel(Account.name) private readonly model: Model<AccountDocument>) {}
 
-export async function createAccount(email: string) {
-  const accountId = nanoid();
-
-  const state = await ledger.reduce(accountId, Account.Account);
-  if (state) {
-    throw new Error("Account already exists");
+  public async insert(id: string, email: string) {
+    return this.model.create({
+      id,
+      status: "onboarding",
+      alias: "",
+      name: {
+        family: "",
+        given: ""
+      },
+      email,
+      token: ""
+    });
   }
 
-  await ledger.insert(account.created(accountId, { email }));
-
-  return getAccountByEmail(email);
-}
-
-export async function activateAccount(accountId: string) {
-  const state = await getAccountState(accountId);
-  if (state.status === "active") {
-    throw new Error("Account is already active");
+  public async update(id: string, data: Partial<AccountDocument>) {
+    return this.model.updateOne({ id }, data);
   }
-  await ledger.insert(account.activated(accountId));
-}
 
-export async function setAccountName(accountId: string, name: Account.State["name"]) {
-  const state = await getAccountState(accountId);
-  if (state.name === name) {
-    throw new Error("Name is already set");
+  public async get(id: string) {
+    return this.model.findOne({ id });
   }
-  await ledger.insert(account.nameSet(accountId, { name }));
-}
 
-/*
- |--------------------------------------------------------------------------------
- | Read
- |--------------------------------------------------------------------------------
- */
-
-export async function getAccountByEmailOrCreate(email: string) {
-  const account = await getAccountByEmail(email);
-  if (account === null) {
-    return createAccount(email);
+  public async getByEmail(email: string) {
+    return this.model.findOne({ email });
   }
-  return account;
-}
-
-export async function getAccountByUsername(username: string) {
-  return accounts.findOne({ username });
-}
-
-export async function getAccountByEmail(email: string) {
-  return accounts.findOne({ email });
-}
-
-/*
- |--------------------------------------------------------------------------------
- | Utilities
- |--------------------------------------------------------------------------------
- */
-
-async function getAccountState(accountId: string) {
-  const state = await ledger.reduce(accountId, Account.Account);
-  if (state === undefined) {
-    throw new Error("Account not found");
-  }
-  return state;
 }

@@ -14,15 +14,13 @@ const HEARTBEAT_INTERVAL = 1000 * 30; // 30 seconds
 
 type Settings = {
   uri: string;
-  log?: Log;
+  onError?: (err: any) => void;
 };
 
 type Debounce = {
   reconnect: NodeJS.Timeout | undefined;
   heartbeat: NodeJS.Timeout | undefined;
 };
-
-type Log = (type: string, ...args: any[]) => void;
 
 /*
  |--------------------------------------------------------------------------------
@@ -32,10 +30,10 @@ type Log = (type: string, ...args: any[]) => void;
 
 export class Socket extends EventEmitter {
   public readonly uri: string;
-  public readonly log?: Log;
 
   public readonly messages: Message[] = [];
 
+  private _onError?: (err: any) => void;
   private _ws?: WebSocket;
   private _reconnectDelay = 0;
   private _debounce: Debounce = {
@@ -43,17 +41,19 @@ export class Socket extends EventEmitter {
     heartbeat: undefined
   };
 
-  constructor({ uri, log }: Settings) {
+  constructor({ uri, onError }: Settings) {
     super();
 
     this.uri = uri;
-    this.log = log;
+
+    if (onError) {
+      this._onError = onError;
+    }
 
     this.connect = this.connect.bind(this);
     this.ping = this.ping.bind(this);
     this.send = this.send.bind(this);
     this.onOpen = this.onOpen.bind(this);
-    this.onError = this.onError.bind(this);
     this.onMessage = this.onMessage.bind(this);
     this.onClose = this.onClose.bind(this);
   }
@@ -82,16 +82,18 @@ export class Socket extends EventEmitter {
    */
 
   public async connect() {
-    this.log?.("socket", "connecting...");
     return new Promise<void>((resolve) => {
       this._ws = new WebSocket(this.uri);
 
       this.once("connected", this.onConnect(resolve));
 
       this._ws.onopen = this.onOpen;
-      this._ws.onerror = this.onError;
       this._ws.onmessage = this.onMessage;
       this._ws.onclose = this.onClose;
+
+      if (this._onError) {
+        this._ws.onerror = this._onError;
+      }
     });
   }
 
@@ -134,31 +136,19 @@ export class Socket extends EventEmitter {
   }
 
   public onOpen() {
-    this.log?.("socket", "connected");
     this.emit("connected");
   }
 
-  public onError(ev: Event) {
-    this.log?.("error", JSON.stringify(ev));
-  }
-
   public onMessage(msg: MessageEvent<string>) {
-    const { uuid, type, data } = JSON.parse(msg.data);
-    if (uuid) {
-      if (data.data?.pong) {
-        this.log?.("heartbeat", `[${uuid}] received`);
-      } else {
-        this.log?.("response", uuid, data.data);
-      }
+    const { status, id, event, data } = JSON.parse(msg.data);
+    if (status !== undefined) {
+      this.emit(id, status, data);
     } else {
-      this.log?.("message", type, data);
+      this.emit(id ?? event, data);
     }
-    this.emit(uuid ?? type, data);
   }
 
   public onClose(ev: CloseEvent) {
-    this.log?.("socket", "closed");
-
     const heartbeat = this._debounce.heartbeat;
     if (heartbeat) {
       clearTimeout(heartbeat);
@@ -172,7 +162,6 @@ export class Socket extends EventEmitter {
         this.connect,
         this._reconnectDelay < MAX_RECONNECT_DELAY ? (this._reconnectDelay += RECONNECT_INCREMENT) : MAX_RECONNECT_DELAY
       );
-      this.log?.("socket", "reconnecting...");
     }
 
     this.emit("disconnected");
@@ -198,12 +187,12 @@ export class Socket extends EventEmitter {
    |--------------------------------------------------------------------------------
    */
 
-  public async send<T extends Record<string, any>>(type: string, data?: T): Promise<any> {
+  public async send<T extends Record<string, any>>(event: string, data?: T): Promise<any> {
     if (this.isConnected === false) {
       await this.connect();
     }
     return new Promise((resolve, reject) => {
-      this.messages.push(Message.create(type, data ?? {}, { resolve, reject }));
+      this.messages.push(Message.create(event, data ?? {}, { resolve, reject }));
       this.process();
     });
   }
@@ -220,23 +209,18 @@ export class Socket extends EventEmitter {
   }
 
   private transmit(message: Message) {
-    if (message.type === "ping") {
-      this.log?.("heartbeat", `[${message.uuid}] sent`);
-    } else {
-      this.log?.("outgoing", `[${message.uuid}] ${message.type}`, message.data);
-    }
     this.ws.send(message.toString());
   }
 
   private response(message: Message) {
-    this.once(message.uuid, (res: any) => {
-      switch (res.status) {
-        case "rejected": {
-          message.reject(res.message);
+    this.once(message.id, (status: "success" | "error", data: any) => {
+      switch (status) {
+        case "success": {
+          message.resolve(data);
           break;
         }
-        case "resolved": {
-          message.resolve(res.data);
+        case "error": {
+          message.reject(data.message);
           break;
         }
       }

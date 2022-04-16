@@ -10,6 +10,8 @@
     "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
-    "useUnknownInCatchVariables": false
+    "useUnknownInCatchVariables": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   }
 }

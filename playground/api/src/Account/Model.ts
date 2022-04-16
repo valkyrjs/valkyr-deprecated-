@@ -1,14 +1,53 @@
-import { Account as Acct } from "stores";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
-import { server } from "../Server";
+/*
+ |--------------------------------------------------------------------------------
+ | Document
+ |--------------------------------------------------------------------------------
+ */
 
-export type Account = {
-  id: string;
-  status: Acct.State["status"];
-  name: Acct.State["name"];
-  alias: string;
-  email: string;
-  token: string;
-};
+export type AccountDocument = Account & Document;
 
-export const accounts = server.collection<Account>("accounts");
+/*
+ |--------------------------------------------------------------------------------
+ | Model
+ |--------------------------------------------------------------------------------
+ */
+
+@Schema()
+export class Account {
+  @Prop({ required: true })
+  id!: string;
+
+  @Prop({ required: true })
+  status!: string;
+
+  @Prop({
+    type: {
+      family: String,
+      given: String
+    }
+  })
+  name?: {
+    family?: string;
+    given?: string;
+  };
+
+  @Prop()
+  alias?: string;
+
+  @Prop({ required: true })
+  email!: string;
+
+  @Prop()
+  token?: string;
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Schema
+ |--------------------------------------------------------------------------------
+ */
+
+export const AccountSchema = SchemaFactory.createForClass(Account);

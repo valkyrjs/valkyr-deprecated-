@@ -1,0 +1,28 @@
+{
+  "name": "@valkyr/nestjs",
+  "version": "0.0.0",
+  "description": "A collection of nestjs modules for building valkyr apis.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json"
+  },
+  "dependencies": {
+    "@nestjs/common": "^8.0.0",
+    "@nestjs/mongoose": "^9.0.3",
+    "@nestjs/platform-ws": "^8.4.4",
+    "@valkyr/ledger": "*",
+    "@valkyr/utils": "*",
+    "crypto-js": "^4.1.1",
+    "ws": "^8.5.0"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.1.1",
+    "@types/ws": "^8.5.3"
+  }
+}

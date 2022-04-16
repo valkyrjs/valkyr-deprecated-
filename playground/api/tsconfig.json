@@ -2,7 +2,12 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "declaration": true,
-    "outDir": "dist"
-  },
-  "include": ["custom.d.ts", "src"]
+    "outDir": "./dist",
+    "skipLibCheck": true,
+    "paths": {
+      "@valkyr/*": [
+        "../../packages/*/src"
+      ]
+    }
+  }
 }

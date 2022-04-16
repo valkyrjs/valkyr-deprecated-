@@ -13,8 +13,10 @@
     "bitflag",
     "Bitflags",
     "camelcase",
+    "nestjs",
     "upsert",
     "valkyr",
+    "websockets",
     "Wksp"
   ]
 }

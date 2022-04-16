@@ -57,7 +57,7 @@ export const auth = {
 
 async function setup() {
   if (auth.is("authenticated")) {
-    await remote.socket.send("account:resolve", { token: jwt.token });
+    await remote.socket.send("token", { token: jwt.token });
   }
 }
 
@@ -68,7 +68,7 @@ async function setup() {
  * @param email - Email identifier to generate a token for.
  */
 async function create(email: string) {
-  return remote.socket.send("account:create", { email });
+  return remote.post("/accounts", { email });
 }
 
 /**
@@ -78,7 +78,7 @@ async function create(email: string) {
  * @param token - Single sign on token to validate the signature.
  */
 async function sign(email: string, token: string) {
-  await remote.socket.send("account:signature", { email, token }).then(({ token }) => {
+  await remote.post<{ token: string }>("/accounts/validate", { email, token }).then(({ token }) => {
     return resolve(token);
   });
 }
@@ -90,7 +90,7 @@ async function sign(email: string, token: string) {
  * @param token - Signed token to resolve.
  */
 async function resolve(token: string) {
-  await remote.socket.send("account:resolve", { token });
+  await remote.socket.send("token", { token });
   jwt.token = token;
 }
 

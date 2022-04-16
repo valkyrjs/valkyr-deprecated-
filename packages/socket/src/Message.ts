@@ -18,30 +18,30 @@ const EMPTY_PROMISE: MessagePromise = {
  */
 
 export class Message {
-  public readonly uuid = nanoid();
+  public readonly id = nanoid();
 
   public readonly resolve = this.promise.resolve;
   public readonly reject = this.promise.reject;
 
   private constructor(
-    public readonly type: string,
+    public readonly event: string,
     public readonly data: MessageData,
     public readonly promise: MessagePromise
   ) {}
 
-  public static create(type: string, data: MessageData, promise: MessagePromise) {
-    return new Message(type, data, promise);
+  public static create(event: string, data: MessageData, promise: MessagePromise) {
+    return new Message(event, data, promise);
   }
 
-  public static from({ type, data }: MessageJSON) {
-    return new Message(type, data, EMPTY_PROMISE);
+  public static from({ event, data }: MessageJSON) {
+    return new Message(event, data, EMPTY_PROMISE);
   }
 
   public print() {
     return JSON.stringify(
       {
-        uuid: this.uuid,
-        type: this.type,
+        id: this.id,
+        event: this.event,
         data: this.data
       },
       null,
@@ -51,9 +51,8 @@ export class Message {
 
   public toString() {
     return JSON.stringify({
-      uuid: this.uuid,
-      type: this.type,
-      data: this.data
+      event: this.event,
+      data: [this.id, this.data]
     });
   }
 }
@@ -65,8 +64,8 @@ export class Message {
  */
 
 export type MessageJSON = {
-  uuid: string;
-  type: string;
+  id: string;
+  event: string;
   data: MessageData;
 };
 

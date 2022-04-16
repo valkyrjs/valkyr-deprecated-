@@ -1,28 +1,33 @@
-import { customAlphabet } from "nanoid";
+import { Injectable } from "@nestjs/common";
+import { customAlphabet } from "@valkyr/utils";
 
-import { config } from "../../Config";
-import { accounts } from "../Model";
+import { AccountService } from "./Account";
 
-const generateToken = customAlphabet(config.auth.token.letters, config.auth.token.length);
+const generateToken = customAlphabet("1234567890", 6);
 
-export async function createAccountToken(type: "email" | "sms" | "console", accountId: string) {
-  const token = generateToken();
-  await accounts.updateOne({ id: accountId }, { $set: { token } });
-  switch (type) {
-    case "email": {
-      throw new Error("Email is not yet supported");
+@Injectable()
+export class TokenService {
+  constructor(private readonly accounts: AccountService) {}
+
+  public async create(type: "email" | "sms" | "console", accountId: string) {
+    const token = generateToken();
+    await this.accounts.update(accountId, { token });
+    switch (type) {
+      case "email": {
+        throw new Error("Email is not yet supported");
+      }
+      case "sms": {
+        throw new Error("SMS is not yet supported");
+      }
+      case "console": {
+        console.log("Token:", token);
+        break;
+      }
     }
-    case "sms": {
-      throw new Error("SMS is not yet supported");
-    }
-    case "console": {
-      console.log("Token:", token);
-      break;
-    }
+    return token;
   }
-  return token;
-}
 
-export async function removeAccountToken(accountId: string) {
-  return accounts.updateOne({ id: accountId }, { $set: { token: "" } });
+  public async remove(accountId: string) {
+    await this.accounts.update(accountId, { token: "" });
+  }
 }
