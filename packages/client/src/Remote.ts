@@ -197,14 +197,16 @@ export const remote = new (class {
  * @returns Response
  */
 export async function fetcher<T = unknown>(input: RequestInfo, init?: RequestInit): Promise<T> {
-  return fetch(input, init).then(async (r) => {
-    if (r.status === 201) {
-      return {};
-    }
-    const res = await r.json();
-    if (r.status >= 300) {
-      throw new ApiErrorResponse(r.status, res.message, res.data ?? {});
-    }
-    return res;
-  });
+  const response = await fetch(input, init);
+
+  const body = await response.text();
+  if (body.length === 0) {
+    return {} as T;
+  }
+
+  const data = JSON.parse(body);
+  if (response.status >= 300) {
+    throw new ApiErrorResponse(response.status, data.message, data.data ?? {});
+  }
+  return JSON.parse(body);
 }
