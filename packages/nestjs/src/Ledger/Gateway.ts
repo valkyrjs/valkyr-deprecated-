@@ -1,5 +1,6 @@
 import { Logger, UseFilters, UseInterceptors } from "@nestjs/common";
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { IncomingMessage } from "http";
 import * as jwt from "jsonwebtoken";
 import { Server, WebSocket } from "ws";
 
@@ -16,6 +17,20 @@ export class LedgerGateway {
   public readonly server!: Server;
 
   public readonly channels: Channels = new Map();
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Lifecycle Methods
+   |--------------------------------------------------------------------------------
+   */
+
+  public handleConnection(socket: WebSocket, request: IncomingMessage) {
+    // [TODO] Add authorization handling
+  }
+
+  public handleDisconnect(socket: WebSocket) {
+    // [TODO] Clean up connections
+  }
 
   /*
    |--------------------------------------------------------------------------------

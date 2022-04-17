@@ -21,7 +21,7 @@ type Config = {
 };
 
 async function setup(config: Config) {
-  const socket = new Socket({ uri: config.socket, log: console.log });
+  const socket = new Socket({ uri: config.socket });
 
   container.set("Api", config.api);
   container.set("Database", config.database ?? new IndexedDbAdapter());
