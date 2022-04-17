@@ -27,6 +27,20 @@ export class LedgerService {
   }
 
   /**
+   * Retrieves events from the local ledger and projects them against the
+   * running publisher instance.
+   *
+   * @param streamId - Stream id to hydrate. (Optional)
+   * @param from     - Get events starting at a specific time position. (Optional)
+   */
+  public async rehydrate(streamId?: string, from?: string) {
+    const events = streamId ? await this.stream(streamId, from) : await this.events();
+    for (const event of events) {
+      await publisher.project(event, { hydrated: true, outdated: false });
+    }
+  }
+
+  /**
    * Reduce an event stream down to its final aggregate state representation.
    *
    * We do this by left folding all events in a stream down to a single

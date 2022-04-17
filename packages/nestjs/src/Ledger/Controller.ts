@@ -30,6 +30,16 @@ export class LedgerController {
     return this.ledger.events();
   }
 
+  @Get("/rehydrate")
+  public async rehydrateLedgerHistory() {
+    await this.ledger.rehydrate();
+  }
+
+  @Get(":stream/rehydrate")
+  public async rehydrateStreamHistory(@Param("stream") id: string) {
+    await this.ledger.rehydrate(id);
+  }
+
   @Get(":stream/history")
   public async getStreamHistory(@Param("stream") id: string) {
     return this.ledger.stream(id);
