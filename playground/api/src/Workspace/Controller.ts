@@ -8,6 +8,11 @@ import { WorkspaceService } from "./Services/Workspace";
 export class WorkspaceController {
   constructor(private readonly workspaces: WorkspaceService, private readonly ledger: WorkspaceLedgerService) {}
 
+  @Post()
+  public async createWorkspace(@Body("name") name: string, @Auditor() auditor: string) {
+    return this.ledger.create(name, auditor);
+  }
+
   @Get()
   public async getWorkspace(@Auditor() auditor: string) {
     const workspaces = await this.workspaces.getByAccount(auditor);
@@ -20,11 +25,7 @@ export class WorkspaceController {
     @Body("email") email: string,
     @Auditor() auditor: string
   ) {
+    console.log(email);
     await this.ledger.invite(workspaceId, email, auditor);
-    // const permission = await workspace.access.for("workspace").can(memberId, "addMember");
-    // if (permission.granted === false) {
-    //   return this.reject(403, permission.message);
-    // }
-    // await createInvite(workspaceId, email, memberId);
   }
 }

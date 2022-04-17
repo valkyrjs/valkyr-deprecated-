@@ -12,9 +12,10 @@
     "sourceType": "module"
   },
   "rules": {
-    "quotes": ["error", "double"],
+    "no-use-before-define": "off",
     "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
+    "simple-import-sort/exports": "error",
+    "quotes": ["error", "double"]
   },
   "overrides": [
     {
@@ -25,12 +26,13 @@
         "plugin:prettier/recommended"
       ],
       "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-use-before-define": "off",
         "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
         "@typescript-eslint/no-var-requires": "off",
-        "@typescript-eslint/prefer-arrow-callback": "off",
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/explicit-module-boundary-types": "off",
-        "@typescript-eslint/no-empty-function": "off"
+        "@typescript-eslint/prefer-arrow-callback": "off"
       }
     }
   ]

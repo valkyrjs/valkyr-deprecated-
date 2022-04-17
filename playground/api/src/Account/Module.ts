@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { LedgerModule } from "@valkyr/nestjs";
 
+import { AccountAccess } from "./Access";
 import { AccountController } from "./Controller";
 import { Account, AccountSchema } from "./Model";
 import { AccountProjector } from "./Projector";
@@ -11,7 +11,6 @@ import { TokenService } from "./Services/Token";
 
 @Module({
   imports: [
-    LedgerModule,
     MongooseModule.forFeature([
       {
         name: Account.name,
@@ -20,6 +19,6 @@ import { TokenService } from "./Services/Token";
     ])
   ],
   controllers: [AccountController],
-  providers: [AccountLedgerService, AccountProjector, AccountService, TokenService]
+  providers: [AccountAccess, AccountLedgerService, AccountProjector, AccountService, TokenService]
 })
 export class AccountModule {}

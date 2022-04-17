@@ -1,11 +1,4 @@
-import {
-  Attributes,
-  createPermission,
-  getPermissions,
-  permissionGranted,
-  PermissionHandler,
-  Role
-} from "@valkyr/access";
+import { Attributes, permissionGranted, PermissionHandler, Role } from "@valkyr/access";
 
 /*
  |--------------------------------------------------------------------------------
@@ -52,37 +45,6 @@ export class AccountRole extends Role<{
       }
     };
   }
-}
-
-/*
- |--------------------------------------------------------------------------------
- | Access
- |--------------------------------------------------------------------------------
- */
-
-export const access = {
-  setup: async (accountId: string) => {
-    await createAccountRole(accountId);
-  },
-  for: createPermission<AccountRole["permissions"]>(),
-  permissions: getPermissions<AccountRole["permissions"]>(),
-  read
-};
-
-async function createAccountRole(accountId: string) {
-  await AccountRole.create({
-    tenantId: accountId,
-    name: "Owner",
-    permissions: {
-      account: {
-        setAlias: true,
-        setName: true,
-        setEmail: true,
-        read: AccountRole.getAttributes().enable(["id", "name", "alias", "email", "status"]).toNumber()
-      }
-    },
-    members: [accountId]
-  });
 }
 
 /*

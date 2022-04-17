@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { LedgerModule } from "@valkyr/nestjs";
 
+import { WorkspaceAccess } from "./Access";
 import { WorkspaceController } from "./Controller";
 import { Workspace, WorkspaceSchema } from "./Model";
 import { WorkspaceProjector } from "./Projector";
@@ -10,7 +10,6 @@ import { WorkspaceService } from "./Services/Workspace";
 
 @Module({
   imports: [
-    LedgerModule,
     MongooseModule.forFeature([
       {
         name: Workspace.name,
@@ -19,6 +18,6 @@ import { WorkspaceService } from "./Services/Workspace";
     ])
   ],
   controllers: [WorkspaceController],
-  providers: [WorkspaceService, WorkspaceLedgerService, WorkspaceProjector]
+  providers: [WorkspaceAccess, WorkspaceService, WorkspaceLedgerService, WorkspaceProjector]
 })
 export class WorkspaceModule {}

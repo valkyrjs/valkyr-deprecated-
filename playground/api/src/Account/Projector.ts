@@ -9,7 +9,17 @@ export class AccountProjector {
 
   @On("AccountCreated")
   public async created({ streamId, data: { email } }: AccountStore.Created) {
-    await this.account.insert(streamId, email);
+    await this.account.create({
+      id: streamId,
+      status: "onboarding",
+      alias: "",
+      name: {
+        family: "",
+        given: ""
+      },
+      email,
+      token: ""
+    });
     // await account.access.setup(streamId);
   }
 

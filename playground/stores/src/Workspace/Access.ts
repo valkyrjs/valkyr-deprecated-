@@ -1,4 +1,4 @@
-import { Attributes, createPermission, getPermissions, Role } from "@valkyr/access";
+import { Attributes, Role } from "@valkyr/access";
 
 /*
  |--------------------------------------------------------------------------------
@@ -53,55 +53,4 @@ export class WorkspaceRole extends Role<{
       }
     };
   }
-}
-
-/*
- |--------------------------------------------------------------------------------
- | Access
- |--------------------------------------------------------------------------------
- */
-
-export const access = {
-  setup: async (workspaceId: string, members: string[]) => {
-    await createAdminRole(workspaceId, members);
-    await createMemberRole(workspaceId);
-  },
-  for: createPermission<WorkspaceRole["permissions"]>(),
-  permissions: getPermissions<WorkspaceRole["permissions"]>()
-};
-
-export async function createAdminRole(workspaceId: string, members: string[]): Promise<void> {
-  await WorkspaceRole.create({
-    tenantId: workspaceId,
-    name: "Admin",
-    permissions: {
-      workspace: {
-        setName: true,
-        addMember: true,
-        delete: true
-      },
-      todo: {
-        create: true,
-        assign: true,
-        setData: true,
-        delete: true
-      }
-    },
-    members
-  });
-}
-
-export async function createMemberRole(workspaceId: string): Promise<void> {
-  await WorkspaceRole.create({
-    tenantId: workspaceId,
-    name: "Member",
-    permissions: {
-      todo: {
-        create: true,
-        assign: true,
-        setData: true,
-        delete: true
-      }
-    }
-  });
 }

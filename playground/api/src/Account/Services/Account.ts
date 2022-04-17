@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { AnyKeys, Model } from "mongoose";
 
 import { Account, AccountDocument } from "../Model";
 
@@ -8,21 +8,11 @@ import { Account, AccountDocument } from "../Model";
 export class AccountService {
   constructor(@InjectModel(Account.name) private readonly model: Model<AccountDocument>) {}
 
-  public async insert(id: string, email: string) {
-    return this.model.create({
-      id,
-      status: "onboarding",
-      alias: "",
-      name: {
-        family: "",
-        given: ""
-      },
-      email,
-      token: ""
-    });
+  public async create(doc: AnyKeys<AccountDocument>) {
+    return this.model.create(doc);
   }
 
-  public async update(id: string, data: Partial<AccountDocument>) {
+  public async update(id: string, data: AnyKeys<AccountDocument>) {
     return this.model.updateOne({ id }, data);
   }
 
