@@ -42,7 +42,7 @@ class Member extends Document {
 
 @Schema()
 export class Workspace {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   id!: string;
 
   @Prop({ required: true })

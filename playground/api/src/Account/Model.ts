@@ -31,7 +31,7 @@ class Name extends Document {
 
 @Schema()
 export class Account {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   id!: string;
 
   @Prop({ required: true })
@@ -43,7 +43,7 @@ export class Account {
   @Prop()
   alias?: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   email!: string;
 
   @Prop()

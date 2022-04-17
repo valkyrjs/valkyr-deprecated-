@@ -21,7 +21,7 @@ export class Event {
    * A unique event identifier correlating its identity in the **event store**
    * _(database)_.
    */
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   id!: string;
 
   /**
@@ -29,13 +29,13 @@ export class Event {
    * belongs to and is used to generate a specific aggregate state representation of
    * that particular identity.
    */
-  @Prop({ required: true })
+  @Prop({ required: true, index: true })
   streamId!: string;
 
   /**
    * Event identifier describing the intent of the event in a past tense format.
    */
-  @Prop({ required: true })
+  @Prop({ required: true, index: true })
   type!: string;
 
   /**
@@ -60,7 +60,7 @@ export class Event {
    * key when performing reduction logic to generate aggregate state for the stream
    * in which the event belongs.
    */
-  @Prop({ required: true })
+  @Prop({ required: true, index: true })
   created!: string;
 
   /**
@@ -71,7 +71,7 @@ export class Event {
    * This value is used when performing event synchronization between two different
    * event ledgers.
    */
-  @Prop({ required: true })
+  @Prop({ required: true, index: true })
   recorded!: string;
 }
 

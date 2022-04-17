@@ -1,26 +1,29 @@
 import { On, Projector } from "@valkyr/nestjs";
 import { AccountStore } from "stores";
 
+import { AccountAccess } from "./Access";
 import { AccountService } from "./Services/Account";
 
 @Projector()
 export class AccountProjector {
-  constructor(private readonly account: AccountService) {}
+  constructor(private readonly account: AccountService, private readonly access: AccountAccess) {}
 
   @On("AccountCreated")
   public async created({ streamId, data: { email } }: AccountStore.Created) {
-    await this.account.create({
-      id: streamId,
-      status: "onboarding",
-      alias: "",
-      name: {
-        family: "",
-        given: ""
-      },
-      email,
-      token: ""
-    });
-    // await account.access.setup(streamId);
+    await Promise.all([
+      this.account.create({
+        id: streamId,
+        status: "onboarding",
+        alias: "",
+        name: {
+          family: "",
+          given: ""
+        },
+        email,
+        token: ""
+      }),
+      this.access.createOwner(streamId)
+    ]);
   }
 
   @On("AccountActivated")

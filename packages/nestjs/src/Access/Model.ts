@@ -17,10 +17,10 @@ export type RoleDocument = Role & Document;
 
 @Schema()
 export class Role {
-  @Prop({ required: true })
+  @Prop({ required: true, index: true })
   tenantId!: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, index: true })
   roleId!: string;
 
   @Prop({ required: true })

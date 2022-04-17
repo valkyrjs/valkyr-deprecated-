@@ -28,6 +28,11 @@ export class WorkspaceAccess extends AccessService<WorkspaceStore.WorkspaceRole[
       tenantId: workspaceId,
       name: "Member",
       permissions: {
+        workspace: {
+          setName: false,
+          addMember: false,
+          delete: false
+        },
         todo: {
           create: true,
           assign: true,

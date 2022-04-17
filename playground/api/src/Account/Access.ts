@@ -11,7 +11,8 @@ export class AccountAccess extends AccessService<AccountStore.AccountRole["permi
           setAlias: true,
           setName: true,
           setEmail: true,
-          read: AccountStore.AccountRole.getAttributes().enable(["id", "name", "alias", "email", "status"]).toNumber()
+          read: AccountStore.AccountRole.getAttributes().enable(["id", "name", "alias", "email", "status"]).toNumber(),
+          close: true
         }
       },
       members: [accountId]

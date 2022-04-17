@@ -15,7 +15,7 @@ export class AccessService<
   Permissions extends AccessRole["permissions"] = AccessRole["permissions"],
   Resource extends keyof Permissions = keyof Permissions
 > {
-  constructor(protected readonly roles: RoleService, protected readonly permissions: PermissionService) {}
+  constructor(protected readonly roles: RoleService<Permissions>, protected readonly permissions: PermissionService) {}
 
   public for<R extends Resource>(resource: R) {
     return {
