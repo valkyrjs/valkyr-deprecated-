@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { customAlphabet } from "@valkyr/utils";
+import * as bcrypt from "bcrypt";
 
 import { AccountService } from "./Account";
 
@@ -11,7 +12,7 @@ export class TokenService {
 
   public async create(type: "email" | "sms" | "console", accountId: string) {
     const token = generateToken();
-    await this.accounts.update(accountId, { token });
+    await this.accounts.update(accountId, { token: await bcrypt.hash(token, 10) });
     switch (type) {
       case "email": {
         throw new Error("Email is not yet supported");
@@ -25,6 +26,13 @@ export class TokenService {
       }
     }
     return token;
+  }
+
+  public async validate(token: string, encrypted?: string) {
+    if (encrypted === undefined) {
+      return false;
+    }
+    return bcrypt.compare(token, encrypted);
   }
 
   public async remove(accountId: string) {

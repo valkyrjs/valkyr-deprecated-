@@ -26,7 +26,7 @@ export class AccountController {
   @Post("/validate")
   public async validate(@Body("email") email: string, @Body("token") token: string) {
     const account = await this.account.getByEmail(email);
-    if (account === null || account.token !== token) {
+    if (account === null || (await this.token.validate(token, account.token)) === false) {
       throw new Error("Token is invalid or has expired");
     }
     if (account.status === "onboarding") {

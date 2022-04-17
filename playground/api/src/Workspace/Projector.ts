@@ -16,6 +16,7 @@ export class WorkspaceProjector {
       invites: [],
       members
     });
+    console.log("workspace created");
     // await this.workspace.access.setup(
     //   streamId,
     //   members.map((member) => member.id)

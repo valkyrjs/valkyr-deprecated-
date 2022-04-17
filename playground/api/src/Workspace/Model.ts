@@ -15,6 +15,25 @@ export type WorkspaceDocument = Workspace & Document;
  |--------------------------------------------------------------------------------
  */
 
+class Invite extends Document {
+  @Prop()
+  id!: string;
+
+  @Prop()
+  email!: string;
+}
+
+class Member extends Document {
+  @Prop()
+  id!: string;
+
+  @Prop()
+  accountId!: string;
+
+  @Prop()
+  name?: string;
+}
+
 @Schema()
 export class Workspace {
   @Prop({ required: true })
@@ -24,28 +43,14 @@ export class Workspace {
   name!: string;
 
   @Prop({
-    type: {
-      id: String,
-      email: String
-    }
+    type: Invite
   })
-  invites?: {
-    id: string;
-    email: string;
-  }[];
+  invites?: Invite[];
 
   @Prop({
-    type: {
-      id: String,
-      accountId: String,
-      name: String
-    }
+    type: Member
   })
-  members?: {
-    id: string;
-    accountId: string;
-    name: string;
-  }[];
+  members?: Member[];
 }
 
 /*
