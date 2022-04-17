@@ -1,3 +1,4 @@
+export * from "./Decorators/Auditor";
 export * from "./Decorators/Projector";
 export * from "./Interceptors/MessageInterceptor";
 export * from "./Ledger/Controller";
