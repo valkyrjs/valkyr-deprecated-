@@ -16,22 +16,11 @@ export class AccountController {
 
   @Post()
   public async create(@Body("email") email: string) {
-    let account = await this.account.getByEmail(email);
+    const account = await this.resolve(email);
     if (account === null) {
-      account = await this.ledger.create(email);
-      if (account === null) {
-        throw new Error("Could not resolve account");
-      }
+      throw new Error("Could not resolve account");
     }
     await this.token.create("console", account.id);
-    return {
-      token: jwt.sign(
-        {
-          auditor: account.id
-        },
-        config.auth.secret
-      )
-    };
   }
 
   @Post("/validate")
@@ -40,13 +29,10 @@ export class AccountController {
     if (account === null || account.token !== token) {
       throw new Error("Token is invalid or has expired");
     }
-
     if (account.status === "onboarding") {
       await this.ledger.activate(account.id);
     }
-
     await this.token.remove(account.id);
-
     return {
       token: jwt.sign(
         {
@@ -60,5 +46,13 @@ export class AccountController {
   @Get("/:account")
   public async getAccount(@Param("account") id: string) {
     return this.account.get(id);
+  }
+
+  private async resolve(email: string) {
+    const account = await this.account.getByEmail(email);
+    if (account === null) {
+      return await this.ledger.create(email);
+    }
+    return account;
   }
 }

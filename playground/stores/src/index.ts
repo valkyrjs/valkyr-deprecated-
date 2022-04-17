@@ -1,6 +1,3 @@
-export * as Account from "./Account";
-export { account } from "./Account";
-export * as Todo from "./Todo";
-export { todo } from "./Todo";
-export * as Workspace from "./Workspace";
-export { workspace } from "./Workspace";
+export * as AccountStore from "./Account";
+export * as TodoStore from "./Todo";
+export * as WorkspaceStore from "./Workspace";

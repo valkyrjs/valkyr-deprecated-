@@ -4,6 +4,8 @@ import { LedgerModule } from "@valkyr/nestjs";
 
 import { WorkspaceController } from "./Controller";
 import { Workspace, WorkspaceSchema } from "./Model";
+import { WorkspaceProjector } from "./Projector";
+import { WorkspaceLedgerService } from "./Services/Ledger";
 import { WorkspaceService } from "./Services/Workspace";
 
 @Module({
@@ -17,6 +19,6 @@ import { WorkspaceService } from "./Services/Workspace";
     ])
   ],
   controllers: [WorkspaceController],
-  providers: [WorkspaceService]
+  providers: [WorkspaceService, WorkspaceLedgerService, WorkspaceProjector]
 })
 export class WorkspaceModule {}

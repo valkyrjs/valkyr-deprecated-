@@ -1,5 +1,5 @@
 import { On, Projector } from "@valkyr/nestjs";
-import { Account as AccountStore } from "stores";
+import { AccountStore } from "stores";
 
 import { AccountService } from "./Services/Account";
 

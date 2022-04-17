@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { LedgerService } from "@valkyr/nestjs";
 import { nanoid } from "@valkyr/utils";
 import { Model } from "mongoose";
-import { Account as AccountStore, account } from "stores";
+import { AccountStore } from "stores";
 
 import { Account, AccountDocument } from "../Model";
 import { AccountService } from "./Account";
@@ -24,7 +24,7 @@ export class AccountLedgerService {
       throw new Error("Account already exists");
     }
 
-    await this.ledger.insert(account.created(accountId, { email }));
+    await this.ledger.insert(AccountStore.events.created(accountId, { email }));
 
     return this.accounts.getByEmail(email);
   }
@@ -34,7 +34,7 @@ export class AccountLedgerService {
     if (state.status === "active") {
       throw new Error("Account is already active");
     }
-    await this.ledger.insert(account.activated(accountId));
+    await this.ledger.insert(AccountStore.events.activated(accountId));
   }
 
   public async getState(accountId: string) {

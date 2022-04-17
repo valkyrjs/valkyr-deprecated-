@@ -1,15 +1,15 @@
 import { ledger, remote } from "@valkyr/client";
 import { Collection, Model } from "@valkyr/db";
 import { nanoid } from "@valkyr/utils";
-import { Workspace as Wksp, workspace } from "stores";
+import { WorkspaceStore } from "stores";
 
 import { adapter } from "../Adapter";
 
 type Attributes = {
-  id: Wksp.State["id"];
-  name: Wksp.State["name"];
-  invites?: Wksp.State["invites"];
-  members: Wksp.State["members"];
+  id: WorkspaceStore.State["id"];
+  name: WorkspaceStore.State["name"];
+  invites?: WorkspaceStore.State["invites"];
+  members: WorkspaceStore.State["members"];
 };
 
 /*
@@ -48,12 +48,12 @@ export class Workspace extends Model<Attributes> {
    * @param accountId - Account id to assign as initial member.
    */
   public static create(name: string, accountId: string) {
-    const member: Wksp.Member = {
+    const member: WorkspaceStore.Member = {
       id: nanoid(),
       accountId,
       name: ""
     };
-    ledger.push(workspace.created(nanoid(), { name, members: [member] }, { auditor: member.id }));
+    ledger.push(WorkspaceStore.events.created(nanoid(), { name, members: [member] }, { auditor: member.id }));
   }
 
   /*
@@ -77,7 +77,7 @@ export class Workspace extends Model<Attributes> {
  */
 
 class Invites {
-  constructor(public readonly workspace: Workspace, public readonly invites: Wksp.Invite[]) {}
+  constructor(public readonly workspace: Workspace, public readonly invites: WorkspaceStore.Invite[]) {}
 
   /*
    |--------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ class Invites {
 }
 
 class Members {
-  constructor(public readonly workspace: Workspace, public readonly members: Wksp.Member[]) {}
+  constructor(public readonly workspace: Workspace, public readonly members: WorkspaceStore.Member[]) {}
 
   /*
    |--------------------------------------------------------------------------------
@@ -149,7 +149,7 @@ class Members {
    * @param auditor - Member who is removing the member.
    */
   public async remove(id: string, auditor: string) {
-    ledger.push(workspace.member.removed(this.workspace.id, { id }, { auditor }));
+    ledger.push(WorkspaceStore.events.member.removed(this.workspace.id, { id }, { auditor }));
   }
 
   /*
@@ -175,7 +175,7 @@ class Members {
    |--------------------------------------------------------------------------------
    */
 
-  public toJSON(): Wksp.Member[] {
+  public toJSON(): WorkspaceStore.Member[] {
     return this.members;
   }
 }

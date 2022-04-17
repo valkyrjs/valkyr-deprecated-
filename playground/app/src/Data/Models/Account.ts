@@ -1,12 +1,12 @@
 import { ledger } from "@valkyr/client";
 import { Collection, Document, Model } from "@valkyr/db";
-import { Account as Acct, account } from "stores";
+import { AccountStore } from "stores";
 
 import { adapter } from "../Adapter";
 
 type Attributes = Document & {
-  name?: Acct.State["name"];
-  email: Acct.State["email"];
+  name?: AccountStore.State["name"];
+  email: AccountStore.State["email"];
 };
 
 export class Account extends Model<Attributes> {
@@ -37,14 +37,14 @@ export class Account extends Model<Attributes> {
     if (name.given === this.name?.given && name.family === this.name?.family) {
       return console.info("Name has not changed, skipping...");
     }
-    ledger.push(account.nameSet(this.id, { name }));
+    ledger.push(AccountStore.events.nameSet(this.id, { name }));
   }
 
   public setEmail(email: string) {
     if (email === this.email) {
       return console.info("Email has not changed, skipping...");
     }
-    ledger.push(account.emailSet(this.id, { email }));
+    ledger.push(AccountStore.events.emailSet(this.id, { email }));
   }
 
   /*

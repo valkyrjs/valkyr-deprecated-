@@ -35,9 +35,8 @@ export class AppModule {}
  */
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
-  app.enableCors();
   app.useWebSocketAdapter(new WsAdapter(app));
 
   await app.listen(PORT);
