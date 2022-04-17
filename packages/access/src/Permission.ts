@@ -1,6 +1,4 @@
 import { Attributes as BaseAttributes } from "./Attributes";
-import { db } from "./Database";
-import type { Role } from "./Role";
 import type { Value } from "./RolePermission";
 
 export const PERMISSION_DENIED_MESSAGE = "Permission denied";
@@ -34,47 +32,12 @@ export type Denied = {
  |--------------------------------------------------------------------------------
  */
 
-class PermissionDeniedError extends Error {
+export class PermissionDeniedError extends Error {
   public static type = "PermissionDeniedError";
 
   constructor(action: any, resource: any) {
     super(`Access Permission Violation: Denied access performing action '${action}' on '${resource}'.`);
   }
-}
-
-/*
- |--------------------------------------------------------------------------------
- | Permission
- |--------------------------------------------------------------------------------
- */
-
-export function createPermission<
-  Permissions extends Role["permissions"] = Role["permissions"],
-  Resource extends keyof Permissions = keyof Permissions
->() {
-  return <R extends Resource>(resource: R) => ({
-    async can<A extends keyof Permissions[R], Handler extends PermissionHandler>(
-      memberId: string,
-      action: A,
-      handler?: Handler
-    ) {
-      const permissions: Permissions = await db.getPermissions(memberId);
-      const value = permissions[resource][action];
-      if (value === undefined || value === false) {
-        return permissionDenied(new PermissionDeniedError(action, resource).message);
-      }
-      if (value === true || handler === undefined) {
-        return permissionGranted();
-      }
-      return handler(value);
-    }
-  });
-}
-
-export function getPermissions<P extends Role["permissions"] = Role["permissions"]>() {
-  return async (memberId: string): Promise<P> => {
-    return db.getPermissions(memberId);
-  };
 }
 
 /*

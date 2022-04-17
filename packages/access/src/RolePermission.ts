@@ -1,5 +1,3 @@
-import { db } from "./Database";
-
 /*
  |--------------------------------------------------------------------------------
  | Types
@@ -65,7 +63,8 @@ export class RolePermission<
   }
 
   public async commit(): Promise<void> {
-    await db.setPermissions(this.roleId, this.operations);
+    console.log("Commit permissions", this.roleId, this.operations);
+    // await db.setPermissions(this.roleId, this.operations);
   }
 }
 

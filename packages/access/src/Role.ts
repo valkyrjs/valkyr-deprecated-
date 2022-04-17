@@ -1,7 +1,6 @@
-import { deepCopy, nanoid } from "@valkyr/utils";
+import { deepCopy } from "@valkyr/utils";
 
 import { Attributes } from "./Attributes";
-import { db } from "./Database";
 import { RolePermission, RolePermissions } from "./RolePermission";
 
 /*
@@ -10,12 +9,12 @@ import { RolePermission, RolePermissions } from "./RolePermission";
  |--------------------------------------------------------------------------------
  */
 
-type RoleClass<T = unknown, P extends RolePermissions = RolePermissions> = {
+export type RoleClass<T = unknown, P extends RolePermissions = RolePermissions> = {
   new (role: RoleData<P>): T;
   getPermissions(permissions: P): P;
 };
 
-type RoleSettings<P extends RolePermissions> = {
+export type RoleSettings<P extends RolePermissions> = {
   tenantId: RoleData["tenantId"];
   name: RoleData["name"];
   settings?: RoleData["settings"];
@@ -45,36 +44,6 @@ export class Role<
 
   constructor(private readonly role: RoleData<Permissions>) {
     Object.freeze(this);
-  }
-
-  public static async create<P extends RolePermissions>(settings: RoleSettings<P>): Promise<string> {
-    const roleId = nanoid();
-    await db.addRole({
-      tenantId: settings.tenantId,
-      roleId,
-      name: settings.name,
-      settings: settings.settings ?? {},
-      permissions: settings.permissions ?? {},
-      members: settings.members ?? []
-    });
-    return roleId;
-  }
-
-  /**
-   * Retrieve a role instance for the given role identifier.
-   *
-   * @param roleId - Role identifier to retrieve role for.
-   *
-   * @returns Role or undefined
-   */
-  public static async for<P extends RolePermissions, T extends Role<P>>(this: RoleClass<T, P>, roleId: string) {
-    const data = await db.getRole<P>(roleId);
-    if (data) {
-      return new Role({
-        ...data,
-        permissions: this.getPermissions(data.permissions)
-      });
-    }
   }
 
   /**
@@ -115,20 +84,6 @@ export class Role<
 
   public get deny() {
     return new RolePermission<Permissions>(this.roleId).deny;
-  }
-
-  /*
-   |--------------------------------------------------------------------------------
-   | Members
-   |--------------------------------------------------------------------------------
-   */
-
-  public async addMember(memberId: string) {
-    return db.addMember(this.roleId, memberId);
-  }
-
-  public async delMember(memberId: string) {
-    return db.delMember(this.roleId, memberId);
   }
 
   /*
