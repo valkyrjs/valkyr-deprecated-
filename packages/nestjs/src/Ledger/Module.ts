@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Global, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
 import { LedgerController } from "./Controller";
@@ -6,6 +6,7 @@ import { LedgerGateway } from "./Gateway";
 import { Event, EventSchema } from "./Model";
 import { LedgerService } from "./Service";
 
+@Global()
 @Module({
   imports: [
     MongooseModule.forFeature([

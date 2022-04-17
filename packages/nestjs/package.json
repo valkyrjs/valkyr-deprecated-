@@ -16,6 +16,7 @@
     "@nestjs/common": "^8.0.0",
     "@nestjs/mongoose": "^9.0.3",
     "@nestjs/platform-ws": "^8.4.4",
+    "@valkyr/access": "*",
     "@valkyr/ledger": "*",
     "@valkyr/utils": "*",
     "crypto-js": "^4.1.1",

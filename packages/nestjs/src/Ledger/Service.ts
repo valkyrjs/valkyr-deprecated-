@@ -7,7 +7,7 @@ import { Event, EventDocument } from "./Model";
 
 @Injectable()
 export class LedgerService {
-  constructor(@InjectModel(Event.name) private collection: Model<EventDocument>) {}
+  constructor(@InjectModel(Event.name) private readonly model: Model<EventDocument>) {}
 
   /**
    * Insert event into the local ledger.
@@ -21,7 +21,7 @@ export class LedgerService {
    */
   public async insert(event: LedgerEvent) {
     const record = createEventRecord(event);
-    await this.collection.create(record);
+    await this.model.create(record);
     await publisher.project(record, { hydrated: false, outdated: false });
     // this.server.to(`stream:${event.streamId}`).emit("event", event);
   }
@@ -81,7 +81,7 @@ export class LedgerService {
    * @returns Outdated state of the event
    */
   public async outdated({ streamId, type, created }: LedgerEvent): Promise<boolean> {
-    return this.collection.count({ streamId, type, created: { $gt: created } }).then((count) => count > 0);
+    return this.model.count({ streamId, type, created: { $gt: created } }).then((count) => count > 0);
   }
 
   /**
@@ -99,7 +99,7 @@ export class LedgerService {
         [direction === 1 ? "$gt" : "$lt"]: created
       };
     }
-    return this.collection.find(filter).sort("created");
+    return this.model.find(filter).sort("created");
   }
 
   /**
@@ -118,7 +118,7 @@ export class LedgerService {
         [direction === 1 ? "$gt" : "$lt"]: created
       };
     }
-    return this.collection.find(filter).sort({ created: direction });
+    return this.model.find(filter).sort({ created: direction });
   }
 
   /**
@@ -136,6 +136,6 @@ export class LedgerService {
         $gt: recorded
       };
     }
-    return this.collection.find(filter).sort({ recorded: 1 });
+    return this.model.find(filter).sort({ recorded: 1 });
   }
 }
