@@ -1,10 +1,12 @@
-import { UseFilters, UseInterceptors } from "@nestjs/common";
+import { Logger, UseFilters, UseInterceptors } from "@nestjs/common";
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import * as jwt from "jsonwebtoken";
 import { Server, WebSocket } from "ws";
 
 import { MessageInterceptor, WsExceptionFilter } from "../Interceptors/MessageInterceptor";
 import { Channels, SocketChannel } from "../Socket/Channel";
+
+const logger = new Logger("Gateway", { timestamp: true });
 
 @UseInterceptors(MessageInterceptor)
 @UseFilters(new WsExceptionFilter())
@@ -45,11 +47,13 @@ export class LedgerGateway {
   @SubscribeMessage("streams:join")
   public async onJoinStream(socket: WebSocket, { streamId }: any) {
     this.join(socket, `stream:${streamId}`);
+    logger.log(`streams:join ${streamId}`);
   }
 
   @SubscribeMessage("streams:leave")
   public async onLeaveStream(socket: WebSocket, { streamId }: any) {
     this.leave(socket, `stream:${streamId}`);
+    logger.log(`streams:leave ${streamId}`);
   }
 
   /*

@@ -58,10 +58,10 @@ function getObserver(streamId: string): StreamObserver {
     queue: new Queue<Event>(async (event) => {
       const { exists, outdated } = await Cache.status(event);
       if (!exists) {
-        await Cache.add(event);
-        await Cursor.set(event.streamId, event.recorded);
         await publisher.project(event, { hydrated: true, outdated });
       }
+      await Cache.add(event);
+      await Cursor.set(event.streamId, event.recorded);
     })
   };
   remote.subscribe(streamId, streams[streamId].queue.push);

@@ -1,13 +1,20 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
+import { clc } from "@nestjs/common/utils/cli-colors.util";
 import { InjectModel } from "@nestjs/mongoose";
 import { AggregateRootClass, createEventRecord, Event as LedgerEvent, publisher } from "@valkyr/ledger";
 import { Model } from "mongoose";
 
+import { LedgerGateway } from "./Gateway";
 import { Event, EventDocument } from "./Model";
+
+const logger = new Logger("Ledger", { timestamp: true });
 
 @Injectable()
 export class LedgerService {
-  constructor(@InjectModel(Event.name) private readonly model: Model<EventDocument>) {}
+  constructor(
+    @InjectModel(Event.name) private readonly model: Model<EventDocument>,
+    private readonly gateway: LedgerGateway
+  ) {}
 
   /**
    * Insert event into the local ledger.
@@ -23,7 +30,8 @@ export class LedgerService {
     const record = createEventRecord(event);
     await this.model.create(record);
     await publisher.project(record, { hydrated: false, outdated: false });
-    // this.server.to(`stream:${event.streamId}`).emit("event", event);
+    this.gateway.to(`stream:${event.streamId}`).emit("event", event);
+    logger.log(`Event\n${clc.cyanBright(JSON.stringify(record, null, 2))}`);
   }
 
   /**

@@ -25,7 +25,6 @@ export class WorkspaceController {
     @Body("email") email: string,
     @Auditor() auditor: string
   ) {
-    console.log(email);
     await this.ledger.invite(workspaceId, email, auditor);
   }
 }

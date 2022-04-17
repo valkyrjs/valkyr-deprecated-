@@ -101,7 +101,7 @@ class Invites {
    * @param email - Email to send invite to.
    */
   public async create(email: string) {
-    return remote.post(`/workspaces/${this.workspace.id}/invite`, { email });
+    return remote.post(`/workspaces/${this.workspace.id}/invites`, { email });
   }
 
   /*

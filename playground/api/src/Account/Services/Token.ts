@@ -1,10 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
+import { clc } from "@nestjs/common/utils/cli-colors.util";
 import { customAlphabet } from "@valkyr/utils";
 import * as bcrypt from "bcrypt";
 
 import { AccountService } from "./Account";
 
 const generateToken = customAlphabet("1234567890", 6);
+const logger = new Logger("TokenService", { timestamp: true });
 
 @Injectable()
 export class TokenService {
@@ -21,7 +23,7 @@ export class TokenService {
         throw new Error("SMS is not yet supported");
       }
       case "console": {
-        console.log("Token:", token);
+        logger.log(`SSO Token Generated: ${clc.magentaBright(token)}`);
         break;
       }
     }
