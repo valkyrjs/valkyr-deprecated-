@@ -42,14 +42,10 @@ export class Workspace {
   @Prop({ required: true })
   name!: string;
 
-  @Prop({
-    type: Invite
-  })
+  @Prop({ type: Invite })
   invites?: Invite[];
 
-  @Prop({
-    type: Member
-  })
+  @Prop({ type: Member })
   members?: Member[];
 }
 

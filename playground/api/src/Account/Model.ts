@@ -15,6 +15,14 @@ export type AccountDocument = Account & Document;
  |--------------------------------------------------------------------------------
  */
 
+class Name extends Document {
+  @Prop()
+  family?: string;
+
+  @Prop()
+  given?: string;
+}
+
 @Schema()
 export class Account {
   @Prop({ required: true })
@@ -23,16 +31,8 @@ export class Account {
   @Prop({ required: true })
   status!: string;
 
-  @Prop({
-    type: {
-      family: String,
-      given: String
-    }
-  })
-  name?: {
-    family?: string;
-    given?: string;
-  };
+  @Prop({ type: Name })
+  name?: Name;
 
   @Prop()
   alias?: string;
