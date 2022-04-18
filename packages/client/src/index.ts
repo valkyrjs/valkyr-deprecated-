@@ -13,6 +13,8 @@ export * from "./Models/Cache";
 export * from "./Models/Cursor";
 export * as Query from "./Query";
 export * from "./Remote";
+export * from "./Utils/Dom";
+export * from "./Utils/Url";
 
 type Config = {
   api: string;

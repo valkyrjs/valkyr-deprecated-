@@ -1,7 +1,7 @@
 {
-  "name": "@valkyr/client",
+  "name": "@valkyr/yggdrasil",
   "version": "0.0.0",
-  "description": "A client side solution for @valkyr applications.",
+  "description": "Modular client side framework",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
@@ -13,10 +13,7 @@
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
-    "@valkyr/db": "*",
-    "@valkyr/inverse": "*",
-    "@valkyr/ledger": "*",
-    "@valkyr/socket": "*",
+    "@valkyr/router": "*",
     "reflect-metadata": "^0.1.13"
   }
 }

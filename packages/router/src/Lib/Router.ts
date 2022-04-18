@@ -74,8 +74,8 @@ export class Router extends EventEmitter<{
     render,
     error
   }: {
-    render(components: any[]): Promise<void>;
-    error(error: ActionRejectedError | RenderActionMissingError | RouteNotFoundError): void;
+    render(components: any[]): any;
+    error(error: ActionRejectedError | RenderActionMissingError | RouteNotFoundError): any;
   }) {
     if (this.destroy) {
       this.destroy();

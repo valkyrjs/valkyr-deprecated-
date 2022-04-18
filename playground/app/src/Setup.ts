@@ -1,9 +1,8 @@
-import "./Routes";
-
 import { client } from "@valkyr/client";
 
+import { adapter } from "~Library/Adapter";
+
 import { config } from "./Config";
-import { adapter, data } from "./Data";
 
 /*
  |--------------------------------------------------------------------------------
@@ -13,9 +12,8 @@ import { adapter, data } from "./Data";
 
 export async function setup(): Promise<void> {
   await client.setup({
-    api: config.api,
-    socket: config.socket,
+    api: config.api.uri,
+    socket: config.socket.uri,
     database: adapter
   });
-  await data.setup();
 }

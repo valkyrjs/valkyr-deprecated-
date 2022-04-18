@@ -13,7 +13,10 @@
     ],
     "jsx": "react-jsxdev",
     "paths": {
-      "~*": ["./src/*"]
+      "~Library/*": ["./src/Library/*"],
+      "~Assets": ["./src/Assets"],
+      "~Config": ["./src/Config"],
+      "~Styles": ["./src/Styles"]
     },
 
     "incremental": true,
@@ -22,7 +25,9 @@
     
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

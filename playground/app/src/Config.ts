@@ -1,4 +1,11 @@
 export const config = {
-  api: "http://localhost:8370",
-  socket: "ws://localhost:8370"
+  app: {
+    name: "Valkyr"
+  },
+  api: {
+    uri: "http://localhost:8370"
+  },
+  socket: {
+    uri: "ws://localhost:8370"
+  }
 };

@@ -1,7 +1,8 @@
-import { useRouter } from "@valkyr/react";
 import React, { Fragment, ReactElement } from "react";
 
-import { PageLoader } from "./Components/PageLoader";
+import { PageLoader } from "~Library/Components/PageLoader";
+
+import { app, AppContext, useApp } from "./Module";
 import { setup } from "./Setup";
 import { GlobalStyle } from "./Styles";
 
@@ -12,7 +13,7 @@ import { GlobalStyle } from "./Styles";
  */
 
 export function App(): ReactElement {
-  const view = useRouter(setup, handleError);
+  const view = useApp(app);
   if (!view) {
     return (
       <Fragment>
@@ -22,33 +23,11 @@ export function App(): ReactElement {
     );
   }
   return (
-    <Fragment>
+    <AppContext.Provider value={app}>
       <GlobalStyle />
       {view}
-    </Fragment>
+    </AppContext.Provider>
   );
 }
 
-/*
- |--------------------------------------------------------------------------------
- | Utilities
- |--------------------------------------------------------------------------------
- */
-
-function handleError(err: any): ReactElement {
-  return (
-    <div className="flex h-screen">
-      <div className="m-auto">
-        {err.message ? (
-          <pre>
-            {err.message}
-            <br />
-            {err.stack}
-          </pre>
-        ) : (
-          <code>{JSON.stringify(err, null, 2)}</code>
-        )}
-      </div>
-    </div>
-  );
-}
+app.start(setup);
