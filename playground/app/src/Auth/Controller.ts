@@ -1,6 +1,4 @@
-import { setPageTitle } from "@valkyr/client";
-import { response } from "@valkyr/react";
-import { Controller, Route } from "@valkyr/yggdrasil";
+import { AppController, Controller, Route, setPageTitle } from "@valkyr/client";
 
 import { config } from "~Config";
 
@@ -8,15 +6,17 @@ import { AuthService } from "../Auth/Services/AuthService";
 import { Auth } from "./Page";
 
 @Controller()
-export class AuthController {
-  constructor(private readonly auth: AuthService) {}
+export class AuthController extends AppController {
+  constructor(private readonly auth: AuthService) {
+    super();
+  }
 
   @Route("signin")
   public async renderHomePage() {
     if (this.auth.isAuthenticated === true) {
-      return response.redirect("/");
+      return this.redirect("/");
     }
     setPageTitle(config.app.name, "Authorize");
-    return response.render(Auth);
+    return this.render(Auth);
   }
 }

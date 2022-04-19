@@ -1,6 +1,7 @@
-import { auth } from "@valkyr/client";
 import { useForm } from "@valkyr/react";
 
+import { AuthService } from "../../Auth/Services/AuthService";
+import { useProvider } from "../../Module";
 import { Workspace } from "../Model";
 
 type State = ReturnType<typeof useForm>["register"];
@@ -14,6 +15,7 @@ type Data = {
 };
 
 export function useWorkspaceForm(): [State, Actions] {
+  const auth = useProvider(AuthService);
   const form = useForm<Data>();
   return [
     form.register,

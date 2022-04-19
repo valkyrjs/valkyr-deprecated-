@@ -1,4 +1,3 @@
-import { ledger, remote } from "@valkyr/client";
 import { useEffect, useState } from "react";
 
 type Entity = {
@@ -11,16 +10,16 @@ export function useSubscriber(entities: Entity[], endpoint?: string) {
   useEffect(() => {
     setIds(entities.map((entity) => entity.id));
     if (endpoint) {
-      remote.get<string[]>(endpoint).then(setIds);
+      // remote.get<string[]>(endpoint).then(setIds);
     }
   }, [endpoint]);
 
   useEffect(() => {
-    const subscriptions = ids.map((id) => ledger.subscribe(id));
-    return () => {
-      for (const unsubscribe of subscriptions) {
-        unsubscribe();
-      }
-    };
+    // const subscriptions = ids.map((id) => ledger.subscribe(id));
+    // return () => {
+    //   for (const unsubscribe of subscriptions) {
+    //     unsubscribe();
+    //   }
+    // };
   }, [JSON.stringify(ids)]);
 }

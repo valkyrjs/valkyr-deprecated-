@@ -1,22 +1,21 @@
-import { Collection, Document, Model } from "@valkyr/db";
+import { Document, Model } from "@valkyr/db";
 import { Event } from "@valkyr/ledger";
 
-import { database } from "../Database";
+import { Collection } from "../../Decorators/Collection";
 
-type Attributes = Document & {
+type CacheDocument = Document & {
   streamId: string;
   type: string;
   created: string;
 };
 
-export class Cache extends Model<Attributes> {
-  public static readonly $collection = new Collection<Attributes>("cache", database);
+@Collection("cache")
+export class Cache extends Model<CacheDocument> {
+  public readonly streamId: CacheDocument["streamId"];
+  public readonly type: CacheDocument["type"];
+  public readonly created: CacheDocument["created"];
 
-  public readonly streamId: Attributes["streamId"];
-  public readonly type: Attributes["type"];
-  public readonly created: Attributes["created"];
-
-  constructor(document: Attributes) {
+  constructor(document: CacheDocument) {
     super(document);
 
     this.streamId = document.streamId;
@@ -51,7 +50,7 @@ export class Cache extends Model<Attributes> {
    |--------------------------------------------------------------------------------
    */
 
-  public toJSON(): Attributes {
+  public toJSON(): CacheDocument {
     return super.toJSON({
       streamId: this.streamId,
       type: this.type,

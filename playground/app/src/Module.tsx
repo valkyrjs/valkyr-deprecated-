@@ -1,5 +1,6 @@
-import { Application, Module } from "@valkyr/yggdrasil";
-import { createContext, createElement, ReactElement, useContext, useState } from "react";
+import { Application, Module, RemoteService, SocketService } from "@valkyr/client";
+import { Type } from "@valkyr/client";
+import { createContext, createElement, ReactElement, useContext, useEffect, useState } from "react";
 
 import { AuthModule } from "./Auth/Module";
 import { WorkspaceModule } from "./Workspace/Module";
@@ -11,7 +12,8 @@ import { WorkspaceModule } from "./Workspace/Module";
  */
 
 @Module({
-  imports: [AuthModule, WorkspaceModule]
+  imports: [AuthModule, WorkspaceModule],
+  providers: [RemoteService, SocketService]
 })
 class RootModule {}
 
@@ -21,14 +23,7 @@ class RootModule {}
  |--------------------------------------------------------------------------------
  */
 
-export const app = new Application(RootModule, {
-  onRender(components: React.ComponentType[]) {
-    return createReactElement(components);
-  },
-  onError(err: any) {
-    return createReactError(err);
-  }
-});
+export const app = new Application(RootModule);
 
 /*
  |--------------------------------------------------------------------------------
@@ -47,8 +42,16 @@ export const AppContext = createContext(app);
 export function useApp(app: Application) {
   const [view, setView] = useState<JSX.Element | null>(null);
 
-  app.on("render", setView);
-  app.on("error", setView);
+  useEffect(() => {
+    app.listen({
+      onRender(components: React.ComponentType[]) {
+        setView(createReactElement(components));
+      },
+      onError(err: any) {
+        setView(createReactError(err));
+      }
+    });
+  }, []);
 
   return view;
 }
@@ -57,8 +60,8 @@ export function useRouter() {
   return useContext(AppContext).router;
 }
 
-export function useProvider<T extends { new (): any } = any>(value: T): InstanceType<T> {
-  return useContext(AppContext).get(value);
+export function useProvider<T extends Type>(value: T): InstanceType<T> {
+  return useContext(AppContext).get(value.name);
 }
 
 /*

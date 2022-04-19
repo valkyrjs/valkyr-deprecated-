@@ -1,9 +1,11 @@
-import { ledger, remote } from "@valkyr/client";
+import { LedgerService, RemoteService } from "@valkyr/client";
 import { Collection, Model } from "@valkyr/db";
 import { nanoid } from "@valkyr/utils";
 import { WorkspaceStore } from "stores";
 
 import { adapter } from "~Library/Adapter";
+
+import { app } from "../Module";
 
 type Attributes = {
   id: WorkspaceStore.State["id"];
@@ -47,7 +49,7 @@ export class Workspace extends Model<Attributes> {
    * @param name      - Name of the workspace.
    * @param accountId - Account id to assign as initial member.
    */
-  public static create(name: string, accountId: string) {
+  public static create(name: string, accountId: string, ledger = app.get(LedgerService)) {
     const member: WorkspaceStore.Member = {
       id: nanoid(),
       accountId,
@@ -77,6 +79,8 @@ export class Workspace extends Model<Attributes> {
  */
 
 class Invites {
+  private readonly remote = app.get(RemoteService);
+
   constructor(public readonly workspace: Workspace, public readonly invites: WorkspaceStore.Invite[]) {}
 
   /*
@@ -101,7 +105,7 @@ class Invites {
    * @param email - Email to send invite to.
    */
   public async create(email: string) {
-    return remote.post(`/workspaces/${this.workspace.id}/invites`, { email });
+    return this.remote.post(`/workspaces/${this.workspace.id}/invites`, { email });
   }
 
   /*
@@ -124,6 +128,8 @@ class Invites {
 }
 
 class Members {
+  private readonly ledger = app.get(LedgerService);
+
   constructor(public readonly workspace: Workspace, public readonly members: WorkspaceStore.Member[]) {}
 
   /*
@@ -149,7 +155,7 @@ class Members {
    * @param auditor - Member who is removing the member.
    */
   public async remove(id: string, auditor: string) {
-    ledger.push(WorkspaceStore.events.member.removed(this.workspace.id, { id }, { auditor }));
+    this.ledger.push(WorkspaceStore.events.member.removed(this.workspace.id, { id }, { auditor }));
   }
 
   /*

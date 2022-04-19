@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@valkyr/db": "*",
-    "@valkyr/inverse": "*",
     "@valkyr/ledger": "*",
+    "@valkyr/router": "*",
     "@valkyr/socket": "*",
     "reflect-metadata": "^0.1.13"
   }

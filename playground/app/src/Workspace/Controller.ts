@@ -1,5 +1,4 @@
-import { setPageTitle } from "@valkyr/client";
-import { Controller, Route, YggdrasilController } from "@valkyr/yggdrasil";
+import { AppController, Controller, Route, setPageTitle } from "@valkyr/client";
 
 import { config } from "~Config";
 
@@ -8,7 +7,7 @@ import { Workspace } from "./Pages/Workspace";
 import { Workspaces } from "./Pages/Workspaces";
 
 @Controller()
-export class WorkspaceController extends YggdrasilController {
+export class WorkspaceController extends AppController {
   constructor(private readonly auth: AuthService) {
     super();
   }

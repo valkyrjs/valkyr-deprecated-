@@ -1,4 +1,4 @@
-import { Module } from "@valkyr/yggdrasil";
+import { Module } from "@valkyr/client";
 
 import { WorkspaceController } from "./Controller";
 

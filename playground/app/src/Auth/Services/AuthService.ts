@@ -1,5 +1,4 @@
-import { jwt, remote } from "@valkyr/client";
-import { Injectable } from "@valkyr/yggdrasil";
+import { Injectable, jwt, RemoteService, SocketService } from "@valkyr/client";
 
 type Data = {
   auditor: string;
@@ -7,6 +6,8 @@ type Data = {
 
 @Injectable()
 export class AuthService {
+  constructor(private readonly remote: RemoteService, private readonly socket: SocketService) {}
+
   public get isAuthenticated(): boolean {
     return jwt.token !== null;
   }
@@ -24,7 +25,7 @@ export class AuthService {
 
   public async setup() {
     if (this.isAuthenticated === true) {
-      await remote.socket.send("token", { token: jwt.token });
+      await this.socket.send("token", { token: jwt.token });
     }
   }
 
@@ -35,7 +36,7 @@ export class AuthService {
    * @param email - Email identifier to generate a token for.
    */
   public async create(email: string) {
-    return remote.post("/accounts", { email });
+    return this.remote.post("/accounts", { email });
   }
 
   /**
@@ -45,7 +46,7 @@ export class AuthService {
    * @param token - Single sign on token to validate the signature.
    */
   public async sign(email: string, token: string) {
-    await remote.post<{ token: string }>("/accounts/validate", { email, token }).then(({ token }) => {
+    await this.remote.post<{ token: string }>("/accounts/validate", { email, token }).then(({ token }) => {
       return this.resolve(token);
     });
   }
@@ -57,7 +58,7 @@ export class AuthService {
    * @param token - Signed token to resolve.
    */
   public async resolve(token: string) {
-    await remote.socket.send("token", { token });
+    await this.socket.send("token", { token });
     jwt.token = token;
   }
 
@@ -67,6 +68,6 @@ export class AuthService {
    * destroying the socket connection.
    */
   public async destroy() {
-    await remote.socket.send("account:logout");
+    await this.remote.send("account:logout");
   }
 }

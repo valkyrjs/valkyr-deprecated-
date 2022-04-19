@@ -3,7 +3,6 @@ import React, { Fragment, ReactElement } from "react";
 import { PageLoader } from "~Library/Components/PageLoader";
 
 import { app, AppContext, useApp } from "./Module";
-import { setup } from "./Setup";
 import { GlobalStyle } from "./Styles";
 
 /*
@@ -29,5 +28,3 @@ export function App(): ReactElement {
     </AppContext.Provider>
   );
 }
-
-app.start(setup);

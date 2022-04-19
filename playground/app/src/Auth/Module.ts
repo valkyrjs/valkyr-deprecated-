@@ -1,4 +1,4 @@
-import { Module } from "@valkyr/yggdrasil";
+import { Module } from "@valkyr/client";
 
 import { AuthController } from "./Controller";
 import { AuthService } from "./Services/AuthService";

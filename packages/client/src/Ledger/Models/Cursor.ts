@@ -1,14 +1,15 @@
-import { Collection, Model } from "@valkyr/db";
+import { Document, Model } from "@valkyr/db";
 import type { StreamCursor } from "@valkyr/ledger";
 
-import { database } from "../Database";
+import { Collection } from "../../Decorators/Collection";
 
-export class Cursor extends Model<StreamCursor> {
-  public static readonly $collection = new Collection<StreamCursor>("cursors", database);
+type CursorDocument = { at: StreamCursor["at"] } & Document;
 
-  public readonly at: StreamCursor["at"];
+@Collection("cursors")
+export class Cursor extends Model<CursorDocument> {
+  public readonly at: CursorDocument["at"];
 
-  constructor(document: StreamCursor) {
+  constructor(document: CursorDocument) {
     super(document);
 
     this.at = document.at;
@@ -33,7 +34,7 @@ export class Cursor extends Model<StreamCursor> {
    |--------------------------------------------------------------------------------
    */
 
-  public toJSON(): StreamCursor {
+  public toJSON(): CursorDocument {
     return super.toJSON({
       at: this.at
     });

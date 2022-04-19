@@ -15,6 +15,7 @@
     "camelcase",
     "jsxdev",
     "nestjs",
+    "paramtypes",
     "signin",
     "upsert",
     "valkyr",
