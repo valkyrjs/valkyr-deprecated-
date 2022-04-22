@@ -15,7 +15,6 @@
     "@valkyr/db": "*",
     "@valkyr/client": "*",
     "@valkyr/react": "*",
-    "@valkyr/yggdrasil": "*",
     "idb-keyval": "^6.1.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

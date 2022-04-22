@@ -1,5 +1,4 @@
-import { Container } from "../src/Container";
-import { MissingChildContainerError, MissingDependencyError } from "../src/Errors";
+import { Container, MissingChildContainerError, MissingDependencyError } from "../src";
 import { Invoice2Go } from "./mocks/Providers/Invoice2Go";
 import { PayPal } from "./mocks/Providers/PayPal";
 import { Stripe } from "./mocks/Providers/Stripe";

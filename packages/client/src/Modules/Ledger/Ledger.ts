@@ -1,8 +1,8 @@
 import { Event, publisher, Queue, StreamObserver, Streams } from "@valkyr/ledger";
 
-import { Injectable } from "../Decorators/Injectable";
-import { RemoteService } from "../Remote";
-import { SocketService } from "../Socket";
+import { Injectable } from "../../Decorators/Injectable";
+import { RemoteService } from "../../Services/Remote";
+import { SocketService } from "../../Services/Socket";
 import { Cache } from "./Models/Cache";
 import { Cursor } from "./Models/Cursor";
 

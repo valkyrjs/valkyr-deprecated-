@@ -13,7 +13,7 @@ export type Status = "loading" | "ready" | "working";
 
 export type ChangeType = "insert" | "update" | "delete";
 
-export type Operation = Insert | Update | Upsert | Delete;
+export type Operation = Insert | Update | Replace | Delete;
 
 export type Insert = {
   type: "insert";
@@ -21,29 +21,54 @@ export type Insert = {
     id?: string;
     [key: string]: unknown;
   };
-} & OperationPromise;
+} & OperationPromise<string>;
 
 export type Update = {
   type: "update";
-  document: Document;
+  id: string;
+  actions: UpdateActions;
 } & OperationPromise;
 
-export type Upsert = {
-  type: "upsert";
+export type Replace = {
+  type: "replace";
+  id: string;
   document: Document;
 } & OperationPromise;
 
 export type Delete = {
   type: "delete";
   id: string;
-} & OperationDeletePromise;
+} & OperationPromise;
 
-export type OperationPromise = {
-  resolve: (value: any) => void;
+export type OperationPromise<T = any> = {
+  resolve: (value: T) => void;
   reject: (reason?: any) => void;
 };
 
-export type OperationDeletePromise = {
-  resolve: () => void;
-  reject: (reason?: any) => void;
+export type InsertOneResponse = {
+  acknowledged: boolean;
+  insertedId: string;
+};
+
+export type InsertManyResponse = {
+  acknowledged: boolean;
+  insertedIds: string[];
+};
+
+export type UpdateResponse = {
+  acknowledged: boolean;
+  matchedCount: number;
+  modifiedCount: number;
+};
+
+export type DeleteResponse = {
+  acknowledged: boolean;
+  deletedCount: number;
+};
+
+export type UpdateActions = {
+  $set?: Record<string, unknown>;
+  $unset?: Record<string, unknown>;
+  $push?: Record<string, unknown>;
+  $pull?: Record<string, unknown>;
 };

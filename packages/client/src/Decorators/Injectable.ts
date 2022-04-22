@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 import { Scope } from "../Core/Container";
 
-export const INJECTABLE_WATERMARK = "__injectable__";
+export const INJECTABLE_WATERMARK = "injectable";
 export const INJECTABLE_SCOPE_METADATA = "injectable:scope";
 
 export function Injectable(scope: Scope = "SINGLETON"): ClassDecorator {

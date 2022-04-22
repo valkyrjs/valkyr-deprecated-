@@ -17,6 +17,7 @@
     "@valkyr/ledger": "*",
     "@valkyr/router": "*",
     "@valkyr/socket": "*",
-    "reflect-metadata": "^0.1.13"
+    "@valkyr/utils": "*",
+    "notation": "^2.0.0"
   }
 }

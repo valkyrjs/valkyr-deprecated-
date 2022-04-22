@@ -1,7 +1,8 @@
 import { useQuery, useSubscriber } from "@valkyr/react";
 
+import { useProvider } from "~App";
+
 import { AuthService } from "../../Auth/Services/AuthService";
-import { useProvider } from "../../Module";
 import { Workspace } from "../Model";
 
 export function useWorkspaces() {

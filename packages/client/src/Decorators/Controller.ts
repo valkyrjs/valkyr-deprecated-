@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
-export const CONTROLLER_WATERMARK = "__controller__";
+export const CONTROLLER_WATERMARK = "controller";
 export const CONTROLLER_PATH_METADATA = "controller:path";
 
 export function Controller(path = ""): ClassDecorator {

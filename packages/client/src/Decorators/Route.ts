@@ -2,12 +2,12 @@
 
 import { Action } from "@valkyr/router";
 
-export const ROUTE_METADATA = "__route__";
+export const ROUTE_METADATA = "route";
 
 export function Route(path = "", actions: Action[] = []): MethodDecorator {
   return function <T>(
     target: Object,
-    propertyKey: string | symbol,
+    _: string | symbol,
     descriptor: TypedPropertyDescriptor<T>
   ): void | TypedPropertyDescriptor<T> {
     const routes = Reflect.getMetadata(ROUTE_METADATA, target.constructor) ?? [];

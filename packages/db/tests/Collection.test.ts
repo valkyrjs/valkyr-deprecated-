@@ -1,5 +1,5 @@
 import { Collection, InstanceAdapter } from "../src";
-import { DocumentNotFoundError, DuplicateDocumentError } from "../src/Storage";
+import { DuplicateDocumentError } from "../src/Storage";
 import { Attributes } from "./Mocks/User";
 import { data } from "./Mocks/UserData";
 
@@ -20,43 +20,55 @@ describe("Collection", () => {
 
     it("should throw an error if the document already exists", async () => {
       const { collection, documents } = await getMockedCollection();
-      await expect(collection.insert(documents[0])).rejects.toThrow(new DuplicateDocumentError(documents[0].id));
+      await expect(collection.insertOne(documents[0])).rejects.toThrow(new DuplicateDocumentError(documents[0].id));
     });
   });
 
   describe("when updating document", () => {
     it("should successfully update existing document", async () => {
       const { collection } = await getMockedCollection();
-      await expect(collection.update({ id: "user-1", name: "James Doe" })).resolves.toHaveProperty("name", "James Doe");
+      await expect(
+        collection.updateOne(
+          { id: "user-1" },
+          {
+            $set: {
+              name: "James Doe"
+            }
+          }
+        )
+      ).resolves.toEqual({
+        acknowledged: true,
+        matchedCount: 1,
+        modifiedCount: 1
+      });
     });
 
     it("should throw error if document does not exist", async () => {
       const { collection } = await getMockedCollection();
-      await expect(collection.update({ id: "user-3", name: "James Doe" })).rejects.toThrow(
-        new DocumentNotFoundError("user-3")
-      );
-    });
-  });
-
-  describe("when upserting document", () => {
-    it("should insert document if not already exists", async () => {
-      const { collection } = await getMockedCollection();
-      await expect(collection.upsert(data[2])).resolves.toEqual(data[2]);
-      expect(collection.storage.documents.get(data[2].id)).toEqual(data[2]);
-    });
-
-    it("should update document if already exists", async () => {
-      const { collection } = await getMockedCollection();
-      const document = { ...data[2], name: "Rick James" };
-      await expect(collection.upsert(document)).resolves.toEqual(document);
-      expect(collection.storage.documents.get(document.id)).toEqual(document);
+      await expect(
+        collection.updateOne(
+          { id: "user-4" },
+          {
+            $set: {
+              name: "James Doe"
+            }
+          }
+        )
+      ).resolves.toEqual({
+        acknowledged: true,
+        matchedCount: 0,
+        modifiedCount: 0
+      });
     });
   });
 
   describe("when deleting document", () => {
     it("should successfully delete document", async () => {
       const { collection } = await getMockedCollection();
-      await expect(collection.delete("user-1")).resolves.toBeUndefined();
+      await expect(collection.delete("user-1")).resolves.toEqual({
+        acknowledged: true,
+        deletedCount: 1
+      });
       expect(collection.storage.documents.get("user-1")).toBeUndefined();
     });
   });
@@ -69,7 +81,7 @@ describe("Collection", () => {
 
     it("should return undefined if document does not exists", async () => {
       const { collection } = await getMockedCollection();
-      await expect(collection.findById("user-3")).resolves.toBeUndefined();
+      await expect(collection.findById("user-4")).resolves.toBeUndefined();
     });
   });
 
@@ -81,7 +93,7 @@ describe("Collection", () => {
 
     it("should return empty array when no matches are found", async () => {
       const { collection } = await getMockedCollection();
-      await expect(collection.find({ name: "James Doe" })).resolves.toEqual([]);
+      await expect(collection.find({ name: "Rick Doe" })).resolves.toEqual([]);
     });
   });
 
@@ -93,16 +105,16 @@ describe("Collection", () => {
 
     it("should return undefined if document does not exists", async () => {
       const { collection } = await getMockedCollection();
-      await expect(collection.findOne({ name: "James Doe" })).resolves.toBeUndefined();
+      await expect(collection.findOne({ name: "Rick Doe" })).resolves.toBeUndefined();
     });
   });
 
   describe("should count documents by filter", () => {
     it("should return correct filter count", async () => {
       const { collection } = await getMockedCollection();
-      await expect(collection.count({ name: "James Doe" })).resolves.toEqual(0);
+      await expect(collection.count({ name: "Rick Doe" })).resolves.toEqual(0);
       await expect(collection.count({ name: "Jane Doe" })).resolves.toEqual(1);
-      await expect(collection.count()).resolves.toEqual(2);
+      await expect(collection.count()).resolves.toEqual(3);
     });
   });
 });
@@ -110,8 +122,7 @@ describe("Collection", () => {
 async function getMockedCollection() {
   const collection = new Collection<Attributes>("users", new InstanceAdapter());
 
-  await collection.insert(data[0]);
-  await collection.insert(data[1]);
+  await collection.insertMany(data);
 
-  return { collection, documents: [data[0], data[1]] };
+  return { collection, documents: data };
 }

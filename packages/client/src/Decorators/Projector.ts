@@ -2,7 +2,8 @@ import "reflect-metadata";
 
 import { projection } from "@valkyr/ledger";
 
-const PROJECTION_METADATA = "__projection__";
+export const PROJECTOR_WATERMARK = "projector";
+export const PROJECTOR_EVENT_METADATA = "projector:event";
 
 const ProjectionMethod = {
   ON: "on",
@@ -17,10 +18,11 @@ const ProjectionMethod = {
  */
 
 export function Projector(): ClassDecorator {
-  return (target: any) => {
-    target.prototype.onModuleInit = async function () {
-      const map = Reflect.getOwnMetadata(PROJECTION_METADATA, this.constructor);
-      for (const { key, event, method } of map) {
+  return function <TFunction extends Function>(constructor: TFunction): void | TFunction {
+    Reflect.defineMetadata(PROJECTOR_WATERMARK, true, constructor);
+    constructor.prototype.onProjectorInit = async function () {
+      const events = Reflect.getOwnMetadata(PROJECTOR_EVENT_METADATA, this.constructor);
+      for (const { key, event, method } of events) {
         console.log(`Registered ${event} { ${key}, ${method.toUpperCase()} }`);
         projection[method as "on" | "once" | "all"](event, (this as any)[key].bind(this));
       }
@@ -48,7 +50,7 @@ function createMappingDecorator(method: string) {
 
 function RequestMapping({ event, method = ProjectionMethod.ON }: RequestMappingMetadata): MethodDecorator {
   return (target: object, key: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
-    const projections: ProjectionMap[] = Reflect.getOwnMetadata(PROJECTION_METADATA, target.constructor) || [];
+    const projections: ProjectionMap[] = Reflect.getOwnMetadata(PROJECTOR_EVENT_METADATA, target.constructor) || [];
 
     const hasProjection = projections.find((projection) => projection.event === event && projection.method === method);
     if (hasProjection) {
@@ -59,7 +61,7 @@ function RequestMapping({ event, method = ProjectionMethod.ON }: RequestMappingM
 
     projections.push({ key, event, method });
 
-    Reflect.defineMetadata(PROJECTION_METADATA, projections, target.constructor);
+    Reflect.defineMetadata(PROJECTOR_EVENT_METADATA, projections, target.constructor);
 
     return descriptor;
   };

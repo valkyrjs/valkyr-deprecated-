@@ -3,9 +3,8 @@ import { Collection, Model } from "@valkyr/db";
 import { nanoid } from "@valkyr/utils";
 import { WorkspaceStore } from "stores";
 
+import { app } from "~App";
 import { adapter } from "~Library/Adapter";
-
-import { app } from "../Module";
 
 type Attributes = {
   id: WorkspaceStore.State["id"];

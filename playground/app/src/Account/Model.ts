@@ -2,9 +2,8 @@ import { LedgerService } from "@valkyr/client";
 import { Collection, Document, Model } from "@valkyr/db";
 import { AccountStore } from "stores";
 
+import { app } from "~App";
 import { adapter } from "~Library/Adapter";
-
-import { app } from "../Module";
 
 type Attributes = Document & {
   name?: AccountStore.State["name"];

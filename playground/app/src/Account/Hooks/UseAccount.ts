@@ -2,8 +2,9 @@ import { LedgerService } from "@valkyr/client";
 import { useQuery } from "@valkyr/react";
 import { useEffect } from "react";
 
+import { useProvider } from "~App";
+
 import { AuthService } from "../../Auth/Services/AuthService";
-import { useProvider } from "../../Module";
 import { Account } from "../Model";
 
 export function useAccount() {

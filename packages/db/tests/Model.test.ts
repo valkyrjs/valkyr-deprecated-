@@ -7,13 +7,13 @@ describe("Model", () => {
     afterEach(teardown);
 
     it("should successfully insert a new document", async () => {
-      await User.insert(data[0]);
+      await User.insertOne(data[0]);
       expect(User.$collection.storage.documents.get(data[0].id)).toEqual(data[0]);
     });
 
     it("should throw an error if the document already exists", async () => {
-      await User.insert(data[0]);
-      await expect(User.insert(data[0])).rejects.toThrow(new DuplicateDocumentError(data[0].id));
+      await User.insertOne(data[0]);
+      await expect(User.insertOne(data[0])).rejects.toThrow(new DuplicateDocumentError(data[0].id));
     });
   });
 
@@ -21,30 +21,15 @@ describe("Model", () => {
     afterEach(teardown);
 
     it("should successfully update existing document", async () => {
-      await User.insert(data[0]);
-      await expect(User.update({ id: "user-1", name: "James Doe" })).resolves.toHaveProperty("name", "James Doe");
+      await User.insertOne(data[0]);
+      await User.updateOne({ id: "user-1" }, { $set: { name: "James Doe" } });
+      await expect(User.findById("user-1")).resolves.toHaveProperty("name", "James Doe");
     });
 
     it("should throw error if document does not exist", async () => {
-      await expect(User.update({ id: "user-3", name: "James Doe" })).rejects.toThrow(
-        new DocumentNotFoundError("user-3")
+      await expect(User.updateOne({ id: "user-4" }, { $set: { name: "James Doe" } })).rejects.toThrow(
+        new DocumentNotFoundError({ id: "user-4" })
       );
-    });
-  });
-
-  describe("when upserting document", () => {
-    afterEach(teardown);
-
-    it("should insert document if not already exists", async () => {
-      await expect(User.upsert(data[2])).resolves.toEqual(new User(data[2]));
-      expect(User.$collection.storage.documents.get(data[2].id)).toEqual(data[2]);
-    });
-
-    it("should update document if already exists", async () => {
-      await User.insert(data[2]);
-      const document = { ...data[2], name: "Rick James" };
-      await expect(User.upsert(document)).resolves.toEqual(new User(document));
-      expect(User.$collection.storage.documents.get(document.id)).toEqual(document);
     });
   });
 
@@ -52,7 +37,7 @@ describe("Model", () => {
     afterEach(teardown);
 
     it("should successfully delete document", async () => {
-      await User.insert(data[0]);
+      await User.insertOne(data[0]);
       expect(User.$collection.storage.documents.get(data[0].id)).toEqual(data[0]);
       await User.delete("user-1");
       expect(User.$collection.storage.documents.get("user-1")).toBeUndefined();
@@ -63,7 +48,7 @@ describe("Model", () => {
     afterEach(teardown);
 
     it("should return model instance if document exists", async () => {
-      await User.insert(data[0]);
+      await User.insertOne(data[0]);
       await expect(User.findById("user-1")).resolves.toEqual(new User(data[0]));
     });
 
@@ -76,7 +61,7 @@ describe("Model", () => {
     afterEach(teardown);
 
     it("should return model instances when matches are found", async () => {
-      await User.insert(data[1]);
+      await User.insertOne(data[1]);
       await expect(User.find({ name: "Jane Doe" })).resolves.toEqual([new User(data[1])]);
     });
 
@@ -89,7 +74,7 @@ describe("Model", () => {
     afterEach(teardown);
 
     it("should return model instance if document exists", async () => {
-      await User.insert(data[1]);
+      await User.insertOne(data[1]);
       await expect(User.findOne({ name: "Jane Doe" })).resolves.toEqual(new User(data[1]));
     });
 
@@ -139,7 +124,7 @@ describe("Model", () => {
         count++;
       });
       setTimeout(() => {
-        User.update({ ...data[2], name: "Rick James" });
+        User.updateOne({ id: data[2].id }, { $set: { name: "Rick James" } });
       }, 0);
     });
 
@@ -174,7 +159,7 @@ describe("Model", () => {
         count++;
       });
       setTimeout(() => {
-        User.update({ ...data[2], name: "Rick James" });
+        User.updateOne({ id: data[2].id }, { $set: { name: "Rick James" } });
       }, 0);
     });
   });
@@ -182,7 +167,7 @@ describe("Model", () => {
 
 async function addAllUsers() {
   for (const document of data) {
-    await User.insert(document);
+    await User.insertOne(document);
   }
 }
 

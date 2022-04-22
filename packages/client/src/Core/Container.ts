@@ -47,6 +47,9 @@ export class Container {
   }
 
   public add(token: Token, provide: Type | Value) {
+    if (this.has(token) === true) {
+      return;
+    }
     if (typeof provide === "function") {
       this.refs.set(token, {
         token,
@@ -62,6 +65,7 @@ export class Container {
         provide
       });
     }
+    console.log("Added dependency", token);
   }
 
   public getScope(provide: Type) {
@@ -79,7 +83,7 @@ export class Container {
     return this.getSingleton(ref);
   }
 
-  public getSingleton(ref: StaticRef) {
+  private getSingleton(ref: StaticRef) {
     if (ref.type === RefType.VALUE) {
       return ref.provide;
     }
@@ -91,9 +95,11 @@ export class Container {
     return ref.instance;
   }
 
-  public getTransient(ref: TransientRef) {
+  private getTransient(ref: TransientRef) {
     if (ref.type === RefType.CLASS) {
-      return new ref.provide(...this.getConstructorDependencies(ref.provide));
+      const provide = new ref.provide(...this.getConstructorDependencies(ref.provide));
+      provide.onModuleInit?.();
+      return provide;
     }
     return ref.provide;
   }

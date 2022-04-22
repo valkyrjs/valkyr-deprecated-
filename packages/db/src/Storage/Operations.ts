@@ -1,8 +1,11 @@
 import { nanoid } from "@valkyr/utils";
+import * as NotationDefault from "notation";
 
-import { DocumentNotFoundError, DuplicateDocumentError } from "./Errors";
+import { DuplicateDocumentError } from "./Errors";
 import { Storage } from "./Storage";
-import type { Document, Operation } from "./Types";
+import type { Operation } from "./Types";
+
+const notate = NotationDefault.Notation.create;
 
 /**
  * Insert document within the given operation to the provided storage instance.
@@ -13,9 +16,9 @@ import type { Document, Operation } from "./Types";
  *
  * @returns Created document.
  */
-function insert(storage: Storage, operation: Operation, attempts: number): Document {
+function insert(storage: Storage, operation: Operation, attempts: number): string {
   if (operation.type !== "insert") {
-    throw new Error("Storage Violation: Invalid operation provided, expected 'insert', got '${operation.type}'.");
+    throw new Error(`Storage Violation: Invalid operation provided, expected 'insert', got '${operation.type}'`);
   }
   const { id = nanoid(), ...data } = operation.document;
   if (storage.documents.has(id)) {
@@ -27,53 +30,71 @@ function insert(storage: Storage, operation: Operation, attempts: number): Docum
   const document = { id, ...data };
   storage.documents.set(id, document);
   storage.emit("change", "insert", document);
-  return document;
+  return id;
 }
 
-function update(storage: Storage, operation: Operation): Document {
+function update(storage: Storage, operation: Operation): boolean {
   if (operation.type !== "update") {
-    throw new Error("Storage Violation: Invalid operation provided, expected 'update', got '${operation.type}'.");
+    throw new Error(`Storage Violation: Invalid operation provided, expected 'update', got '${operation.type}'`);
   }
-  const data = operation.document;
-  if (!storage.documents.has(data.id)) {
-    throw new DocumentNotFoundError(data.id);
+
+  const {
+    id,
+    actions: { $set = {}, $unset = {}, $push = {} }
+  } = operation;
+
+  const currentDocument = storage.documents.get(id);
+
+  if (currentDocument === undefined) {
+    return false;
   }
-  const document = { ...storage.documents.get(data.id), ...data };
-  storage.documents.set(data.id, document);
-  storage.emit("change", "update", document);
-  return document;
+
+  const notation = notate(currentDocument);
+
+  for (const key in $set) {
+    notation.set(key, $set[key]);
+  }
+
+  for (const key in $unset) {
+    notation.remove(key);
+  }
+
+  for (const key in $push) {
+    const value = notation.get(key);
+    if (Array.isArray(value)) {
+      notation.set(key, [...value, $push[key]]);
+    }
+  }
+
+  const nextDocument = notation.value;
+
+  storage.documents.set(id, nextDocument);
+  storage.emit("change", "update", nextDocument);
+
+  return true;
 }
 
-function upsert(storage: Storage, operation: Operation): Document {
-  if (operation.type !== "upsert") {
-    throw new Error("Storage Violation: Invalid operation provided, expected 'upsert', got '${operation.type}'.");
+function replace(storage: Storage, operation: Operation): boolean {
+  if (operation.type !== "replace") {
+    throw new Error(`Storage Violation: Invalid operation provided, expected 'replace', got '${operation.type}'`);
   }
-  const data = operation.document;
-  let document: Document;
-  if (storage.documents.has(data.id)) {
-    document = { ...storage.documents.get(data.id), ...data };
-    storage.documents.set(data.id, document);
-    storage.emit("change", "update", document);
-  } else {
-    document = data;
-    storage.documents.set(document.id, document);
-    storage.emit("change", "insert", document);
-  }
-  return document;
+  storage.documents.set(operation.document.id, operation.document);
+  storage.emit("change", "update", operation.document);
+  return true;
 }
 
-function del(storage: Storage, operation: Operation): undefined {
-  if (operation.type !== "delete") {
-    throw new Error("Storage Violation: Invalid operation provided, expected 'delete', got '${operation.type}'.");
+function del(storage: Storage, operation: Operation): boolean {
+  if (operation.type !== "delete" || storage.documents.has(operation.id) === false) {
+    return false;
   }
   storage.documents.delete(operation.id);
   storage.emit("change", "delete", { id: operation.id });
-  return undefined;
+  return true;
 }
 
 export const operations = {
   insert,
   update,
-  upsert,
+  replace,
   delete: del
 };

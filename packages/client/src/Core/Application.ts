@@ -2,9 +2,10 @@ import { createBrowserHistory, Router } from "@valkyr/router";
 
 import { CONTROLLER_WATERMARK } from "../Decorators/Controller";
 import { INJECTABLE_WATERMARK } from "../Decorators/Injectable";
+import { PROJECTOR_WATERMARK } from "../Decorators/Projector";
 import { Container, Type } from "./Container";
 
-type ValkyrApplicationEventHandlers<T = any> = {
+type ApplicationListenHandlers<T = any> = {
   /**
    * Method to trigger when a routing request leads to a render result.
    */
@@ -25,12 +26,13 @@ export class Application {
     this.loadModule(module);
   }
 
-  // ### Loaders
+  // ### Bootstrap
 
-  private async loadModule(module: any) {
+  private loadModule(module: any) {
     this.loadImports(module);
     this.loadProviders(module);
     this.loadControllers(module);
+    this.loadProjectors(module);
   }
 
   private loadImports(module: any) {
@@ -60,8 +62,37 @@ export class Application {
       if (isController !== true) {
         throw new Error(`Controller Violation: Invalid controller ${controller.name} provided`);
       }
-      this.controllers.push(controller);
+      const instance = new controller(...this.container.getConstructorDependencies(controller));
+      instance.router = this.router;
+      instance.onControllerInit();
     }
+  }
+
+  private loadProjectors(module: any) {
+    const projectors = Reflect.getMetadata("projectors", module) ?? [];
+    for (const projector of projectors) {
+      const isProjector = Reflect.getMetadata(PROJECTOR_WATERMARK, projector);
+      if (isProjector !== true) {
+        throw new Error(`Projector Violation: Invalid projector ${projector.name} provided`);
+      }
+      const instance = new projector(...this.container.getConstructorDependencies(projector));
+      instance.onProjectorInit();
+    }
+  }
+
+  // ### Utilities
+
+  /**
+   * Retrieves an instance of either injectable or controller, otherwise, throws exception.
+   *
+   * @returns {TResult}
+   */
+  public get<TInput = any, TResult = TInput>(tokenOrType: string | Type): TResult {
+    let token = tokenOrType as string;
+    if (typeof token === "function") {
+      token = (tokenOrType as Type).name;
+    }
+    return this.container.get(token);
   }
 
   // ### Utilities
@@ -78,43 +109,20 @@ export class Application {
     return this;
   }
 
-  /**
-   * Retrieves an instance of either injectable or controller, otherwise, throws exception.
-   *
-   * @returns {TResult}
-   */
-  public get<TInput = any, TResult = TInput>(tokenOrType: string | Type): TResult {
-    let token = tokenOrType as string;
-    if (typeof token === "function") {
-      token = (tokenOrType as Type).name;
-    }
-    return this.container.get(token);
-  }
-
-  // ### Start
+  // ### Lifecycle
 
   /**
    * Starts the application.
    *
    * @param events - Application event handlers.
    */
-  public async listen(handlers: ValkyrApplicationEventHandlers): Promise<void> {
+  public async listen(handlers: ApplicationListenHandlers): Promise<void> {
     const { pathname, search, state } = this.router.history.location;
-
-    for (const controller of this.controllers) {
-      this.loadController(controller);
-    }
-
     this.router
       .listen({
         render: handlers.onRender,
         error: handlers.onError
       })
       .goTo(`${pathname}${search}`, state);
-  }
-  private loadController(controller: Type) {
-    const instance = new controller(...this.container.getConstructorDependencies(controller));
-    instance.router = this.router;
-    instance.onControllerInit();
   }
 }

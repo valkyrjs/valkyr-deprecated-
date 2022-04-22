@@ -1,7 +1,7 @@
 import { RawObject } from "mingo/types";
 
 import type { Collection, Options } from "./Collection";
-import type { Document } from "./Storage";
+import { Document, DocumentNotFoundError, UpdateActions } from "./Storage";
 
 /*
  |--------------------------------------------------------------------------------
@@ -17,9 +17,11 @@ type ModelContext<T = unknown, D = unknown> = {
 };
 
 type ModelMethods<T = unknown, D = unknown> = {
-  insert(document: D): Promise<T>;
-  update(document: Document & Partial<D>): Promise<T>;
-  upsert(document: D): Promise<T>;
+  insertOne(document: D): Promise<T>;
+  insertMany(documents: D[]): Promise<T[]>;
+  updateOne(criteria: RawObject, actions: UpdateActions): Promise<void>;
+  updateMany(criteria: RawObject, actions: UpdateActions): Promise<void>;
+  replaceOne(criteria: RawObject, document: D): Promise<void>;
   delete(id: string): Promise<void>;
 
   observe(criteria?: RawObject, options?: Options): ModelObserveResult<T>;
@@ -66,35 +68,67 @@ export abstract class Model<D extends Document = Document> {
    |--------------------------------------------------------------------------------
    */
 
-  public static async insert<D extends Document, T extends Model<D>>(
+  public static async insertOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     document: ReturnType<T["toJSON"]>
   ): Promise<T> {
-    const data = await this.$collection.insert(document);
-    return new this(data as D);
+    const { insertedId } = await this.$collection.insertOne(document);
+    return (this as any).findById(insertedId);
   }
 
-  public static async update<D extends Document, T extends Model<D>>(
+  public static async insertMany<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
-    document: Document & Partial<ReturnType<T["toJSON"]>>
-  ): Promise<T> {
-    const data = await this.$collection.update(document);
-    return new this(data as D);
+    documents: ReturnType<T["toJSON"]>[]
+  ): Promise<T[]> {
+    const { insertedIds } = await this.$collection.insertMany(documents);
+    return (this as any).find({
+      id: {
+        $in: insertedIds
+      }
+    });
   }
 
-  public static async upsert<D extends Document, T extends Model<D>>(
+  public static async updateOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
+    criteria: RawObject,
+    actions: UpdateActions
+  ): Promise<void> {
+    const result = await this.$collection.updateOne(criteria, actions);
+    if (result.matchedCount === 0) {
+      throw new DocumentNotFoundError(criteria);
+    }
+  }
+
+  public static async updateMany<D extends Document, T extends Model<D>>(
+    this: ModelContext<T, D>,
+    criteria: RawObject,
+    actions: UpdateActions
+  ): Promise<void> {
+    const result = await this.$collection.updateMany(criteria, actions);
+    if (result.matchedCount === 0) {
+      throw new DocumentNotFoundError(criteria);
+    }
+  }
+
+  public static async replaceOne<D extends Document, T extends Model<D>>(
+    this: ModelContext<T, D>,
+    criteria: RawObject,
     document: ReturnType<T["toJSON"]>
-  ): Promise<T> {
-    const data = await this.$collection.upsert(document);
-    return new this(data as D);
+  ): Promise<void> {
+    const result = await this.$collection.replaceOne(criteria, document);
+    if (result.matchedCount === 0) {
+      throw new DocumentNotFoundError(criteria);
+    }
   }
 
   public static async delete<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     id: string
   ): Promise<void> {
-    return this.$collection.delete(id);
+    const result = await this.$collection.delete(id);
+    if (result.deletedCount === 0) {
+      throw new DocumentNotFoundError({ id });
+    }
   }
 
   /*

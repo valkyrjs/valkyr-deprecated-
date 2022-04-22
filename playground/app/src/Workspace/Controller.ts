@@ -1,14 +1,13 @@
 import { AppController, Controller, Route, setPageTitle } from "@valkyr/client";
-
-import { config } from "~Config";
+import { ConfigService } from "@valkyr/client/src/Services/Config";
 
 import { AuthService } from "../Auth/Services/AuthService";
 import { Workspace } from "./Pages/Workspace";
 import { Workspaces } from "./Pages/Workspaces";
 
-@Controller()
+@Controller("workspaces")
 export class WorkspaceController extends AppController {
-  constructor(private readonly auth: AuthService) {
+  constructor(private readonly auth: AuthService, private readonly config: ConfigService) {
     super();
   }
 
@@ -17,7 +16,7 @@ export class WorkspaceController extends AppController {
     if (this.auth.isAuthenticated === false) {
       return this.redirect("/signin");
     }
-    setPageTitle(config.app.name, "Workspaces");
+    setPageTitle(this.config.get("app.name"), "Workspaces");
     return this.render(Workspaces);
   }
 
@@ -26,7 +25,7 @@ export class WorkspaceController extends AppController {
     if (this.auth.isAuthenticated === false) {
       return this.redirect("/signin");
     }
-    setPageTitle(config.app.name, "Workspace");
+    setPageTitle(this.config.get("app.name"), "Workspace");
     return this.render(Workspace);
   }
 }

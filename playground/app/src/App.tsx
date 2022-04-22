@@ -1,30 +1,17 @@
 import React, { Fragment, ReactElement } from "react";
 
-import { PageLoader } from "~Library/Components/PageLoader";
-
-import { app, AppContext, useApp } from "./Module";
+import { useApp } from "./App/Hooks";
 import { GlobalStyle } from "./Styles";
 
-/*
- |--------------------------------------------------------------------------------
- | App
- |--------------------------------------------------------------------------------
- */
-
 export function App(): ReactElement {
-  const view = useApp(app);
+  const view = useApp();
   if (!view) {
-    return (
-      <Fragment>
-        <GlobalStyle />
-        <PageLoader />
-      </Fragment>
-    );
+    return null;
   }
   return (
-    <AppContext.Provider value={app}>
+    <Fragment>
       <GlobalStyle />
       {view}
-    </AppContext.Provider>
+    </Fragment>
   );
 }

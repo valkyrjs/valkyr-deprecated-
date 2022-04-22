@@ -53,9 +53,9 @@ module.exports = {
     //      ./Hooks/UseToken > ~Pages/Auth/Hooks/UseToken
 
     alias: {
+      "~App": path.resolve(__dirname, "src/App/index"),
       "~Library": path.resolve(__dirname, "src/Library"),
       "~Assets": path.resolve(__dirname, "src/Assets"),
-      "~Config": path.resolve(__dirname, "src/Config"),
       "~Styles": path.resolve(__dirname, "src/Styles")
     }
 

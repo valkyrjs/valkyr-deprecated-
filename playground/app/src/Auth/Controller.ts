@@ -1,13 +1,12 @@
 import { AppController, Controller, Route, setPageTitle } from "@valkyr/client";
-
-import { config } from "~Config";
+import { ConfigService } from "@valkyr/client/src/Services/Config";
 
 import { AuthService } from "../Auth/Services/AuthService";
 import { Auth } from "./Page";
 
 @Controller()
 export class AuthController extends AppController {
-  constructor(private readonly auth: AuthService) {
+  constructor(private readonly auth: AuthService, private readonly config: ConfigService) {
     super();
   }
 
@@ -16,7 +15,7 @@ export class AuthController extends AppController {
     if (this.auth.isAuthenticated === true) {
       return this.redirect("/");
     }
-    setPageTitle(config.app.name, "Authorize");
+    setPageTitle(this.config.get("app.name"), "Authorize");
     return this.render(Auth);
   }
 }

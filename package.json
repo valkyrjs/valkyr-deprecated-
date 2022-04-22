@@ -23,6 +23,9 @@
     "test": "jest --maxWorkers=100% --detectOpenHandles",
     "coverage": "jest --ci --coverage --forceExit --maxWorkers=4"
   },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  },
   "devDependencies": {
     "@types/jest": "27.4.1",
     "@types/node": "16.10.3",

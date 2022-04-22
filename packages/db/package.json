@@ -21,6 +21,7 @@
   "dependencies": {
     "@valkyr/utils": "*",
     "idb-keyval": "^6.1.0",
-    "mingo": "^6.0.5"
+    "mingo": "^6.0.5",
+    "notation": "^2.0.0"
   }
 }

@@ -14,6 +14,8 @@
     "Bitflags",
     "camelcase",
     "jsxdev",
+    "keyval",
+    "mingo",
     "nestjs",
     "paramtypes",
     "signin",

@@ -2,7 +2,7 @@ import { EventEmitter } from "@valkyr/utils";
 
 import { InstanceAdapter } from "../Adapters";
 import { operations } from "./Operations";
-import type { Adapter, ChangeType, Delete, Document, Operation, Status } from "./Types";
+import type { Adapter, ChangeType, Document, Insert, Operation, Status, UpdateActions } from "./Types";
 
 export class Storage extends EventEmitter<{
   loading: () => void;
@@ -118,31 +118,37 @@ export class Storage extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  public async insert(document: Document): Promise<Document> {
-    return this.run("insert", document);
-  }
-
-  public async update(document: Document): Promise<Document> {
-    return this.run("update", document);
-  }
-
-  public async upsert(document: Document): Promise<Document> {
-    return this.run("upsert", document);
-  }
-
-  public async delete(id: string): Promise<void> {
+  public async insert(document: Document): Promise<string> {
     return new Promise((resolve, reject) => {
       this.load().then(() => {
-        this.operations.push({ type: "delete", id, resolve, reject });
+        this.operations.push({ type: "insert", document, resolve, reject });
         this.process();
       });
     });
   }
 
-  public async run(type: "insert" | "update" | "upsert", document: Document): Promise<Document> {
+  public async update(id: string, actions: UpdateActions): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.load().then(() => {
-        this.operations.push({ type, document, resolve, reject });
+        this.operations.push({ type: "update", id, actions, resolve, reject });
+        this.process();
+      });
+    });
+  }
+
+  public async replace(id: string, document: Document): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.load().then(() => {
+        this.operations.push({ type: "replace", id, document, resolve, reject });
+        this.process();
+      });
+    });
+  }
+
+  public async delete(id: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.load().then(() => {
+        this.operations.push({ type: "delete", id, resolve, reject });
         this.process();
       });
     });
@@ -167,7 +173,7 @@ export class Storage extends EventEmitter<{
     }
 
     try {
-      operation.resolve(this.resolve(operation));
+      operation.resolve(this.resolve(operation as any));
       this.save();
     } catch (error: any) {
       operation.reject(error);
@@ -178,9 +184,9 @@ export class Storage extends EventEmitter<{
     return this;
   }
 
-  public resolve(operation: Delete, attempts?: number): undefined;
-  public resolve(operation: Operation, attempts?: number): Document;
-  public resolve(operation: Operation, attempts = 0): Document | undefined {
+  public resolve(operation: Insert, attempts?: number): string;
+  public resolve(operation: Operation, attempts?: number): boolean;
+  public resolve(operation: Operation, attempts = 0): string | boolean {
     return operations[operation.type](this, operation, attempts);
   }
 }

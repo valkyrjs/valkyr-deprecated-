@@ -30,7 +30,13 @@ export class AppController {
 }
 
 function getEndpoint(...args: string[]): string {
-  return args.map(parsePath).join("/");
+  return (
+    "/" +
+    args
+      .filter((path) => path !== "")
+      .map(parsePath)
+      .join("/")
+  );
 }
 
 function parsePath(path: string): string {

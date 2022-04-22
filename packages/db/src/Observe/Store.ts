@@ -51,7 +51,7 @@ export class Store {
 
   private async updateOrRemove(document: Document, criteria: Criteria): Promise<void> {
     if (isMatch(document, criteria)) {
-      await this.storage.update(document);
+      await this.storage.replace(document.id, document);
     } else {
       await this.storage.delete(document.id);
     }

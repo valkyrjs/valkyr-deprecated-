@@ -1,7 +1,10 @@
 import { EventEmitter } from "@valkyr/utils";
 
-import { Injectable } from "./Decorators/Injectable";
-import { SocketMessage } from "./SocketMessage";
+import { Injectable } from "../Decorators/Injectable";
+import { SocketMessage } from "../SocketMessage";
+import { ConfigService } from "./Config";
+
+ConfigService.set("socket.uri", "ws://localhost:8370");
 
 const RECONNECT_INCREMENT = 1250; // 1.25 seconds
 const MAX_RECONNECT_DELAY = 1000 * 30; // 30 seconds
@@ -26,8 +29,6 @@ type Debounce = {
 
 @Injectable()
 export class SocketService extends EventEmitter {
-  public readonly uri: string;
-
   public readonly messages: SocketMessage[] = [];
 
   private _onError?: (err: any) => void;
@@ -38,10 +39,8 @@ export class SocketService extends EventEmitter {
     heartbeat: undefined
   };
 
-  constructor() {
+  constructor(private readonly config: ConfigService) {
     super();
-
-    this.uri = "ws://localhost:8370";
 
     this._onError = console.log;
 
@@ -78,7 +77,7 @@ export class SocketService extends EventEmitter {
 
   public async connect() {
     return new Promise<void>((resolve) => {
-      this._ws = new WebSocket(this.uri);
+      this._ws = new WebSocket(this.config.get("socket.uri"));
 
       this.once("connected", this.onConnect(resolve));
 

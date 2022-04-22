@@ -1,7 +1,5 @@
-import { Document, Model } from "@valkyr/db";
+import { Collection, Document, IndexedDbAdapter, Model } from "@valkyr/db";
 import { Event } from "@valkyr/ledger";
-
-import { Collection } from "../../Decorators/Collection";
 
 type CacheDocument = Document & {
   streamId: string;
@@ -9,8 +7,9 @@ type CacheDocument = Document & {
   created: string;
 };
 
-@Collection("cache")
 export class Cache extends Model<CacheDocument> {
+  public static readonly $collection = new Collection<CacheDocument>("cache", new IndexedDbAdapter());
+
   public readonly streamId: CacheDocument["streamId"];
   public readonly type: CacheDocument["type"];
   public readonly created: CacheDocument["created"];
@@ -26,7 +25,21 @@ export class Cache extends Model<CacheDocument> {
   }
 
   public static async add({ id, streamId, type, created }: Event): Promise<void> {
-    await this.upsert({ id, streamId, type, created });
+    const cursor = await this.findById(streamId);
+    if (cursor) {
+      this.updateOne(
+        { id },
+        {
+          $set: {
+            streamId,
+            type,
+            created
+          }
+        }
+      );
+    } else {
+      await this.insertOne({ id, streamId, type, created });
+    }
   }
 
   public static async status({ id, streamId, type, created }: Event) {

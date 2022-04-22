@@ -1,5 +1,8 @@
-import { Injectable } from "./Decorators/Injectable";
-import { jwt } from "./JsonWebToken";
+import { Injectable } from "../Decorators/Injectable";
+import { jwt } from "../JsonWebToken";
+import { ConfigService } from "./Config";
+
+ConfigService.set("api.url", "http://localhost:8370");
 
 export class ApiErrorResponse extends Error {
   constructor(
@@ -13,7 +16,7 @@ export class ApiErrorResponse extends Error {
 
 @Injectable()
 export class RemoteService {
-  constructor() {}
+  constructor(private readonly config: ConfigService) {}
 
   /**
    * Perform a post request against given resource.
@@ -88,7 +91,7 @@ export class RemoteService {
       if (jwt.token !== null) {
         (init.headers as any)["authorization"] = `Bearer ${jwt.token}`;
       }
-      return await fetcher<T>(`http://localhost:8370${endpoint}`, init);
+      return await fetcher<T>(`${this.config.get("api.uri")}${endpoint}`, init);
     } catch (err) {
       throw new ApiErrorResponse(500, err.message, {});
     }

@@ -1,11 +1,11 @@
-import { Module } from "@valkyr/client";
+import { CommonModule, Module } from "@valkyr/client";
 
 import { AuthController } from "./Controller";
 import { AuthService } from "./Services/AuthService";
 
 @Module({
-  providers: [AuthService],
+  imports: [CommonModule],
   controllers: [AuthController],
-  exports: [AuthService]
+  providers: [AuthService]
 })
 export class AuthModule {}

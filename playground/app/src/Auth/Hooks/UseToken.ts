@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
-import { useProvider, useRouter } from "../../Module";
+import { useProvider, useRouter } from "~App";
+
 import { AuthService } from "../Services/AuthService";
 import { InputsRef, usePin } from "./UsePin";
 

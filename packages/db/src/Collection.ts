@@ -1,10 +1,38 @@
 import { Query } from "mingo";
-import { RawObject } from "mingo/types";
+import type { Cursor } from "mingo/cursor";
+import type { RawObject } from "mingo/types";
 
-import { observe, observeOne } from "../Observe";
-import { Adapter, Document, Storage } from "../Storage";
-import { addOptions } from "./Query";
-import type { Options } from "./Types";
+import { observe, observeOne } from "./Observe";
+import {
+  Adapter,
+  DeleteResponse,
+  Document,
+  InsertManyResponse,
+  InsertOneResponse,
+  Storage,
+  UpdateActions,
+  UpdateResponse
+} from "./Storage";
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type Options = {
+  sort?: {
+    [key: string]: 1 | -1;
+  };
+  skip?: number;
+  limit?: number;
+};
+
+/*
+ |--------------------------------------------------------------------------------
+ | Collection
+ |--------------------------------------------------------------------------------
+ */
 
 export class Collection<D extends Document = Document> {
   public readonly name: string;
@@ -21,20 +49,64 @@ export class Collection<D extends Document = Document> {
    |--------------------------------------------------------------------------------
    */
 
-  public async insert(document: D) {
-    return this.storage.insert(document);
+  public async insertOne(document: D): Promise<InsertOneResponse> {
+    return {
+      acknowledged: true,
+      insertedId: await this.storage.insert(document)
+    };
   }
 
-  public async update(document: Document & Partial<D>) {
-    return this.storage.update(document);
+  public async insertMany(documents: D[]): Promise<InsertManyResponse> {
+    return {
+      acknowledged: true,
+      insertedIds: await Promise.all(documents.map((document) => this.storage.insert(document)))
+    };
   }
 
-  public async upsert(document: D) {
-    return this.storage.upsert(document);
+  public async updateOne(criteria: RawObject, actions: UpdateActions): Promise<UpdateResponse> {
+    const document = await this.findOne(criteria);
+    if (document === undefined) {
+      return { acknowledged: true, matchedCount: 0, modifiedCount: 0 };
+    }
+    const updated = await this.storage.update(document.id, actions);
+    if (updated) {
+      return { acknowledged: true, matchedCount: 1, modifiedCount: 1 };
+    }
+    return { acknowledged: true, matchedCount: 1, modifiedCount: 0 };
   }
 
-  public async delete(id: string) {
-    return this.storage.delete(id);
+  public async updateMany(criteria: RawObject, actions: UpdateActions): Promise<UpdateResponse> {
+    const documents = await this.find(criteria);
+    const matchedCount = documents.length;
+    if (matchedCount === 0) {
+      return { acknowledged: true, matchedCount, modifiedCount: 0 };
+    }
+    const updated = await Promise.all(documents.map((document) => this.storage.update(document.id, actions)));
+    return {
+      acknowledged: true,
+      matchedCount,
+      modifiedCount: updated.filter((result) => result === true).length
+    };
+  }
+
+  public async replaceOne(criteria: RawObject, document: Document): Promise<UpdateResponse> {
+    const { id } = (await this.findOne(criteria)) ?? {};
+    if (id === undefined) {
+      return { acknowledged: true, matchedCount: 0, modifiedCount: 0 };
+    }
+    const replaced = await this.storage.replace(id, document);
+    if (replaced) {
+      return { acknowledged: true, matchedCount: 1, modifiedCount: 1 };
+    }
+    return { acknowledged: true, matchedCount: 1, modifiedCount: 0 };
+  }
+
+  public async delete(id: string): Promise<DeleteResponse> {
+    const deleted = await this.storage.delete(id);
+    if (deleted) {
+      return { acknowledged: true, deletedCount: 1 };
+    }
+    return { acknowledged: true, deletedCount: 0 };
   }
 
   /*
@@ -152,4 +224,23 @@ export class Collection<D extends Document = Document> {
   public flush(): void {
     this.storage.flush();
   }
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Utilities
+ |--------------------------------------------------------------------------------
+ */
+
+export function addOptions(cursor: Cursor, options: Options): Cursor {
+  if (options.sort) {
+    cursor.sort(options.sort);
+  }
+  if (options.skip !== undefined) {
+    cursor.skip(options.skip);
+  }
+  if (options.limit !== undefined) {
+    cursor.limit(options.limit);
+  }
+  return cursor;
 }

@@ -47,7 +47,6 @@ export class RolePermission<
   constructor(public readonly roleId: string) {
     this.grant = this.grant.bind(this);
     this.deny = this.deny.bind(this);
-    this.commit = this.commit.bind(this);
   }
 
   public grant(resource: Resource, action: Action): this;
@@ -60,11 +59,6 @@ export class RolePermission<
   public deny(resource: Resource, action?: Action): this {
     this.operations.push({ type: "unset", resource, action });
     return this;
-  }
-
-  public async commit(): Promise<void> {
-    console.log("Commit permissions", this.roleId, this.operations);
-    // await db.setPermissions(this.roleId, this.operations);
   }
 }
 

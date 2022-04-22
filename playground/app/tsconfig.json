@@ -13,9 +13,9 @@
     ],
     "jsx": "react-jsxdev",
     "paths": {
+      "~App": ["./src/App/index"],
       "~Library/*": ["./src/Library/*"],
       "~Assets": ["./src/Assets"],
-      "~Config": ["./src/Config"],
       "~Styles": ["./src/Styles"]
     },
 
