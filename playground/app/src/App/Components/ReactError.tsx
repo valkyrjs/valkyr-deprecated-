@@ -1,4 +1,4 @@
-import { createElement, ReactElement } from "react";
+import { ReactElement } from "react";
 
 export function createReactError(err: any): ReactElement {
   return (
@@ -16,11 +16,4 @@ export function createReactError(err: any): ReactElement {
       </div>
     </div>
   );
-}
-
-export function createReactElement(list: React.ComponentType[]): any {
-  if (list.length === 1) {
-    return createElement(list[0]);
-  }
-  return createElement(list[0], createReactElement(list.slice(1, list.length)));
 }

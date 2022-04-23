@@ -1,15 +1,13 @@
-import { Application, ConfigService } from "@valkyr/client";
+import { Application, Module } from "@valkyr/client";
 
-import { AppModule } from "./Module";
+import { AccountModule } from "../Account/Module";
+import { AuthModule } from "../Auth/Module";
+import { LandingModule } from "../Landing/Module";
+import { WorkspaceModule } from "../Workspace/Module";
 
-ConfigService.set("app", {
-  name: "Valkyr"
+@Module({
+  imports: [AccountModule, AuthModule, LandingModule, WorkspaceModule]
 })
-  .set("api", {
-    uri: "http://localhost:8370"
-  })
-  .set("socket", {
-    uri: "ws://localhost:8370"
-  });
+export class AppModule {}
 
 export const app = new Application(AppModule);

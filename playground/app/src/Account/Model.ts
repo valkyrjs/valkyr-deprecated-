@@ -5,20 +5,20 @@ import { AccountStore } from "stores";
 import { app } from "~App";
 import { adapter } from "~Library/Adapter";
 
-type Attributes = Document & {
+type AccountDocument = Document & {
   name?: AccountStore.State["name"];
   email: AccountStore.State["email"];
 };
 
-export class Account extends Model<Attributes> {
-  public static readonly $collection = new Collection<Attributes>("accounts", adapter);
+export class Account extends Model<AccountDocument> {
+  public static readonly $collection = new Collection<AccountDocument>("accounts", adapter);
 
-  public readonly name: Attributes["name"];
-  public readonly email: Attributes["email"];
+  public readonly name: AccountDocument["name"];
+  public readonly email: AccountDocument["email"];
 
   private readonly ledger = app.get(LedgerService);
 
-  constructor(document: Attributes) {
+  constructor(document: AccountDocument) {
     super(document);
 
     this.name = {
@@ -36,7 +36,7 @@ export class Account extends Model<Attributes> {
    |--------------------------------------------------------------------------------
    */
 
-  public setName(name: Attributes["name"]) {
+  public setName(name: AccountDocument["name"]) {
     if (name.given === this.name?.given && name.family === this.name?.family) {
       return console.info("Name has not changed, skipping...");
     }
@@ -56,7 +56,7 @@ export class Account extends Model<Attributes> {
    |--------------------------------------------------------------------------------
    */
 
-  public toJSON(): Attributes {
+  public toJSON(): AccountDocument {
     return super.toJSON({
       name: this.name,
       email: this.email

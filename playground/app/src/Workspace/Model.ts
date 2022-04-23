@@ -9,7 +9,7 @@ import { adapter } from "~Library/Adapter";
 type Attributes = {
   id: WorkspaceStore.State["id"];
   name: WorkspaceStore.State["name"];
-  invites?: WorkspaceStore.State["invites"];
+  invites: WorkspaceStore.State["invites"];
   members: WorkspaceStore.State["members"];
 };
 
@@ -30,7 +30,7 @@ export class Workspace extends Model<Attributes> {
     super(document);
 
     this.name = document.name;
-    this.invites = new Invites(this, document.invites ?? []);
+    this.invites = new Invites(this, document.invites);
     this.members = new Members(this, document.members);
 
     Object.freeze(this);

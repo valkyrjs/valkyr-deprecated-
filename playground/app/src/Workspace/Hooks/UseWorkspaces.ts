@@ -1,6 +1,6 @@
-import { useQuery, useSubscriber } from "@valkyr/react";
-
 import { useProvider } from "~App";
+import { useQuery } from "~Library/Hooks/UseQuery";
+import { useSubscriber } from "~Library/Hooks/UseSubscriber";
 
 import { AuthService } from "../../Auth/Services/AuthService";
 import { Workspace } from "../Model";

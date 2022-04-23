@@ -1,6 +1,7 @@
 import { isRelative } from "@valkyr/client";
-import { router } from "@valkyr/react";
 import styled from "styled-components";
+
+import { app } from "~App";
 
 /*
  |--------------------------------------------------------------------------------
@@ -67,7 +68,7 @@ function handleClick(href: string) {
   return (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void => {
     if (isRelative(href)) {
       event.preventDefault();
-      router.goTo(href);
+      app.router.goTo(href);
     }
   };
 }

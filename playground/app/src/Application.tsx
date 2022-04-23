@@ -1,9 +1,10 @@
-import React, { Fragment, ReactElement } from "react";
+import { Fragment, ReactElement } from "react";
 
-import { useApp } from "./App/Hooks";
+import { useApp } from "~App";
+
 import { GlobalStyle } from "./Styles";
 
-export function App(): ReactElement {
+export function Application(): ReactElement {
   const view = useApp();
   if (!view) {
     return null;

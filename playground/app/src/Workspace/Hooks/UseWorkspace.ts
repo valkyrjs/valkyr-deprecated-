@@ -1,8 +1,8 @@
 import { LedgerService } from "@valkyr/client";
-import { useQuery } from "@valkyr/react";
 import { useEffect } from "react";
 
 import { useProvider } from "~App";
+import { useQuery } from "~Library/Hooks/UseQuery";
 
 import { Workspace } from "../Model";
 

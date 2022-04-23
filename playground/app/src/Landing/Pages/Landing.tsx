@@ -1,8 +1,7 @@
 import styled from "styled-components";
 
+import { useConfig } from "~App";
 import { Link } from "~Library/Components/Link";
-
-import { Workspace } from "../Model";
 
 /*
  |--------------------------------------------------------------------------------
@@ -10,15 +9,19 @@ import { Workspace } from "../Model";
  |--------------------------------------------------------------------------------
  */
 
-export function WorkspaceCard({ workspace }: { workspace: Workspace }) {
+export function Landing() {
+  const appName = useConfig("app.name");
   return (
     <S.Container>
-      <div>
-        {workspace.name} [{workspace.members.size} member{workspace.members.size !== 1 && "s"}]
-      </div>
-      <div>
-        <Link href={`/workspaces/${workspace.id}`}>Select</Link>
-      </div>
+      <div>{appName}</div>
+      <ul>
+        <li>
+          <Link href="/signin">Signin</Link>
+        </li>
+        <li>
+          <Link href="/workspaces">Workspaces</Link>
+        </li>
+      </ul>
     </S.Container>
   );
 }
@@ -30,11 +33,5 @@ export function WorkspaceCard({ workspace }: { workspace: Workspace }) {
  */
 
 const S = {
-  Container: styled.div`
-    display: grid;
-
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-  `
+  Container: styled.div``
 };

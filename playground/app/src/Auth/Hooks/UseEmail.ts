@@ -1,6 +1,5 @@
-import { useForm } from "@valkyr/react";
-
 import { useProvider } from "~App";
+import { useForm } from "~Library/Hooks/UseForm";
 
 import type { AuthDispatch } from "../Reducer";
 import { AuthService } from "../Services/AuthService";

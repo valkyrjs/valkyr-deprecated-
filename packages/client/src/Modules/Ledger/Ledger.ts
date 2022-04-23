@@ -10,7 +10,13 @@ import { Cursor } from "./Models/Cursor";
 export class LedgerService {
   public readonly streams: Streams = {};
 
-  constructor(private readonly remote: RemoteService, private readonly socket: SocketService) {}
+  constructor(private readonly remote: RemoteService, private readonly socket: SocketService) {
+    this.append = this.append.bind(this);
+  }
+
+  public onModuleInit() {
+    this.socket.on("event", this.append);
+  }
 
   /**
    * When subscribing we keep track of all instances that are currently observing

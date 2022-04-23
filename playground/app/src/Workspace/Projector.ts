@@ -10,12 +10,13 @@ export class WorkspaceProjector {
     await Workspace.insertOne({
       id: streamId,
       name,
+      invites: [],
       members
     });
   }
 
   @On("WorkspaceInviteCreated")
-  public async nameSet({ streamId, data }: WorkspaceStore.InviteCreated) {
+  public async inviteCreated({ streamId, data }: WorkspaceStore.InviteCreated) {
     const workspace = await Workspace.findById(streamId);
     if (workspace && workspace.invites.get(data.id) === undefined) {
       await Workspace.updateOne(

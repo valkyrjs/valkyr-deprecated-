@@ -52,6 +52,10 @@ export class SocketService extends EventEmitter {
     this.onClose = this.onClose.bind(this);
   }
 
+  public onModuleInit() {
+    this.connect();
+  }
+
   /*
    |--------------------------------------------------------------------------------
    | Accessors
@@ -75,20 +79,22 @@ export class SocketService extends EventEmitter {
    |--------------------------------------------------------------------------------
    */
 
-  public async connect() {
-    return new Promise<void>((resolve) => {
-      this._ws = new WebSocket(this.config.get("socket.uri"));
+  public connect() {
+    if (this._ws) {
+      return;
+    }
 
-      this.once("connected", this.onConnect(resolve));
+    this._ws = new WebSocket(this.config.get("socket.uri"));
 
-      this._ws.onopen = this.onOpen;
-      this._ws.onmessage = this.onMessage;
-      this._ws.onclose = this.onClose;
+    this.once("connected", this.onConnect);
 
-      if (this._onError) {
-        this._ws.onerror = this._onError;
-      }
-    });
+    this._ws.onopen = this.onOpen;
+    this._ws.onmessage = this.onMessage;
+    this._ws.onclose = this.onClose;
+
+    if (this._onError) {
+      this._ws.onerror = this._onError;
+    }
   }
 
   public disconnect() {
@@ -120,13 +126,10 @@ export class SocketService extends EventEmitter {
    |--------------------------------------------------------------------------------
    */
 
-  public onConnect(resolve: () => void): () => Promise<void> {
-    return async () => {
-      this._reconnectDelay = 0;
-      this.ping();
-      this.process();
-      resolve();
-    };
+  public onConnect(): void {
+    this._reconnectDelay = 0;
+    this.ping();
+    this.process();
   }
 
   public onOpen() {
@@ -152,6 +155,7 @@ export class SocketService extends EventEmitter {
       if (reconnect) {
         clearTimeout(reconnect);
       }
+      this._ws = undefined;
       this._debounce.reconnect = setTimeout(
         this.connect,
         this._reconnectDelay < MAX_RECONNECT_DELAY ? (this._reconnectDelay += RECONNECT_INCREMENT) : MAX_RECONNECT_DELAY
