@@ -24,13 +24,13 @@ export class LedgerGateway {
    |--------------------------------------------------------------------------------
    */
 
-  public handleConnection(socket: WebSocket, request: IncomingMessage) {
-    // [TODO] Add authorization handling
-  }
+  // public handleConnection(socket: WebSocket, request: IncomingMessage) {
+  //   [TODO] Add authorization handling
+  // }
 
-  public handleDisconnect(socket: WebSocket) {
-    // [TODO] Clean up connections
-  }
+  // public handleDisconnect(socket: WebSocket) {
+  //   [TODO] Clean up connections
+  // }
 
   /*
    |--------------------------------------------------------------------------------
