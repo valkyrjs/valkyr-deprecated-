@@ -1,6 +1,5 @@
 import { Logger, UseFilters, UseInterceptors } from "@nestjs/common";
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { IncomingMessage } from "http";
 import * as jwt from "jsonwebtoken";
 import { Server, WebSocket } from "ws";
 
