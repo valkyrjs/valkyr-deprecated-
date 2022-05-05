@@ -1,11 +1,6 @@
-<label for="lifestory" class="coral-FieldLabel">Create Workspace</label>
-<div class="coral-InputGroup" role="presentation">
-  <input is="coral-textfield" class="coral-InputGroup-input" [(ngModel)]="name" (keyup.enter)="create()"
-    aria-label="input">
-  <span class="coral-InputGroup-button">
-    <button is="coral-button" (click)="create()">Create</button>
-  </span>
-</div>
+<sp-field-label for="name">Workspace Name</sp-field-label>
+<sp-textfield id="name" placeholder="Enter workspace name" (keyup.enter)="create()"></sp-textfield>
+<sp-button variant="primary" (click)="create()">Create</sp-button>
 
 <div>
   <coral-masonry orderable="" id="masonry" layout="dashboard" columnwidth="280" aria-label="Masonry" ariagrid="on">
