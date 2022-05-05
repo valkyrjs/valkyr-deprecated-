@@ -5,13 +5,12 @@ import { GuestGuard } from "@valkyr/angular";
 
 import { AuthorizationComponent } from "./Component";
 import { EmailComponent } from "./Email/Component";
-import { AuthorizationRoutingModule } from "./Routing";
 import { WizardService } from "./Services/Wizard";
 import { TokenComponent } from "./Token/Component";
 
 @NgModule({
   declarations: [AuthorizationComponent, EmailComponent, TokenComponent],
-  imports: [BrowserModule, FormsModule, AuthorizationRoutingModule],
+  imports: [BrowserModule, FormsModule],
   providers: [GuestGuard, WizardService]
 })
 export class AuthorizationModule {}

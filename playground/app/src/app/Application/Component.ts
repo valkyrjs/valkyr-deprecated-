@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
 @Component({
-  selector: "shell",
+  selector: "app-template",
   templateUrl: "./Template.html"
 })
-export class ShellComponent {}
+export class ApplicationComponent {}

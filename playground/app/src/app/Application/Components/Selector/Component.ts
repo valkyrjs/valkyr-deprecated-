@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { AuthService, ParamsService, SubscriptionDirective } from "@valkyr/angular";
 
-import { Workspace } from "../../../Models/Workspace";
+import { Workspace } from "../../../Workspace/Models/Workspace";
 
 @Component({
   selector: "shell-workspaces",
