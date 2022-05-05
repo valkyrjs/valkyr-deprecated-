@@ -9,6 +9,10 @@
       "mode": "auto"
     }
   ],
+  "[html]": {
+    "editor.formatOnSaveMode": "file",
+    "editor.defaultFormatter": "HookyQR.beautify"
+  },  
   "cSpell.words": [
     "bitflag",
     "Bitflags",

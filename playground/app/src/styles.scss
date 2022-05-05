@@ -1,30 +1,68 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+// html,
+// body {
+//   padding: 0;
+//   margin: 0;
+//   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+//     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+// }
+
+// a {
+//   color: inherit;
+//   text-decoration: none;
+// }
+
+// * {
+//   box-sizing: border-box;
+// }
+
+// input {
+//   &:focus {
+//     outline: none;
+//   }
+// }
+
+// a {
+//   color: blue;
+//   &:hover {
+//     cursor: pointer;
+//     color: green;
+//   }
+// }
+
+// Sidebars
+// - Can be on either side of the application frame (left or right) or both.
+// - 48px wide.
+// Panels
+// - located on either side of the application frame (left or right) or both.
+// - come in two different widths: 304 px and 240 px
+.grid {
+  display: grid;
+  grid-template-columns: 48px 240px 1fr 304px 48px;
+  grid-template-areas: "sidebar panel content right-panel right-sidebar";
+  width: 100%;
+  min-height: 100vh;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.grid-sidebar {
+  grid-area: 'sidebar';
+  background: white;
 }
 
-* {
-  box-sizing: border-box;
+.grid-panel {
+  grid-area: 'panel';
+  background: white;
 }
 
-input {
-  &:focus {
-    outline: none;
-  }
+.grid-content {
+  grid-area: 'content';
 }
 
-a {
-  color: blue;
-  &:hover {
-    cursor: pointer;
-    color: green;
-  }
+.grid-right-panel {
+  grid-area: 'right-panel';
+  background: white;
+}
+
+.grid-right-sidebar {
+  grid-area: 'right-sidebar';
+  background: white;
 }
