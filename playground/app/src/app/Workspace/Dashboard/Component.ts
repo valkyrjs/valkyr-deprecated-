@@ -2,7 +2,7 @@ import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 import { ParamsService, SubscriptionDirective } from "@valkyr/angular";
 
-import { Workspace } from "../../Models/Workspace";
+import { Workspace } from "../Models/Workspace";
 
 @Component({
   selector: "workspace-dashboard",

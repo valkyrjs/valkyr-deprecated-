@@ -3,8 +3,8 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 
-import { DashboardComponent } from "./Components/Dashboard/Component";
-import { LandingComponent } from "./Components/Landing/Component";
+import { DashboardComponent } from "./Dashboard/Component";
+import { LandingComponent } from "./Landing/Component";
 import { WorkspaceProjector } from "./Projector";
 
 @NgModule({

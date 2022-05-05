@@ -1,8 +1,8 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { AuthService, SubscriptionDirective } from "@valkyr/angular";
 
-import { Workspace } from "../../Models/Workspace";
-import { WorkspaceService } from "../../Services/Workspace";
+import { Workspace } from "../Models/Workspace";
+import { WorkspaceService } from "../Services/Workspace";
 
 @Component({
   selector: "workspace-landing",
