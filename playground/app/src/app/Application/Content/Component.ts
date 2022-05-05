@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
 @Component({
-  selector: "shell-home",
+  selector: "app-content",
   templateUrl: "./Template.html"
 })
-export class HomeComponent {}
+export class ContentComponent {}

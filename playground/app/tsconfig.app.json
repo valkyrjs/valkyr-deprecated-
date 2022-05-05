@@ -3,8 +3,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": [],
-    "skipLibCheck": true
+    "types": []
   },
   "files": [
     "src/main.ts",

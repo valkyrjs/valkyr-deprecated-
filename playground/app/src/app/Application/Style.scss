@@ -1,0 +1,22 @@
+.app-container {
+  display: grid;
+  grid-template-rows: 48px 1fr;
+  grid-template-columns: 240px 1fr;
+  grid-template-areas:
+    'navbar navbar'
+    'sidebar content';
+
+  min-height: 100vh;
+}
+
+.app-navbar {
+  grid-area: navbar;
+}
+
+.app-sidebar {
+  grid-area: sidebar;
+}
+
+.app-content {
+  grid-area: content;
+}
