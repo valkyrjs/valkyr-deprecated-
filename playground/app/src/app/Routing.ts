@@ -3,8 +3,8 @@ import { AuthGuard, GuestGuard } from "@valkyr/angular";
 
 import { ApplicationComponent } from "./Application/Component";
 import { AuthorizationComponent } from "./Authorization/Component";
-import { DashboardComponent } from "./Workspace/Components/Dashboard/Component";
-import { LandingComponent } from "./Workspace/Components/Landing/Component";
+import { TextEditorComponent } from "./TextEditor/Components";
+import { DashboardComponent, LandingComponent } from "./Workspace/Components";
 
 export const routes: Routes = [
   { path: "", redirectTo: "/workspaces", pathMatch: "full" },
@@ -21,5 +21,9 @@ export const routes: Routes = [
       { path: "", component: LandingComponent },
       { path: ":id", component: DashboardComponent }
     ]
+  },
+  {
+    path: "editor",
+    component: TextEditorComponent
   }
 ];
