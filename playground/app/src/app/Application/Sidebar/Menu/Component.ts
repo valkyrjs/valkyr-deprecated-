@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
-
-import { Menu } from "../Menu";
+import { Menu } from "@valkyr/angular";
 
 @Component({
   selector: "sb-menu",

@@ -1,7 +1,8 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute, ParamMap } from "@angular/router";
-import { ParamsService, SubscriptionDirective } from "@valkyr/angular";
+import { MenuService, ParamsService, SubscriptionDirective } from "@valkyr/angular";
 
+import { menus } from "../Menu";
 import { Workspace } from "../Models/Workspace";
 
 @Component({
@@ -11,11 +12,17 @@ import { Workspace } from "../Models/Workspace";
 export class DashboardComponent extends SubscriptionDirective implements OnInit {
   public workspace?: Workspace;
 
-  constructor(private route: ActivatedRoute, private params: ParamsService, injector: Injector) {
+  constructor(
+    private route: ActivatedRoute,
+    private params: ParamsService,
+    private menu: MenuService,
+    injector: Injector
+  ) {
     super(injector);
   }
 
   public ngOnInit(): void {
+    this.menu.open(menus["sidebar"]);
     this.route.paramMap.subscribe({
       next: (params: ParamMap) => {
         const id = params.get("id")!;

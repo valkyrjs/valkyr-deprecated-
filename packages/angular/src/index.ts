@@ -5,6 +5,7 @@ export * from "./Helpers/SubscriptionDirective";
 export * from "./Services/Auth/AuthService";
 export * from "./Services/Ledger/LedgerService";
 export * from "./Services/Ledger/StreamService";
+export * from "./Services/MenuService";
 export * from "./Services/ParamsService";
 export * from "./Services/RemoteService";
 export * from "./Services/Socket/SocketService";
