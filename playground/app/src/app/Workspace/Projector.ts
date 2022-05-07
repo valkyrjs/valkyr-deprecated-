@@ -10,6 +10,7 @@ export class WorkspaceProjector extends EventProjector {
     await Workspace.insertOne({
       id: streamId,
       name,
+      color: "",
       invites: [] as WorkspaceStore.Invite[],
       members
     });

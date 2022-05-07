@@ -46,6 +46,10 @@ export class LandingComponent extends SubscriptionDirective implements OnInit {
     );
   }
 
+  public openAddWorkspace() {
+    console.log("modal");
+  }
+
   public create() {
     this.workspace.create(this.name).then(() => {
       this.name = "";

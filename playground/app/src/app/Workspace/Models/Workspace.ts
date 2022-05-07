@@ -3,6 +3,7 @@ import { WorkspaceStore } from "stores";
 
 type WorkspaceDocument = Document & {
   name: string;
+  color: string;
   invites: WorkspaceStore.State["invites"];
   members: WorkspaceStore.State["members"];
 };
@@ -17,6 +18,7 @@ export class Workspace extends Model<WorkspaceDocument> {
   public static override readonly $collection = new Collection<WorkspaceDocument>("workspaces", new IndexedDbAdapter());
 
   public readonly name!: WorkspaceDocument["name"];
+  public readonly color!: WorkspaceDocument["color"];
   public readonly invites: Invites;
   public readonly members: Members;
 
