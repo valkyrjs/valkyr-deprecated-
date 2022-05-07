@@ -11,6 +11,27 @@ export const cached: Record<string, MenuSettings[] | Record<string, MenuSettings
         area: MENU_AREA_SIDEBAR,
         categories: [
           {
+            name: "Workspaces",
+            items: [
+              {
+                name: "My Workspaces",
+                href: "/workspaces/me"
+              },
+              {
+                name: "Shared",
+                href: "/workspaces/shared"
+              },
+              {
+                name: "Invites",
+                href: "/workspaces/invites"
+              },
+              {
+                name: "Archived",
+                href: "/workspaces/archived"
+              }
+            ]
+          },
+          {
             name: "Sandbox",
             items: [
               {

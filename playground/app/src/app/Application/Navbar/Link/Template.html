@@ -1,0 +1,7 @@
+  <div class="h-[42px] border-b-2 flex items-center"
+    [ngClass]="isCurrentRoute(link) ? 'border-c-900':'border-transparent'">
+    <a href="link" class="font-medium text-sm"
+      [ngClass]="isCurrentRoute(link) ? 'text-c-800' : 'text-c-500 hover:text-c-600'">
+      {{name}}
+    </a>
+  </div>
