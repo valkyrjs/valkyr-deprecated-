@@ -59,7 +59,7 @@ function addColors() {
 
 module.exports = {
   content: [
-    "./src/**/*.{html,ts}"
+    "./src/**/*.{html,ts,scss}"
   ],
   theme: {
     extend: {

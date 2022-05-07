@@ -1,10 +1,18 @@
-<div class="flex flex-col h-full justify-between text-sm">
-  <menu-main>
-    <ng-container *ngFor="let category of menu.categories">
-      <menu-category *ngIf="category.name !== ''" [name]="category.name"></menu-category>
+<menu-main>
+  <ng-container *ngFor="let category of menu.categories">
+    <menu-category [name]="category.name">
       <menu-list>
         <menu-item *ngFor="let item of category.items" [name]="item.name" [link]="item.href"></menu-item>
       </menu-list>
-    </ng-container>
-  </menu-main>
-</div>
+    </menu-category>
+  </ng-container>
+</menu-main>
+<menu-secondary>
+  <ng-container *ngFor="let category of menu.categories">
+    <menu-category [name]="category.name">
+      <menu-list>
+        <menu-item *ngFor="let item of category.items" [name]="item.name" [link]="item.href"></menu-item>
+      </menu-list>
+    </menu-category>
+  </ng-container>
+</menu-secondary>

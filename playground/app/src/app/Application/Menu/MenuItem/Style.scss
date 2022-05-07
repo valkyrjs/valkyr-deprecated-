@@ -1,0 +1,9 @@
+:host {
+  @apply list-item;
+  @apply px-3;
+  @apply py-1;
+  @apply mb-1;
+  @apply hover:bg-c-200;
+  @apply rounded;
+  @apply hover:cursor-pointer;
+}

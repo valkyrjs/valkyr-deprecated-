@@ -2,7 +2,8 @@ import { Component, Input } from "@angular/core";
 
 @Component({
   selector: "menu-category",
-  templateUrl: "./Template.html"
+  templateUrl: "./Template.html",
+  styleUrls: ["./Style.scss"]
 })
 export class MenuCategoryComponent {
   public readonly type = "category";
