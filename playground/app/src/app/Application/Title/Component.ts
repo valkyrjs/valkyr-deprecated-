@@ -9,9 +9,9 @@ export class TitleComponent {
   public title = "";
 
   constructor(service: TitleService) {
-    service.subscribe(([title, target]) => {
-      if (target === "application") {
-        this.title = title;
+    service.subscribe((title) => {
+      if (title.targets.has("application")) {
+        this.title = title.value;
       }
     });
   }

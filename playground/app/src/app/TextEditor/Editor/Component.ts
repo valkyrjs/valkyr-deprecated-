@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
-import { TitleService } from "@valkyr/angular";
+import { DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
 
 @Component({
   selector: "text-editor",
@@ -11,7 +11,7 @@ export class TextEditorComponent implements OnInit, OnDestroy {
   private editor?: Editor;
 
   constructor(title: TitleService) {
-    title.set("Editor", "application");
+    title.set("Editor", DOCUMENT_TITLE, "application");
   }
 
   public ngOnInit(): void {

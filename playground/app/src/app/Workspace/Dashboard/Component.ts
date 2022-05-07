@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute, ParamMap } from "@angular/router";
-import { ParamsService, SubscriptionDirective, TitleService } from "@valkyr/angular";
+import { DOCUMENT_TITLE, ParamsService, SubscriptionDirective, TitleService } from "@valkyr/angular";
 
 import { Workspace } from "../Models/Workspace";
 
@@ -41,7 +41,7 @@ export class DashboardComponent extends SubscriptionDirective implements OnInit 
         }
       },
       (workspace) => {
-        this.title.set(workspace?.name ?? "404 Unknown Workspace", "application");
+        this.title.set(workspace?.name ?? "404 Unknown Workspace", DOCUMENT_TITLE, "application");
         this.workspace = workspace;
       }
     );
