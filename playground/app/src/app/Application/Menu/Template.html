@@ -1,0 +1,10 @@
+<div class="flex flex-col h-full justify-between text-sm">
+  <menu-main>
+    <ng-container *ngFor="let category of menu.categories">
+      <menu-category name="{{category.name}}"></menu-category>
+      <menu-list>
+        <menu-item *ngFor="let child of category.items" name="{{child.name}}" href="{{child.href}}"></menu-item>
+      </menu-list>
+    </ng-container>
+  </menu-main>
+</div>

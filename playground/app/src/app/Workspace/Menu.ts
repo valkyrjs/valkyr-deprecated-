@@ -4,14 +4,18 @@ export const menus: Record<string, Menu> = {
   sidebar: {
     id: "workspace-sidebar",
     type: "default",
-    area: "sidebar",
+    area: "sidebar-left-main",
     categories: [
       {
-        name: "Menu",
+        name: "Workspaces",
         items: [
           {
             name: "My Workspaces",
             href: "/workspaces"
+          },
+          {
+            name: "Shared Workspaces",
+            href: "/workspaces?owner=false"
           }
         ]
       },
@@ -24,7 +28,6 @@ export const menus: Record<string, Menu> = {
           }
         ]
       }
-    ],
-    items: []
+    ]
   }
 };

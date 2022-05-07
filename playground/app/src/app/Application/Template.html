@@ -1,5 +1,16 @@
-<div class="app-container">
-  <app-navbar class="app-navbar"></app-navbar>
-  <app-sidebar class="app-sidebar">Sidebar</app-sidebar>
-  <app-content class="app-content">Content</app-content>
+<div class="grid grid-areas-layout grid-cols-layout grid-rows-layout h-screen overflow-hidden w-full">
+  <header class="grid-in-header text-c-800 bg-c-100 border-b-2 border-b-c-200">
+    <app-navbar></app-navbar>
+  </header>
+  <aside class="grid-in-aside h-full overflow-y-auto overflow-x-hidden border-r-2 border-r-c-200 text-c-800 bg-c-100">
+    <div class="px-6 w-full">
+      <menu></menu>
+    </div>
+  </aside>
+  <nav class="grid-in-nav border-b-2 border-b-c-200 text-c-800 bg-c-100">
+    <div class="flex justify-between items-center h-full px-4">title</div>
+  </nav>
+  <main class="relative grid-in-main min-h-full overflow-y-scroll bg-c-100 text-900 p-4">
+    <app-content></app-content>
+  </main>
 </div>

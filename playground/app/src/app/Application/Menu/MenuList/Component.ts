@@ -1,12 +1,11 @@
 import { Component, Input } from "@angular/core";
 
 @Component({
-  selector: "sb-menu-item",
+  selector: "menu-list",
   templateUrl: "./Template.html"
 })
-export class MenuItemComponent {
-  public readonly type = "item";
+export class MenuListComponent {
+  public readonly type = "category";
 
   @Input("name") public name!: string;
-  @Input("href") public href!: string;
 }

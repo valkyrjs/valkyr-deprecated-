@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 
 @Component({
-  selector: "sb-menu-category",
+  selector: "menu-category",
   templateUrl: "./Template.html"
 })
 export class MenuCategoryComponent {

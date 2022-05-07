@@ -32,7 +32,6 @@ export type Menu = {
   type: string;
   area: string;
   categories: Category[];
-  items: Item[];
 };
 
 type Category = {

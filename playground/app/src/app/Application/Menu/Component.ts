@@ -1,21 +1,20 @@
 import { Component } from "@angular/core";
 import { Menu, MenuService } from "@valkyr/angular";
 
-const MENU_AREA = "sidebar";
+const MENU_AREA = "sidebar-left-main";
 
 const DEFAULT_MENU: Menu = {
   id: "",
   type: "default",
   area: MENU_AREA,
-  categories: [],
-  items: []
+  categories: []
 };
 
 @Component({
-  selector: "app-sidebar",
+  selector: "menu",
   templateUrl: "./Template.html"
 })
-export class SidebarComponent {
+export class MenuComponent {
   public menu: Menu = DEFAULT_MENU;
 
   constructor(menu: MenuService) {
