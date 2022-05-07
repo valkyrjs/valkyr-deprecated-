@@ -1,27 +1,22 @@
 <div className="p-6 h-full w-full">
-  <ul role="list" class="w-full min-h-full grid grid-areas-workspaces grid-cols-workspaces grid-rows-workspaces">
-
+  <ul role="list" class="w-full min-h-full grid grid-areas-workspaces grid-cols-workspaces grid-rows-workspaces gap-6">
     <li>
       <button (click)="openAddWorkspace">
-        <div class="w-40 flex flex-col justify-start items-center gap-3 group">
-          <div class="
-              w-32 h-32
-              rounded
-              group-hover:drop-shadow group-hover:shadow
-              flex justify-center items-center
-              drop-shadow shadow
-              transition-shadow">
-            <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 18 18" width="18"
-              class="h-12 w-12 transition-colors text-c-500 scale-100 group-hover:scale-105 group-hover:text-accent">
-              <rect fill="currentColor" />
-              <ellipse fill="currentColor" cx="9" cy="3.5" rx="8" ry="2.5" />
-              <path fill="currentColor"
-                d="M13.5,9.05a4.45,4.45,0,1,0,4.45,4.45A4.45,4.45,0,0,0,13.5,9.05Zm2.45,5.2h-1.7v1.7a.25.25,0,0,1-.25.25H13a.25.25,0,0,1-.25-.25v-1.7h-1.7A.25.25,0,0,1,10.8,14V13a.25.25,0,0,1,.25-.25h1.7v-1.7A.25.25,0,0,1,13,10.8h1a.25.25,0,0,1,.25.25v1.7h1.7a.25.25,0,0,1,.25.25v1A.25.25,0,0,1,15.95,14.25Z" />
-              <path fill="currentColor"
-                d="M7.5,13.5a5.986,5.986,0,0,1,.1735-1.41C5.144,11.928,1.75,11.3265,1,10.135V14.5c0,1.3415,3.3845,2.433,7.629,2.494A5.96609,5.96609,0,0,1,7.5,13.5Z" />
-              <path fill="currentColor"
-                d="M13.5,7.5a5.962,5.962,0,0,1,3.4805,1.119A.75086.75086,0,0,0,17,8.5V5.135c-1.2235,1.55-5.532,2-8,2s-7.106-.584-8-2V8.5c0,1.281,3.0855,2.3355,7.06,2.4815A5.99452,5.99452,0,0,1,13.5,7.5Z" />
-            </svg>
+        <div class="flex flex-col justify-start items-center w-52 h-64 group border border-dashed border-c-400">
+          <div class="w-full h-44 flex flex-col justify-center items-center">
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 18 18" width="18"
+                class="h-12 w-12 transition-colors text-c-500 scale-100 group-hover:scale-105 group-hover:text-accent">
+                <rect fill="currentColor" />
+                <ellipse fill="currentColor" cx="9" cy="3.5" rx="8" ry="2.5" />
+                <path fill="currentColor"
+                  d="M13.5,9.05a4.45,4.45,0,1,0,4.45,4.45A4.45,4.45,0,0,0,13.5,9.05Zm2.45,5.2h-1.7v1.7a.25.25,0,0,1-.25.25H13a.25.25,0,0,1-.25-.25v-1.7h-1.7A.25.25,0,0,1,10.8,14V13a.25.25,0,0,1,.25-.25h1.7v-1.7A.25.25,0,0,1,13,10.8h1a.25.25,0,0,1,.25.25v1.7h1.7a.25.25,0,0,1,.25.25v1A.25.25,0,0,1,15.95,14.25Z" />
+                <path fill="currentColor"
+                  d="M7.5,13.5a5.986,5.986,0,0,1,.1735-1.41C5.144,11.928,1.75,11.3265,1,10.135V14.5c0,1.3415,3.3845,2.433,7.629,2.494A5.96609,5.96609,0,0,1,7.5,13.5Z" />
+                <path fill="currentColor"
+                  d="M13.5,7.5a5.962,5.962,0,0,1,3.4805,1.119A.75086.75086,0,0,0,17,8.5V5.135c-1.2235,1.55-5.532,2-8,2s-7.106-.584-8-2V8.5c0,1.281,3.0855,2.3355,7.06,2.4815A5.99452,5.99452,0,0,1,13.5,7.5Z" />
+              </svg>
+            </div>
           </div>
           <div class="flex flex-col justify-center items-center w-full">
             <div class="text-c-600 group-hover:text-c-800">Add new...</div>
@@ -31,24 +26,16 @@
     </li>
     <li *ngFor="let workspace of workspaces">
       <a routerLink="/workspaces/{{workspace.id}}">
-        <div class="w-40 flex flex-col justify-start items-center gap-3 group">
-          <div class="
-                    w-32 h-32
-                    rounded
-                    flex flex-col justify-center items-center
-                    group-hover:drop-shadow group-hover:shadow
-                    group-hover:scale-100
-                    scale-105
-                    drop-shadow-2xl shadow-2xl
-                    transition-all
-                    bg-gradient-to-b from-blue-400 to-blue-700">
-            <div class="text-c-50 opacity-0 group-hover:opacity-100 text-xs transition-opacity">
-              {{workspace.members.size}} <span *ngIf="workspace.members.size === 1">member</span>
-              <span *ngIf="workspace.members.size > 1">members</span>
+        <div class="flex flex-col justify-start items-center w-52 h-64 group border border-c-500">
+          <div class="w-full h-44 bg-gradient-to-br from-blue-400 to-indigo-700"></div>
+          <div class="w-full flex flex-col gap-3 px-6 py-3">
+            <div class="text-xs uppercase text-c-600 group-hover:text-c-800">{{workspace.name}}</div>
+            <div class="flex justify-end text-sm text-c-400">
+              <div>
+                {{workspace.members.size}} <span *ngIf="workspace.members.size === 1">member</span>
+                <span *ngIf="workspace.members.size > 1">members</span>
+              </div>
             </div>
-          </div>
-          <div class="flex flex-col justify-center items-center w-full">
-            <div class="text-c-600 group-hover:text-c-800">{{workspace.name}}</div>
           </div>
         </div>
       </a>
