@@ -2,7 +2,7 @@ import { Component, Injector, OnInit } from "@angular/core";
 import { AuthService, SubscriptionDirective } from "@valkyr/angular";
 
 @Component({
-  selector: "navbar-profile",
+  selector: "[navbar-profile]",
   templateUrl: "./Template.html"
 })
 export class NavbarProfileComponent extends SubscriptionDirective implements OnInit {

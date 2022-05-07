@@ -2,7 +2,7 @@ import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { AuthService, SubscriptionDirective } from "@valkyr/angular";
 @Component({
-  selector: "navbar-links",
+  selector: "[navbar-links]",
   templateUrl: "./Template.html"
 })
 export class NavbarLinksComponent extends SubscriptionDirective implements OnInit {
