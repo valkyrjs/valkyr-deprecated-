@@ -1,14 +1,12 @@
 import { Component } from "@angular/core";
 import { Menu, MenuService } from "@valkyr/angular";
 
-const MENU_AREA = "sidebar-left-main";
+import { MENU_AREA_SIDEBAR } from "../../Menu";
 
-const DEFAULT_MENU: Menu = {
+const DEFAULT_MENU: Menu = new Menu({
   id: "",
-  type: "default",
-  area: MENU_AREA,
-  categories: []
-};
+  area: MENU_AREA_SIDEBAR
+});
 
 @Component({
   selector: "menu",
@@ -26,13 +24,14 @@ export class MenuComponent {
         }
         case "close": {
           this.closeMenu(menu);
+          break;
         }
       }
     });
   }
 
   private openMenu(menu: Menu) {
-    if (menu.area === MENU_AREA && menu.id !== this.menu?.id) {
+    if (menu.area === MENU_AREA_SIDEBAR && menu.id !== this.menu?.id) {
       setTimeout(() => {
         this.menu = menu;
       }, 0);
@@ -40,7 +39,7 @@ export class MenuComponent {
   }
 
   private closeMenu({ area }: Menu) {
-    if (area === MENU_AREA) {
+    if (area === MENU_AREA_SIDEBAR) {
       this.menu = DEFAULT_MENU;
     }
   }

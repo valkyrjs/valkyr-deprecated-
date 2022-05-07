@@ -1,0 +1,11 @@
+<!--
+  Name: Sidebar Navigation
+  By:   iaminos
+  See:  https://tailwindcomponents.com/component/sidebar-navigation-1
+-->
+<sb-menu>
+  <ng-container *ngFor="let category of menu.categories">
+    <sb-menu-category *ngIf="category.name !== ''" [name]="category.name"></sb-menu-category>
+    <sb-menu-item *ngFor="let item of category.items" [name]="item.name" [link]="item.href"></sb-menu-item>
+  </ng-container>
+<sb-menu>

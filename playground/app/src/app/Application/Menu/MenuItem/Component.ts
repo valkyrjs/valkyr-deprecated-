@@ -8,5 +8,5 @@ export class MenuItemComponent {
   public readonly type = "item";
 
   @Input("name") public name!: string;
-  @Input("href") public href!: string;
+  @Input("link") public link!: string;
 }
