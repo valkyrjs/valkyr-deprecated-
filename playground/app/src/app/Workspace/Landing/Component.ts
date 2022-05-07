@@ -13,17 +13,12 @@ export class LandingComponent extends SubscriptionDirective implements OnInit {
   public workspaces: Workspace[] = [];
   public name = "";
 
-  constructor(
-    private workspace: WorkspaceService,
-    private auth: AuthService,
-    private title: TitleService,
-    injector: Injector
-  ) {
+  constructor(private workspace: WorkspaceService, private auth: AuthService, title: TitleService, injector: Injector) {
     super(injector);
+    title.set("Workspaces");
   }
 
   public ngOnInit(): void {
-    this.title.set("Workspaces");
     this.getWorkspaces();
   }
 
@@ -41,7 +36,6 @@ export class LandingComponent extends SubscriptionDirective implements OnInit {
       },
       (workspaces) => {
         this.workspaces = workspaces;
-        console.log(this.workspaces);
       }
     );
   }

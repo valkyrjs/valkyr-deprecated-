@@ -11,7 +11,6 @@ export class TitleComponent {
 
   constructor(service: TitleService) {
     service.subscribe((title) => {
-      console.log("Set Title", title);
       this.title = title;
     });
   }
