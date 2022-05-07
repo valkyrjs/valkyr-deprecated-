@@ -1,18 +1,14 @@
 <menu-main>
-  <ng-container *ngFor="let category of menu.categories">
-    <menu-category [name]="category.name">
-      <menu-list>
-        <menu-item *ngFor="let item of category.items" [name]="item.name" [link]="item.href"></menu-item>
-      </menu-list>
-    </menu-category>
-  </ng-container>
+  <menu-category *ngFor="let category of menu.categories" [name]="category.name">
+    <menu-list>
+      <menu-item *ngFor="let item of category.items" [name]="item.name" [link]="item.href"></menu-item>
+    </menu-list>
+  </menu-category>
 </menu-main>
 <menu-secondary>
-  <ng-container *ngFor="let category of menu.categories">
-    <menu-category [name]="category.name">
-      <menu-list>
-        <menu-item *ngFor="let item of category.items" [name]="item.name" [link]="item.href"></menu-item>
-      </menu-list>
-    </menu-category>
-  </ng-container>
+  <menu-category *ngFor="let category of menu.categories" [name]="category.name">
+    <menu-list>
+      <menu-item *ngFor="let item of category.items" [name]="item.name" [link]="item.href"></menu-item>
+    </menu-list>
+  </menu-category>
 </menu-secondary>
