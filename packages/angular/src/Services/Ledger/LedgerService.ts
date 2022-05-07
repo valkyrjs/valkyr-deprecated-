@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Event, projector, Queue, StreamObserver, Streams } from "@valkyr/ledger";
+import { AggregateRootClass, Event, projector, Queue, StreamObserver, Streams } from "@valkyr/ledger";
 
 import { RemoteService } from "../RemoteService";
 import { SocketService } from "../Socket/SocketService";
@@ -15,7 +15,100 @@ export class LedgerService {
   public readonly cursors = CursorModel;
   public readonly events = EventModel;
 
+  #queue = new Queue<Event>(async (event) => {
+    const { exists, outdated } = await this.events.status(event);
+    if (exists === false) {
+      await this.events.insert(event);
+      await projector.project(event, { hydrated: true, outdated }).catch(console.log);
+    }
+    await this.cursors.set(event.streamId, event.recorded);
+  });
+
   constructor(private remoteService: RemoteService, private socketService: SocketService) {}
+
+  /**
+   * Reduce an event stream down to its final aggregate state representation.
+   *
+   * We do this by left folding all events in a stream down to a single
+   * representation of the entire stream.
+   *
+   * @param streamId - Stream to pull events from.
+   * @param reducer  - Reducer method used to fold the stream events.
+   *
+   * @returns Aggregate state of the stream
+   */
+  public async reduce<AggregateRoot extends AggregateRootClass>(
+    streamId: string,
+    aggregate: AggregateRoot
+  ): Promise<InstanceType<AggregateRoot> | undefined> {
+    const events = await this.stream(streamId);
+    if (events.length === 0) {
+      return undefined;
+    }
+    const instance = new aggregate();
+    for (const event of events) {
+      instance.apply(event);
+    }
+    return instance as InstanceType<AggregateRoot>;
+  }
+
+  /**
+   * Provide all the events for a given stream.
+   *
+   * @param streamId  - Stream identifier to retrieve events from.
+   * @param created   - Get events from a specific point in time.
+   * @param direction - Get the events in ascending or descending order.
+   *
+   * @returns Events found for the given stream
+   */
+  public async stream(streamId: string, created?: string, direction: 1 | -1 = 1) {
+    const filter: any = { streamId };
+    if (created) {
+      filter.created = {
+        [direction === 1 ? "$gt" : "$lt"]: created
+      };
+    }
+    await this.pull(streamId);
+    return EventModel.find(filter, { sort: { created: direction } });
+  }
+
+  /**
+   * Push event to the remote ledger.
+   *
+   * @param event - Event to push to the remote ledger.
+   */
+  public push(event: Event): void {
+    this.events.insert(event);
+    projector.project(event, { hydrated: false, outdated: false });
+    this.remoteService.post("/ledger", { event });
+  }
+
+  public async pull(streamId: string, iterations = 0): Promise<void> {
+    if (iterations > 10) {
+      throw new Error(
+        `Event Stream Violation: Escaping pull operation, infinite loop candidate detected after ${iterations} pull iterations.`
+      );
+    }
+    const recorded = await this.cursors.get(streamId);
+    const url = `/ledger/${streamId}/pull` + (recorded ? `?recorded=${recorded}` : "");
+    const events = await this.remoteService.get<Event[]>(url);
+    if (events.length > 0) {
+      for (const event of events) {
+        await this.append(event);
+      }
+      await this.pull(streamId, iterations + 1); // keep pulling the stream until its hydrated
+    }
+  }
+
+  /**
+   * Append a new event to observed stream. If the stream is not being observed the
+   * event is simply ignored.
+   */
+  public async append(event: Event): Promise<void> {
+    await new Promise((resolve, reject) => {
+      this.#queue.push(event, resolve, reject);
+    });
+  }
 
   /**
    * When subscribing we keep track of all instances that are currently observing
@@ -30,51 +123,19 @@ export class LedgerService {
    */
   public subscribe(aggregate: string, streamId: string): { unsubscribe: () => void } {
     const observer = this.getObserver(streamId, aggregate);
+    if (observer.subscribers === 0) {
+      EventModel.count({ streamId }).then((count) => {
+        if (count === 0) {
+          this.pull(streamId);
+        }
+      });
+    }
     observer.subscribers += 1;
     return {
       unsubscribe: () => {
         this.unsubscribe(streamId);
       }
     };
-  }
-
-  /**
-   * Push event to the remote ledger.
-   *
-   * @param event - Event to push to the remote ledger.
-   */
-  public push(event: Event): void {
-    this.events.insert(event);
-    projector.project(event, { hydrated: false, outdated: false });
-    this.remoteService.post("/ledger", { event });
-  }
-
-  public async pull(streamId: string, iterations = 0) {
-    if (iterations > 10) {
-      throw new Error(
-        `Event Stream Violation: Escaping pull operation, infinite loop candidate detected after ${iterations} pull iterations.`
-      );
-    }
-    const recorded = await this.cursors.get(streamId);
-    const url = `/ledger/${streamId}/pull` + (recorded ? `?recorded=${recorded}` : "");
-    this.remoteService.get<Event[]>(url).then(async (events) => {
-      if (events.length > 0) {
-        for (const event of events) {
-          await this.append(event);
-        }
-        return this.pull(streamId, iterations + 1); // keep pulling the stream until its hydrated
-      }
-    });
-  }
-
-  /**
-   * Append a new event to observed stream. If the stream is not being observed the
-   * event is simply ignored.
-   */
-  public async append(event: Event): Promise<void> {
-    await new Promise((resolve, reject) => {
-      this.streams[event.streamId]?.queue.push(event, resolve, reject);
-    });
   }
 
   /**
@@ -98,15 +159,7 @@ export class LedgerService {
       return this.streams[streamId];
     }
     this.streams[streamId] = {
-      subscribers: 0,
-      queue: new Queue<Event>(async (event) => {
-        const { exists, outdated } = await this.events.status(event);
-        if (exists === false) {
-          await this.events.insert(event);
-          await projector.project(event, { hydrated: true, outdated }).catch(console.log);
-        }
-        await this.cursors.set(event.streamId, event.recorded);
-      })
+      subscribers: 0
     };
     this.join(aggregate, streamId);
     return this.streams[streamId];

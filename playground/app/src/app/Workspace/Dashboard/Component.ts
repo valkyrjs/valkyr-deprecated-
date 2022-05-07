@@ -37,7 +37,8 @@ export class DashboardComponent extends SubscriptionDirective implements OnInit 
         criteria: { id },
         limit: 1,
         stream: {
-          aggregate: "workspace"
+          aggregate: "workspace",
+          streamIds: [id]
         }
       },
       (workspace) => {

@@ -71,26 +71,32 @@ export class Subscription<T extends Type = any> {
 
   private subscribeToStream(
     model: any,
-    { aggregate, endpoint }: StreamSubscriptionOptions,
+    { aggregate, streamIds, endpoint }: StreamSubscriptionOptions,
     criteria: RawObject,
     options: Options
   ) {
-    if (endpoint) {
-      this.stream.subscribe(aggregate, endpoint).then((subscriber) => {
-        this.subscribers.push(subscriber);
-      });
-    } else {
-      model.find(criteria, options).then((documents: any[]) => {
-        this.stream
-          .subscribe(
-            aggregate,
-            documents.map((d: any) => d.id),
-            endpoint
-          )
-          .then((subscriber) => {
-            this.subscribers.push(subscriber);
-          });
-      });
+    if (aggregate) {
+      if (endpoint) {
+        this.stream.subscribe(aggregate, endpoint).then((subscriber) => {
+          this.subscribers.push(subscriber);
+        });
+      } else if (streamIds) {
+        this.stream.subscribe(aggregate, streamIds).then((subscriber) => {
+          this.subscribers.push(subscriber);
+        });
+      } else {
+        model.find(criteria, options).then((documents: any[]) => {
+          this.stream
+            .subscribe(
+              aggregate,
+              documents.map((d: any) => d.id),
+              endpoint
+            )
+            .then((subscriber) => {
+              this.subscribers.push(subscriber);
+            });
+        });
+      }
     }
   }
 }
@@ -114,10 +120,17 @@ export type SubscriptionOptions = {
   stream?: StreamSubscriptionOptions;
 } & Options;
 
-type StreamSubscriptionOptions = {
-  aggregate: string;
-  endpoint?: string;
-};
+type StreamSubscriptionOptions =
+  | {
+      aggregate: string;
+      endpoint: string;
+      streamIds?: undefined;
+    }
+  | {
+      aggregate: string;
+      streamIds: string[];
+      endpoint?: undefined;
+    };
 
 export type SubscribeToSingle = SubscriptionOptions & {
   limit: 1;
