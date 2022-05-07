@@ -37,6 +37,8 @@ A quick reference to style isolation in angular.
 
 ### Encapsulation
 
+@see [encapsulation](https://michalmuszynski.com/blog/styling-child-component-from-parent-in-angular/)
+
 By default the only style classes available in the component is the ones defined in the components `style` or `styleUrls` configuration. If you want to expose the component to external classes you have to change the encapsulation state of the parent component.
 
 ```ts
