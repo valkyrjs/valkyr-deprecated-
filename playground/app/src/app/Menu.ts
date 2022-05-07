@@ -61,11 +61,11 @@ export const cached: Record<string, MenuSettings[] | Record<string, MenuSettings
             items: [
               {
                 name: "Dashboard",
-                href: "/workspaces/{{id}}"
+                href: "/workspaces/{{workspace}}"
               },
               {
                 name: "Todos",
-                href: "/workspaces/{{id}}/todos"
+                href: "/workspaces/{{workspace}}/todos"
               }
             ]
           }

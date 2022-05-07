@@ -22,12 +22,12 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: "", component: LandingComponent, data: { menu: getMenu("workspace.landing") } },
-      { path: ":id", component: DashboardComponent, data: { menu: getMenu("workspace.dashboard") } },
+      { path: ":workspace", component: DashboardComponent, data: { menu: getMenu("workspace.dashboard") } },
       {
         path: ":workspace/todos",
         children: [
           { path: "", component: TodoPickerComponent, data: { menu: getMenu("workspace.dashboard") } },
-          { path: ":id", component: TodoListComponent, data: { menu: getMenu("workspace.dashboard") } }
+          { path: ":todo", component: TodoListComponent, data: { menu: getMenu("workspace.dashboard") } }
         ]
       }
     ]

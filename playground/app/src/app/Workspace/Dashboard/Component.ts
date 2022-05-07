@@ -24,7 +24,7 @@ export class DashboardComponent extends SubscriptionDirective implements OnInit 
   public ngOnInit(): void {
     this.route.paramMap.subscribe({
       next: (params: ParamMap) => {
-        const id = params.get("id")!;
+        const id = params.get("workspace")!;
         this.getWorkspace(id);
         this.params.next(params);
       }
