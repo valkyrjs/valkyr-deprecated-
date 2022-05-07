@@ -1,9 +1,10 @@
-  <ng-container *ngFor="let link of links">
-    <div
-      *ngClass="{'border-c-900': isCurrentRoute(link.href), 'border-transparent':true, 'h-[42px] border-b-2 flex items-center':true}">
-      <a href="link.href"
-        class="{'text-c-800':isCurrentRoute(link.href), 'text-c-500 hover:text-c-600 font-medium text-sm': true}">
-        {{link.name}}
-      </a>
-    </div>
-  </ng-container>
+<nav class="h-full flex justify-start items-center gap-3">
+  <div class="w-6 h-6 mr-12">Logo</div>
+  <div class="h-[42px] border-b-2 flex items-center"
+    [ngClass]="isCurrentRoute(link.href) ? 'border-c-900':'border-transparent'" *ngFor="let link of links">
+    <a href="link.href" class="font-medium text-sm"
+      [ngClass]="isCurrentRoute(link.href) ? 'text-c-800' : 'text-c-500 hover:text-c-600'">
+      {{link.name}}
+    </a>
+  </div>
+</nav>
