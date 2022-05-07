@@ -6,7 +6,7 @@ import { MenuService } from "@valkyr/angular";
   templateUrl: "./Template.html"
 })
 export class AppComponent {
-  constructor(private menu: MenuService) {
+  constructor(menu: MenuService) {
     menu.init();
   }
 }
