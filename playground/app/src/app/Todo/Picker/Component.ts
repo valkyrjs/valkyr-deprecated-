@@ -1,17 +1,10 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute, ParamMap } from "@angular/router";
-import {
-  AuthService,
-  DOCUMENT_TITLE,
-  LedgerService,
-  ParamsService,
-  SubscriptionDirective,
-  TitleService
-} from "@valkyr/angular";
-import { WorkspaceStore } from "stores";
+import { DOCUMENT_TITLE, ParamsService, SubscriptionDirective, TitleService } from "@valkyr/angular";
+import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
 
+import { CreateTodoDialog } from "../Dialogues/CreateTodo/Component";
 import { Todo } from "../Models/Todo";
-import { TodoService } from "../Services/Todo";
 
 @Component({
   selector: "todo-picker",
@@ -22,12 +15,12 @@ export class TodoPickerComponent extends SubscriptionDirective implements OnInit
 
   public name = "";
 
+  #workspaceId?: string;
+
   constructor(
+    private modal: ModalService,
     private params: ParamsService,
-    private ledger: LedgerService,
-    private todo: TodoService,
     private route: ActivatedRoute,
-    private auth: AuthService,
     title: TitleService,
     injector: Injector
   ) {
@@ -39,6 +32,7 @@ export class TodoPickerComponent extends SubscriptionDirective implements OnInit
     this.route.paramMap.subscribe({
       next: (params: ParamMap) => {
         const id = params.get("workspace")!;
+        this.#workspaceId = id;
         this.getTodos(id);
         this.params.next(params);
       }
@@ -61,21 +55,7 @@ export class TodoPickerComponent extends SubscriptionDirective implements OnInit
     );
   }
 
-  public openAddTodo() {}
-
-  public async create() {
-    const workspaceId = this.route.snapshot.paramMap.get("workspace");
-    if (!workspaceId) {
-      throw new Error("Could not resolve workspace id");
-    }
-    const workspace = await this.ledger.reduce(workspaceId, WorkspaceStore.Workspace);
-    if (!workspace) {
-      throw new Error("Could not resolve workspace");
-    }
-    const member = workspace.members.getByAccount(this.auth.auditor);
-    if (!member) {
-      throw new Error("Could not resolve workspace member");
-    }
-    this.todo.create(workspaceId, this.name, member.id);
+  public openAddTodo() {
+    this.modal.open(CreateTodoDialog, { workspaceId: this.#workspaceId });
   }
 }

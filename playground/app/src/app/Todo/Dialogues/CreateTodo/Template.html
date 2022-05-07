@@ -1,0 +1,34 @@
+<vlk-modal-container>
+  <vlk-modal-header>Create Todo</vlk-modal-header>
+  <vlk-modal-content>
+    <input id="name" placeholder="Enter todo name" [(ngModel)]="name" (keyup.enter)="create()" class="
+      bg-gray-200 border
+      rounded
+      text-xs
+      font-medium
+      leading-none
+      text-gray-800
+      py-3
+      w-full
+      pl-3
+      mt-2"
+    />
+  </vlk-modal-content>
+  <vlk-modal-footer>
+    <button variant="primary" (click)="create()" class="
+      focus:ring-2
+      focus:ring-offset-2
+      focus:ring-indigo-700
+      text-sm font-semibold
+      leading-none
+      text-white
+      focus:outline-none
+      bg-indigo-700
+      border 
+      rounded
+      hover:bg-indigo-600
+      py-4 w-full">
+      Create
+    </button>
+  </vlk-modal-footer>
+</vlk-modal-container>

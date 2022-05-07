@@ -1,7 +1,7 @@
 <div className="p-6 h-full w-full">
   <ul role="list" class="w-full min-h-full grid grid-areas-workspaces grid-cols-workspaces grid-rows-workspaces gap-6">
     <li>
-      <button (click)="openAddWorkspace">
+      <button (click)="openAddWorkspace()">
         <div class="flex flex-col justify-start items-center w-52 h-64 group border border-dashed border-c-400">
           <div class="w-full h-44 flex flex-col justify-center items-center">
             <div>
@@ -41,45 +41,4 @@
       </a>
     </li>
   </ul>
-</div>
-
-<div class="m-12 flex justify-center items-center">
-  <div class="w-96 p-6 border rounded shadow-2xl">
-    <label for="name" class="
-      text-sm
-      font-medium 
-      leading-none 
-      text-gray-800
-    ">
-      Create Workspace
-    </label>
-    <input id="name" placeholder="Enter workspace name" [(ngModel)]="name" (keyup.enter)="create()" class="
-      bg-gray-200 border
-      rounded
-      text-xs
-      font-medium
-      leading-none
-      text-gray-800
-      py-3
-      w-full
-      pl-3
-      mt-2" />
-    <div class="mt-4">
-      <button variant="primary" (click)="create()" class="
-        focus:ring-2
-        focus:ring-offset-2
-        focus:ring-indigo-700
-        text-sm font-semibold
-        leading-none
-        text-white
-        focus:outline-none
-        bg-indigo-700
-        border 
-        rounded
-        hover:bg-indigo-600
-        py-4 w-full">
-        Create
-      </button>
-    </div>
-  </div>
 </div>

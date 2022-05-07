@@ -12,6 +12,7 @@
   "dependencies": {
     "@angular/core": "^13.3.5",
     "@angular/router": "^13.3.5",
+    "@angular/cdk": "^13.3.6",
     "@valkyr/db": "*",
     "@valkyr/ledger": "*",
     "@valkyr/utils": "*",

@@ -1,8 +1,9 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { AuthService, DOCUMENT_TITLE, SubscriptionDirective, TitleService } from "@valkyr/angular";
+import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
 
+import { CreateWorkspaceDialog } from "../Dialogues/CreateWorkspace/Component";
 import { Workspace } from "../Models/Workspace";
-import { WorkspaceService } from "../Services/Workspace";
 
 @Component({
   selector: "workspace-landing",
@@ -12,7 +13,12 @@ export class LandingComponent extends SubscriptionDirective implements OnInit {
   public workspaces: Workspace[] = [];
   public name = "";
 
-  constructor(private workspace: WorkspaceService, private auth: AuthService, title: TitleService, injector: Injector) {
+  constructor(
+    private modal: ModalService<CreateWorkspaceDialog>,
+    private auth: AuthService,
+    title: TitleService,
+    injector: Injector
+  ) {
     super(injector);
     title.set("Workspaces", DOCUMENT_TITLE, "application");
   }
@@ -40,12 +46,6 @@ export class LandingComponent extends SubscriptionDirective implements OnInit {
   }
 
   public openAddWorkspace() {
-    console.log("modal");
-  }
-
-  public create() {
-    this.workspace.create(this.name).then(() => {
-      this.name = "";
-    });
+    this.modal.open(CreateWorkspaceDialog);
   }
 }

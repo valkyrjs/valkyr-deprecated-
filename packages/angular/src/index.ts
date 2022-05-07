@@ -1,3 +1,4 @@
+export * from "./Components/Modal";
 export * from "./Decorators/Projector";
 export * from "./Guards/AuthGuard";
 export * from "./Guards/GuestGuard";

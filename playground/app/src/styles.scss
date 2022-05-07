@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+// Valkyr Modal
+
+vlk-modal-container {
+  @apply absolute inset-0 grid place-items-center h-screen antialiased z-40;
+  background-color: rgba(#000, .2);
+
+  .vlk-modal-overlay {
+    @apply absolute inset-0 z-40;
+  }
+  
+  .vlk-modal-dialog {
+    @apply relative rounded-md drop-shadow-md z-50;
+    background-color: var(--gray-50);
+  
+    vlk-modal-header {
+      @apply py-2 px-4;
+    }
+    
+    vlk-modal-content {
+      @apply py-2 px-4;
+    }
+    
+    vlk-modal-footer {
+      @apply py-2 px-4;
+    }
+  }
+}

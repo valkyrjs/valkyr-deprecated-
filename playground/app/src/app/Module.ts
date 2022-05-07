@@ -1,6 +1,7 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
+import { ModalModule } from "@valkyr/angular";
 
 import { ApplicationModule } from "./Application";
 import { AuthorizationModule } from "./Authorization";
@@ -15,12 +16,12 @@ import { WorkspaceModule } from "./Workspace";
     RouterModule.forRoot(routes),
     ApplicationModule,
     AuthorizationModule,
+    ModalModule,
     TodoModule,
     WorkspaceModule
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   exports: [RouterModule]
 })
 export class AppModule {}
