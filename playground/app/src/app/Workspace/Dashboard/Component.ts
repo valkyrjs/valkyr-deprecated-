@@ -2,6 +2,7 @@ import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 import { ParamsService, SubscriptionDirective } from "@valkyr/angular";
 
+import { TitleService } from "../../Application/Services/TitleService";
 import { Workspace } from "../Models/Workspace";
 
 @Component({
@@ -11,7 +12,12 @@ import { Workspace } from "../Models/Workspace";
 export class DashboardComponent extends SubscriptionDirective implements OnInit {
   public workspace?: Workspace;
 
-  constructor(private route: ActivatedRoute, private params: ParamsService, injector: Injector) {
+  constructor(
+    private route: ActivatedRoute,
+    private params: ParamsService,
+    private title: TitleService,
+    injector: Injector
+  ) {
     super(injector);
   }
 
@@ -36,6 +42,7 @@ export class DashboardComponent extends SubscriptionDirective implements OnInit 
         }
       },
       (workspace) => {
+        this.title.set(`${workspace?.name} Workspace`);
         this.workspace = workspace;
       }
     );

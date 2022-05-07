@@ -1,6 +1,7 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { AuthService, SubscriptionDirective } from "@valkyr/angular";
 
+import { TitleService } from "../../Application/Services/TitleService";
 import { Workspace } from "../Models/Workspace";
 import { WorkspaceService } from "../Services/Workspace";
 
@@ -12,11 +13,17 @@ export class LandingComponent extends SubscriptionDirective implements OnInit {
   public workspaces: Workspace[] = [];
   public name = "";
 
-  constructor(private workspace: WorkspaceService, private auth: AuthService, injector: Injector) {
+  constructor(
+    private workspace: WorkspaceService,
+    private auth: AuthService,
+    private title: TitleService,
+    injector: Injector
+  ) {
     super(injector);
   }
 
   public ngOnInit(): void {
+    this.title.set("Workspaces");
     this.getWorkspaces();
   }
 
