@@ -7,3 +7,15 @@
   @apply rounded;
   @apply hover:cursor-pointer;
 }
+
+a {
+  @apply flex items-center gap-2 text-xs text-c-800;
+}
+
+svg {
+  @apply w-5 h-5 text-c-400 stroke-1 group-hover:text-c-600;
+}
+
+span {
+  @apply truncate;
+}

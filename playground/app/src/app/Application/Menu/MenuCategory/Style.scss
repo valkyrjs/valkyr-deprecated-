@@ -4,3 +4,7 @@
   @apply text-sm;
   @apply mb-8;
 }
+
+h3 {
+  @apply mb-1 px-3 text-xs uppercase pointer-events-none;
+}
