@@ -26,8 +26,8 @@ export const routes: Routes = [
       {
         path: ":workspace/todos",
         children: [
-          { path: "", component: TodoPickerComponent },
-          { path: ":id", component: TodoListComponent }
+          { path: "", component: TodoPickerComponent, data: { menu: getMenu("workspace.dashboard") } },
+          { path: ":id", component: TodoListComponent, data: { menu: getMenu("workspace.dashboard") } }
         ]
       }
     ]
