@@ -9,7 +9,7 @@ const DEFAULT_MENU: Menu = new Menu({
 });
 
 @Component({
-  selector: "v-menu",
+  selector: "app-menu",
   templateUrl: "./Template.html",
   styleUrls: ["./Style.scss"]
 })

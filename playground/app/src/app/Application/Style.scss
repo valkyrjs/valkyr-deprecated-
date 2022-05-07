@@ -1,22 +1,22 @@
-// .app-container {
-//   display: grid;
-//   grid-template-rows: 48px 1fr;
-//   grid-template-columns: 240px 1fr;
-//   grid-template-areas:
-//     'navbar navbar'
-//     'sidebar content';
+:host {
+  @apply grid grid-areas-layout grid-cols-layout grid-rows-layout h-screen overflow-hidden w-full;
+}
 
-//   min-height: 100vh;
-// }
+header {
+  @apply grid-in-header text-c-800 bg-c-100 border-b-2 border-b-c-200;
+}
 
-// .app-navbar {
-//   grid-area: navbar;
-// }
+aside {
+  @apply grid-in-aside h-full overflow-y-auto overflow-x-hidden border-r-2 border-r-c-200 text-c-800 bg-c-100;
+  > div {
+    @apply px-6 py-6 h-full w-full;
+  }
+}
 
-// .app-sidebar {
-//   grid-area: sidebar;
-// }
+nav {
+  @apply grid-in-nav border-b-2 border-b-c-200 text-c-800 bg-c-100;
+}
 
-// .app-content {
-//   grid-area: content;
-// }
+main {
+  @apply relative grid-in-main min-h-full overflow-y-scroll bg-c-100 text-c-900 p-4;
+}

@@ -1,16 +1,14 @@
-<div class="grid grid-areas-layout grid-cols-layout grid-rows-layout h-screen overflow-hidden w-full">
-  <header class="grid-in-header text-c-800 bg-c-100 border-b-2 border-b-c-200">
-    <app-navbar></app-navbar>
-  </header>
-  <aside class="grid-in-aside h-full overflow-y-auto overflow-x-hidden border-r-2 border-r-c-200 text-c-800 bg-c-100">
-    <div class="px-6 py-6 h-full w-full">
-      <v-menu></v-menu>
-    </div>
-  </aside>
-  <nav class="grid-in-nav border-b-2 border-b-c-200 text-c-800 bg-c-100">
-    <app-title></app-title>
-  </nav>
-  <main class="relative grid-in-main min-h-full overflow-y-scroll bg-c-100 text-900 p-4">
-    <app-content></app-content>
-  </main>
-</div>
+<header>
+  <app-navbar></app-navbar>
+</header>
+<aside>
+  <div>
+    <app-menu></app-menu>
+  </div>
+</aside>
+<nav>
+  <app-title></app-title>
+</nav>
+<main>
+  <app-content></app-content>
+</main>
