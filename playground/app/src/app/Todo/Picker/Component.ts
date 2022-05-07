@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { TitleService } from "src/app/Application/Services/TitleService";
+import { TitleService } from "@valkyr/angular";
 
 @Component({
   selector: "todo-picker",
@@ -7,6 +7,6 @@ import { TitleService } from "src/app/Application/Services/TitleService";
 })
 export class TodoPickerComponent {
   constructor(title: TitleService) {
-    title.set("Todos");
+    title.set("Todos", "application");
   }
 }

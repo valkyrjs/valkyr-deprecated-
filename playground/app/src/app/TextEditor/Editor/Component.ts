@@ -1,13 +1,18 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Editor } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
+import { TitleService } from "@valkyr/angular";
 
 @Component({
   selector: "text-editor",
   templateUrl: "./Template.html"
 })
-export class TextEditorComponent implements OnInit {
+export class TextEditorComponent implements OnInit, OnDestroy {
   private editor?: Editor;
+
+  constructor(title: TitleService) {
+    title.set("Editor", "application");
+  }
 
   public ngOnInit(): void {
     this.editor = new Editor({
@@ -15,5 +20,9 @@ export class TextEditorComponent implements OnInit {
       extensions: [StarterKit],
       content: "<p>Hello World!</p>"
     });
+  }
+
+  public ngOnDestroy(): void {
+    this.editor?.destroy();
   }
 }

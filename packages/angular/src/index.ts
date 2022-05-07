@@ -9,3 +9,4 @@ export * from "./Services/MenuService";
 export * from "./Services/ParamsService";
 export * from "./Services/RemoteService";
 export * from "./Services/Socket/SocketService";
+export * from "./Services/TitleService";

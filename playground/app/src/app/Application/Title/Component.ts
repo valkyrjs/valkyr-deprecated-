@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
-
-import { TitleService } from "../Services/TitleService";
+import { TitleService } from "@valkyr/angular";
 
 @Component({
   selector: "app-title",
@@ -10,8 +9,10 @@ export class TitleComponent {
   public title = "";
 
   constructor(service: TitleService) {
-    service.subscribe((title) => {
-      this.title = title;
+    service.subscribe(([title, target]) => {
+      if (target === "application") {
+        this.title = title;
+      }
     });
   }
 }
