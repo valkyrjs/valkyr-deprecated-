@@ -21,4 +21,8 @@ export class CreateWorkspaceDialog {
   public close() {
     this.modal.close();
   }
+
+  public cancel() {
+    this.close();
+  }
 }

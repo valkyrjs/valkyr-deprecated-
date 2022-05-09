@@ -1,5 +1,7 @@
 <vlk-modal-container>
-  <vlk-modal-header>Create Workspace</vlk-modal-header>
+  <vlk-modal-header>
+    <h3 class="text-lg font-bold">Create Workspace</h3>
+  </vlk-modal-header>
   <vlk-modal-content>
     <input id="name" placeholder="Enter workspace name" [(ngModel)]="name" (keyup.enter)="create()" class="
       bg-gray-200 border
@@ -11,23 +13,13 @@
       py-3
       w-full
       pl-3
-      mt-2"
-    />
+      mt-2" />
   </vlk-modal-content>
   <vlk-modal-footer>
-    <button variant="primary" (click)="create()" class="
-      focus:ring-2
-      focus:ring-offset-2
-      focus:ring-indigo-700
-      text-sm font-semibold
-      leading-none
-      text-white
-      focus:outline-none
-      bg-indigo-700
-      border 
-      rounded
-      hover:bg-indigo-600
-      py-4 w-full">
+    <button variant="secondary" (click)="cancel()">
+      Cancel
+    </button>
+    <button variant="primary" (click)="create()">
       Create
     </button>
   </vlk-modal-footer>

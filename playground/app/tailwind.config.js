@@ -36,9 +36,10 @@ function addColors() {
       transparent: "transparent",
       white: "var(--gray-50)",
       black: "var(--gray-900)",
-      accent: "var(--seafoam-400)",
-      "accent-muted": "#1b959a33",
-      "accent-light": "#1b959a73",
+      primary: "var(--blue-400)",
+      "primary-muted": "var(--blue-400)",
+      "primary-light": "#0469e3",
+      "primary-dark": "#0057be",
       c: {
         50: "var(--gray-50)",
         75: "var(--gray-75)",

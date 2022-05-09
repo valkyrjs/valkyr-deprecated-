@@ -36,6 +36,10 @@ export class CreateTodoDialog {
     this.todo.create(workspaceId, this.name, member.id);
   }
 
+  public cancel() {
+    this.close();
+  }
+
   public close() {
     this.modal.close();
   }
