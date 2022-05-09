@@ -8,16 +8,6 @@ import type { Event } from "./Event";
 
 export type StreamSubscriptionHandler = (event: Event) => void;
 
-export type Streams = Record<string, StreamObserver>;
-
-export type StreamObserver = {
-  /**
-   * Number of subscribers observing changes to the stream. When this count
-   * is 0 or less we can remove the observer from the streams tracker.
-   */
-  subscribers: number;
-};
-
 export type EventStatus = {
   exists: boolean;
   outdated: boolean;
