@@ -11,11 +11,11 @@ type Subscription = {
   providedIn: "root"
 })
 export class StreamService {
-  constructor(private remoteService: RemoteService, private ledgerService: LedgerService) {}
+  constructor(readonly remoteService: RemoteService, readonly ledgerService: LedgerService) {}
 
-  public async subscribe(aggregate: string, endpoint: string): Promise<Subscription>;
-  public async subscribe(aggregate: string, streamIds: string[], endpoint?: string): Promise<Subscription>;
-  public async subscribe(aggregate: string, streamIds: string | string[], endpoint?: string): Promise<Subscription> {
+  async subscribe(aggregate: string, endpoint: string): Promise<Subscription>;
+  async subscribe(aggregate: string, streamIds: string[], endpoint?: string): Promise<Subscription>;
+  async subscribe(aggregate: string, streamIds: string | string[], endpoint?: string): Promise<Subscription> {
     if (typeof streamIds === "string") {
       endpoint = streamIds;
       streamIds = [];

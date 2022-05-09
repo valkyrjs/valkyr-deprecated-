@@ -1,20 +1,14 @@
 import { Injectable } from "@angular/core";
-import { Subject } from "rxjs";
+
+import { SubscriberService } from "../Helpers/SubscriberService";
 
 export const DOCUMENT_TITLE = "title:document";
 
 @Injectable({
   providedIn: "root"
 })
-export class TitleService {
-  private observer = new Subject<Title>();
-  private subscriber = this.observer.asObservable();
-
-  public get subscribe() {
-    return this.subscriber.subscribe.bind(this.subscriber);
-  }
-
-  public set(title: string, ...targetValues: string[]) {
+export class TitleService extends SubscriberService<Title> {
+  set(title: string, ...targetValues: string[]) {
     const targets = new Targets(targetValues);
     if (targets.has(DOCUMENT_TITLE)) {
       globalThis.document.title = title;
@@ -24,13 +18,17 @@ export class TitleService {
 }
 
 class Title {
-  constructor(public value: string, public targets: Targets) {}
+  constructor(readonly value: string, readonly targets: Targets) {}
 }
 
 class Targets {
-  constructor(private targets: string[]) {}
+  readonly #targets: string[];
 
-  public has(target: string) {
-    return this.targets.includes(target);
+  constructor(targets: string[]) {
+    this.#targets = targets;
+  }
+
+  has(target: string): boolean {
+    return this.#targets.includes(target);
   }
 }

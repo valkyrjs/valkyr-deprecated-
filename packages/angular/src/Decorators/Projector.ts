@@ -23,7 +23,7 @@ export class EventProjector {
     this.onProjectorInit();
   }
 
-  public static register() {
+  static register() {
     return {
       provide: APP_INITIALIZER,
       useFactory: () => () => new this(),
@@ -31,7 +31,7 @@ export class EventProjector {
     };
   }
 
-  public onProjectorInit() {
+  onProjectorInit() {
     const events = Reflect.getOwnMetadata(PROJECTOR_EVENT_METADATA, this.constructor);
     for (const { key, event, method } of events) {
       logger.log(`Registered ${event} { ${key}, ${method.toUpperCase()} }`);

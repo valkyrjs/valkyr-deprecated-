@@ -10,12 +10,12 @@ import { EventModel } from "./EventModel";
   providedIn: "root"
 })
 export class LedgerService {
-  public readonly streams: Streams = {};
+  readonly streams: Streams = {};
 
-  public readonly cursors = CursorModel;
-  public readonly events = EventModel;
+  readonly cursors = CursorModel;
+  readonly events = EventModel;
 
-  #queue = new Queue<Event>(async (event) => {
+  readonly #queue = new Queue<Event>(async (event) => {
     const { exists, outdated } = await this.events.status(event);
     if (exists === false) {
       await this.events.insert(event);
@@ -24,7 +24,7 @@ export class LedgerService {
     await this.cursors.set(event.streamId, event.recorded);
   });
 
-  constructor(private remoteService: RemoteService, private socketService: SocketService) {}
+  constructor(readonly remoteService: RemoteService, readonly socketService: SocketService) {}
 
   /**
    * Reduce an event stream down to its final aggregate state representation.
@@ -37,7 +37,7 @@ export class LedgerService {
    *
    * @returns Aggregate state of the stream
    */
-  public async reduce<AggregateRoot extends AggregateRootClass>(
+  async reduce<AggregateRoot extends AggregateRootClass>(
     streamId: string,
     aggregate: AggregateRoot
   ): Promise<InstanceType<AggregateRoot> | undefined> {
@@ -61,7 +61,7 @@ export class LedgerService {
    *
    * @returns Events found for the given stream
    */
-  public async stream(streamId: string, created?: string, direction: 1 | -1 = 1) {
+  async stream(streamId: string, created?: string, direction: 1 | -1 = 1) {
     const filter: any = { streamId };
     if (created) {
       filter.created = {
@@ -77,13 +77,13 @@ export class LedgerService {
    *
    * @param event - Event to push to the remote ledger.
    */
-  public push(event: Event): void {
+  push(event: Event): void {
     this.events.insert(event);
     projector.project(event, { hydrated: false, outdated: false });
     this.remoteService.post("/ledger", { event });
   }
 
-  public async pull(streamId: string, iterations = 0): Promise<void> {
+  async pull(streamId: string, iterations = 0): Promise<void> {
     if (iterations > 10) {
       throw new Error(
         `Event Stream Violation: Escaping pull operation, infinite loop candidate detected after ${iterations} pull iterations.`
@@ -104,7 +104,7 @@ export class LedgerService {
    * Append a new event to observed stream. If the stream is not being observed the
    * event is simply ignored.
    */
-  public async append(event: Event): Promise<void> {
+  async append(event: Event): Promise<void> {
     await new Promise((resolve, reject) => {
       this.#queue.push(event, resolve, reject);
     });
@@ -121,7 +121,7 @@ export class LedgerService {
    *
    * @returns Unsubscribe function to call when destroying the subscription.
    */
-  public subscribe(aggregate: string, streamId: string): { unsubscribe: () => void } {
+  subscribe(aggregate: string, streamId: string): { unsubscribe: () => void } {
     const observer = this.getObserver(streamId, aggregate);
     if (observer.subscribers === 0) {
       EventModel.count({ streamId }).then((count) => {
@@ -142,7 +142,7 @@ export class LedgerService {
    * Decrement observer amount by 1 and delete the stream stream observer if the
    * remaining subscribers is 0 or less.
    */
-  public unsubscribe(streamId: string) {
+  unsubscribe(streamId: string) {
     const observer = this.streams[streamId];
     observer.subscribers -= 1;
     if (observer.subscribers < 1) {
@@ -154,7 +154,7 @@ export class LedgerService {
   /**
    * Retrieve a stream observer or create a new one if it does not exist.
    */
-  private getObserver(streamId: string, aggregate: string): StreamObserver {
+  getObserver(streamId: string, aggregate: string): StreamObserver {
     if (this.streams[streamId]) {
       return this.streams[streamId];
     }
@@ -171,7 +171,7 @@ export class LedgerService {
    * @param aggregate - Aggregate the stream resides within.
    * @param streamId  - Stream to join.
    */
-  public join(aggregate: string, streamId: string) {
+  join(aggregate: string, streamId: string) {
     this.socketService.send("streams:join", { streamId, aggregate });
     this.pull(streamId);
   }
@@ -181,7 +181,7 @@ export class LedgerService {
    *
    * @param streamId - Stream to leave.
    */
-  public leave(streamId: string): void {
+  leave(streamId: string): void {
     this.socketService.send("streams:leave", { streamId });
   }
 }

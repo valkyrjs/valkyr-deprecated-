@@ -1,24 +1,23 @@
 import { Injectable } from "@angular/core";
 import { ActivationEnd, Router } from "@angular/router";
-import { Subject } from "rxjs";
+
+import { SubscriberService } from "../Helpers/SubscriberService";
 
 export const MENU_TYPE_DEFAULT = "__default__";
 
 @Injectable({
   providedIn: "root"
 })
-export class MenuService {
-  private observer = new Subject<{ type: "open" | "close"; menu: Menu }>();
-  private subscriber = this.observer.asObservable();
+export class MenuService extends SubscriberService<{ type: "open" | "close"; menu: Menu }> {
+  readonly #router: Router;
 
-  constructor(private router: Router) {}
-
-  public get subscribe() {
-    return this.subscriber.subscribe.bind(this.subscriber);
+  constructor(router: Router) {
+    super();
+    this.#router = router;
   }
 
-  public init() {
-    return this.router.events.subscribe((observer) => {
+  init() {
+    return this.#router.events.subscribe((observer) => {
       if (observer instanceof ActivationEnd) {
         const {
           params,
@@ -37,58 +36,76 @@ export class MenuService {
     });
   }
 
-  public open(menu: Menu) {
+  open(menu: Menu) {
     this.observer.next({ type: "open", menu });
   }
 
-  public close(menu: Menu) {
+  close(menu: Menu) {
     this.observer.next({ type: "close", menu });
   }
 }
 
 export class Menu {
-  constructor(private settings: MenuSettings, private params: Params = {}) {}
+  readonly #settings: MenuSettings;
+  readonly #params: Params;
 
-  public get id(): string {
-    return this.settings.id;
+  constructor(settings: MenuSettings, params: Params = {}) {
+    this.#settings = settings;
+    this.#params = params;
   }
 
-  public get type(): string {
-    return this.settings.type ?? MENU_TYPE_DEFAULT;
+  get id(): string {
+    return this.#settings.id;
   }
 
-  public get area(): string {
-    return this.settings.area;
+  get type(): string {
+    return this.#settings.type ?? MENU_TYPE_DEFAULT;
   }
 
-  public get categories(): MenuCategory[] {
-    return this.settings.categories?.map((category) => new MenuCategory(category, this.params)) ?? [];
+  get area(): string {
+    return this.#settings.area;
+  }
+
+  get categories(): MenuCategory[] {
+    return this.#settings.categories?.map((category) => new MenuCategory(category, this.#params)) ?? [];
   }
 }
 
 class MenuCategory {
-  constructor(private category: Category, private params: Params) {}
+  readonly #category: Category;
+  readonly #params: Params;
 
-  public get name(): string {
-    return this.category.name ?? "";
+  constructor(category: Category, params: Params) {
+    this.#category = category;
+    this.#params = params;
   }
 
-  public get items(): MenuItem[] {
-    return this.category.items.map((item) => new MenuItem(item, this.params));
+  get name(): string {
+    return this.#category.name ?? "";
+  }
+
+  get items(): MenuItem[] {
+    return this.#category.items.map((item) => new MenuItem(item, this.#params));
   }
 }
 
 class MenuItem {
-  constructor(private item: Item, private params: Params) {}
+  readonly #item: Item;
+  readonly #params: Params;
 
-  public get name(): string {
-    return this.item.name;
+  constructor(item: Item, params: Params) {
+    this.#item = item;
+    this.#params = params;
   }
 
-  public get href(): string {
-    let link = this.item.href;
-    for (const key in this.params) {
-      link = link.replace(`{{${key}}}`, this.params[key]);
+  get name(): string {
+    return this.#item.name;
+  }
+
+  get href(): string {
+    let link = this.#item.href;
+    for (const key in this.#params) {
+      link = link.replace(`{{${key}}}`, this.#params[key]);
     }
     return link;
   }

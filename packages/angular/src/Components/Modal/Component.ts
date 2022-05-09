@@ -9,7 +9,7 @@ import { ModalService } from "./Service";
   styleUrls: ["./Styles.scss"]
 })
 export class ModalComponent {
-  public selected?: Portal<any>;
+  selected?: Portal<any>;
 
   constructor(modal: ModalService) {
     modal.subscribe((selected) => {
@@ -35,9 +35,9 @@ export class ModalComponent {
   ]
 })
 export class ModalContainerComponent {
-  constructor(private modal: ModalService) {}
+  constructor(readonly modal: ModalService) {}
 
-  public close() {
+  close() {
     this.modal.close();
   }
 }

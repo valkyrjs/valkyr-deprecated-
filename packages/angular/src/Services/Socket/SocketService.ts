@@ -16,11 +16,11 @@ type Debounce = {
   providedIn: "root"
 })
 export class SocketService extends EventEmitter {
-  public readonly messages: SocketMessage[] = [];
+  readonly messages: SocketMessage[] = [];
 
-  private webSocketInstance?: WebSocket;
-  private reconnectDelay = 0;
-  private debounce: Debounce = {
+  #socket?: WebSocket;
+  #reconnectDelay = 0;
+  #debounce: Debounce = {
     reconnect: undefined,
     heartbeat: undefined
   };
@@ -45,17 +45,17 @@ export class SocketService extends EventEmitter {
    */
 
   public get isConnected(): boolean {
-    if (this.webSocketInstance === undefined) {
+    if (this.#socket === undefined) {
       return false;
     }
-    return this.webSocketInstance.readyState === WebSocket.OPEN;
+    return this.#socket.readyState === WebSocket.OPEN;
   }
 
   public get socket(): WebSocket {
-    if (!this.webSocketInstance) {
-      throw new Error("No WS instance available!");
+    if (!this.#socket) {
+      throw new Error("Socket Violation: No valid socket instance has been opened");
     }
-    return this.webSocketInstance;
+    return this.#socket;
   }
 
   /*
@@ -65,11 +65,11 @@ export class SocketService extends EventEmitter {
    */
 
   public connect() {
-    if (this.webSocketInstance) {
+    if (this.#socket) {
       return; // already connected ...
     }
 
-    this.webSocketInstance = new WebSocket("ws://localhost:8370");
+    this.#socket = new WebSocket("ws://localhost:8370");
 
     this.once("connected", this.onConnect);
 
@@ -80,21 +80,21 @@ export class SocketService extends EventEmitter {
   }
 
   public reconnect() {
-    const reconnect = this.debounce.reconnect;
+    const reconnect = this.#debounce.reconnect;
     if (reconnect) {
       clearTimeout(reconnect);
     }
-    this.webSocketInstance = undefined;
-    this.debounce.reconnect = setTimeout(
+    this.#socket = undefined;
+    this.#debounce.reconnect = setTimeout(
       () => {
         this.connect();
       },
-      this.reconnectDelay < MAX_RECONNECT_DELAY ? (this.reconnectDelay += RECONNECT_INCREMENT) : MAX_RECONNECT_DELAY
+      this.#reconnectDelay < MAX_RECONNECT_DELAY ? (this.#reconnectDelay += RECONNECT_INCREMENT) : MAX_RECONNECT_DELAY
     );
   }
 
   public disconnect() {
-    if (this.webSocketInstance) {
+    if (this.#socket) {
       this.socket.close(4000, "CLOSED_BY_CLIENT");
     }
     return this;
@@ -107,12 +107,12 @@ export class SocketService extends EventEmitter {
    */
 
   public ping() {
-    const heartbeat = this.debounce.heartbeat;
+    const heartbeat = this.#debounce.heartbeat;
     if (heartbeat) {
       clearTimeout(heartbeat);
     }
     this.send("ping").finally(() => {
-      this.debounce.heartbeat = setTimeout(this.ping, HEARTBEAT_INTERVAL);
+      this.#debounce.heartbeat = setTimeout(this.ping, HEARTBEAT_INTERVAL);
     });
   }
 
@@ -123,7 +123,7 @@ export class SocketService extends EventEmitter {
    */
 
   public onConnect(): void {
-    this.reconnectDelay = 0;
+    this.#reconnectDelay = 0;
     this.ping();
     this.process();
   }
@@ -142,7 +142,7 @@ export class SocketService extends EventEmitter {
   }
 
   public onClose(ev: CloseEvent) {
-    const heartbeat = this.debounce.heartbeat;
+    const heartbeat = this.#debounce.heartbeat;
     if (heartbeat) {
       clearTimeout(heartbeat);
     }

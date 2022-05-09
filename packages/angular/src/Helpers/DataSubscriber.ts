@@ -8,30 +8,26 @@ export interface Type<T = any> extends Function {
 }
 
 @Directive()
-export abstract class SubscriptionDirective implements OnDestroy {
+export abstract class DataSubscriber implements OnDestroy {
   protected subscription?: Subscription;
 
-  private stream: StreamService;
+  readonly #stream: StreamService;
 
   constructor(inject: Injector) {
-    this.stream = inject.get(StreamService);
+    this.#stream = inject.get(StreamService);
   }
 
-  public ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.subscription?.unsubscribe();
   }
 
-  public subscribe<T extends Type>(
+  subscribe<T extends Type>(
     model: T,
     options: SubscribeToSingle,
     next: (document: InstanceType<T> | undefined) => void
   ): void;
-  public subscribe<T extends Type>(
-    model: T,
-    options: SubscribeToMany,
-    next: (documents: InstanceType<T>[]) => void
-  ): void;
-  public subscribe<T extends Type>(
+  subscribe<T extends Type>(model: T, options: SubscribeToMany, next: (documents: InstanceType<T>[]) => void): void;
+  subscribe<T extends Type>(
     model: T,
     options: SubscriptionOptions,
     next: (documents: InstanceType<T>[] | InstanceType<T> | undefined) => void
@@ -39,37 +35,36 @@ export abstract class SubscriptionDirective implements OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-    this.subscription = new Subscription(model, options, next, this.stream);
+    this.subscription = new Subscription(model, options, next, this.#stream);
   }
 }
 
 export class Subscription<T extends Type = any> {
-  private stream: StreamService;
-
-  private subscribers: { unsubscribe: () => void }[] = [];
+  readonly #stream: StreamService;
+  readonly #subscribers: { unsubscribe: () => void }[] = [];
 
   constructor(model: T, options: SubscribeToSingle, next: SingleNextFn<T>, stream: StreamService);
   constructor(model: T, options: SubscribeToMany, next: ManyNextFn<T>, stream: StreamService);
   constructor(model: T, options: SubscriptionOptions, next: NextFn<T>, stream: StreamService) {
-    this.stream = stream;
+    this.#stream = stream;
 
     const queryCriteria = options?.criteria ?? {};
     const queryOptions = getQueryOptions(options ?? {});
 
-    this.subscribers.push((model as any).subscribe(queryCriteria, queryOptions, next));
+    this.#subscribers.push((model as any).subscribe(queryCriteria, queryOptions, next));
 
     if (options?.stream) {
-      this.subscribeToStream(model, options.stream, queryCriteria, queryOptions);
+      this.#subscribeToStream(model, options.stream, queryCriteria, queryOptions);
     }
   }
 
-  public unsubscribe(): void {
-    for (const subscriber of this.subscribers) {
+  unsubscribe(): void {
+    for (const subscriber of this.#subscribers) {
       subscriber.unsubscribe();
     }
   }
 
-  private subscribeToStream(
+  #subscribeToStream(
     model: any,
     { aggregate, streamIds, endpoint }: StreamSubscriptionOptions,
     criteria: RawObject,
@@ -77,23 +72,23 @@ export class Subscription<T extends Type = any> {
   ) {
     if (aggregate) {
       if (endpoint) {
-        this.stream.subscribe(aggregate, endpoint).then((subscriber) => {
-          this.subscribers.push(subscriber);
+        this.#stream.subscribe(aggregate, endpoint).then((subscriber) => {
+          this.#subscribers.push(subscriber);
         });
       } else if (streamIds) {
-        this.stream.subscribe(aggregate, streamIds).then((subscriber) => {
-          this.subscribers.push(subscriber);
+        this.#stream.subscribe(aggregate, streamIds).then((subscriber) => {
+          this.#subscribers.push(subscriber);
         });
       } else {
         model.find(criteria, options).then((documents: any[]) => {
-          this.stream
+          this.#stream
             .subscribe(
               aggregate,
               documents.map((d: any) => d.id),
               endpoint
             )
             .then((subscriber) => {
-              this.subscribers.push(subscriber);
+              this.#subscribers.push(subscriber);
             });
         });
       }

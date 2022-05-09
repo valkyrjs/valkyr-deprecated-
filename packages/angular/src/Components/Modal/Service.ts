@@ -1,20 +1,14 @@
 import { ComponentPortal, ComponentType } from "@angular/cdk/portal";
 import { Injectable, InjectionToken, Injector } from "@angular/core";
-import { Subject } from "rxjs";
+
+import { SubscriberService } from "../../Helpers/SubscriberService";
 
 export const MODAL_CONTEXT_TOKEN = new InjectionToken<Record<string, unknown>>("modal:context");
 
 @Injectable({
   providedIn: "root"
 })
-export class ModalService<T = any> {
-  private observer = new Subject<ComponentPortal<T> | undefined>();
-  private subscriber = this.observer.asObservable();
-
-  public get subscribe() {
-    return this.subscriber.subscribe.bind(this.subscriber);
-  }
-
+export class ModalService<T = any> extends SubscriberService<ComponentPortal<T> | undefined> {
   public open(component: ComponentType<T>, context: any = {}) {
     this.observer.next(
       new ComponentPortal(
