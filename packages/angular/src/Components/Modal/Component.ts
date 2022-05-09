@@ -44,30 +44,18 @@ export class ModalContainerComponent {
 
 @Component({
   selector: "vlk-modal-header",
-  template: `
-    <div class="vlk-modal-header">
-      <ng-content></ng-content>
-    </div>
-  `
+  template: `<ng-content></ng-content>`
 })
 export class ModalHeaderComponent {}
 
 @Component({
   selector: "vlk-modal-content",
-  template: `
-    <div class="vlk-modal-content">
-      <ng-content></ng-content>
-    </div>
-  `
+  template: `<ng-content></ng-content>`
 })
 export class ModalContentComponent {}
 
 @Component({
   selector: "vlk-modal-footer",
-  template: `
-    <div class="vlk-modal-footer">
-      <ng-content></ng-content>
-    </div>
-  `
+  template: `<ng-content></ng-content>`
 })
 export class ModalFooterComponent {}
