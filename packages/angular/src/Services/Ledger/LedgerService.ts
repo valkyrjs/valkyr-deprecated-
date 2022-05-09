@@ -1,41 +1,79 @@
 import { Injectable } from "@angular/core";
-import { AggregateRootClass, Event, projector, Queue, StreamObserver, Streams } from "@valkyr/ledger";
+import { AggregateRootClass, Event, projector, Queue } from "@valkyr/ledger";
 
 import { RemoteService } from "../RemoteService";
 import { SocketService } from "../Socket/SocketService";
-import { CursorModel } from "./CursorModel";
-import { EventModel } from "./EventModel";
+import { CursorModel } from "./Models/CursorModel";
+import { EventModel } from "./Models/EventModel";
+import { StreamSubscriber } from "./StreamSubscriber";
 
 @Injectable({
   providedIn: "root"
 })
 export class LedgerService {
-  readonly streams: Streams = {};
-
   readonly cursors = CursorModel;
   readonly events = EventModel;
 
-  readonly #queue = new Queue<Event>(async (event) => {
+  readonly #streams: Record<string, StreamSubscriber> = {};
+  readonly #queue: Queue<Event>;
+
+  constructor(readonly remote: RemoteService, readonly socket: SocketService) {
+    this.#queue = new Queue<Event>(this.#handleEvent.bind(this));
+  }
+
+  // ### Event Handler
+
+  async #handleEvent(event: Event) {
     const { exists, outdated } = await this.events.status(event);
     if (exists === false) {
       await this.events.insert(event);
       await projector.project(event, { hydrated: true, outdated }).catch(console.log);
     }
     await this.cursors.set(event.streamId, event.recorded);
-  });
+  }
 
-  constructor(readonly remoteService: RemoteService, readonly socketService: SocketService) {}
+  // ### Write Utilities
 
   /**
-   * Reduce an event stream down to its final aggregate state representation.
+   * Push event to the remote ledger.
    *
-   * We do this by left folding all events in a stream down to a single
-   * representation of the entire stream.
+   * @param event - Event to push to the remote ledger.
+   */
+  push(event: Event): void {
+    this.events.insert(event);
+    projector.project(event, { hydrated: false, outdated: false });
+    this.remote.post("/ledger", { event });
+  }
+
+  /**
+   * Append a new event to observed stream. If the stream is not being observed the
+   * event is simply ignored.
+   */
+  async append(event: Event): Promise<void> {
+    await new Promise((resolve, reject) => {
+      this.#queue.push(event, resolve, reject);
+    });
+  }
+
+  // ### Stream Utilities
+
+  /**
+   * An event reducer aims to create an aggregate state that is as close
+   * to up to date as possible. This is handy when we want to perform
+   * things such as business logic on the command/action layer of the event
+   * creation lifecycle.
    *
-   * @param streamId - Stream to pull events from.
-   * @param reducer  - Reducer method used to fold the stream events.
+   * By default the state is as close as possible since we are operating
+   * in a distributed system without a central authority or sequential
+   * event bus. As such developers is advised to build with failure at a
+   * later date as an option.
    *
-   * @returns Aggregate state of the stream
+   * @remarks If sequential handling of an event is required, make sure to
+   *          perform said event creation on a central back end ledger.
+   *
+   * This method operates by pulling all the latest known events of an event
+   * stream and reduces them into a single current state representing of
+   * the event stream.
    */
   async reduce<AggregateRoot extends AggregateRootClass>(
     streamId: string,
@@ -53,36 +91,36 @@ export class LedgerService {
   }
 
   /**
-   * Provide all the events for a given stream.
+   * Retrieve all events for a given stream. Provided timestamp allows for
+   * providing a specific point in time to retrieve before or after based
+   * on a provided sort direction.
    *
-   * @param streamId  - Stream identifier to retrieve events from.
-   * @param created   - Get events from a specific point in time.
-   * @param direction - Get the events in ascending or descending order.
-   *
-   * @returns Events found for the given stream
+   * To ensure that we have the latest events in the stream at the time
+   * of the request, we send a pull request to the attached remote service
+   * before executing the local event query.
    */
-  async stream(streamId: string, created?: string, direction: 1 | -1 = 1) {
+  async stream(streamId: string, timestamp?: string, sortDirection: 1 | -1 = 1): Promise<EventModel[]> {
     const filter: any = { streamId };
-    if (created) {
+    if (timestamp) {
       filter.created = {
-        [direction === 1 ? "$gt" : "$lt"]: created
+        [sortDirection === 1 ? "$gt" : "$lt"]: timestamp
       };
     }
     await this.pull(streamId);
-    return EventModel.find(filter, { sort: { created: direction } });
+    return EventModel.find(filter, { sort: { created: sortDirection } });
   }
 
   /**
-   * Push event to the remote ledger.
+   * As part of ledger synchronization we pull events from the attached
+   * remote service based on the last known remote event position. The
+   * position being used is the `recorded` event timestamp locally on
+   * the remote endpoint.
    *
-   * @param event - Event to push to the remote ledger.
+   * The pull operation will keep firing until there are no unknown
+   * events being returned or we hit the maximum iteration limit of the
+   * pull operation. A limiter is added to eliminate the possibility of
+   * an infinite refresh loop.
    */
-  push(event: Event): void {
-    this.events.insert(event);
-    projector.project(event, { hydrated: false, outdated: false });
-    this.remoteService.post("/ledger", { event });
-  }
-
   async pull(streamId: string, iterations = 0): Promise<void> {
     if (iterations > 10) {
       throw new Error(
@@ -91,7 +129,7 @@ export class LedgerService {
     }
     const recorded = await this.cursors.get(streamId);
     const url = `/ledger/${streamId}/pull` + (recorded ? `?recorded=${recorded}` : "");
-    const events = await this.remoteService.get<Event[]>(url);
+    const events = await this.remote.get<Event[]>(url);
     if (events.length > 0) {
       for (const event of events) {
         await this.append(event);
@@ -100,15 +138,7 @@ export class LedgerService {
     }
   }
 
-  /**
-   * Append a new event to observed stream. If the stream is not being observed the
-   * event is simply ignored.
-   */
-  async append(event: Event): Promise<void> {
-    await new Promise((resolve, reject) => {
-      this.#queue.push(event, resolve, reject);
-    });
-  }
+  // ### Subscription Utilities
 
   /**
    * When subscribing we keep track of all instances that are currently observing
@@ -118,19 +148,13 @@ export class LedgerService {
    * This approach allows us to only have a single observer for multiple
    * subscribers removing the issue of having multiple subscribers attempting to
    * update the event store with the same event.
-   *
-   * @returns Unsubscribe function to call when destroying the subscription.
    */
-  subscribe(aggregate: string, streamId: string): { unsubscribe: () => void } {
-    const observer = this.getObserver(streamId, aggregate);
-    if (observer.subscribers === 0) {
-      EventModel.count({ streamId }).then((count) => {
-        if (count === 0) {
-          this.pull(streamId);
-        }
-      });
+  subscribe(aggregate: string, streamId: string): SubscriberFn {
+    const subscriber = this.#getSubscriber(streamId);
+    if (subscriber.isEmpty) {
+      this.join(aggregate, streamId);
     }
-    observer.subscribers += 1;
+    subscriber.increment();
     return {
       unsubscribe: () => {
         this.unsubscribe(streamId);
@@ -142,46 +166,34 @@ export class LedgerService {
    * Decrement observer amount by 1 and delete the stream stream observer if the
    * remaining subscribers is 0 or less.
    */
-  unsubscribe(streamId: string) {
-    const observer = this.streams[streamId];
-    observer.subscribers -= 1;
-    if (observer.subscribers < 1) {
+  unsubscribe(streamId: string): void {
+    const subscriber = this.#streams[streamId];
+    subscriber.decrement();
+    if (subscriber.isEmpty) {
       this.leave(streamId);
-      delete this.streams[streamId];
+      delete this.#streams[streamId];
     }
   }
 
-  /**
-   * Retrieve a stream observer or create a new one if it does not exist.
-   */
-  getObserver(streamId: string, aggregate: string): StreamObserver {
-    if (this.streams[streamId]) {
-      return this.streams[streamId];
-    }
-    this.streams[streamId] = {
-      subscribers: 0
-    };
-    this.join(aggregate, streamId);
-    return this.streams[streamId];
+  join(aggregate: string, streamId: string): void {
+    this.socket.send("streams:join", { streamId, aggregate }).then(() => {
+      this.pull(streamId);
+    });
   }
 
-  /**
-   * Join remote stream through websocket connection.
-   *
-   * @param aggregate - Aggregate the stream resides within.
-   * @param streamId  - Stream to join.
-   */
-  join(aggregate: string, streamId: string) {
-    this.socketService.send("streams:join", { streamId, aggregate });
-    this.pull(streamId);
-  }
-
-  /**
-   * Leave remote stream.
-   *
-   * @param streamId - Stream to leave.
-   */
   leave(streamId: string): void {
-    this.socketService.send("streams:leave", { streamId });
+    this.socket.send("streams:leave", { streamId });
+  }
+
+  // ### State Utilities
+
+  #getSubscriber(streamId: string): StreamSubscriber {
+    if (this.#streams[streamId]) {
+      return this.#streams[streamId];
+    }
+    this.#streams[streamId] = new StreamSubscriber();
+    return this.#streams[streamId];
   }
 }
+
+type SubscriberFn = { unsubscribe: () => void };
