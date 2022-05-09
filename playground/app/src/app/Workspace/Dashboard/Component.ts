@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute, ParamMap } from "@angular/router";
-import { DOCUMENT_TITLE, ParamsService, SubscriptionDirective, TitleService } from "@valkyr/angular";
+import { DataSubscriber, DOCUMENT_TITLE, ParamsService, TitleService } from "@valkyr/angular";
 
 import { Workspace } from "../Models/Workspace";
 
@@ -8,7 +8,7 @@ import { Workspace } from "../Models/Workspace";
   selector: "workspace-dashboard",
   templateUrl: "./Template.html"
 })
-export class DashboardComponent extends SubscriptionDirective implements OnInit {
+export class DashboardComponent extends DataSubscriber implements OnInit {
   public workspace?: Workspace;
 
   constructor(

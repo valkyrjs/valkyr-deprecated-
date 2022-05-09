@@ -1,11 +1,11 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { AuthService, SubscriptionDirective } from "@valkyr/angular";
+import { AuthService, DataSubscriber } from "@valkyr/angular";
 @Component({
   selector: "[navbar-links]",
   templateUrl: "./Template.html"
 })
-export class NavbarLinksComponent extends SubscriptionDirective implements OnInit {
+export class NavbarLinksComponent extends DataSubscriber implements OnInit {
   public links = [
     { name: "Workspaces", heading: "My Workspaces", href: "/workspaces" },
     { name: "Lists", heading: "My Lists", href: "/lists" },

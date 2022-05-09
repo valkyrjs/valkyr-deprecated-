@@ -1,5 +1,5 @@
 import { Component, Injector, OnInit } from "@angular/core";
-import { AuthService, DOCUMENT_TITLE, SubscriptionDirective, TitleService } from "@valkyr/angular";
+import { AuthService, DataSubscriber, DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
 
 import { CreateWorkspaceDialog } from "../Dialogues/CreateWorkspace/Component";
@@ -9,7 +9,7 @@ import { Workspace } from "../Models/Workspace";
   selector: "workspace-landing",
   templateUrl: "./Template.html"
 })
-export class LandingComponent extends SubscriptionDirective implements OnInit {
+export class LandingComponent extends DataSubscriber implements OnInit {
   public workspaces: Workspace[] = [];
   public name = "";
 

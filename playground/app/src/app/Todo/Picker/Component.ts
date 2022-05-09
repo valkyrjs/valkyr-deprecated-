@@ -1,6 +1,6 @@
 import { Component, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute, ParamMap } from "@angular/router";
-import { DOCUMENT_TITLE, ParamsService, SubscriptionDirective, TitleService } from "@valkyr/angular";
+import { DataSubscriber, DOCUMENT_TITLE, ParamsService, TitleService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
 
 import { CreateTodoDialog } from "../Dialogues/CreateTodo/Component";
@@ -10,7 +10,7 @@ import { Todo } from "../Models/Todo";
   selector: "todo-picker",
   templateUrl: "./Template.html"
 })
-export class TodoPickerComponent extends SubscriptionDirective implements OnInit {
+export class TodoPickerComponent extends DataSubscriber implements OnInit {
   public todos: Todo[] = [];
 
   public name = "";
