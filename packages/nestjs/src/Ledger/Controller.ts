@@ -1,12 +1,11 @@
 import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
 import type { Event } from "@valkyr/ledger";
 
-import { LedgerGateway } from "./Gateway";
 import { LedgerService } from "./Service";
 
 @Controller("/ledger")
 export class LedgerController {
-  constructor(private readonly ledger: LedgerService, private readonly gateway: LedgerGateway) {}
+  constructor(readonly ledger: LedgerService) {}
 
   @Post()
   public async addEvent(@Body("event") event: Event) {

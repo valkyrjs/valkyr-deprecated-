@@ -8,6 +8,6 @@ export class TodoItemService {
   constructor(private ledger: LedgerService) {}
 
   public async create(todoId: string, text: string, auditor: string) {
-    this.ledger.push(TodoStore.events.item.added(todoId, { id: generateStreamId(), text }, { auditor }));
+    this.ledger.append(TodoStore.events.item.added(todoId, { id: generateStreamId(), text }, { auditor }));
   }
 }

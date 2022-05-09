@@ -8,6 +8,8 @@ export class TodoService {
   constructor(private ledger: LedgerService) {}
 
   public async create(workspaceId: string, name: string, auditor: string) {
-    this.ledger.push(TodoStore.events.created(generateStreamId(), { workspaceId, name }, { auditor }));
+    const event = TodoStore.events.created(generateStreamId(), { workspaceId, name }, { auditor });
+    this.ledger.append(event);
+    this.ledger.relay("workspace", workspaceId, event);
   }
 }

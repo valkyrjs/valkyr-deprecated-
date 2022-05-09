@@ -22,16 +22,16 @@ const logger = new Logger("SocketGateway");
 @WebSocketGateway()
 export abstract class SocketGateway {
   @WebSocketServer()
-  public readonly server!: Server;
+  readonly server!: Server;
 
-  public readonly channels: Channels = new Map();
+  readonly channels: Channels = new Map();
 
   // Emitters
 
   /**
    * Broadcast a message to all clients connected to the web socket server.
    */
-  public broadcast(type: string, data: Record<string, unknown> = {}, origin = true) {
+  broadcast(type: string, data: Record<string, unknown> = {}, origin = true) {
     const message = JSON.stringify({ type, data });
     for (const client of this.server.clients) {
       if (client.readyState === WebSocket.OPEN) {
@@ -39,20 +39,20 @@ export abstract class SocketGateway {
       }
     }
     if (origin) {
-      // this.redis?.publish("broadcast", message);
+      // todo(kodemon) this.redis?.publish("broadcast", message);
     }
   }
 
   /**
    * Get a new channel to broadcast messages to.
    */
-  public to(channelId: string) {
-    return new SocketChannel(this, channelId);
+  to(channelId: string, excluded?: Socket[]) {
+    return new SocketChannel(this, channelId, new Map(excluded?.map((socket) => [socket, true])));
   }
 
   // ### Channels
 
-  public join(socket: Socket, channelId: string): this {
+  join(socket: Socket, channelId: string): this {
     const channel = this.channels.get(channelId);
     if (channel) {
       channel.add(socket);
@@ -64,7 +64,7 @@ export abstract class SocketGateway {
     return this;
   }
 
-  public leave(socket: Socket, channelId: string): this {
+  leave(socket: Socket, channelId: string): this {
     const channel = this.channels.get(channelId);
     if (channel) {
       channel.delete(socket);

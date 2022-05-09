@@ -9,18 +9,18 @@ import { Workspace } from "../Models/Workspace";
   templateUrl: "./Template.html"
 })
 export class DashboardComponent extends DataSubscriber implements OnInit {
-  public workspace?: Workspace;
+  workspace?: Workspace;
 
   constructor(
-    private route: ActivatedRoute,
-    private params: ParamsService,
-    private title: TitleService,
+    readonly route: ActivatedRoute,
+    readonly params: ParamsService,
+    readonly title: TitleService,
     injector: Injector
   ) {
     super(injector);
   }
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.route.paramMap.subscribe({
       next: (params: ParamMap) => {
         const id = params.get("workspace")!;
@@ -30,7 +30,7 @@ export class DashboardComponent extends DataSubscriber implements OnInit {
     });
   }
 
-  public getWorkspace(id: string) {
+  getWorkspace(id: string) {
     this.subscribe(
       Workspace,
       {

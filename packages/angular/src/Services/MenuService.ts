@@ -9,15 +9,12 @@ export const MENU_TYPE_DEFAULT = "__default__";
   providedIn: "root"
 })
 export class MenuService extends SubscriberService<{ type: "open" | "close"; menu: Menu }> {
-  readonly #router: Router;
-
-  constructor(router: Router) {
+  constructor(readonly router: Router) {
     super();
-    this.#router = router;
   }
 
   init() {
-    return this.#router.events.subscribe((observer) => {
+    return this.router.events.subscribe((observer) => {
       if (observer instanceof ActivationEnd) {
         const {
           params,

@@ -6,6 +6,7 @@ export * from "./Helpers/DataSubscriber";
 export * from "./Helpers/SubscriberService";
 export * from "./Services/Auth/AuthService";
 export * from "./Services/Ledger/LedgerService";
+export * from "./Services/Ledger/StreamContainerService";
 export * from "./Services/Ledger/StreamService";
 export * from "./Services/MenuService";
 export * from "./Services/ParamsService";

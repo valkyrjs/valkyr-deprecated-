@@ -9,6 +9,8 @@ import { TodoListComponent } from "./Todo/List/Component";
 import { TodoPickerComponent } from "./Todo/Picker/Component";
 import { DashboardComponent, LandingComponent } from "./Workspace";
 
+const WORKSPACE_STREAM = { aggregate: "workspace", target: "workspace" };
+
 export const routes: Routes = [
   { path: "", redirectTo: "/workspaces", pathMatch: "full" },
   {
@@ -22,11 +24,25 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: "", component: LandingComponent, data: { menu: getMenu("workspace.landing") } },
-      { path: ":workspace", component: DashboardComponent, data: { menu: getMenu("workspace.dashboard") } },
+      {
+        path: ":workspace",
+        component: DashboardComponent,
+        data: {
+          streams: [WORKSPACE_STREAM],
+          menu: getMenu("workspace.dashboard")
+        }
+      },
       {
         path: ":workspace/todos",
         children: [
-          { path: "", component: TodoPickerComponent, data: { menu: getMenu("workspace.dashboard") } },
+          {
+            path: "",
+            component: TodoPickerComponent,
+            data: {
+              streams: [WORKSPACE_STREAM],
+              menu: getMenu("workspace.dashboard")
+            }
+          },
           { path: ":todo", component: TodoListComponent, data: { menu: getMenu("workspace.dashboard") } }
         ]
       }

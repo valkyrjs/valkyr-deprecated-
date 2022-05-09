@@ -15,7 +15,7 @@ export class WorkspaceService {
       accountId: this.auth.auditor,
       name: ""
     };
-    this.ledger.push(
+    this.ledger.append(
       WorkspaceStore.events.created(generateStreamId(), { name, members: [member] }, { auditor: member.id })
     );
   }

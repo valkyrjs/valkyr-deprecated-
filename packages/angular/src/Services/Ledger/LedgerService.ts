@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { AggregateRootClass, Event, projector, Queue } from "@valkyr/ledger";
+import { AggregateRootClass, createEventRecord, Event, EventStatus, projector, Queue } from "@valkyr/ledger";
 
 import { RemoteService } from "../RemoteService";
 import { SocketService } from "../Socket/SocketService";
 import { CursorModel } from "./Models/CursorModel";
-import { EventModel } from "./Models/EventModel";
+import { EventDocument, EventModel } from "./Models/EventModel";
 import { StreamSubscriber } from "./StreamSubscriber";
 
 @Injectable({
@@ -19,40 +19,74 @@ export class LedgerService {
 
   constructor(readonly remote: RemoteService, readonly socket: SocketService) {
     this.#queue = new Queue<Event>(this.#handleEvent.bind(this));
+    socket.on("ledger:event", (event: Event) => {
+      this.append(event, true, true);
+    });
   }
 
   // ### Event Handler
 
   async #handleEvent(event: Event) {
-    const { exists, outdated } = await this.events.status(event);
-    if (exists === false) {
-      await this.events.insert(event);
-      await projector.project(event, { hydrated: true, outdated }).catch(console.log);
-    }
-    await this.cursors.set(event.streamId, event.recorded);
+    await this.events.insert(event);
   }
 
   // ### Write Utilities
 
   /**
-   * Push event to the remote ledger.
    *
-   * @param event - Event to push to the remote ledger.
    */
-  push(event: Event): void {
-    this.events.insert(event);
-    projector.project(event, { hydrated: false, outdated: false });
-    this.remote.post("/ledger", { event });
+  async append(event: Event, hydrated = false, remote = false): Promise<void> {
+    const record = createEventRecord(event);
+    const status = await this.status(event);
+    if (status.exists === true) {
+      if (remote === true) {
+        await this.cursors.set(event.streamId, event.recorded);
+      }
+      return; // event already exists, no further actions required
+    }
+
+    // todo(kodemon) add event validator
+    await this.#queue.push(record, Promise.resolve, Promise.reject);
+    await projector.project(event, { hydrated, outdated: status.outdated }).catch(console.log);
+
+    if (remote === true) {
+      await this.cursors.set(event.streamId, event.recorded);
+    } else {
+      await this.remote.post("/ledger", { event });
+    }
   }
 
   /**
-   * Append a new event to observed stream. If the stream is not being observed the
-   * event is simply ignored.
+   * Enable the ability to check an incoming events status in relation to
+   * the local ledger. This is to determine what actions to take upon the
+   * ledger based on the current status.
+   *
+   * **Exists**
+   *
+   * References the existence of the event in the local ledger. It is
+   * determined by looking at the recorded event id which should be unique
+   * to the entirety of the ledger.
+   *
+   * **Outdated**
+   *
+   * References the events created relationship to the same event type in
+   * the hosted stream. If another event of the same type in the stream
+   * is newer than the provided event, the provided event is considered
+   * outdated.
    */
-  async append(event: Event): Promise<void> {
-    await new Promise((resolve, reject) => {
-      this.#queue.push(event, resolve, reject);
+  async status({ id, streamId, type, created }: EventDocument): Promise<EventStatus> {
+    const record = await this.events.findOne({ id });
+    if (record) {
+      return { exists: true, outdated: true };
+    }
+    const count = await this.events.count({
+      streamId,
+      type,
+      created: {
+        $gt: created
+      }
     });
+    return { exists: false, outdated: count > 0 };
   }
 
   // ### Stream Utilities
@@ -132,13 +166,17 @@ export class LedgerService {
     const events = await this.remote.get<Event[]>(url);
     if (events.length > 0) {
       for (const event of events) {
-        await this.append(event);
+        await this.append(event, true, true);
       }
       await this.pull(streamId, iterations + 1); // keep pulling the stream until its hydrated
     }
   }
 
   // ### Subscription Utilities
+
+  relay(aggregate: string, streamId: string, event: Event) {
+    this.socket.send("streams:relay", { aggregate, streamId, event });
+  }
 
   /**
    * When subscribing we keep track of all instances that are currently observing
@@ -149,10 +187,10 @@ export class LedgerService {
    * subscribers removing the issue of having multiple subscribers attempting to
    * update the event store with the same event.
    */
-  subscribe(aggregate: string, streamId: string): SubscriberFn {
+  subscribe(aggregate: string, streamId: string, pullEventStream = false): SubscriberFn {
     const subscriber = this.#getSubscriber(streamId);
-    if (subscriber.isEmpty) {
-      this.join(aggregate, streamId);
+    if (subscriber.isEmpty === true) {
+      this.#join(aggregate, streamId, pullEventStream);
     }
     subscriber.increment();
     return {
@@ -170,28 +208,29 @@ export class LedgerService {
     const subscriber = this.#streams[streamId];
     subscriber.decrement();
     if (subscriber.isEmpty) {
-      this.leave(streamId);
+      this.#leave(streamId);
       delete this.#streams[streamId];
     }
   }
 
-  join(aggregate: string, streamId: string): void {
-    this.socket.send("streams:join", { streamId, aggregate }).then(() => {
-      this.pull(streamId);
+  #join(aggregate: string, streamId: string, pullEventStream: boolean): void {
+    this.socket.send("streams:join", { aggregate, streamId }).then(() => {
+      if (pullEventStream === true) {
+        this.pull(streamId);
+      }
     });
   }
 
-  leave(streamId: string): void {
+  #leave(streamId: string): void {
     this.socket.send("streams:leave", { streamId });
   }
 
   // ### State Utilities
 
   #getSubscriber(streamId: string): StreamSubscriber {
-    if (this.#streams[streamId]) {
-      return this.#streams[streamId];
+    if (this.#streams[streamId] === undefined) {
+      this.#streams[streamId] = new StreamSubscriber();
     }
-    this.#streams[streamId] = new StreamSubscriber();
     return this.#streams[streamId];
   }
 }

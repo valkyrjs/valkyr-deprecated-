@@ -16,8 +16,7 @@ type Debounce = {
   providedIn: "root"
 })
 export class SocketService extends EventEmitter {
-  readonly messages: SocketMessage[] = [];
-
+  #messages: SocketMessage[] = [];
   #socket?: WebSocket;
   #reconnectDelay = 0;
   #debounce: Debounce = {
@@ -177,7 +176,7 @@ export class SocketService extends EventEmitter {
       this.connect();
     }
     return new Promise((resolve, reject) => {
-      this.messages.push(SocketMessage.create(event, data ?? {}, { resolve, reject }));
+      this.#messages.push(SocketMessage.create(event, data ?? {}, { resolve, reject }));
       this.process();
     });
   }
@@ -186,7 +185,7 @@ export class SocketService extends EventEmitter {
     if (this.isConnected === false) {
       return; // awaiting connection ...
     }
-    const message = this.messages.shift();
+    const message = this.#messages.shift();
     if (message !== undefined) {
       this.transmit(message);
       this.response(message);

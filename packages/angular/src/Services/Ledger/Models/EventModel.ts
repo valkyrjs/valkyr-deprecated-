@@ -24,19 +24,4 @@ export class EventModel extends Model<EventDocument> {
     const record = createEventRecord(document);
     await this.insertOne(record);
   }
-
-  public static async status({ id, streamId, type, created }: EventDocument) {
-    const record = await this.findById(id);
-    if (record) {
-      return { exists: true, outdated: true };
-    }
-    const count = await this.count({
-      streamId,
-      type,
-      created: {
-        $gt: created
-      }
-    });
-    return { exists: false, outdated: count > 0 };
-  }
 }
