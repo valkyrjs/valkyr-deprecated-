@@ -42,7 +42,7 @@ export class DashboardComponent extends DataSubscriber implements OnInit {
         }
       },
       (workspace) => {
-        this.title.set(workspace?.name ?? "404 Unknown Workspace", DOCUMENT_TITLE, "application");
+        this.title.set(workspace?.name ?? "404 Unknown Workspace", DOCUMENT_TITLE, "workspace");
         this.workspace = workspace;
       }
     );

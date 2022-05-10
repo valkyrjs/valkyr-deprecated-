@@ -1,8 +1,8 @@
-import { Component, Injector, OnDestroy } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { DataSubscriber, LedgerService, Menu } from "@valkyr/angular";
+import { LedgerService, LedgerSubscription, Menu } from "@valkyr/angular";
 
-import { Workspace } from "./Models/Workspace";
+import { getFooterMenu, getMainMenu } from "./Menu";
 import { WorkspaceSelectorService } from "./Services/WorkspaceSelectorService";
 
 @Component({
@@ -10,19 +10,13 @@ import { WorkspaceSelectorService } from "./Services/WorkspaceSelectorService";
   templateUrl: "./Template.html",
   styleUrls: ["./Style.scss"]
 })
-export class WorkspaceComponent extends DataSubscriber implements OnDestroy {
+export class WorkspaceComponent implements OnDestroy {
   aside!: Menu;
   footer!: Menu;
 
-  workspace?: Workspace;
+  #subscription?: LedgerSubscription;
 
-  constructor(
-    route: ActivatedRoute,
-    readonly selector: WorkspaceSelectorService,
-    readonly ledger: LedgerService,
-    injector: Injector
-  ) {
-    super(injector);
+  constructor(readonly selector: WorkspaceSelectorService, readonly ledger: LedgerService, route: ActivatedRoute) {
     const workspaceId = route.snapshot.paramMap.get("workspace");
     if (!workspaceId) {
       throw new Error("WorkspaceComponent Violation: Could not resolve workspace id");
@@ -34,66 +28,19 @@ export class WorkspaceComponent extends DataSubscriber implements OnDestroy {
 
   ngOnDestroy(): void {
     this.selector.current = undefined;
-    this.subscription?.unsubscribe();
+    this.#subscription?.unsubscribe();
   }
 
   #loadMenu(workspaceId: string) {
-    this.aside = new Menu({
-      categories: [
-        {
-          name: "Workspace",
-          items: [
-            {
-              name: "Dashboard",
-              href: "/workspaces/{{workspaceId}}"
-            },
-            {
-              name: "Todos",
-              href: "/workspaces/{{workspaceId}}/todos"
-            }
-          ]
-        }
-      ],
-      params: {
-        workspaceId
-      }
-    });
-    this.footer = new Menu({
-      categories: [
-        {
-          name: "Discovery",
-          items: [
-            {
-              name: "Workspaces",
-              href: "/workspaces"
-            }
-          ]
-        }
-      ],
-      params: {
-        workspaceId
-      }
-    });
+    this.aside = getMainMenu(workspaceId);
+    this.footer = getFooterMenu(workspaceId);
   }
 
   #loadSelector(workspaceId: string) {
     this.selector.current = workspaceId;
   }
 
-  #loadWorkspace(id: string) {
-    this.subscribe(
-      Workspace,
-      {
-        criteria: { id },
-        limit: 1,
-        stream: {
-          aggregate: "workspace",
-          streamIds: [id]
-        }
-      },
-      (workspace) => {
-        this.workspace = workspace;
-      }
-    );
+  #loadWorkspace(workspaceId: string) {
+    this.#subscription = this.ledger.subscribe("workspace", workspaceId, true);
   }
 }

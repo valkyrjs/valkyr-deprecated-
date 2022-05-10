@@ -4,9 +4,7 @@ import { SubscriberService } from "../Helpers/SubscriberService";
 
 export const DOCUMENT_TITLE = "title:document";
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable({ providedIn: "root" })
 export class TitleService extends SubscriberService<Title> {
   set(title: string, ...targetValues: string[]) {
     const targets = new Targets(targetValues);

@@ -10,7 +10,7 @@ type TodoItemDocument = Document & {
   completedAt?: string;
 };
 
-export class Todo extends Model<TodoItemDocument> {
+export class TodoItem extends Model<TodoItemDocument> {
   public static override readonly $collection = new Collection<TodoItemDocument>("todo-items", new IndexedDbAdapter());
 
   public readonly todoId!: TodoItemDocument["todoId"];
