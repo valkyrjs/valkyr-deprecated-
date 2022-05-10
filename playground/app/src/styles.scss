@@ -18,13 +18,13 @@ vlk-modal-container {
     @apply px-8 py-6;
     @apply w-96;
     @apply rounded-sm drop-shadow-md;
-    @apply bg-c-50;
+    @apply bg-black-50;
   
     vlk-modal-header {
       @apply block;
       @apply flex justify-start items-center;
       @apply w-full;
-      @apply border-b-2 border-c-400;
+      @apply border-b-2 border-black-400;
       @apply pb-2;
       @apply mb-3;
     }
@@ -53,16 +53,16 @@ button[variant] {
   @apply leading-none;
   &[variant="primary"] {
     @apply bg-primary;
-    @apply text-c-50;
+    @apply text-black-50;
     &:hover {
       @apply bg-primary-dark;
     }
   }
   &[variant="secondary"] {
-    @apply border-c-400;
-    @apply text-c-800;
+    @apply border-black-400;
+    @apply text-black-800;
     &:hover {
-      @apply bg-c-300;
+      @apply bg-black-300;
     }
   }
 }

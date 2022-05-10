@@ -2,8 +2,9 @@ import { Component, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
 @Component({
-  selector: "[navbar-link]",
-  templateUrl: "./Template.html"
+  selector: "navbar-link",
+  templateUrl: "./Template.html",
+  styleUrls: ["./Style.scss"]
 })
 export class NavbarLinkComponent {
   @Input("name") public name!: string;

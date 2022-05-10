@@ -2,11 +2,11 @@
   <ul role="list" class="w-full min-h-full grid grid-areas-workspaces grid-cols-workspaces grid-rows-workspaces gap-6">
     <li>
       <button (click)="openAddTodo()">
-        <div class="flex flex-col justify-start items-center w-52 h-64 group border border-dashed border-c-400">
+        <div class="flex flex-col justify-start items-center w-52 h-64 group border border-dashed border-black-400">
           <div class="w-full h-44 flex flex-col justify-center items-center">
             <div>
               <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 18 18" width="18"
-                class="h-12 w-12 transition-colors text-c-500 scale-100 group-hover:scale-105 group-hover:text-accent">
+                class="h-12 w-12 transition-colors text-black-500 scale-100 group-hover:scale-105 group-hover:text-accent">
                 <rect fill="currentColor" />
                 <ellipse fill="currentColor" cx="9" cy="3.5" rx="8" ry="2.5" />
                 <path fill="currentColor"
@@ -19,17 +19,17 @@
             </div>
           </div>
           <div class="flex flex-col justify-center items-center w-full">
-            <div class="text-c-600 group-hover:text-c-800">Add new...</div>
+            <div class="text-black-600 group-hover:text-black-800">Add new...</div>
           </div>
         </div>
       </button>
     </li>
     <li *ngFor="let todo of todos">
       <a routerLink="/workspaces/{{todo.workspaceId}}/todos/{{todo.id}}">
-        <div class="flex flex-col justify-start items-center w-52 h-64 group border border-c-500">
+        <div class="flex flex-col justify-start items-center w-52 h-64 group border border-black-500">
           <div class="w-full h-44 bg-gradient-to-br from-blue-400 to-indigo-700"></div>
           <div class="w-full flex flex-col gap-3 px-6 py-3">
-            <div class="text-xs uppercase text-c-600 group-hover:text-c-800">{{todo.name}}</div>
+            <div class="text-xs uppercase text-black-600 group-hover:text-black-800">{{todo.name}}</div>
           </div>
         </div>
       </a>

@@ -1,19 +1,19 @@
 :host {
   @apply list-item;
-  @apply px-3;
-  @apply py-1;
   @apply mb-1;
-  @apply hover:bg-c-200;
-  @apply rounded;
-  @apply hover:cursor-pointer;
 }
 
 a {
-  @apply flex items-center gap-2 text-xs text-c-800;
+  @apply px-3;
+  @apply py-1;
+  @apply hover:bg-black-200;
+  @apply rounded;
+  @apply hover:cursor-pointer;
+  @apply flex items-center gap-2 text-xs text-black-800;
 }
 
 svg {
-  @apply w-5 h-5 text-c-400 stroke-1 group-hover:text-c-600;
+  @apply w-5 h-5 text-black-400 stroke-1 group-hover:text-black-600;
 }
 
 span {

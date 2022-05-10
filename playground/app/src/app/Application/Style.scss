@@ -3,20 +3,20 @@
 }
 
 header {
-  @apply grid-in-header text-c-800 bg-c-100 border-b-2 border-b-c-200;
+  @apply grid-in-header text-black-800 bg-black-100 border-b-2 border-b-black-200;
 }
 
 aside {
-  @apply grid-in-aside h-full overflow-y-auto overflow-x-hidden border-r-2 border-r-c-200 text-c-800 bg-c-100;
+  @apply grid-in-aside h-full overflow-y-auto overflow-x-hidden border-r-2 border-r-black-200 text-black-800 bg-black-100;
   > div {
     @apply px-6 py-6 h-full w-full;
   }
 }
 
 nav {
-  @apply grid-in-nav border-b-2 border-b-c-200 text-c-800 bg-c-100;
+  @apply grid-in-nav border-b-2 border-b-black-200 text-black-800 bg-black-100;
 }
 
 main {
-  @apply relative grid-in-main min-h-full overflow-y-scroll bg-c-100 text-c-900 p-4;
+  @apply relative grid-in-main min-h-full overflow-y-scroll bg-black-100 text-black-900 p-4;
 }

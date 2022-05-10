@@ -3,7 +3,7 @@ import { TitleService } from "@valkyr/angular";
 
 @Component({
   selector: "app-title",
-  templateUrl: "./Template.html"
+  templateUrl: "./Template.html",  styleUrls: ["./Style.scss"]
 })
 export class TitleComponent {
   public title = "";

@@ -1,6 +1,2 @@
-<nav class="h-full flex justify-start items-center gap-3">
-  <div class="w-6 h-6 mr-12">Logo</div>
-  <ng-container *ngFor="let link of links">
-    <div navbar-link link="{{link.href}}" name="{{link.name}}"></div>
-  </ng-container>
-</nav>
+<div class="w-6 h-6 mr-12">Logo</div>
+<navbar-link link="{{link.href}}" name="{{link.name}}" *ngFor="let link of links"></navbar-link>
