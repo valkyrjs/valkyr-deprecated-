@@ -10,6 +10,6 @@ import { MenuListComponent } from "./List/Component";
 @NgModule({
   declarations: [MenuComponent, MenuListComponent, MenuCategoryComponent, MenuItemComponent],
   imports: [BrowserModule, RouterModule],
-  exports: [MenuComponent]
+  exports: [MenuComponent, MenuListComponent, MenuCategoryComponent, MenuItemComponent]
 })
 export class MenuModule {}

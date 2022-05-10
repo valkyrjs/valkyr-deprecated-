@@ -3,8 +3,8 @@ import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { ModalModule } from "@valkyr/angular";
+import { MenuModule } from "@valkyr/tailwind";
 
-import { MenuModule } from "../Menu/Module";
 import { NavbarModule } from "../Navbar/Module";
 import { TitleModule } from "../Title/Module";
 import { WorkspaceComponent } from "./Component";
