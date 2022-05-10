@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+  @apply bg-black-50;
+  @apply text-black-900;
+}
 // Valkyr Modal
 
 vlk-modal-container {
@@ -9,7 +13,7 @@ vlk-modal-container {
 
   .vlk-modal-overlay {
     @apply absolute inset-0 w-full h-screen overflow-hidden z-40;
-    @apply bg-gray-900 bg-opacity-40;
+    @apply bg-black-100 bg-opacity-40;
   }
   
   .vlk-modal-dialog {

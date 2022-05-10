@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 
-import { applyTheme } from "./Services/ThemeService";
+import { ThemeService } from "./Services/ThemeService";
 
 @Component({
   selector: "app-template",
@@ -8,7 +8,10 @@ import { applyTheme } from "./Services/ThemeService";
   styleUrls: ["./Style.scss"]
 })
 export class ApplicationComponent implements OnInit {
+  constructor(private theme: ThemeService) {}
+
   public ngOnInit(): void {
-    applyTheme("light");
+    const current = this.theme.currentTheme;
+    this.theme.applyTheme(current);
   }
 }

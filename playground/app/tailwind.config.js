@@ -30,7 +30,7 @@ function addColors() {
     allColors[color] = {};
     const weights = (color === "black") ? blackWeights : coloredWeights;
     for(const weight of weights) {
-      allColors[color][weight] = `var(--${color}-${weight})`
+      allColors[color][weight] = withOpacityValue(`--${color}-${weight}`);
       for(const prefix of prefixes) {
         for(const shape of shapes) {
           out.push(`${prefix}${shape}-${color}-${weight}`);
@@ -41,7 +41,7 @@ function addColors() {
     return allColors;
   }, {
       transparent: "transparent",
-      white: "var(--black-50)",
+      white: withOpacityValue("--black-50"),
       primary: "var(--blue-400)",
       "primary-muted": "var(--blue-400)",
       "primary-light": "#0469e3",
@@ -49,6 +49,15 @@ function addColors() {
   });
   fs.writeFileSync("tailwind.colors.md", output.join("\n\n"));
   return builtColors;
+}
+
+function withOpacityValue(variable) {
+  return ({ opacityValue }) => {
+    if (opacityValue === undefined) {
+      return `rgb(var(${variable}))`
+    }
+    return `rgb(var(${variable}) / ${opacityValue})`
+  }
 }
 
 module.exports = {

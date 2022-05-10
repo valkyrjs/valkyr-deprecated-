@@ -1,3 +1,5 @@
+import { Injectable } from "@angular/core";
+
 export type SelectOption = {
   Icon?: ({ size }: { size: number }) => string;
   label: string;
@@ -5,7 +7,7 @@ export type SelectOption = {
 };
 export type SelectOptions = SelectOption[];
 
-const light = {
+const lightHex = {
   "--celery-100": "#d9f0dc",
   "--celery-400": "#44b556",
   "--celery-500": "#3da74e",
@@ -66,7 +68,7 @@ const light = {
   "--blue-500": "#1473e6",
   "--blue-600": "#0d66d0",
   "--blue-700": "#095aba",
-  "--black-50": "#fff",
+  "--black-50": "#ffffff",
   "--black-75": "#fafafa",
   "--black-100": "#f5f5f5",
   "--black-200": "#eaeaea",
@@ -79,7 +81,81 @@ const light = {
   "--black-900": "#2c2c2c"
 };
 
-const dark = {
+const light = {
+  "--celery-100": "217 240 220",
+  "--celery-400": "68 181 86",
+  "--celery-500": "61 167 78",
+  "--celery-600": "55 153 71",
+  "--celery-700": "49 139 64",
+  "--chartreuse-100": "230 245 217",
+  "--chartreuse-400": "133 208 68",
+  "--chartreuse-500": "124 195 63",
+  "--chartreuse-600": "115 181 58",
+  "--chartreuse-700": "106 168 52",
+  "--yellow-100": "255 246 197",
+  "--yellow-400": "223 191 0",
+  "--yellow-500": "210 178 0",
+  "--yellow-600": "196 166 0",
+  "--yellow-700": "183 153 0",
+  "--magenta-100": "247 215 232",
+  "--magenta-400": "216 55 144",
+  "--magenta-500": "206 39 131",
+  "--magenta-600": "188 28 116",
+  "--magenta-700": "174 14 102",
+  "--fuchsia-100": "242 215 244",
+  "--fuchsia-400": "192 56 204",
+  "--fuchsia-500": "177 48 189",
+  "--fuchsia-600": "162 40 173",
+  "--fuchsia-700": "147 33 158",
+  "--purple-100": "233 221 247",
+  "--purple-400": "146 86 217",
+  "--purple-500": "134 76 204",
+  "--purple-600": "122 66 191",
+  "--purple-700": "111 56 177",
+  "--indigo-100": "224 224 251",
+  "--indigo-400": "103 103 236",
+  "--indigo-500": "92 92 224",
+  "--indigo-600": "81 81 211",
+  "--indigo-700": "70 70 198",
+  "--seafoam-100": "199 243 245",
+  "--seafoam-400": "27 149 154",
+  "--seafoam-500": "22 135 140",
+  "--seafoam-600": "15 121 125",
+  "--seafoam-700": "9 108 111",
+  "--red-100": "249 218 220",
+  "--red-400": "227 72 80",
+  "--red-500": "215 55 63",
+  "--red-600": "201 37 45",
+  "--red-700": "187 18 26",
+  "--orange-100": "250 230 209",
+  "--orange-400": "230 134 25",
+  "--orange-500": "218 123 17",
+  "--orange-600": "203 111 16",
+  "--orange-700": "189 100 13",
+  "--green-100": "207 241 229",
+  "--green-400": "45 157 120",
+  "--green-500": "38 142 108",
+  "--green-600": "18 128 92",
+  "--green-700": "16 113 84",
+  "--blue-100": "211 229 251",
+  "--blue-400": "38 128 235",
+  "--blue-500": "20 115 230",
+  "--blue-600": "13 102 208",
+  "--blue-700": "9 90 186",
+  "--black-50": "255 255 255",
+  "--black-75": "250 250 250",
+  "--black-100": "245 245 245",
+  "--black-200": "234 234 234",
+  "--black-300": "225 225 225",
+  "--black-400": "202 202 202",
+  "--black-500": "179 179 179",
+  "--black-600": "142 142 142",
+  "--black-700": "110 110 110",
+  "--black-800": "75 75 75",
+  "--black-900": "44 44 44"
+};
+
+const darkHex = {
   "--celery-400": "#3da74e",
   "--celery-500": "#44b556",
   "--celery-600": "#4bc35f",
@@ -141,6 +217,68 @@ const dark = {
   "--black-900": "#efefef"
 };
 
+const dark = {
+  "--celery-400": "61 167 78",
+  "--celery-500": "68 181 86",
+  "--celery-600": "75 195 95",
+  "--celery-700": "81 210 103",
+  "--chartreuse-400": "124 195 63",
+  "--chartreuse-500": "133 208 68",
+  "--chartreuse-600": "142 222 73",
+  "--chartreuse-700": "155 236 84",
+  "--yellow-400": "210 178 0",
+  "--yellow-500": "223 191 0",
+  "--yellow-600": "237 204 0",
+  "--yellow-700": "250 217 0",
+  "--magenta-400": "202 41 150",
+  "--magenta-500": "216 55 144",
+  "--magenta-600": "226 73 157",
+  "--magenta-700": "236 90 170",
+  "--fuchsia-400": "177 48 189",
+  "--fuchsia-500": "192 56 204",
+  "--fuchsia-600": "207 62 220",
+  "--fuchsia-700": "217 81 229",
+  "--purple-400": "134 76 204",
+  "--purple-500": "146 86 217",
+  "--purple-600": "157 100 225",
+  "--purple-700": "168 115 223",
+  "--indigo-400": "92 92 224",
+  "--indigo-500": "103 103 236",
+  "--indigo-600": "117 117 241",
+  "--indigo-700": "130 130 246",
+  "--seafoam-400": "22 135 140",
+  "--seafoam-500": "27 149 154",
+  "--seafoam-600": "32 163 168",
+  "--seafoam-700": "35 178 184",
+  "--red-400": "215 55 63",
+  "--red-500": "227 72 80",
+  "--red-600": "236 91 98",
+  "--red-700": "247 109 116",
+  "--orange-400": "218 123 17",
+  "--orange-500": "230 134 25",
+  "--orange-600": "242 148 35",
+  "--orange-700": "249 164 63",
+  "--green-400": "38 142 108",
+  "--green-500": "45 157 120",
+  "--green-600": "51 171 132",
+  "--green-700": "57 185 144",
+  "--blue-400": "20 115 230",
+  "--blue-500": "38 128 235",
+  "--blue-600": "55 142 240",
+  "--blue-700": "75 156 245",
+  "--black-50": "8 8 8",
+  "--black-75": "26 26 26",
+  "--black-100": "30 30 30",
+  "--black-200": "44 44 44",
+  "--black-300": "57 57 57",
+  "--black-400": "73 73 73",
+  "--black-500": "92 92 92",
+  "--black-600": "124 124 124",
+  "--black-700": "162 162 162",
+  "--black-800": "200 200 200",
+  "--black-900": "239 239 239"
+};
+
 // src/themes/utils.ts
 export interface ITheme {
   [key: string]: string;
@@ -161,62 +299,41 @@ export const Themes: IThemes = {
   dark
 };
 
-export const applyTheme = (theme: string): void => {
-  const themeObject: IMappedTheme = Themes[theme];
-  if (!themeObject) return;
+@Injectable({
+  providedIn: "root"
+})
+export class ThemeService {
+  public currentTheme: string;
 
-  const root = document.documentElement;
+  constructor() {
+    const mq = window.matchMedia("(prefers-color-scheme: light)");
+    this.currentTheme = localStorage["theme"] || (mq.matches ? "dark" : "light");
+  }
 
-  Object.keys(themeObject).forEach((property) => {
-    if (property === "name") {
-      return;
+  toggleTheme() {
+    if (this.currentTheme === "light") {
+      this.applyTheme("dark");
+    } else {
+      this.applyTheme("light");
     }
+  }
 
-    root.style.setProperty(property, themeObject[property]);
-  });
-};
+  applyTheme(theme: string) {
+    const themeObject: IMappedTheme = Themes[theme];
+    if (!themeObject) return;
 
-// Note.
-// The entire color variable needs to be written out so that Tailwind JIT can add them to the CSS bundle.
-// Dynamically generating them via `text-${color}-${weight}` will not work.
-const randomColors = [
-  "text-celery-400 hover:text-celery-700",
-  "text-chartreuse-400 hover:text-chartreuse-700",
-  "text-yellow-400 hover:text-yellow-700",
-  "text-magenta-400 hover:text-magenta-700",
-  "text-fuchsia-400 hover:text-fuchsia-700",
-  "text-purple-400 hover:text-purple-700",
-  "text-indigo-400 hover:bg-text-700",
-  "text-seafoam-400 hover:text-seafoam-700",
-  "text-red-400 hover:text-red-700",
-  "text-orange-400 hover:text-orange-700",
-  "text-green-400 hover:text-green-700",
-  "text-blue-400 hover:text-blue-700",
-  "text-c-400 hover:text-c-700"
-];
+    const root = document.documentElement;
 
-const randomBgColors = [
-  "bg-celery-400 hover:bg-celery-700",
-  "bg-chartreuse-400 hover:bg-chartreuse-700",
-  "bg-yellow-400 hover:bg-yellow-700",
-  "bg-magenta-400 hover:bg-magenta-700",
-  "bg-fuchsia-400 hover:bg-fuchsia-700",
-  "bg-purple-400 hover:bg-purple-700",
-  "bg-indigo-400 hover:bg-indigo-700",
-  "bg-seafoam-400 hover:bg-seafoam-700",
-  "bg-red-400 hover:bg-red-700",
-  "bg-orange-400 hover:bg-orange-700",
-  "bg-green-400 hover:bg-green-700",
-  "bg-blue-400 hover:bg-blue-700",
-  "bg-c-600 hover:bg-c-700"
-];
+    Object.keys(themeObject).forEach((property) => {
+      if (property === "name") {
+        return;
+      }
 
-export function getRandomColors(): string {
-  return randomColors[Math.floor(Math.random() * randomColors.length)];
-}
-
-export function getRandomBgColors(): string {
-  return randomBgColors[Math.floor(Math.random() * randomBgColors.length)];
+      root.style.setProperty(property, themeObject[property]);
+    });
+    localStorage.setItem("theme", theme);
+    this.currentTheme = theme;
+  }
 }
 
 const UserColors = [
@@ -276,7 +393,7 @@ export function getBgEquivalent(colorName: string): string {
 export const ColorOptions: SelectOptions = [
   { label: "none", value: "+transparent" },
   { label: "white", value: "+white" },
-  { label: "gray", value: "c" },
+  { label: "gray", value: "gray" },
   { label: "celery", value: "celery" },
   { label: "chartreuse", value: "chartreuse" },
   { label: "yellow", value: "yellow" },
@@ -300,18 +417,6 @@ export function getBorder(side: "t" | "r" | "b" | "l", value: number): string {
   }
   return `border-${side}-${value}`;
 }
-
-// border-t-1 border-t-2 border-t-3 border-t-4
-// border-r-1 border-r-2 border-r-3 border-r-4
-// border-b-1 border-b-2 border-b-3 border-b-4
-// border-l-1 border-l-2 border-l-3 border-l-4
-
-// text-white text-black text-transparent
-// border-white border-black border-transparent
-// bg-white bg-black bg-transparent
-// ring-purple-500
-// border-purple-500
-// bg-blue-400 bg-c-400 bg-c-400 border-orange-400 focus:ring-orange-500 focus:border-orange-500
 
 export function getColor(
   prefix: string, // "bg" | "text" | "ring" | "border" | "stroke", (we want to also support hover: focus: prefixes as well)
