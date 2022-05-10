@@ -9,16 +9,15 @@ export interface Type<T = any> extends Function {
 
 @Directive()
 export abstract class DataSubscriber implements OnDestroy {
-  protected subscription?: Subscription;
-
-  readonly #stream: StreamService;
+  #subscriptions: Subscription[] = [];
+  #stream: StreamService;
 
   constructor(inject: Injector) {
     this.#stream = inject.get(StreamService);
   }
 
   ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
+    this.unsubscribe();
   }
 
   subscribe<T extends Type>(
@@ -32,10 +31,14 @@ export abstract class DataSubscriber implements OnDestroy {
     options: SubscriptionOptions,
     next: (documents: InstanceType<T>[] | InstanceType<T> | undefined) => void
   ): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-    this.subscription = new Subscription(model, options, next, this.#stream);
+    this.#subscriptions.push(new Subscription(model, options, next, this.#stream));
+  }
+
+  unsubscribe() {
+    this.#subscriptions = this.#subscriptions.reduce((_, subscription) => {
+      subscription.unsubscribe();
+      return _;
+    }, []);
   }
 }
 
