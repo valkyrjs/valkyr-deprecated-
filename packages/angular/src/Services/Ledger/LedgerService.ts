@@ -186,11 +186,19 @@ export class LedgerService {
    * This approach allows us to only have a single observer for multiple
    * subscribers removing the issue of having multiple subscribers attempting to
    * update the event store with the same event.
+   *
+   * @param aggregate  - Aggregate the stream is being access controlled within.
+   * @param streamId   - Stream to subscribe to.
+   * @param pullEvents - Should we pull potential unknown events from the server? (Default: false)
    */
-  subscribe(aggregate: string, streamId: string, pullEventStream = false): SubscriberFn {
+  subscribe(aggregate: string, streamId: string, pullEvents = false): LedgerSubscription {
     const subscriber = this.#getSubscriber(streamId);
     if (subscriber.isEmpty === true) {
-      this.#join(aggregate, streamId, pullEventStream);
+      this.#join(aggregate, streamId);
+    }
+    if (pullEvents === true && subscriber.isSynced === false) {
+      subscriber.synced();
+      this.pull(streamId);
     }
     subscriber.increment();
     return {
@@ -213,12 +221,8 @@ export class LedgerService {
     }
   }
 
-  #join(aggregate: string, streamId: string, pullEventStream: boolean): void {
-    this.socket.send("streams:join", { aggregate, streamId }).then(() => {
-      if (pullEventStream === true) {
-        this.pull(streamId);
-      }
-    });
+  #join(aggregate: string, streamId: string): void {
+    this.socket.send("streams:join", { aggregate, streamId });
   }
 
   #leave(streamId: string): void {
@@ -235,4 +239,4 @@ export class LedgerService {
   }
 }
 
-type SubscriberFn = { unsubscribe: () => void };
+export type LedgerSubscription = { unsubscribe: () => void };

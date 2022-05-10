@@ -1,6 +1,6 @@
-import { Component, Inject } from "@angular/core";
-import { AuthService, LedgerService } from "@valkyr/angular";
-import { MODAL_CONTEXT_TOKEN, ModalService } from "@valkyr/angular/src/Components/Modal/Service";
+import { Component } from "@angular/core";
+import { AuthService, LedgerService, ModalService } from "@valkyr/angular";
+import { WorkspaceSelectorService } from "src/app/Workspace/Services/WorkspaceSelectorService";
 import { WorkspaceStore } from "stores";
 
 import { TodoService } from "../../Services/Todo";
@@ -9,19 +9,19 @@ import { TodoService } from "../../Services/Todo";
   templateUrl: "./Template.html"
 })
 export class CreateTodoDialog {
-  public name = "";
+  name = "";
 
   constructor(
-    @Inject(MODAL_CONTEXT_TOKEN) private context: { workspaceId: string },
     private modal: ModalService,
     private ledger: LedgerService,
     private todo: TodoService,
-    private auth: AuthService
+    private auth: AuthService,
+    private selector: WorkspaceSelectorService
   ) {}
 
-  public async create() {
+  async create() {
     this.close();
-    const workspaceId = this.context.workspaceId;
+    const workspaceId = this.selector.current;
     if (!workspaceId) {
       throw new Error("Could not resolve workspace id");
     }
@@ -36,11 +36,11 @@ export class CreateTodoDialog {
     this.todo.create(workspaceId, this.name, member.id);
   }
 
-  public cancel() {
+  cancel() {
     this.close();
   }
 
-  public close() {
+  close() {
     this.modal.close();
   }
 }

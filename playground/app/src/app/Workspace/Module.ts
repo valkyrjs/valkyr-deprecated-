@@ -4,15 +4,18 @@ import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { ModalModule } from "@valkyr/angular";
 
+import { MenuModule } from "../Menu/Module";
+import { NavbarModule } from "../Navbar/Module";
+import { TitleModule } from "../Title/Module";
+import { WorkspaceComponent } from "./Component";
 import { DashboardComponent } from "./Dashboard/Component";
 import { CreateWorkspaceDialog } from "./Dialogues/CreateWorkspace/Component";
 import { LandingComponent } from "./Landing/Component";
 import { WorkspaceProjector } from "./Projector";
-import { WorkspaceResolver } from "./Resolvers/WorkspaceResolver";
 
 @NgModule({
-  declarations: [LandingComponent, DashboardComponent, CreateWorkspaceDialog],
-  imports: [BrowserModule, FormsModule, RouterModule, ModalModule],
-  providers: [WorkspaceProjector.register(), WorkspaceResolver]
+  declarations: [WorkspaceComponent, LandingComponent, DashboardComponent, CreateWorkspaceDialog],
+  imports: [BrowserModule, FormsModule, RouterModule, ModalModule, MenuModule, NavbarModule, TitleModule],
+  providers: [WorkspaceProjector.register()]
 })
 export class WorkspaceModule {}

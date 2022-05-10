@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit } from "@angular/core";
-import { ActivatedRoute, ParamMap } from "@angular/router";
-import { DataSubscriber, DOCUMENT_TITLE, ParamsService, TitleService } from "@valkyr/angular";
+import { DataSubscriber, DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
+import { WorkspaceSelectorService } from "src/app/Workspace/Services/WorkspaceSelectorService";
 
 import { CreateTodoDialog } from "../Dialogues/CreateTodo/Component";
 import { Todo } from "../Models/Todo";
@@ -15,12 +15,9 @@ export class TodoPickerComponent extends DataSubscriber implements OnInit {
 
   public name = "";
 
-  #workspaceId?: string;
-
   constructor(
-    private modal: ModalService,
-    private params: ParamsService,
-    private route: ActivatedRoute,
+    readonly workspace: WorkspaceSelectorService,
+    readonly modal: ModalService,
     title: TitleService,
     injector: Injector
   ) {
@@ -28,18 +25,15 @@ export class TodoPickerComponent extends DataSubscriber implements OnInit {
     title.set("Todos", DOCUMENT_TITLE, "application");
   }
 
-  public ngOnInit(): void {
-    this.route.paramMap.subscribe({
-      next: (params: ParamMap) => {
-        const id = params.get("workspace")!;
-        this.#workspaceId = id;
-        this.getTodos(id);
-        this.params.next(params);
-      }
-    });
+  ngOnInit(): void {
+    const workspaceId = this.workspace.current;
+    if (!workspaceId) {
+      throw new Error("Todo Violation: Could not resolve current workspace");
+    }
+    this.#loadTodos(workspaceId);
   }
 
-  public getTodos(workspaceId: string) {
+  #loadTodos(workspaceId: string) {
     this.subscribe(
       Todo,
       {
@@ -56,6 +50,6 @@ export class TodoPickerComponent extends DataSubscriber implements OnInit {
   }
 
   public openAddTodo() {
-    this.modal.open(CreateTodoDialog, { workspaceId: this.#workspaceId });
+    this.modal.open(CreateTodoDialog);
   }
 }

@@ -3,9 +3,9 @@ import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { ModalModule } from "@valkyr/angular";
 
-import { ApplicationModule } from "./Application";
 import { AuthorizationModule } from "./Authorization";
 import { AppComponent } from "./Component";
+import { DiscoveryModule } from "./Discovery";
 import { routes } from "./Routing";
 import { TodoModule } from "./Todo";
 import { WorkspaceModule } from "./Workspace";
@@ -14,8 +14,8 @@ import { WorkspaceModule } from "./Workspace";
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
-    ApplicationModule,
     AuthorizationModule,
+    DiscoveryModule,
     ModalModule,
     TodoModule,
     WorkspaceModule

@@ -1,5 +1,10 @@
 export class StreamSubscriber {
+  #synced = false;
   #count = 0;
+
+  get isSynced() {
+    return this.#synced;
+  }
 
   get isEmpty() {
     return this.size < 1;
@@ -7,6 +12,10 @@ export class StreamSubscriber {
 
   get size() {
     return this.#count;
+  }
+
+  synced() {
+    this.#synced = true;
   }
 
   increment() {

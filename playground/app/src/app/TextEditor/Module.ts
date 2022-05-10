@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 
-import { TextEditorComponent } from "./Editor/Component";
+import { TextEditorComponent } from "./Component";
 
 @NgModule({
   declarations: [TextEditorComponent],

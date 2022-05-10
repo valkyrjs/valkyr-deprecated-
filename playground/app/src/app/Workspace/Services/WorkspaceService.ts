@@ -9,7 +9,7 @@ import { WorkspaceStore } from "stores";
 export class WorkspaceService {
   constructor(private ledger: LedgerService, private auth: AuthService) {}
 
-  public async create(name: string) {
+  async create(name: string) {
     const member: WorkspaceStore.Member = {
       id: generateStreamId(),
       accountId: this.auth.auditor,

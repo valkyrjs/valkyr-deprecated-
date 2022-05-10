@@ -1,1 +1,1 @@
-export * from "./Editor/Component";
+export * from "./Component";
