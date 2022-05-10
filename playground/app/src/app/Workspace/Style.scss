@@ -8,8 +8,23 @@ header {
 
 aside {
   @apply grid-in-aside h-full overflow-y-auto overflow-x-hidden border-r-2 border-r-black-200 text-black-800 bg-black-100;
+  
   > div {
     @apply px-6 py-6 h-full w-full;
+  }
+
+  .menu-main {
+    @apply h-auto;
+    @apply mb-8;
+    @apply list-none;
+    @apply text-sm;
+  }
+
+  .menu-footer {
+    @apply h-auto;
+    @apply mb-1;
+    @apply list-none;
+    @apply text-sm;
   }
 }
 

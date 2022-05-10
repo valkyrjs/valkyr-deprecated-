@@ -1,14 +1,5 @@
-<menu-main>
-  <menu-category *ngFor="let category of menu.categories" [name]="category.name">
-    <menu-list>
-      <menu-item *ngFor="let item of category.items" [name]="item.name" [link]="item.href"></menu-item>
-    </menu-list>
-  </menu-category>
-</menu-main>
-<menu-secondary>
-  <menu-category *ngFor="let category of menu.categories" [name]="category.name">
-    <menu-list>
-      <menu-item *ngFor="let item of category.items" [name]="item.name" [link]="item.href"></menu-item>
-    </menu-list>
-  </menu-category>
-</menu-secondary>
+<menu-category *ngFor="let category of menu.categories" [name]="category.name">
+  <menu-list>
+    <menu-item *ngFor="let item of category.items" [name]="item.name" [link]="item.href"></menu-item>
+  </menu-list>
+</menu-category>

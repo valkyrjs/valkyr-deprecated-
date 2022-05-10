@@ -2,7 +2,10 @@
   <navbar></navbar>
 </header>
 <aside>
-  <menu [menu]="aside"></menu>
+  <div>
+    <menu class="menu-main" [menu]="aside"></menu>
+    <menu class="menu-footer" [menu]="footer"></menu>
+  </div>
 </aside>
 <nav>
   <title [title]="workspace?.name"></title>

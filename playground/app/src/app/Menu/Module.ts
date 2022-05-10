@@ -2,22 +2,13 @@ import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 
+import { MenuCategoryComponent } from "./Category/Component";
 import { MenuComponent } from "./Component";
-import { MainMenuComponent } from "./MainMenu/Component";
-import { MenuCategoryComponent } from "./MenuCategory/Component";
-import { MenuItemComponent } from "./MenuItem/Component";
-import { MenuListComponent } from "./MenuList/Component";
-import { SecondaryMenuComponent } from "./SecondaryMenu/Component";
+import { MenuItemComponent } from "./Item/Component";
+import { MenuListComponent } from "./List/Component";
 
 @NgModule({
-  declarations: [
-    MenuComponent,
-    MainMenuComponent,
-    SecondaryMenuComponent,
-    MenuListComponent,
-    MenuCategoryComponent,
-    MenuItemComponent
-  ],
+  declarations: [MenuComponent, MenuListComponent, MenuCategoryComponent, MenuItemComponent],
   imports: [BrowserModule, RouterModule],
   exports: [MenuComponent]
 })

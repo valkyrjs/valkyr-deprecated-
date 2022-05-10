@@ -12,6 +12,7 @@ import { WorkspaceSelectorService } from "./Services/WorkspaceSelectorService";
 })
 export class WorkspaceComponent extends DataSubscriber implements OnDestroy {
   aside!: Menu;
+  footer!: Menu;
 
   workspace?: Workspace;
 
@@ -40,14 +41,6 @@ export class WorkspaceComponent extends DataSubscriber implements OnDestroy {
     this.aside = new Menu({
       categories: [
         {
-          items: [
-            {
-              name: "My Workspaces",
-              href: "/workspaces"
-            }
-          ]
-        },
-        {
           name: "Workspace",
           items: [
             {
@@ -57,6 +50,22 @@ export class WorkspaceComponent extends DataSubscriber implements OnDestroy {
             {
               name: "Todos",
               href: "/workspaces/{{workspaceId}}/todos"
+            }
+          ]
+        }
+      ],
+      params: {
+        workspaceId
+      }
+    });
+    this.footer = new Menu({
+      categories: [
+        {
+          name: "Discovery",
+          items: [
+            {
+              name: "Workspaces",
+              href: "/workspaces"
             }
           ]
         }
