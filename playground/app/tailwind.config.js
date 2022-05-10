@@ -87,8 +87,8 @@ module.exports = {
                    1fr`,
         "workspaces": "repeat(auto-fill, 256px)"
       },    
+      colors: addColors()
     },    
-    colors: addColors()
   },
   plugins: [
     require("@tailwindcss/aspect-ratio"),
