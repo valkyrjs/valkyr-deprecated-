@@ -11,7 +11,7 @@ export class TextEditorComponent implements OnInit, OnDestroy {
   private editor?: Editor;
 
   constructor(title: TitleService) {
-    title.set("Editor", DOCUMENT_TITLE, "application");
+    title.set("Editor", DOCUMENT_TITLE, "discovery");
   }
 
   public ngOnInit(): void {

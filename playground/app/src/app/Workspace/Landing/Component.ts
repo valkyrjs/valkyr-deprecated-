@@ -10,24 +10,24 @@ import { Workspace } from "../Models/Workspace";
   templateUrl: "./Template.html"
 })
 export class LandingComponent extends DataSubscriber implements OnInit {
-  public workspaces: Workspace[] = [];
-  public name = "";
+  workspaces: Workspace[] = [];
+  name = "";
 
   constructor(
-    private modal: ModalService<CreateWorkspaceDialog>,
-    private auth: AuthService,
+    readonly modal: ModalService<CreateWorkspaceDialog>,
+    readonly auth: AuthService,
     title: TitleService,
     injector: Injector
   ) {
     super(injector);
-    title.set("Workspaces", DOCUMENT_TITLE, "application");
+    title.set("Workspaces", DOCUMENT_TITLE, "discovery");
   }
 
-  public ngOnInit(): void {
-    this.getWorkspaces();
+  ngOnInit(): void {
+    this.#loadWorkspaces();
   }
 
-  public getWorkspaces() {
+  #loadWorkspaces() {
     this.subscribe(
       Workspace,
       {
@@ -45,7 +45,7 @@ export class LandingComponent extends DataSubscriber implements OnInit {
     );
   }
 
-  public openAddWorkspace() {
+  openAddWorkspace() {
     this.modal.open(CreateWorkspaceDialog);
   }
 }
