@@ -6,18 +6,19 @@
 
 vlk-modal-container {
   @apply absolute inset-0 grid place-items-center h-screen antialiased z-40;
-  background-color: rgba(#000, .2);
 
-  vlk-modal-overlay {
-    @apply absolute inset-0 z-40;
+  .vlk-modal-overlay {
+    @apply absolute inset-0 w-full h-screen overflow-hidden z-40;
+    @apply bg-gray-900 bg-opacity-40;
   }
   
   .vlk-modal-dialog {
-    @apply relative rounded-sm drop-shadow-md z-50;
-    @apply w-96;
-    @apply bg-c-50;
+    @apply relative z-50;
+    @apply -translate-y-1/2;
     @apply px-8 py-6;
-
+    @apply w-96;
+    @apply rounded-sm drop-shadow-md;
+    @apply bg-c-50;
   
     vlk-modal-header {
       @apply block;
