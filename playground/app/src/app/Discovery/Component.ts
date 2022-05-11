@@ -31,6 +31,10 @@ export class DiscoveryComponent {
             {
               name: "Text Editor",
               href: "/editor"
+            },
+            {
+              name: "Design System",
+              href: "/ui"
             }
           ]
         }

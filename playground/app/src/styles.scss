@@ -55,20 +55,125 @@ button[variant] {
   @apply focus:outline-none;
   @apply text-sm font-semibold;
   @apply leading-none;
-  &[variant="primary"] {
-    @apply bg-primary-default;
-    @apply border-primary-default;
-    @apply text-black-50;
-    &:hover {
-      @apply bg-primary-accent;
-      @apply border-primary-accent;
+  &[variant="cta"] {
+    &:not([quiet]):not([disabled]) {
+      @apply bg-cta-default;
+      @apply border-cta-default;
+      @apply text-black-50;
+      &:hover {
+        @apply bg-cta-hover;
+        @apply border-cta-hover;
       }
+    }
+    &[quiet]:not([disabled]) {
+      @apply bg-transparent;
+      @apply border-blue-500;
+      @apply text-blue-500;
+      &:hover {
+        @apply bg-blue-100;
+        @apply border-blue-600;
+      }
+    }
+    &:not([quiet])[disabled] {
+      @apply bg-blue-200;
+      @apply border-blue-200;
+      @apply text-black-50;
+    }
+    &[quiet][disabled] {
+      @apply bg-transparent;
+      @apply border-blue-200;
+      @apply text-blue-200;
+    }
+  }
+  &[variant="primary"] {
+    &:not([quiet]):not([disabled]) {
+      @apply bg-primary-default;
+      @apply border-primary-default;
+      @apply text-black-50;
+      &:hover {
+        @apply bg-primary-hover;
+        @apply border-primary-hover;
+      }
+    }
+    &[quiet]:not([disabled]) {
+      @apply bg-transparent;
+      @apply border-black-500;
+      @apply text-black-500;
+      &:hover {
+        @apply bg-black-100;
+        @apply border-black-600;
+      }
+    }
+    &:not([quiet])[disabled] {
+      @apply bg-black-200;
+      @apply border-black-200;
+      @apply text-black-50;
+    }
+    &[quiet][disabled] {
+      @apply bg-transparent;
+      @apply border-black-200;
+      @apply text-black-200;
+    }
   }
   &[variant="secondary"] {
-    @apply border-black-400;
-    @apply text-black-800;
-    &:hover {
-      @apply bg-black-300;
+    &:not([quiet]):not([disabled]) {
+      @apply bg-secondary-default;
+      @apply border-secondary-default;
+      @apply text-black-50;
+      &:hover {
+        @apply bg-secondary-hover;
+        @apply border-secondary-hover;
+      }
+    }
+    &[quiet]:not([disabled]) {
+      @apply bg-transparent;
+      @apply border-black-500;
+      @apply text-black-500;
+      &:hover {
+        @apply bg-black-100;
+        @apply border-black-600;
+      }
+    }
+    &:not([quiet])[disabled] {
+      @apply bg-black-200;
+      @apply border-black-200;
+      @apply text-black-50;
+    }
+    &[quiet][disabled] {
+      @apply bg-transparent;
+      @apply border-black-200;
+      @apply text-black-200;
+    }
+  }
+
+  &[variant="negative"] {
+    &:not([quiet]):not([disabled]) {
+      @apply bg-negative-default;
+      @apply border-negative-default;
+      @apply text-black-50;
+      &:hover {
+        @apply bg-negative-hover;
+        @apply border-negative-hover;
+      }
+    }
+    &[quiet]:not([disabled]) {
+      @apply bg-transparent;
+      @apply border-red-500;
+      @apply text-red-500;
+      &:hover {
+        @apply bg-red-100;
+        @apply border-red-600;
+      }
+    }
+    &:not([quiet])[disabled] {
+      @apply bg-red-200;
+      @apply border-red-200;
+      @apply text-black-50;
+    }
+    &[quiet][disabled] {
+      @apply bg-transparent;
+      @apply border-red-200;
+      @apply text-red-200;
     }
   }
 }

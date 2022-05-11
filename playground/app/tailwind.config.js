@@ -43,11 +43,27 @@ function addColors() {
       transparent: "transparent",
       currentColor: "currentColor",
       white: withOpacityValue("--black-50"),
+      cta: {
+        muted: withOpacityValue("--blue-200"),
+        default: withOpacityValue("--blue-600"),
+        hover: withOpacityValue("--blue-700")
+      },
       primary: {
-        muted: withOpacityValue("--blue-100"),
-        default: withOpacityValue("--blue-400"),
-        accent: withOpacityValue("--blue-700")
-      }
+        muted: withOpacityValue("--black-300"),
+        default: withOpacityValue("--black-800"),
+        hover: withOpacityValue("--black-900")
+      },
+      secondary: {
+        muted: withOpacityValue("--black-200"),
+        default: withOpacityValue("--black-200"),
+        hover: withOpacityValue("--black-300")
+      },
+      negative: {
+        muted: withOpacityValue("--red-300"),
+        default: withOpacityValue("--red-600"),
+        hover: withOpacityValue("--red-700")
+      },
+ 
   });
   fs.writeFileSync("tailwind.colors.md", output.join("\n\n"));
   return builtColors;

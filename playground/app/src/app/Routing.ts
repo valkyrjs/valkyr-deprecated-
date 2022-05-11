@@ -2,6 +2,7 @@ import { Routes } from "@angular/router";
 import { AuthGuard, GuestGuard } from "@valkyr/angular";
 
 import { AuthorizationComponent } from "./Authorization";
+import { DesignSystemComponent } from "./DesignSystem";
 import { DiscoveryComponent } from "./Discovery";
 import { TextEditorComponent } from "./TextEditor";
 import { TodoListComponent } from "./Todo/List/Component";
@@ -36,5 +37,10 @@ export const routes: Routes = [
     path: "editor",
     component: DiscoveryComponent,
     children: [{ path: "", component: TextEditorComponent }]
+  },
+  {
+    path: "ui",
+    component: DiscoveryComponent,
+    children: [{ path: "", component: DesignSystemComponent }]
   }
 ];
