@@ -1,4 +1,3 @@
-import { Directive, Injector, OnDestroy } from "@angular/core";
 import { Options, RawObject } from "@valkyr/db";
 
 import { StreamService } from "../Ledger/StreamService";
@@ -7,48 +6,48 @@ export interface Type<T = any> extends Function {
   new (...args: any[]): T;
 }
 
-@Directive()
-export abstract class DataSubscriber implements OnDestroy {
-  #subscriptions: Subscription[] = [];
-  #stream: StreamService;
+export abstract class DataSubscriber {
+  abstract readonly subscriber: DataSubscriberService<any>;
 
-  constructor(inject: Injector) {
-    this.#stream = inject.get(StreamService);
+  get subscribe() {
+    return this.subscriber.subscribe.bind(this.subscriber);
   }
 
-  ngOnDestroy(): void {
-    this.unsubscribe();
-  }
-
-  subscribe<T extends Type>(
-    model: T,
-    options: SubscribeToSingle,
-    next: (document: InstanceType<T> | undefined) => void
-  ): void;
-  subscribe<T extends Type>(model: T, options: SubscribeToMany, next: (documents: InstanceType<T>[]) => void): void;
-  subscribe<T extends Type>(
-    model: T,
-    options: SubscriptionOptions,
-    next: (documents: InstanceType<T>[] | InstanceType<T> | undefined) => void
-  ): void {
-    this.#subscriptions.push(new Subscription(model, options, next, this.#stream));
-  }
-
-  unsubscribe() {
-    this.#subscriptions = this.#subscriptions.reduce((_, subscription) => {
-      subscription.unsubscribe();
-      return _;
-    }, []);
+  get unsubscribe() {
+    return this.subscriber.unsubscribe.bind(this.subscriber);
   }
 }
 
-export class Subscription<T extends Type = any> {
+export abstract class DataSubscriberService<T extends Type> {
+  abstract readonly stream: StreamService;
+  abstract readonly model: T;
+
+  #subscriptions = new Map<any, Subscription<T>[]>();
+
+  subscribe(ctx: any, options: SubscribeToSingle, next: SingleNextFn<T>): void;
+  subscribe(ctx: any, options: SubscribeToMany, next: ManyNextFn<T>): void;
+  subscribe(ctx: any, options: SubscriptionOptions, next: SingleNextFn<T> | ManyNextFn<T>): void {
+    const subscription = new Subscription<T>(this.model, options, next, this.stream);
+    const subscriptions = this.#subscriptions.get(ctx);
+    if (subscriptions) {
+      subscriptions.push(subscription);
+    } else {
+      this.#subscriptions.set(ctx, [subscription]);
+    }
+  }
+
+  unsubscribe(ctx: any) {
+    for (const subscription of this.#subscriptions.get(ctx) ?? []) {
+      subscription.unsubscribe();
+    }
+  }
+}
+
+class Subscription<T extends Type> {
   readonly #stream: StreamService;
   readonly #subscribers: { unsubscribe: () => void }[] = [];
 
-  constructor(model: T, options: SubscribeToSingle, next: SingleNextFn<T>, stream: StreamService);
-  constructor(model: T, options: SubscribeToMany, next: ManyNextFn<T>, stream: StreamService);
-  constructor(model: T, options: SubscriptionOptions, next: NextFn<T>, stream: StreamService) {
+  constructor(model: T, options: SubscriptionOptions, next: SingleNextFn<T> | ManyNextFn<T>, stream: StreamService) {
     this.#stream = stream;
 
     const queryCriteria = options?.criteria ?? {};
@@ -113,7 +112,19 @@ function getQueryOptions({ sort, skip, limit }: Options): Options {
   return options;
 }
 
-export type SubscriptionOptions = {
+type SingleNextFn<T extends Type> = (document: InstanceType<T> | undefined) => void;
+type ManyNextFn<T extends Type> = (documents: InstanceType<T>[]) => void;
+type NextFn<T extends Type> = (documents: InstanceType<T>[] | InstanceType<T> | undefined) => void;
+
+type SubscribeToSingle = SubscriptionOptions & {
+  limit: 1;
+};
+
+type SubscribeToMany = SubscriptionOptions & {
+  limit?: number;
+};
+
+type SubscriptionOptions = {
   criteria?: RawObject;
   stream?: StreamSubscriptionOptions;
 } & Options;
@@ -129,15 +140,3 @@ type StreamSubscriptionOptions =
       streamIds: string[];
       endpoint?: undefined;
     };
-
-export type SubscribeToSingle = SubscriptionOptions & {
-  limit: 1;
-};
-
-export type SubscribeToMany = SubscriptionOptions & {
-  limit?: number;
-};
-
-type SingleNextFn<T extends Type> = (document: InstanceType<T> | undefined) => void;
-type ManyNextFn<T extends Type> = (documents: InstanceType<T>[]) => void;
-type NextFn<T extends Type> = (documents: InstanceType<T>[] | InstanceType<T> | undefined) => void;

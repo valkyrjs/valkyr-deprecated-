@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { LedgerService, LedgerSubscription, Menu } from "@valkyr/angular";
 
 import { getFooterMenu, getMainMenu } from "./Menu";
-import { WorkspaceSelectorService } from "./Services/WorkspaceSelectorService";
+import { WorkspaceService } from "./Services/Workspace";
 
 @Component({
   selector: "workspace",
@@ -16,7 +16,7 @@ export class WorkspaceComponent implements OnDestroy {
 
   #subscription?: LedgerSubscription;
 
-  constructor(readonly selector: WorkspaceSelectorService, readonly ledger: LedgerService, route: ActivatedRoute) {
+  constructor(readonly workspace: WorkspaceService, readonly ledger: LedgerService, route: ActivatedRoute) {
     const workspaceId = route.snapshot.paramMap.get("workspace");
     if (!workspaceId) {
       throw new Error("WorkspaceComponent Violation: Could not resolve workspace id");
@@ -27,7 +27,7 @@ export class WorkspaceComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.selector.current = undefined;
+    this.workspace.selected = undefined;
     this.#subscription?.unsubscribe();
   }
 
@@ -37,7 +37,7 @@ export class WorkspaceComponent implements OnDestroy {
   }
 
   #loadSelector(workspaceId: string) {
-    this.selector.current = workspaceId;
+    this.workspace.selected = workspaceId;
   }
 
   #loadWorkspace(workspaceId: string) {

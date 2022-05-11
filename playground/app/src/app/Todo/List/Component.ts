@@ -1,26 +1,24 @@
-import { Component, Inject, Injector, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { DataSubscriber, DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
+import { DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
 
-import { Todo, TodoModel } from "../Models/Todo";
-import { TodoItem, TodoItemModel } from "../Models/TodoItem";
+import { TodoItem } from "../Models/TodoItem";
+import { TodoService } from "../Services/Todo";
+import { TodoItemService } from "../Services/TodoItem";
 
 @Component({
   selector: "todo-list",
   templateUrl: "./Template.html"
 })
-export class TodoListComponent extends DataSubscriber implements OnInit {
+export class TodoListComponent implements OnInit, OnDestroy {
   items: TodoItem[] = [];
 
   constructor(
-    @Inject(Todo) readonly todo: TodoModel,
-    @Inject(TodoItem) readonly todoItem: TodoItemModel,
+    readonly todo: TodoService,
+    readonly item: TodoItemService,
     readonly route: ActivatedRoute,
-    readonly title: TitleService,
-    injector: Injector
-  ) {
-    super(injector);
-  }
+    readonly title: TitleService
+  ) {}
 
   ngOnInit(): void {
     const todoId = this.route.snapshot.paramMap.get("todo");
@@ -31,9 +29,14 @@ export class TodoListComponent extends DataSubscriber implements OnInit {
     this.#loadTodoList(todoId);
   }
 
+  ngOnDestroy(): void {
+    this.todo.unsubscribe(this);
+    this.item.unsubscribe(this);
+  }
+
   #loadTodo(todoId: string) {
-    this.subscribe(
-      this.todo,
+    this.todo.subscribe(
+      this,
       {
         criteria: { id: todoId },
         limit: 1,
@@ -51,8 +54,8 @@ export class TodoListComponent extends DataSubscriber implements OnInit {
   }
 
   #loadTodoList(todoId: string) {
-    this.subscribe(
-      this.todoItem,
+    this.item.subscribe(
+      this,
       {
         criteria: { todoId }
       },

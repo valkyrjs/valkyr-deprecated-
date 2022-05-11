@@ -1,26 +1,25 @@
-import { Component, Inject, Injector, OnInit } from "@angular/core";
-import { AuthService, DataSubscriber, DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { AuthService, DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
 
 import { CreateWorkspaceDialog } from "../Dialogues/CreateWorkspace/Component";
-import { Workspace, WorkspaceModel } from "../Models/Workspace";
+import { Workspace } from "../Models/Workspace";
+import { WorkspaceService } from "../Services/Workspace";
 
 @Component({
   selector: "workspace-landing",
   templateUrl: "./Template.html"
 })
-export class LandingComponent extends DataSubscriber implements OnInit {
+export class LandingComponent implements OnInit, OnDestroy {
   workspaces: Workspace[] = [];
   name = "";
 
   constructor(
-    @Inject(Workspace) readonly model: WorkspaceModel,
     readonly modal: ModalService<CreateWorkspaceDialog>,
+    readonly workspace: WorkspaceService,
     readonly auth: AuthService,
-    title: TitleService,
-    injector: Injector
+    title: TitleService
   ) {
-    super(injector);
     title.set("Workspaces", DOCUMENT_TITLE, "discovery");
   }
 
@@ -28,9 +27,13 @@ export class LandingComponent extends DataSubscriber implements OnInit {
     this.#loadWorkspaces();
   }
 
+  ngOnDestroy(): void {
+    this.workspace.unsubscribe(this);
+  }
+
   #loadWorkspaces() {
-    this.subscribe(
-      this.model,
+    this.workspace.subscribe(
+      this,
       {
         criteria: {
           "members.accountId": this.auth.auditor

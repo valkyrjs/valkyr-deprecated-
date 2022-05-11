@@ -1,39 +1,41 @@
-import { Component, Inject, Injector, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, ParamMap } from "@angular/router";
-import { DataSubscriber, DOCUMENT_TITLE, ParamsService, TitleService } from "@valkyr/angular";
+import { DOCUMENT_TITLE, ParamsService, TitleService } from "@valkyr/angular";
 
-import { Workspace, WorkspaceModel } from "../Models/Workspace";
+import { Workspace } from "../Models/Workspace";
+import { WorkspaceService } from "../Services/Workspace";
 
 @Component({
   selector: "workspace-dashboard",
   templateUrl: "./Template.html"
 })
-export class DashboardComponent extends DataSubscriber implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   workspace?: Workspace;
 
   constructor(
-    @Inject(Workspace) readonly model: WorkspaceModel,
+    readonly service: WorkspaceService,
     readonly route: ActivatedRoute,
     readonly params: ParamsService,
-    readonly title: TitleService,
-    injector: Injector
-  ) {
-    super(injector);
-  }
+    readonly title: TitleService
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe({
       next: (params: ParamMap) => {
         const id = params.get("workspace")!;
-        this.getWorkspace(id);
+        this.#loadWorkspace(id);
         this.params.next(params);
       }
     });
   }
 
-  getWorkspace(id: string) {
-    this.subscribe(
-      this.model,
+  ngOnDestroy(): void {
+    this.service.unsubscribe(this);
+  }
+
+  #loadWorkspace(id: string) {
+    this.service.subscribe(
+      this,
       {
         criteria: { id },
         limit: 1,

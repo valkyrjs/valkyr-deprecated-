@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
 import { AuthService, LedgerService, ModalService } from "@valkyr/angular";
-import { WorkspaceSelectorService } from "src/app/Workspace/Services/WorkspaceSelectorService";
 import { WorkspaceStore } from "stores";
 
+import { WorkspaceService } from "../../../Workspace";
 import { TodoService } from "../../Services/Todo";
 
 @Component({
@@ -12,16 +12,16 @@ export class CreateTodoDialog {
   name = "";
 
   constructor(
-    private modal: ModalService,
-    private ledger: LedgerService,
-    private todo: TodoService,
     private auth: AuthService,
-    private selector: WorkspaceSelectorService
+    private ledger: LedgerService,
+    private modal: ModalService,
+    private todo: TodoService,
+    readonly workspace: WorkspaceService
   ) {}
 
   async create() {
     this.close();
-    const workspaceId = this.selector.current;
+    const workspaceId = this.workspace.selected;
     if (!workspaceId) {
       throw new Error("Could not resolve workspace id");
     }

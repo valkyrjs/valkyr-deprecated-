@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
 
-import { WorkspaceService } from "../../Services/WorkspaceService";
+import { WorkspaceService } from "../../Services/Workspace";
 
 @Component({
   templateUrl: "./Template.html"

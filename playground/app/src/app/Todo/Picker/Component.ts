@@ -1,35 +1,32 @@
-import { Component, Inject, Injector, OnInit } from "@angular/core";
-import { DataSubscriber, DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
-import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
-import { WorkspaceSelectorService } from "src/app/Workspace/Services/WorkspaceSelectorService";
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
+import { ModalService } from "@valkyr/angular";
 
-import { Workspace, WorkspaceModel } from "../../Workspace/Models/Workspace";
+import { WorkspaceService } from "../../Workspace";
 import { CreateTodoDialog } from "../Dialogues/CreateTodo/Component";
-import { Todo, TodoModel } from "../Models/Todo";
+import { Todo } from "../Models/Todo";
+import { TodoService } from "../Services/Todo";
 
 @Component({
   selector: "todo-picker",
   templateUrl: "./Template.html"
 })
-export class TodoPickerComponent extends DataSubscriber implements OnInit {
-  public todos: Todo[] = [];
+export class TodoPickerComponent implements OnInit, OnDestroy {
+  todos: Todo[] = [];
 
-  public name = "";
+  name = "";
 
   constructor(
-    @Inject(Workspace) readonly workspace: WorkspaceModel,
-    @Inject(Todo) readonly todo: TodoModel,
-    readonly selector: WorkspaceSelectorService,
+    readonly workspace: WorkspaceService,
+    readonly todo: TodoService,
     readonly modal: ModalService,
-    readonly title: TitleService,
-    injector: Injector
+    readonly title: TitleService
   ) {
-    super(injector);
     title.set("Todos", DOCUMENT_TITLE, "workspace");
   }
 
   ngOnInit(): void {
-    const workspaceId = this.selector.current;
+    const workspaceId = this.workspace.selected;
     if (!workspaceId) {
       throw new Error("TodoPickerComponent Violation: Could not resolve current workspace");
     }
@@ -37,8 +34,13 @@ export class TodoPickerComponent extends DataSubscriber implements OnInit {
     this.#loadTodos(workspaceId);
   }
 
+  ngOnDestroy(): void {
+    this.workspace.unsubscribe(this);
+    this.todo.unsubscribe(this);
+  }
+
   #loadWorkspace(workspaceId: string) {
-    this.subscribe(this.workspace, { criteria: { id: workspaceId }, limit: 1 }, (workspace) => {
+    this.workspace.subscribe(this, { criteria: { id: workspaceId }, limit: 1 }, (workspace) => {
       if (workspace) {
         this.title.set(`${workspace.name} Todos`, DOCUMENT_TITLE, "workspace");
       }
@@ -46,8 +48,8 @@ export class TodoPickerComponent extends DataSubscriber implements OnInit {
   }
 
   #loadTodos(workspaceId: string) {
-    this.subscribe(
-      this.todo,
+    this.todo.subscribe(
+      this,
       {
         criteria: { workspaceId },
         stream: {
