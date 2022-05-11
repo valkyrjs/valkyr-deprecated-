@@ -2,17 +2,34 @@
   <header class="bg-black-300 px-6 py-3 mb-6">
     <h2 class="uppercase divacking-widest text-sm">Buttons</h2>
   </header>
-  <div class="w-full">
-    <div class="w-full flex gap-24 p-6">
-      <div class="text-left w-64"></div>
-      <div class="text-left w-full py-3 border-b-4 border-black-900">Default</div>
-      <div class="text-left w-full">Hover</div>
-      <div class="text-left w-full">Down</div>
-      <div class="text-left w-full">Focus</div>
-      <div class="text-left w-full">Disabled</div>
-    </div>
-    <ul>
-      <li id="{{btn.variant}}" *ngFor="let btn of btns">{{btn.label}}</li>
-    </ul>
-  </div>
+  <table class="w-full">
+    <thead>
+      <tr class="py-3">
+        <th class="w-32"></th>
+        <th class="text-left border-b-4 border-black-900">Default</th>
+        <th class="text-left border-b-4 border-black-900">Outline</th>
+        <th class="text-left border-b-4 border-black-900">Disabled</th>
+        <th class="text-left border-b-4 border-black-900">Outline Disabled</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let btn of btns">
+        <td class="pt-3">
+          <h6 class="w-32 text-xs uppercase tracking-wider">{{btn.label}}</h6>
+        </td>
+        <td class="pt-3">
+          <button [variant]="btn.variant">Action</button>
+        </td>
+        <td class="pt-3">
+          <button [variant]="btn.variant" outline>Action</button>
+        </td>
+        <td class="pt-3">
+          <button [variant]="btn.variant" disabled>Action</button>
+        </td>
+        <td class="pt-3">
+          <button [variant]="btn.variant" outline disabled>Action</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </section>

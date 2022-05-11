@@ -1,49 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-html, body {
-  @apply bg-black-50;
-  @apply text-black-900;
-}
-// Valkyr Modal
-
-vlk-modal-container {
-  @apply absolute inset-0 grid place-items-center h-screen antialiased z-40;
-
-  .vlk-modal-overlay {
-    @apply absolute inset-0 w-full h-screen overflow-hidden z-40;
-    @apply bg-black-100 bg-opacity-40;
-  }
-  
-  .vlk-modal-dialog {
-    @apply relative z-50;
-    @apply -translate-y-1/2;
-    @apply px-8 py-6;
-    @apply w-96;
-    @apply rounded-sm drop-shadow-md;
-    @apply bg-black-50;
-  
-    vlk-modal-header {
-      @apply block;
-      @apply flex justify-start items-center;
-      @apply w-full;
-      @apply border-b-2 border-black-400;
-      @apply pb-2;
-      @apply mb-3;
-    }
-    
-    vlk-modal-content {
-      @apply py-5;
-    }
-    vlk-modal-footer {
-      @apply pt-6;
-      @apply flex justify-end items-center gap-3;
-    }
-  }
-}
-
-button[variant] {
+:host[variant] {
   @apply border-2;
   @apply border-transparent;
   @apply m-0;
@@ -177,3 +132,5 @@ button[variant] {
     }
   }
 }
+
+
