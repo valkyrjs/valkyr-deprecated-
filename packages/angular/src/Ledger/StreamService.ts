@@ -7,9 +7,7 @@ type Subscription = {
   unsubscribe: () => void;
 };
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable({ providedIn: "root" })
 export class StreamService {
   constructor(readonly remoteService: RemoteService, readonly ledgerService: LedgerService) {}
 
