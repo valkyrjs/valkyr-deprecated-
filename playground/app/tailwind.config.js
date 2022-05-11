@@ -19,7 +19,7 @@ function addColors() {
     "blue",
   ];
 
-  const output = [`// generated ${new Date().toString()}`];
+  const output = [];
   const coloredWeights = [100, 400, 500, 600, 700];
   const blackWeights = [50, 75, 100, 200, 300, 400, 500, 600, 700, 800, 900];
   const shapes = ["text", "stroke", "border", "bg", "ring", "from", "to"];
@@ -41,11 +41,13 @@ function addColors() {
     return allColors;
   }, {
       transparent: "transparent",
+      currentColor: "currentColor",
       white: withOpacityValue("--black-50"),
-      primary: "var(--blue-400)",
-      "primary-muted": "var(--blue-400)",
-      "primary-light": "#0469e3",
-      "primary-dark": "#0057be",
+      primary: {
+        muted: withOpacityValue("--blue-100"),
+        default: withOpacityValue("--blue-400"),
+        accent: withOpacityValue("--blue-700")
+      }
   });
   fs.writeFileSync("tailwind.colors.md", output.join("\n\n"));
   return builtColors;

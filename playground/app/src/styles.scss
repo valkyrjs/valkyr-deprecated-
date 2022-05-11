@@ -56,12 +56,13 @@ button[variant] {
   @apply text-sm font-semibold;
   @apply leading-none;
   &[variant="primary"] {
-    @apply bg-blue-400;
-    @apply border-blue-400;
+    @apply bg-primary-default;
+    @apply border-primary-default;
     @apply text-black-50;
     &:hover {
-      @apply bg-blue-600;
-    }
+      @apply bg-primary-accent;
+      @apply border-primary-accent;
+      }
   }
   &[variant="secondary"] {
     @apply border-black-400;
