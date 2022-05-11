@@ -3,9 +3,7 @@ import { AuthService, LedgerService } from "@valkyr/angular";
 import { generateStreamId } from "@valkyr/ledger";
 import { WorkspaceStore } from "stores";
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable({ providedIn: "root" })
 export class WorkspaceService {
   constructor(private ledger: LedgerService, private auth: AuthService) {}
 

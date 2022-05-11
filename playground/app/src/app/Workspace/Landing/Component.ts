@@ -1,9 +1,9 @@
-import { Component, Injector, OnInit } from "@angular/core";
+import { Component, Inject, Injector, OnInit } from "@angular/core";
 import { AuthService, DataSubscriber, DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
 
 import { CreateWorkspaceDialog } from "../Dialogues/CreateWorkspace/Component";
-import { Workspace } from "../Models/Workspace";
+import { Workspace, WorkspaceModel } from "../Models/Workspace";
 
 @Component({
   selector: "workspace-landing",
@@ -14,6 +14,7 @@ export class LandingComponent extends DataSubscriber implements OnInit {
   name = "";
 
   constructor(
+    @Inject(Workspace) readonly model: WorkspaceModel,
     readonly modal: ModalService<CreateWorkspaceDialog>,
     readonly auth: AuthService,
     title: TitleService,
@@ -29,7 +30,7 @@ export class LandingComponent extends DataSubscriber implements OnInit {
 
   #loadWorkspaces() {
     this.subscribe(
-      Workspace,
+      this.model,
       {
         criteria: {
           "members.accountId": this.auth.auditor

@@ -1,8 +1,8 @@
-import { Component, Injector, OnInit } from "@angular/core";
+import { Component, Inject, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 import { DataSubscriber, DOCUMENT_TITLE, ParamsService, TitleService } from "@valkyr/angular";
 
-import { Workspace } from "../Models/Workspace";
+import { Workspace, WorkspaceModel } from "../Models/Workspace";
 
 @Component({
   selector: "workspace-dashboard",
@@ -12,6 +12,7 @@ export class DashboardComponent extends DataSubscriber implements OnInit {
   workspace?: Workspace;
 
   constructor(
+    @Inject(Workspace) readonly model: WorkspaceModel,
     readonly route: ActivatedRoute,
     readonly params: ParamsService,
     readonly title: TitleService,
@@ -32,7 +33,7 @@ export class DashboardComponent extends DataSubscriber implements OnInit {
 
   getWorkspace(id: string) {
     this.subscribe(
-      Workspace,
+      this.model,
       {
         criteria: { id },
         limit: 1,

@@ -1,22 +1,14 @@
-import { Collection, Document, IndexedDbAdapter, Model } from "@valkyr/db";
+import { Document, Model } from "@valkyr/db";
 import { WorkspaceStore } from "stores";
 
-type WorkspaceDocument = Document & {
+export type WorkspaceDocument = Document & {
   name: string;
   color: string;
   invites: WorkspaceStore.State["invites"];
   members: WorkspaceStore.State["members"];
 };
 
-/*
- |--------------------------------------------------------------------------------
- | Workspace
- |--------------------------------------------------------------------------------
- */
-
 export class Workspace extends Model<WorkspaceDocument> {
-  public static override readonly $collection = new Collection<WorkspaceDocument>("workspaces", new IndexedDbAdapter());
-
   public readonly name!: WorkspaceDocument["name"];
   public readonly color!: WorkspaceDocument["color"];
   public readonly invites: Invites;
@@ -31,6 +23,8 @@ export class Workspace extends Model<WorkspaceDocument> {
     Object.freeze(this);
   }
 }
+
+export type WorkspaceModel = typeof Workspace;
 
 /*
  |--------------------------------------------------------------------------------

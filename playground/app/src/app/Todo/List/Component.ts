@@ -1,9 +1,9 @@
-import { Component, Injector, OnInit } from "@angular/core";
+import { Component, Inject, Injector, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { DataSubscriber, DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
 
-import { Todo } from "../Models/Todo";
-import { TodoItem } from "../Models/TodoItem";
+import { Todo, TodoModel } from "../Models/Todo";
+import { TodoItem, TodoItemModel } from "../Models/TodoItem";
 
 @Component({
   selector: "todo-list",
@@ -12,7 +12,13 @@ import { TodoItem } from "../Models/TodoItem";
 export class TodoListComponent extends DataSubscriber implements OnInit {
   items: TodoItem[] = [];
 
-  constructor(readonly route: ActivatedRoute, readonly title: TitleService, injector: Injector) {
+  constructor(
+    @Inject(Todo) readonly todo: TodoModel,
+    @Inject(TodoItem) readonly todoItem: TodoItemModel,
+    readonly route: ActivatedRoute,
+    readonly title: TitleService,
+    injector: Injector
+  ) {
     super(injector);
   }
 
@@ -27,7 +33,7 @@ export class TodoListComponent extends DataSubscriber implements OnInit {
 
   #loadTodo(todoId: string) {
     this.subscribe(
-      Todo,
+      this.todo,
       {
         criteria: { id: todoId },
         limit: 1,
@@ -46,7 +52,7 @@ export class TodoListComponent extends DataSubscriber implements OnInit {
 
   #loadTodoList(todoId: string) {
     this.subscribe(
-      TodoItem,
+      this.todoItem,
       {
         criteria: { todoId }
       },

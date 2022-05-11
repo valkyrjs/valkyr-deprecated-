@@ -1,13 +1,13 @@
-import { Collection, Document, IndexedDbAdapter, Model } from "@valkyr/db";
+import { Document, Model } from "@valkyr/db";
 
-type TodoDocument = Document & {
+export type TodoDocument = Document & {
   workspaceId: string;
   name: string;
 };
 
 export class Todo extends Model<TodoDocument> {
-  public static override readonly $collection = new Collection<TodoDocument>("todos", new IndexedDbAdapter());
-
-  public readonly workspaceId!: TodoDocument["workspaceId"];
-  public readonly name!: TodoDocument["name"];
+  readonly workspaceId!: TodoDocument["workspaceId"];
+  readonly name!: TodoDocument["name"];
 }
+
+export type TodoModel = typeof Todo;

@@ -1,6 +1,6 @@
-import { Collection, Document, IndexedDbAdapter, Model } from "@valkyr/db";
+import { Document, Model } from "@valkyr/db";
 
-type TodoItemDocument = Document & {
+export type TodoItemDocument = Document & {
   todoId: string;
   text: string;
   assignedTo?: string;
@@ -11,13 +11,13 @@ type TodoItemDocument = Document & {
 };
 
 export class TodoItem extends Model<TodoItemDocument> {
-  public static override readonly $collection = new Collection<TodoItemDocument>("todo-items", new IndexedDbAdapter());
-
-  public readonly todoId!: TodoItemDocument["todoId"];
-  public readonly text!: TodoItemDocument["text"];
-  public readonly assignedTo: TodoItemDocument["assignedTo"];
-  public readonly createdBy!: TodoItemDocument["createdBy"];
-  public readonly createdAt!: TodoItemDocument["createdAt"];
-  public readonly updatedAt?: TodoItemDocument["updatedAt"];
-  public readonly completedAt?: TodoItemDocument["completedAt"];
+  readonly todoId!: TodoItemDocument["todoId"];
+  readonly text!: TodoItemDocument["text"];
+  readonly assignedTo: TodoItemDocument["assignedTo"];
+  readonly createdBy!: TodoItemDocument["createdBy"];
+  readonly createdAt!: TodoItemDocument["createdAt"];
+  readonly updatedAt?: TodoItemDocument["updatedAt"];
+  readonly completedAt?: TodoItemDocument["completedAt"];
 }
+
+export type TodoItemModel = typeof TodoItem;
