@@ -15,12 +15,14 @@ const ProjectionMethod = {
   ALL: "all"
 };
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable({ providedIn: "root" })
 export class EventProjector {
   constructor() {
-    this.onProjectorInit();
+    const events = Reflect.getOwnMetadata(PROJECTOR_EVENT_METADATA, this.constructor);
+    for (const { key, event, method } of events) {
+      logger.log(`Registered ${event} { ${key}, ${method.toUpperCase()} }`);
+      projection[method as "on" | "once" | "all"](event, (this as any)[key].bind(this));
+    }
   }
 
   static register() {
@@ -29,14 +31,6 @@ export class EventProjector {
       useFactory: () => () => new this(),
       multi: true
     };
-  }
-
-  onProjectorInit() {
-    const events = Reflect.getOwnMetadata(PROJECTOR_EVENT_METADATA, this.constructor);
-    for (const { key, event, method } of events) {
-      logger.log(`Registered ${event} { ${key}, ${method.toUpperCase()} }`);
-      projection[method as "on" | "once" | "all"](event, (this as any)[key].bind(this));
-    }
   }
 }
 

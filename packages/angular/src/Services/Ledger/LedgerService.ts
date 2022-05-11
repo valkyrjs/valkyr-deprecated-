@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AggregateRootClass, createEventRecord, Event, EventStatus, projector, Queue } from "@valkyr/ledger";
+import { AggregateRootClass, createEventRecord, Event, EventStatus, projector, Queue, validator } from "@valkyr/ledger";
 
 import { RemoteService } from "../RemoteService";
 import { SocketService } from "../Socket/SocketService";
@@ -7,9 +7,7 @@ import { CursorModel } from "./Models/CursorModel";
 import { EventDocument, EventModel } from "./Models/EventModel";
 import { StreamSubscriber } from "./StreamSubscriber";
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable({ providedIn: "root" })
 export class LedgerService {
   readonly cursors = CursorModel;
   readonly events = EventModel;
@@ -45,7 +43,7 @@ export class LedgerService {
       return; // event already exists, no further actions required
     }
 
-    // todo(kodemon) add event validator
+    await validator.validate(event);
     await this.#queue.push(record, Promise.resolve, Promise.reject);
     await projector.project(event, { hydrated, outdated: status.outdated }).catch(console.log);
 

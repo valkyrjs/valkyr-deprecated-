@@ -1,6 +1,7 @@
 export * from "./Components/Modal";
 export * from "./Components/Modal";
 export * from "./Decorators/Projector";
+export * from "./Decorators/Validator";
 export * from "./Guards/AuthGuard";
 export * from "./Guards/GuestGuard";
 export * from "./Helpers/DataSubscriber";

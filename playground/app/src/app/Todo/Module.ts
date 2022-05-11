@@ -10,11 +10,12 @@ import { TodoPickerComponent } from "./Picker/Component";
 import { TodoProjector } from "./Projector";
 import { TodoService } from "./Services/Todo";
 import { TodoItemService } from "./Services/TodoItem";
+import { TodoValidator } from "./Validator";
 
 @NgModule({
   declarations: [TodoPickerComponent, TodoListComponent, CreateTodoDialog],
   imports: [BrowserModule, FormsModule, RouterModule, ModalModule],
-  providers: [TodoService, TodoItemService, TodoProjector.register()],
+  providers: [TodoService, TodoItemService, TodoValidator.register(), TodoProjector.register()],
   exports: [TodoPickerComponent, TodoListComponent]
 })
 export class TodoModule {}
