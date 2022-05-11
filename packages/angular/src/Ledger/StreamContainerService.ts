@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import { ActivationEnd, Params, Router } from "@angular/router";
 
-import { SubscriberService } from "../../Helpers/SubscriberService";
+import { SubscriberService } from "../Helpers/SubscriberService";
 import { LedgerService } from "./LedgerService";
 
 type StreamContainer = {

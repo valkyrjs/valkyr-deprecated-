@@ -1,7 +1,7 @@
 import { Directive, Injector, OnDestroy } from "@angular/core";
 import { Options, RawObject } from "@valkyr/db";
 
-import { StreamService } from "../Services/Ledger/StreamService";
+import { StreamService } from "../Ledger/StreamService";
 
 export interface Type<T = any> extends Function {
   new (...args: any[]): T;

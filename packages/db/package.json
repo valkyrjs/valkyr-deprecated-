@@ -19,6 +19,7 @@
     "@valkyr/utils": "*",
     "idb-keyval": "^6.1.0",
     "mingo": "^6.0.5",
+    "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.5"
   }
 }

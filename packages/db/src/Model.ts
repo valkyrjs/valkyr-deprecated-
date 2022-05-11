@@ -5,16 +5,33 @@ import type { Collection, Options } from "./Collection";
 import { observe, observeOne } from "./Observe";
 import { Document, DocumentNotFoundError, UpdateActions } from "./Storage";
 
-export abstract class Model<D extends Document = any> {
-  public static readonly $collection: Collection;
+export type ModelDefinition<T = any> = {
+  name?: string;
+  model: ModelClass<T, any>;
+  collection: Collection;
+};
 
-  public readonly id!: string;
+export abstract class Model<D extends Document = any> {
+  static _collection: Collection;
+
+  readonly id!: string;
 
   constructor(document: D) {
     Object.assign(this, document);
   }
 
-  public get $collection(): Collection<D> {
+  static set $collection(collection: Collection) {
+    this._collection = collection;
+  }
+
+  static get $collection() {
+    if (!this._collection) {
+      throw new Error(`Model Violation: Collection for '${this.name}' has not been resolved`);
+    }
+    return this._collection;
+  }
+
+  get $collection(): Collection<D> {
     return (this as any).constructor.$collection;
   }
 

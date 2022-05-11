@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { RemoteService } from "../RemoteService";
+import { RemoteService } from "../Services/RemoteService";
 import { LedgerService } from "./LedgerService";
 
 type Subscription = {

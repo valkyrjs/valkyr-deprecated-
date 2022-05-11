@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
-import { ModalModule } from "@valkyr/angular";
+import { AccessModule, LedgerModule, ModalModule } from "@valkyr/angular";
 
 import { AuthorizationModule } from "./Authorization";
 import { AppComponent } from "./Component";
@@ -12,11 +12,13 @@ import { WorkspaceModule } from "./Workspace";
 
 @NgModule({
   imports: [
-    BrowserModule,
-    RouterModule.forRoot(routes),
+    AccessModule,
     AuthorizationModule,
+    BrowserModule,
     DiscoveryModule,
+    LedgerModule,
     ModalModule,
+    RouterModule.forRoot(routes),
     TodoModule,
     WorkspaceModule
   ],

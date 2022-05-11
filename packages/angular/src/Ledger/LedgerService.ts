@@ -1,30 +1,40 @@
-import { Injectable } from "@angular/core";
-import { AggregateRootClass, createEventRecord, Event, EventStatus, projector, Queue, validator } from "@valkyr/ledger";
+import { Inject, Injectable } from "@angular/core";
+import {
+  AggregateRootClass,
+  createEventRecord,
+  Event as LedgerEvent,
+  EventStatus,
+  projector,
+  Queue,
+  validator
+} from "@valkyr/ledger";
 
-import { RemoteService } from "../RemoteService";
-import { SocketService } from "../Socket/SocketService";
-import { CursorModel } from "./Models/CursorModel";
-import { EventDocument, EventModel } from "./Models/EventModel";
+import { RemoteService } from "../Services/RemoteService";
+import { SocketService } from "../Services/Socket/SocketService";
+import { Cursor, CursorModel } from "./Models/Cursor";
+import { Event, EventDocument, EventModel } from "./Models/Event";
 import { StreamSubscriber } from "./StreamSubscriber";
 
 @Injectable({ providedIn: "root" })
 export class LedgerService {
-  readonly cursors = CursorModel;
-  readonly events = EventModel;
-
   readonly #streams: Record<string, StreamSubscriber> = {};
-  readonly #queue: Queue<Event>;
+  readonly #queue: Queue<LedgerEvent>;
 
-  constructor(readonly remote: RemoteService, readonly socket: SocketService) {
-    this.#queue = new Queue<Event>(this.#handleEvent.bind(this));
-    socket.on("ledger:event", (event: Event) => {
+  constructor(
+    @Inject(Cursor) readonly cursors: CursorModel,
+    @Inject(Event) readonly events: EventModel,
+    readonly remote: RemoteService,
+    readonly socket: SocketService
+  ) {
+    this.#queue = new Queue<LedgerEvent>(this.#handleEvent.bind(this));
+    socket.on("ledger:event", (event: LedgerEvent) => {
       this.append(event, true, true);
     });
   }
 
   // ### Event Handler
 
-  async #handleEvent(event: Event) {
+  async #handleEvent(event: LedgerEvent) {
     await this.events.insert(event);
   }
 
@@ -33,7 +43,7 @@ export class LedgerService {
   /**
    *
    */
-  async append(event: Event, hydrated = false, remote = false): Promise<void> {
+  async append(event: LedgerEvent, hydrated = false, remote = false): Promise<void> {
     const record = createEventRecord(event);
     const status = await this.status(event);
     if (status.exists === true) {
@@ -131,7 +141,7 @@ export class LedgerService {
    * of the request, we send a pull request to the attached remote service
    * before executing the local event query.
    */
-  async stream(streamId: string, timestamp?: string, sortDirection: 1 | -1 = 1): Promise<EventModel[]> {
+  async stream(streamId: string, timestamp?: string, sortDirection: 1 | -1 = 1): Promise<Event[]> {
     const filter: any = { streamId };
     if (timestamp) {
       filter.created = {
@@ -139,7 +149,7 @@ export class LedgerService {
       };
     }
     await this.pull(streamId);
-    return EventModel.find(filter, { sort: { created: sortDirection } });
+    return this.events.find(filter, { sort: { created: sortDirection } });
   }
 
   /**
@@ -161,7 +171,7 @@ export class LedgerService {
     }
     const recorded = await this.cursors.get(streamId);
     const url = `/ledger/${streamId}/pull` + (recorded ? `?recorded=${recorded}` : "");
-    const events = await this.remote.get<Event[]>(url);
+    const events = await this.remote.get<LedgerEvent[]>(url);
     if (events.length > 0) {
       for (const event of events) {
         await this.append(event, true, true);
@@ -172,7 +182,7 @@ export class LedgerService {
 
   // ### Subscription Utilities
 
-  relay(aggregate: string, streamId: string, event: Event) {
+  relay(aggregate: string, streamId: string, event: LedgerEvent) {
     this.socket.send("streams:relay", { aggregate, streamId, event });
   }
 
