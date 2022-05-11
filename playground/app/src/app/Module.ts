@@ -5,6 +5,7 @@ import { AccessModule, LedgerModule, ModalModule } from "@valkyr/angular";
 
 import { AuthorizationModule } from "./Authorization";
 import { AppComponent } from "./Component";
+import { DesignSystemModule } from "./DesignSystem/Module";
 import { DiscoveryModule } from "./Discovery";
 import { routes } from "./Routing";
 import { TodoModule } from "./Todo";
@@ -16,6 +17,7 @@ import { WorkspaceModule } from "./Workspace";
     AuthorizationModule,
     BrowserModule,
     DiscoveryModule,
+    DesignSystemModule,
     LedgerModule,
     ModalModule,
     RouterModule.forRoot(routes),
