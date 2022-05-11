@@ -58,13 +58,11 @@ class MenuItem {
     }
     return link;
   }
-}
 
-/*
- |--------------------------------------------------------------------------------
- | Types
- |--------------------------------------------------------------------------------
- */
+  get icon(): string | undefined {
+    return this.#item.icon;
+  }
+}
 
 export type MenuSettings = {
   categories: Category[];
@@ -74,12 +72,14 @@ export type MenuSettings = {
 
 type Category = {
   name?: string;
+  icon?: string;
   items: Item[];
 };
 
 type Item = {
   name: string;
   href: string;
+  icon?: string;
 };
 
 type Params = Record<string, string>;
