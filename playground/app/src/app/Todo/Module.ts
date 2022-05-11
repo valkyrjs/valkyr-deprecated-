@@ -4,6 +4,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { Database, ModalModule } from "@valkyr/angular";
 import { Collection, IndexedDbAdapter } from "@valkyr/db";
+import { ButtonModule } from "@valkyr/tailwind";
 
 import { CreateTodoDialog } from "./Dialogues/CreateTodo/Component";
 import { TodoListComponent } from "./List/Component";
@@ -17,7 +18,7 @@ import { TodoValidator } from "./Validator";
 
 @NgModule({
   declarations: [TodoPickerComponent, TodoListComponent, CreateTodoDialog],
-  imports: [BrowserModule, FormsModule, RouterModule, ModalModule],
+  imports: [BrowserModule, FormsModule, RouterModule, ButtonModule, ModalModule],
   providers: [
     Database.for([
       {

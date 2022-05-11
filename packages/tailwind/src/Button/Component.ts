@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input } from "@angular/core";
 
 @Component({
-  selector: "button",
+  selector: "button[variant]",
   templateUrl: "./Template.html",
   styleUrls: ["./Style.scss"]
 })
