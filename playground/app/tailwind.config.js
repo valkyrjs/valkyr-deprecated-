@@ -4,7 +4,7 @@ const fs = require("fs");
 
 function addColors() {
   const colors = [
-    "black",
+    "gray",
     "celery",
     "chartreuse",
     "yellow",
@@ -20,7 +20,8 @@ function addColors() {
   ];
 
   const output = [];
-  const coloredWeights = [100, 400, 500, 600, 700];
+  const coloredWeights = [400, 500, 600, 700];
+  const brandColoredWeights = [100, 400, 500, 600, 700];
   const blackWeights = [50, 75, 100, 200, 300, 400, 500, 600, 700, 800, 900];
   const shapes = ["text", "stroke", "border", "bg", "ring", "from", "to"];
   const prefixes = ["", "hover:", "focus:"];
@@ -28,7 +29,7 @@ function addColors() {
   const builtColors = colors.reduce((allColors, color) => {
     const out = [];
     allColors[color] = {};
-    const weights = (color === "black") ? blackWeights : coloredWeights;
+    const weights = (color === "gray") ? blackWeights : ["blue","red"].includes(color) ? brandColoredWeights : coloredWeights;
     for(const weight of weights) {
       allColors[color][weight] = withOpacityValue(`--${color}-${weight}`);
       for(const prefix of prefixes) {
@@ -42,24 +43,20 @@ function addColors() {
   }, {
       transparent: "transparent",
       currentColor: "currentColor",
-      white: withOpacityValue("--black-50"),
+      white: withOpacityValue("--gray-50"),
       cta: {
-        muted: withOpacityValue("--blue-200"),
         default: withOpacityValue("--blue-600"),
         hover: withOpacityValue("--blue-700")
       },
       primary: {
-        muted: withOpacityValue("--black-300"),
-        default: withOpacityValue("--black-800"),
-        hover: withOpacityValue("--black-900")
+        default: withOpacityValue("--gray-800"),
+        hover: withOpacityValue("--gray-900")
       },
       secondary: {
-        muted: withOpacityValue("--black-200"),
-        default: withOpacityValue("--black-200"),
-        hover: withOpacityValue("--black-300")
+        default: withOpacityValue("--gray-200"),
+        hover: withOpacityValue("--gray-300")
       },
       negative: {
-        muted: withOpacityValue("--red-300"),
         default: withOpacityValue("--red-600"),
         hover: withOpacityValue("--red-700")
       },
@@ -86,7 +83,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter var", ...defaultTheme.fontFamily.sans],
+        sans: ["ubuntu", ...defaultTheme.fontFamily.sans],
       },
       gridTemplateAreas: {
         "layout": [
@@ -107,9 +104,9 @@ module.exports = {
                    56px
                    1fr`,
         "workspaces": "repeat(auto-fill, 256px)"
-      },    
-      colors: addColors()
-    },    
+      }
+    },
+    colors: addColors()
   },
   plugins: [
     require("@tailwindcss/aspect-ratio"),

@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 html, body {
-  @apply bg-black-50;
-  @apply text-black-900;
+  @apply bg-gray-50;
+  @apply text-gray-900;
 }
 // Valkyr Modal
 
@@ -13,7 +13,7 @@ vlk-modal-container {
 
   .vlk-modal-overlay {
     @apply absolute inset-0 w-full h-screen overflow-hidden z-40;
-    @apply bg-black-100 bg-opacity-40;
+    @apply bg-gray-100 bg-opacity-40;
   }
   
   .vlk-modal-dialog {
@@ -22,13 +22,13 @@ vlk-modal-container {
     @apply px-8 py-6;
     @apply w-96;
     @apply rounded-sm drop-shadow-md;
-    @apply bg-black-50;
+    @apply bg-gray-50;
   
     vlk-modal-header {
       @apply block;
       @apply flex justify-start items-center;
       @apply w-full;
-      @apply border-b-2 border-black-400;
+      @apply border-b-2 border-gray-400;
       @apply pb-2;
       @apply mb-3;
     }
@@ -39,141 +39,6 @@ vlk-modal-container {
     vlk-modal-footer {
       @apply pt-6;
       @apply flex justify-end items-center gap-3;
-    }
-  }
-}
-
-button[variant] {
-  @apply border-2;
-  @apply border-transparent;
-  @apply m-0;
-  @apply h-8;
-  @apply py-0;
-  @apply px-3;
-  @apply rounded-2xl;
-  @apply ring-0 focus:ring-0;
-  @apply focus:outline-none;
-  @apply text-sm font-semibold;
-  @apply leading-none;
-  &[variant="cta"] {
-    &:not([outline]):not([disabled]) {
-      @apply bg-cta-default;
-      @apply border-cta-default;
-      @apply text-black-50;
-      &:hover {
-        @apply bg-cta-hover;
-        @apply border-cta-hover;
-      }
-    }
-    &[outline]:not([disabled]) {
-      @apply bg-transparent;
-      @apply border-blue-500;
-      @apply text-blue-500;
-      &:hover {
-        @apply bg-blue-100;
-        @apply border-blue-600;
-      }
-    }
-    &:not([outline])[disabled] {
-      @apply bg-blue-200;
-      @apply border-blue-200;
-      @apply text-black-50;
-    }
-    &[outline][disabled] {
-      @apply bg-transparent;
-      @apply border-blue-200;
-      @apply text-blue-200;
-    }
-  }
-  &[variant="primary"] {
-    &:not([outline]):not([disabled]) {
-      @apply bg-primary-default;
-      @apply border-primary-default;
-      @apply text-black-50;
-      &:hover {
-        @apply bg-primary-hover;
-        @apply border-primary-hover;
-      }
-    }
-    &[outline]:not([disabled]) {
-      @apply bg-transparent;
-      @apply border-black-500;
-      @apply text-black-500;
-      &:hover {
-        @apply bg-black-100;
-        @apply border-black-600;
-      }
-    }
-    &:not([outline])[disabled] {
-      @apply bg-black-200;
-      @apply border-black-200;
-      @apply text-black-50;
-    }
-    &[outline][disabled] {
-      @apply bg-transparent;
-      @apply border-black-200;
-      @apply text-black-200;
-    }
-  }
-  &[variant="secondary"] {
-    &:not([outline]):not([disabled]) {
-      @apply bg-secondary-default;
-      @apply border-secondary-default;
-      @apply text-black-50;
-      &:hover {
-        @apply bg-secondary-hover;
-        @apply border-secondary-hover;
-      }
-    }
-    &[outline]:not([disabled]) {
-      @apply bg-transparent;
-      @apply border-black-500;
-      @apply text-black-500;
-      &:hover {
-        @apply bg-black-100;
-        @apply border-black-600;
-      }
-    }
-    &:not([outline])[disabled] {
-      @apply bg-black-200;
-      @apply border-black-200;
-      @apply text-black-50;
-    }
-    &[outline][disabled] {
-      @apply bg-transparent;
-      @apply border-black-200;
-      @apply text-black-200;
-    }
-  }
-
-  &[variant="negative"] {
-    &:not([outline]):not([disabled]) {
-      @apply bg-negative-default;
-      @apply border-negative-default;
-      @apply text-black-50;
-      &:hover {
-        @apply bg-negative-hover;
-        @apply border-negative-hover;
-      }
-    }
-    &[outline]:not([disabled]) {
-      @apply bg-transparent;
-      @apply border-red-500;
-      @apply text-red-500;
-      &:hover {
-        @apply bg-red-100;
-        @apply border-red-600;
-      }
-    }
-    &:not([outline])[disabled] {
-      @apply bg-red-200;
-      @apply border-red-200;
-      @apply text-black-50;
-    }
-    &[outline][disabled] {
-      @apply bg-transparent;
-      @apply border-red-200;
-      @apply text-red-200;
     }
   }
 }

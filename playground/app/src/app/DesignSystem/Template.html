@@ -1,15 +1,13 @@
 <section>
-  <header class="bg-black-300 px-6 py-3 mb-6">
+  <header class="bg-gray-300 px-6 py-3 mb-6">
     <h2 class="uppercase divacking-widest text-sm">Buttons</h2>
   </header>
   <table class="w-full">
     <thead>
       <tr class="py-3">
         <th class="w-32"></th>
-        <th class="text-left border-b-4 border-black-900">Default</th>
-        <th class="text-left border-b-4 border-black-900">Outline</th>
-        <th class="text-left border-b-4 border-black-900">Disabled</th>
-        <th class="text-left border-b-4 border-black-900">Outline Disabled</th>
+        <th class="text-left border-b-4 border-gray-900">Default</th>
+        <th class="text-left border-b-4 border-gray-900">Outline</th>
       </tr>
     </thead>
     <tbody>
@@ -21,13 +19,18 @@
           <button [variant]="btn.variant">Action</button>
         </td>
         <td class="pt-3">
-          <button [variant]="btn.variant" outline>Action</button>
+          <button [variant]="btn.variant" outline>Outline</button>
+        </td>
+      </tr>
+      <tr>
+        <td class="pt-3">
+          <h6 class="w-32 text-xs uppercase tracking-wider">Disabled</h6>
         </td>
         <td class="pt-3">
-          <button [variant]="btn.variant" disabled>Action</button>
+          <button variant="cta" disabled>Disabled</button>
         </td>
         <td class="pt-3">
-          <button [variant]="btn.variant" outline disabled>Action</button>
+          <button variant="cta" disabled outline>Outline</button>
         </td>
       </tr>
     </tbody>
