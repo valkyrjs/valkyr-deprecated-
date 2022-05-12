@@ -1,4 +1,42 @@
-<section>
+<section class="mb-3">
+  <header class="bg-gray-300 px-6 py-3 mb-6">
+    <h2 class="uppercase tracking-wider text-sm">Color Pallete</h2>
+  </header>
+  <table class="w-full mb-6">
+    <thead>
+      <tr class="py-3">
+        <th class="text-left w-36">
+          <div class="w-20 border-b-4 border-gray-900">Name</div>
+        </th>
+        <th class="text-left">
+          <div class="w-20 border-b-4 border-gray-900">Weight</div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let color of colors">
+        <td class="pt-2">
+          <h6 class="w-32 text-xs uppercase tracking-wider">{{color.name}}</h6>
+        </td>
+        <td class="pt-2">
+          <div class="flex flex-row gap-2 items-center justify-start">
+            <div class="w-10 h-7 text-[10px] text-center flex items-center justify-center" [ngClass]="getClass(color.name, weight)" *ngFor="let weight of color.weights">{{weight}}</div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="bg-gray-200 p-6 m-0 flex flex-col gap-3">
+    <h6 class="text-xs uppercase tracking-wider">usage:</h6>
+    <div class="text-xs p-3 bg-gray-300">
+      <code class="block py-1">text-blue-400</code>
+      <code class="block py-1">bg-green-400</code>
+      <code class="block py-1">border-gray-200</code>
+      <code class="block py-1">stroke-red-600</code>
+    </div>
+  </div>
+</section>
+<section class="mb-3">
   <header class="bg-gray-300 px-6 py-3 mb-6">
     <h2 class="uppercase tracking-wider text-sm">Buttons</h2>
   </header>
