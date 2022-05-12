@@ -26,7 +26,7 @@
     &:not([outline]):not([disabled]) {
       @apply bg-cta-default;
       @apply border-cta-default;
-      @apply text-white;
+      @apply text-static-white;
       &:hover {
         @apply bg-cta-hover;
         @apply border-cta-hover;
@@ -86,7 +86,7 @@
     &:not([outline]):not([disabled]) {
       @apply bg-negative-default;
       @apply border-negative-default;
-      @apply text-white;
+      @apply text-static-white;
       &:hover {
         @apply bg-negative-hover;
         @apply border-negative-hover;

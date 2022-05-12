@@ -46,6 +46,10 @@ function addColors() {
       currentColor: "currentColor",
       white: withOpacityValue("--gray-50"),
       black: withOpacityValue("--gray-800"),
+      static: {
+        black: withOpacityValue("--black"),
+        white: withOpacityValue("--white"),
+      },
       cta: {
         default: withOpacityValue("--blue-600"),
         hover: withOpacityValue("--blue-700"),
