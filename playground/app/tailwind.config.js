@@ -47,10 +47,12 @@ function addColors() {
       white: withOpacityValue("--gray-50"),
       black: withOpacityValue("--gray-800"),
       static: {
-        black: withOpacityValue("--black"),
-        white: withOpacityValue("--white"),
+        black: withOpacityValue("--static-black"),
+        white: withOpacityValue("--static-white"),
       },
       cta: {
+        static: withOpacityValue("--static-blue"),
+        "static-hover": withOpacityValue("--static-blue-700"),
         default: withOpacityValue("--blue-600"),
         hover: withOpacityValue("--blue-700"),
         light: withOpacityValue("--blue-100")
@@ -66,6 +68,8 @@ function addColors() {
         light: withOpacityValue("--gray-200")
       },
       negative: {
+        static: withOpacityValue("--static-red"),
+        "static-hover": withOpacityValue("--static-red-700"),
         default: withOpacityValue("--red-600"),
         hover: withOpacityValue("--red-700"),
         light: withOpacityValue("--red-100")

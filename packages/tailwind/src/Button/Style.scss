@@ -24,12 +24,12 @@
   }
   &[variant="cta"] {
     &:not([outline]):not([disabled]) {
-      @apply bg-cta-default;
-      @apply border-cta-default;
+      @apply bg-cta-static;
+      @apply border-cta-static;
       @apply text-static-white;
       &:hover {
-        @apply bg-cta-hover;
-        @apply border-cta-hover;
+        @apply bg-cta-static-hover;
+        @apply border-cta-static-hover;
       }
     }
     &[outline]:not([disabled]) {
@@ -84,12 +84,12 @@
   }
   &[variant="negative"] {
     &:not([outline]):not([disabled]) {
-      @apply bg-negative-default;
-      @apply border-negative-default;
+      @apply bg-negative-static;
+      @apply border-negative-static;
       @apply text-static-white;
       &:hover {
-        @apply bg-negative-hover;
-        @apply border-negative-hover;
+        @apply bg-negative-static-hover;
+        @apply border-negative-static-hover;
       }
     }
     &[outline]:not([disabled]) {

@@ -69,8 +69,12 @@ const dark = {
   "--gray-700": "209 209 209",
   "--gray-800": "235 235 235",
   "--gray-900": "255 255 255",
-  "--black": "29 29 29",
-  "--white": "255 255 255"
+  "--static-black": "29 29 29",
+  "--static-white": "255 255 255",
+  "--static-blue": "0 84 182",
+  "--static-red": "180 0 0",
+  "--static-blue-700": "0 68 145",
+  "--static-red-700": "147 0 0"
 };
 
 const light = {
@@ -135,8 +139,12 @@ const light = {
   "--gray-700": "70 70 70",
   "--gray-800": "34 34 34",
   "--gray-900": "0 0 0",
-  "--black": "29 29 29",
-  "--white": "255 255 255"
+  "--static-black": "29 29 29",
+  "--static-white": "255 255 255",
+  "--static-blue": "0 84 182",
+  "--static-red": "180 0 0",
+  "--static-blue-700": "0 68 145",
+  "--static-red-700": "147 0 0"
 };
 
 // src/themes/utils.ts
