@@ -31,7 +31,7 @@ export class DesignSystemComponent {
   ];
 
   public getClass(color: string, weight: number) {
-    return `bg-${color}-${weight} ${weight > 200 ? "text-white" : "text-black"}`;
+    return `bg-${color}-${weight} ${weight > 300 ? "text-white" : "text-black"}`;
   }
 
   constructor(title: TitleService) {
