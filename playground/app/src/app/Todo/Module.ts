@@ -1,3 +1,4 @@
+import { DragDropModule } from "@angular/cdk/drag-drop";
 import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
@@ -11,14 +12,15 @@ import { TodoListComponent } from "./List/Component";
 import { Todo } from "./Models/Todo";
 import { TodoItem } from "./Models/TodoItem";
 import { TodoPickerComponent } from "./Picker/Component";
+import { SortTodosPipe } from "./Picker/SortTodosPipe";
 import { TodoProjector } from "./Projector";
 import { TodoService } from "./Services/Todo";
 import { TodoItemService } from "./Services/TodoItem";
 import { TodoValidator } from "./Validator";
 
 @NgModule({
-  declarations: [TodoPickerComponent, TodoListComponent, CreateTodoDialog],
-  imports: [BrowserModule, FormsModule, RouterModule, ButtonModule, ModalModule],
+  declarations: [TodoPickerComponent, TodoListComponent, CreateTodoDialog, SortTodosPipe],
+  imports: [BrowserModule, FormsModule, RouterModule, ButtonModule, ModalModule, DragDropModule],
   providers: [
     Database.for([
       {
