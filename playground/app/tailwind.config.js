@@ -29,6 +29,7 @@ function addColors() {
   const builtColors = colors.reduce((allColors, color) => {
     const out = [];
     allColors[color] = {};
+    // not all colors are created equal.
     const weights = (color === "gray") ? blackWeights : ["blue","red"].includes(color) ? brandColoredWeights : coloredWeights;
     for(const weight of weights) {
       allColors[color][weight] = withOpacityValue(`--${color}-${weight}`);
@@ -44,25 +45,30 @@ function addColors() {
       transparent: "transparent",
       currentColor: "currentColor",
       white: withOpacityValue("--gray-50"),
+      black: withOpacityValue("--gray-800"),
       cta: {
         default: withOpacityValue("--blue-600"),
-        hover: withOpacityValue("--blue-700")
+        hover: withOpacityValue("--blue-700"),
+        light: withOpacityValue("--blue-100")
       },
       primary: {
         default: withOpacityValue("--gray-800"),
-        hover: withOpacityValue("--gray-900")
+        hover: withOpacityValue("--gray-900"),
+        light: withOpacityValue("--gray-300")
       },
       secondary: {
-        default: withOpacityValue("--gray-200"),
-        hover: withOpacityValue("--gray-300")
+        default: withOpacityValue("--gray-300"),
+        hover: withOpacityValue("--gray-400"),
+        light: withOpacityValue("--gray-200")
       },
       negative: {
         default: withOpacityValue("--red-600"),
-        hover: withOpacityValue("--red-700")
-      },
- 
-  });
-  fs.writeFileSync("tailwind.colors.md", output.join("\n\n"));
+        hover: withOpacityValue("--red-700"),
+        light: withOpacityValue("--red-100")
+      }
+    }
+  );
+  fs.writeFileSync("./tailwind.colors.md", output.join("\n\n"));
   return builtColors;
 }
 
