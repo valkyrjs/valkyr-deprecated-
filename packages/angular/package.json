@@ -16,6 +16,10 @@
     "@valkyr/db": "*",
     "@valkyr/ledger": "*",
     "@valkyr/utils": "*",
+    "gun": "^0.2020.1237",
     "rxjs": "~7.5.0"
+  },
+  "devDependencies": {
+    "@types/gun": "^0.9.3"
   }
 }

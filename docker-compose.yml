@@ -26,3 +26,8 @@ services:
       - 27027:27017
     volumes:
       - .docker/mongo:/data/db
+
+  gun:
+    image: kodemon/gundb:latest
+    ports:
+      - 8765:8765

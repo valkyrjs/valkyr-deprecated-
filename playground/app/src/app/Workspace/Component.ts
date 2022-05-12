@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { LedgerService, LedgerSubscription, Menu } from "@valkyr/angular";
+import { GunLedgerService, LedgerSubscription, Menu } from "@valkyr/angular";
 
 import { getFooterMenu, getMainMenu } from "./Menu";
 import { WorkspaceService } from "./Services/Workspace";
@@ -16,7 +16,7 @@ export class WorkspaceComponent implements OnDestroy {
 
   #subscription?: LedgerSubscription;
 
-  constructor(readonly workspace: WorkspaceService, readonly ledger: LedgerService, route: ActivatedRoute) {
+  constructor(readonly workspace: WorkspaceService, readonly ledger: GunLedgerService, route: ActivatedRoute) {
     const workspaceId = route.snapshot.paramMap.get("workspace");
     if (!workspaceId) {
       throw new Error("WorkspaceComponent Violation: Could not resolve workspace id");
@@ -41,6 +41,6 @@ export class WorkspaceComponent implements OnDestroy {
   }
 
   #loadWorkspace(workspaceId: string) {
-    this.#subscription = this.ledger.subscribe("workspace", workspaceId, true);
+    this.#subscription = this.ledger.subscribe(workspaceId);
   }
 }

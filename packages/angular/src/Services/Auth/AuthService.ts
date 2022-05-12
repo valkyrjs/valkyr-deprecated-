@@ -8,9 +8,7 @@ type Data = {
   auditor: string;
 };
 
-@Injectable({
-  providedIn: "root"
-})
+@Injectable({ providedIn: "root" })
 export class AuthService {
   constructor(readonly remote: RemoteService, readonly socket: SocketService) {
     if (this.isAuthenticated === true) {

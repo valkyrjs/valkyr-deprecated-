@@ -1,0 +1,7 @@
+<h1>Sign in</h1>
+<p>Provide your credentials to get started</p>
+<input id="alias" [(ngModel)]="alias" (keyup.enter)="submit()" placeholder="Enter your alias" />
+<input id="password" [(ngModel)]="password" (keyup.enter)="submit()" placeholder="Enter your password"
+  type="password" />
+<button type="submit" (click)="submit()">Submit</button>
+<button type="submit" (click)="register()">Register</button>

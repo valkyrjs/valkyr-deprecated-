@@ -1,7 +1,7 @@
 import { Routes } from "@angular/router";
-import { AuthGuard, GuestGuard } from "@valkyr/angular";
+import { GunAuthGuard, GunGuestGuard } from "@valkyr/angular";
 
-import { AuthorizationComponent } from "./Authorization";
+import { AuthComponent } from "./Auth";
 import { DesignSystemComponent } from "./DesignSystem";
 import { DiscoveryComponent } from "./Discovery";
 import { TextEditorComponent } from "./TextEditor";
@@ -14,19 +14,19 @@ export const routes: Routes = [
   { path: "", redirectTo: "/workspaces", pathMatch: "full" },
   {
     path: "authorize",
-    component: AuthorizationComponent,
-    canActivate: [GuestGuard]
+    component: AuthComponent,
+    canActivate: [GunGuestGuard]
   },
   {
     path: "workspaces",
     component: DiscoveryComponent,
-    canActivate: [AuthGuard],
+    canActivate: [GunAuthGuard],
     children: [{ path: "", component: LandingComponent }]
   },
   {
     path: "workspaces/:workspace",
     component: WorkspaceComponent,
-    canActivate: [AuthGuard],
+    canActivate: [GunAuthGuard],
     children: [
       { path: "", component: DashboardComponent },
       { path: "todos", component: TodoPickerComponent },

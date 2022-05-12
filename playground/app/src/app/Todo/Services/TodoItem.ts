@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { DataSubscriber, LedgerService } from "@valkyr/angular";
+import { DataSubscriber, GunLedgerService } from "@valkyr/angular";
 import { generateStreamId } from "@valkyr/ledger";
 import { TodoStore } from "stores";
 
@@ -7,7 +7,7 @@ import { TodoItemSubscriberService } from "./TodoItemSubscriber";
 
 @Injectable()
 export class TodoItemService extends DataSubscriber {
-  constructor(readonly ledger: LedgerService, readonly subscriber: TodoItemSubscriberService) {
+  constructor(readonly ledger: GunLedgerService, readonly subscriber: TodoItemSubscriberService) {
     super();
   }
 

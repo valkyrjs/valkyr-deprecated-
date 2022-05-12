@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AuthService, DataSubscriber, LedgerService } from "@valkyr/angular";
+import { AuthGunService, DataSubscriber, GunLedgerService } from "@valkyr/angular";
 import { generateStreamId } from "@valkyr/ledger";
 import { WorkspaceStore } from "stores";
 
@@ -11,8 +11,8 @@ export class WorkspaceService extends DataSubscriber {
 
   constructor(
     readonly subscriber: WorkspaceSubscriberService,
-    readonly ledger: LedgerService,
-    readonly auth: AuthService
+    readonly ledger: GunLedgerService,
+    readonly auth: AuthGunService
   ) {
     super();
   }
@@ -32,7 +32,7 @@ export class WorkspaceService extends DataSubscriber {
   async create(name: string) {
     const member: WorkspaceStore.Member = {
       id: generateStreamId(),
-      accountId: this.auth.auditor,
+      accountId: this.auth.id,
       name: ""
     };
     this.ledger.append(

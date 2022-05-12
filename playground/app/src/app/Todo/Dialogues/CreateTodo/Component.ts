@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { AuthService, LedgerService, ModalService } from "@valkyr/angular";
+import { AuthService, GunLedgerService, ModalService } from "@valkyr/angular";
 import { WorkspaceStore } from "stores";
 
 import { WorkspaceService } from "../../../Workspace";
@@ -13,7 +13,7 @@ export class CreateTodoDialog {
 
   constructor(
     private auth: AuthService,
-    private ledger: LedgerService,
+    private ledger: GunLedgerService,
     private modal: ModalService,
     private todo: TodoService,
     readonly workspace: WorkspaceService

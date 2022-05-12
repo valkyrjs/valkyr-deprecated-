@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { AuthService, DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
+import { AuthGunService, DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
 
 import { CreateWorkspaceDialog } from "../Dialogues/CreateWorkspace/Component";
@@ -17,7 +17,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   constructor(
     readonly modal: ModalService<CreateWorkspaceDialog>,
     readonly workspace: WorkspaceService,
-    readonly auth: AuthService,
+    readonly auth: AuthGunService,
     title: TitleService
   ) {
     title.set("Workspaces", DOCUMENT_TITLE, "discovery");
@@ -32,11 +32,12 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   #loadWorkspaces() {
+    console.log(this.auth.id);
     this.workspace.subscribe(
       this,
       {
         criteria: {
-          "members.accountId": this.auth.auditor
+          "members.accountId": this.auth.id
         },
         stream: {
           aggregate: "workspace",

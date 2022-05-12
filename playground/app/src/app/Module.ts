@@ -1,9 +1,9 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
-import { AccessModule, LedgerModule, ModalModule } from "@valkyr/angular";
+import { AccessModule, GunModule, ModalModule } from "@valkyr/angular";
 
-import { AuthorizationModule } from "./Authorization";
+import { AuthModule } from "./Auth";
 import { AppComponent } from "./Component";
 import { DesignSystemModule } from "./DesignSystem/Module";
 import { DiscoveryModule } from "./Discovery";
@@ -14,11 +14,11 @@ import { WorkspaceModule } from "./Workspace";
 @NgModule({
   imports: [
     AccessModule,
-    AuthorizationModule,
+    AuthModule,
     BrowserModule,
     DiscoveryModule,
     DesignSystemModule,
-    LedgerModule,
+    GunModule.forRoot(["http://localhost:8765/gun"]),
     ModalModule,
     RouterModule.forRoot(routes),
     TodoModule,
