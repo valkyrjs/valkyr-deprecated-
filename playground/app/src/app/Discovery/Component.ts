@@ -20,7 +20,15 @@ export class DiscoveryComponent {
           name: "Workspaces",
           items: [
             {
-              name: "Workspaces",
+              name: "My workspaces",
+              href: "/workspaces"
+            },
+            {
+              name: "Shared workspaces",
+              href: "/workspaces"
+            },
+            {
+              name: "Invites",
               href: "/workspaces"
             }
           ]

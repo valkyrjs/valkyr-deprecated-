@@ -8,23 +8,18 @@ header {
 
 aside {
   @apply grid-in-aside h-full overflow-y-auto overflow-x-hidden border-r-2 border-r-gray-200 text-gray-800 bg-gray-100;
-  
   > div {
-    @apply px-6 py-6 h-full w-full;
-  }
-
-  .menu-main {
-    @apply h-auto;
-    @apply mb-8;
-    @apply list-none;
-    @apply text-sm;
-  }
-
-  .menu-footer {
-    @apply h-auto;
-    @apply mb-1;
-    @apply list-none;
-    @apply text-sm;
+    @apply px-6 h-full w-full flex flex-col justify-between;
+    > menu {
+      @apply h-auto;
+      @apply list-none;
+      @apply text-sm;
+      @apply mt-6;
+      &.menu-footer {
+        @apply mt-0;
+        @apply mb-1;
+      }
+    }
   }
 }
 

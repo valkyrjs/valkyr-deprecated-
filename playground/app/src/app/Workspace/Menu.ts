@@ -27,11 +27,11 @@ export function getFooterMenu(workspaceId: string): Menu {
   return new Menu({
     categories: [
       {
-        name: "Discovery",
+        name: "Actions",
         items: [
           {
-            name: "Workspaces",
-            href: "/workspaces"
+            name: "Design",
+            href: "/workspaces/{{workspaceId}}/edit"
           }
         ]
       }
