@@ -1,21 +1,29 @@
+import { clone } from "@valkyr/utils";
+
 type BitFlags = Record<string, number>;
 
 export class Attributes<Flags extends BitFlags = BitFlags> {
-  constructor(public readonly flags: Flags, private flag = 0) {}
+  #flags: Flags;
+  #flag: number;
+
+  constructor(flags: Flags, flag = 0) {
+    this.#flags = flags;
+    this.#flag = flag;
+  }
 
   /**
    * Check if the flag exists on the flags object.
    */
-  public has(flag: keyof Flags) {
-    return (this.flag & this.flags[flag]) === this.flags[flag];
+   has(flag: keyof Flags) {
+    return (this.#flag & this.#flags[flag]) === this.#flags[flag];
   }
 
   /**
    * Set given list of flags as true on the attributes instance.
    */
-  public enable(flags: (keyof Flags)[]) {
+   enable(flags: (keyof Flags)[]) {
     for (const flag of flags) {
-      this.flag |= this.flags[flag];
+      this.#flag |= this.#flags[flag];
     }
     return this;
   }
@@ -23,9 +31,9 @@ export class Attributes<Flags extends BitFlags = BitFlags> {
   /**
    * Remove list of flags from the list under the residing filter key.
    */
-  public disable(flags: (keyof Flags)[]) {
+   disable(flags: (keyof Flags)[]) {
     for (const flag of flags) {
-      this.flag &= ~this.flags[flag];
+      this.#flag &= ~this.#flags[flag];
     }
     return this;
   }
@@ -33,9 +41,9 @@ export class Attributes<Flags extends BitFlags = BitFlags> {
   /**
    * Filter provided document against the rules of residing filter key.
    */
-  public filter<Document extends Record<keyof Flags, unknown>>(document: Document) {
-    const data: Partial<Document> = { ...document };
-    for (const key in this.flags) {
+   filter<Document extends Record<keyof Flags, unknown>>(document: Document) {
+    const data: Partial<Document> = clone(document);
+    for (const key in this.#flags) {
       if (this.has(key) === false) {
         delete data[key];
       }
@@ -46,7 +54,7 @@ export class Attributes<Flags extends BitFlags = BitFlags> {
   /**
    * Get current bitflag value.
    */
-  public toNumber(): number {
-    return this.flag;
+   toNumber(): number {
+    return this.#flag;
   }
 }

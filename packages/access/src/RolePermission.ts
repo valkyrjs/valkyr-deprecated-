@@ -9,21 +9,21 @@ export class RolePermission<
   Resource extends keyof Permissions = keyof Permissions,
   Action extends keyof Permissions[Resource] = keyof Permissions[Resource]
 > {
-  public readonly operations: Operation<Resource, Action>[] = [];
+  readonly operations: Operation<Resource, Action>[] = [];
 
-  constructor(public readonly roleId: string) {
+  constructor(readonly roleId: string) {
     this.grant = this.grant.bind(this);
     this.deny = this.deny.bind(this);
   }
 
-  public grant(resource: Resource, action: Action): this;
-  public grant<T = unknown>(resource: Resource, action: Action, data: T): this;
-  public grant<T = unknown>(resource: Resource, action: Action, data?: T): this {
+  grant(resource: Resource, action: Action): this;
+  grant<T = unknown>(resource: Resource, action: Action, data: T): this;
+  grant<T = unknown>(resource: Resource, action: Action, data?: T): this {
     this.operations.push({ type: "set", resource, action, data: data ?? true });
     return this;
   }
 
-  public deny(resource: Resource, action?: Action): this {
+  deny(resource: Resource, action?: Action): this {
     this.operations.push({ type: "unset", resource, action });
     return this;
   }

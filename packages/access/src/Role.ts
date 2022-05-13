@@ -10,13 +10,13 @@ import { RolePermission, RolePermissions } from "./RolePermission";
  */
 
 export class Role<Permissions extends RolePermissions = RolePermissions> {
-  public readonly tenantId = this.role.tenantId;
-  public readonly roleId = this.role.roleId;
+  readonly tenantId = this.role.tenantId;
+  readonly roleId = this.role.roleId;
 
-  public readonly name = this.role.name;
-  public readonly settings = this.role.settings;
-  public readonly permissions = this.role.permissions;
-  public readonly members = Object.freeze(this.role.members);
+  readonly name = this.role.name;
+  readonly settings = this.role.settings;
+  readonly permissions = this.role.permissions;
+  readonly members = Object.freeze(this.role.members);
 
   constructor(private readonly role: RoleData<Permissions>) {
     Object.freeze(this);
@@ -29,7 +29,7 @@ export class Role<Permissions extends RolePermissions = RolePermissions> {
    *
    * @returns Attributes instance
    */
-  public static getAttributes(_?: number): Attributes {
+  static getAttributes(_?: number): Attributes {
     throw new Error("Role Violation: Attributes method has not been implemented.");
   }
 
@@ -44,7 +44,7 @@ export class Role<Permissions extends RolePermissions = RolePermissions> {
    *
    * @returns Permissions
    */
-  public static getPermissions(_: Partial<RolePermissions>): RolePermissions {
+  static getPermissions(_: Partial<RolePermissions>): RolePermissions {
     throw new Error("Role Violation: Permissions method has not been implemented.");
   }
 
@@ -54,11 +54,11 @@ export class Role<Permissions extends RolePermissions = RolePermissions> {
    |--------------------------------------------------------------------------------
    */
 
-  public get grant() {
+  get grant() {
     return new RolePermission<Permissions>(this.roleId).grant;
   }
 
-  public get deny() {
+  get deny() {
     return new RolePermission<Permissions>(this.roleId).deny;
   }
 
@@ -68,7 +68,7 @@ export class Role<Permissions extends RolePermissions = RolePermissions> {
    |--------------------------------------------------------------------------------
    */
 
-  public toJSON(): {
+  toJSON(): {
     tenantId: string;
     roleId: string;
     name: string;

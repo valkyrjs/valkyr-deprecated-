@@ -10,7 +10,7 @@ export const PERMISSION_DENIED_MESSAGE = "Permission denied";
  */
 
 export class PermissionDeniedError extends Error {
-  public static type = "PermissionDeniedError";
+  static type = "PermissionDeniedError";
 
   constructor(action: any, resource: any) {
     super(`Access Permission Violation: Denied access performing action '${action}' on '${resource}'.`);
