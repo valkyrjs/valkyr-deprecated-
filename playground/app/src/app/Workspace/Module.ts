@@ -9,14 +9,14 @@ import { ButtonModule, MenuModule } from "@valkyr/tailwind";
 import { NavbarModule } from "../Navbar/Module";
 import { TitleModule } from "../Title/Module";
 import { WorkspaceComponent } from "./Component";
-import { DashboardComponent } from "./Dashboard/Component";
 import { CreateWorkspaceDialog } from "./Dialogues/CreateWorkspace/Component";
-import { LandingComponent } from "./Landing/Component";
+import { WorkspaceItemComponent } from "./Item/Component";
+import { WorkspaceListComponent } from "./List/Component";
 import { Workspace, WorkspaceDocument } from "./Models/Workspace";
 import { WorkspaceProjector } from "./Projector";
 
 @NgModule({
-  declarations: [WorkspaceComponent, LandingComponent, DashboardComponent, CreateWorkspaceDialog],
+  declarations: [WorkspaceComponent, WorkspaceListComponent, WorkspaceItemComponent, CreateWorkspaceDialog],
   imports: [BrowserModule, FormsModule, RouterModule, ModalModule, MenuModule, ButtonModule, NavbarModule, TitleModule],
   providers: [
     Database.for([

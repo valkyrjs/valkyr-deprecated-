@@ -7,7 +7,7 @@ import { DiscoveryComponent } from "./Discovery";
 import { TextEditorComponent } from "./TextEditor";
 import { TodoListComponent } from "./Todo/List/Component";
 import { TodoPickerComponent } from "./Todo/Picker/Component";
-import { DashboardComponent, LandingComponent } from "./Workspace";
+import { WorkspaceItemComponent, WorkspaceListComponent } from "./Workspace";
 import { WorkspaceComponent } from "./Workspace/Component";
 
 export const routes: Routes = [
@@ -21,14 +21,14 @@ export const routes: Routes = [
     path: "workspaces",
     component: DiscoveryComponent,
     canActivate: [AuthGuard],
-    children: [{ path: "", component: LandingComponent }]
+    children: [{ path: "", component: WorkspaceListComponent }]
   },
   {
     path: "workspaces/:workspace",
     component: WorkspaceComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: "", component: DashboardComponent },
+      { path: "", component: WorkspaceItemComponent },
       { path: "todos", component: TodoPickerComponent },
       { path: "todos/:todo", component: TodoListComponent }
     ]

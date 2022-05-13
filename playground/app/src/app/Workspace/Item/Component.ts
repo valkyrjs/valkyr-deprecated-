@@ -6,10 +6,10 @@ import { Workspace } from "../Models/Workspace";
 import { WorkspaceService } from "../Services/Workspace";
 
 @Component({
-  selector: "workspace-dashboard",
+  selector: "workspace-item",
   templateUrl: "./Template.html"
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class WorkspaceItemComponent implements OnInit, OnDestroy {
   workspace?: Workspace;
 
   constructor(

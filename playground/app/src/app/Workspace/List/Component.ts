@@ -7,10 +7,10 @@ import { Workspace } from "../Models/Workspace";
 import { WorkspaceService } from "../Services/Workspace";
 
 @Component({
-  selector: "workspace-landing",
+  selector: "workspace-list",
   templateUrl: "./Template.html"
 })
-export class LandingComponent implements OnInit, OnDestroy {
+export class WorkspaceListComponent implements OnInit, OnDestroy {
   workspaces: Workspace[] = [];
   name = "";
 
