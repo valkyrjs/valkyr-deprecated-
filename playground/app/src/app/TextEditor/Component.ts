@@ -5,7 +5,8 @@ import { DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
 
 @Component({
   selector: "text-editor",
-  templateUrl: "./Template.html"
+  templateUrl: "./Template.html",
+  styleUrls: ["./Style.scss"]
 })
 export class TextEditorComponent implements OnInit, OnDestroy {
   private editor?: Editor;
