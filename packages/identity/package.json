@@ -1,0 +1,19 @@
+{
+  "name": "@valkyr/identity",
+  "version": "0.0.0",
+  "description": "Identity provider for @valkyr projects.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "keywords": [
+    "identity",
+    "idp"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json"
+  },
+  "dependencies": {
+    "@valkyr/security": "*"
+  }
+}
