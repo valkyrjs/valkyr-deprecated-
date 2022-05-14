@@ -1,0 +1,27 @@
+:host {
+  @apply relative w-full;
+  button {
+    @apply relative w-full px-1 py-1;
+    @apply border border-primary-default;
+    @apply bg-white text-left;
+    @apply text-black;
+    @apply focus:outline-none focus:ring-0 focus:border-0 cursor-context-menu;
+  }
+  .options {
+    @apply absolute z-10 mt-1 w-full max-h-60;
+    @apply bg-white border-primary-hover text-black;
+    @apply shadow-lg rounded text-xs ring-0 overflow-auto focus:outline-none;
+  }
+  .option {
+    @apply cursor-pointer select-none relative p-2;
+    @apply hover:bg-primary-light;
+    > div {
+      @apply flex flex-row justify-start gap-2;
+      span {
+        @apply block truncate;
+      }
+    }
+  }
+}
+
+

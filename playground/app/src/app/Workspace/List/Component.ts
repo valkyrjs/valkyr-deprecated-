@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { AuthService, DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
+import { SelectOptions } from "@valkyr/tailwind/src/Select/Component";
 
 import { CreateWorkspaceDialog } from "../Dialogues/CreateWorkspace/Component";
 import { Workspace } from "../Models/Workspace";
@@ -12,6 +13,7 @@ import { WorkspaceService } from "../Services/Workspace";
 })
 export class WorkspaceListComponent implements OnInit, OnDestroy {
   workspaces: Workspace[] = [];
+  workspaceOptions: SelectOptions = [];
   name = "";
 
   constructor(
@@ -45,6 +47,7 @@ export class WorkspaceListComponent implements OnInit, OnDestroy {
       },
       (workspaces) => {
         this.workspaces = workspaces;
+        this.workspaceOptions = workspaces.map((w) => ({ label: w.name, value: w.id }));
       }
     );
   }

@@ -1,0 +1,13 @@
+<button type="button" (click)="toggle()" class="group" ngClass="append ? 'rounded-l-full' : 'rounded-full'">
+  <div class="flex flex-row justify-start items-center gap-2 pl-2">
+    <span *ngIf="!value" class="font-normal block truncate">Select...</span>
+    <span *ngIf="value" class="font-normal block truncate">{{ selectedOption()?.label }}</span>
+  </div>
+</button>
+<div class="options" [@openClose]="isOpen ? 'open' : 'closed'">
+  <div class="option" *ngFor="let option of options" [ngClass]="isSelected(option.value) ? 'text-cta-default' : 'bg-white'">
+    <div (click)="selectValue(option.value)">
+      <span [ngClass]="isSelected(option.value) ? 'font-semibold' : 'font-normal'">{{ option.label }}</span>
+    </div>
+  </div>
+</div>

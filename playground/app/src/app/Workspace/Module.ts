@@ -4,7 +4,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { Database, ModalModule } from "@valkyr/angular";
 import { Collection, IndexedDbAdapter } from "@valkyr/db";
-import { ButtonModule, MenuModule } from "@valkyr/tailwind";
+import { ButtonModule, MenuModule, SelectModule } from "@valkyr/tailwind";
 
 import { NavbarModule } from "../Navbar/Module";
 import { TitleModule } from "../Title/Module";
@@ -17,7 +17,17 @@ import { WorkspaceProjector } from "./Projector";
 
 @NgModule({
   declarations: [WorkspaceComponent, WorkspaceListComponent, WorkspaceItemComponent, CreateWorkspaceDialog],
-  imports: [BrowserModule, FormsModule, RouterModule, ModalModule, MenuModule, ButtonModule, NavbarModule, TitleModule],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    RouterModule,
+    ModalModule,
+    MenuModule,
+    ButtonModule,
+    SelectModule,
+    NavbarModule,
+    TitleModule
+  ],
   providers: [
     Database.for([
       {

@@ -30,6 +30,21 @@ export class DesignSystemComponent {
     { name: "blue", weights: [100, 400, 500, 600, 700] }
   ];
 
+  public options = [
+    {
+      label: "Apple",
+      value: "1"
+    },
+    {
+      label: "Orange",
+      value: "2"
+    },
+    {
+      label: "Pineapple",
+      value: "3"
+    }
+  ];
+
   public getClass(color: string, weight: number) {
     return `bg-${color}-${weight} ${weight > 300 ? "text-white" : "text-black"}`;
   }

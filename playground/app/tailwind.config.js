@@ -92,7 +92,8 @@ function withOpacityValue(variable) {
 module.exports = {
   content: [
     "./src/**/*.{html,ts,scss}",
-    "./tailwind.colors.md"
+    "./tailwind.colors.md",
+    "../../packages/tailwind/src/**/*.{html,ts,scss}" // hack to scan the tailwind package for styles not used in the main app.
   ],
   theme: {
     extend: {

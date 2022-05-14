@@ -1,125 +1,89 @@
 <section class="mb-3">
   <header class="bg-gray-300 px-6 py-3 mb-6">
-    <h2 class="uppercase tracking-wider text-sm">Color Pallete</h2>
-  </header>
-  <table class="w-full mb-6">
-    <thead>
-      <tr class="py-3">
-        <th class="text-left w-36">
-          <div class="w-20 border-b-4 border-gray-900">Name</div>
-        </th>
-        <th class="text-left">
-          <div class="w-20 border-b-4 border-gray-900">Weight</div>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let color of colors">
-        <td class="pt-2">
-          <h6 class="w-32 text-xs uppercase tracking-wider">{{color.name}}</h6>
-        </td>
-        <td class="pt-2">
-          <div class="flex flex-row gap-2 items-center justify-start">
-            <div class="w-10 h-7 text-[10px] text-center flex items-center justify-center" [ngClass]="getClass(color.name, weight)" *ngFor="let weight of color.weights">{{weight}}</div>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="bg-gray-200 p-6 m-0 flex flex-col gap-3">
-    <h6 class="text-xs uppercase tracking-wider">usage:</h6>
-    <div class="text-xs p-3 bg-gray-300">
-      <code class="block py-1">text-blue-400</code>
-      <code class="block py-1">bg-green-400</code>
-      <code class="block py-1">border-gray-200</code>
-      <code class="block py-1">stroke-red-600</code>
-    </div>
-  </div>
-</section>
-<section class="mb-3">
-  <header class="bg-gray-300 px-6 py-3 mb-6">
     <h2 class="uppercase tracking-wider text-sm">Buttons</h2>
   </header>
-  <table class="w-full mb-6">
-    <thead>
-      <tr class="py-3">
-        <th class="w-32"></th>
-        <th class="text-left w-36">
-          <div class="w-20 border-b-4 border-gray-900">Default</div>
-        </th>
-        <th class="text-left w-36">
-          <div class="w-28 border-b-4 border-gray-900">Default + Icon</div>
-        </th>
-        <th class="text-left w-36">
-          <div class="w-28 border-b-4 border-gray-900">Outline</div>
-        </th>
-        <th class="text-left w-36">
-          <div class="w-28 border-b-4 border-gray-900">Outline + Icon</div>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let btn of btns">
-        <td class="pt-3">
-          <h6 class="w-32 text-xs uppercase tracking-wider">{{btn.label}}</h6>
-        </td>
-        <td class="pt-3">
-          <button [variant]="btn.variant">Action</button>
-        </td>
-        <td class="pt-3">
-          <button [variant]="btn.variant">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="w-4 h-4">
-              <path fill="currentColor" d="M16.5,5h-3a.5.5,0,0,0-.5.5v1a.5.5,0,0,0,.5.5H15v8H3V7H4.5A.5.5,0,0,0,5,6.5v-1A.5.5,0,0,0,4.5,5h-3a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V5.5A.5.5,0,0,0,16.5,5Z" />
-              <path fill="currentColor" d="M5.4,4H8V9.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2.6a.4.4,0,0,0,.4-.4.39352.39352,0,0,0-.1-.2635L9.1755.072a.25.25,0,0,0-.35,0L5.1,3.334A.39353.39353,0,0,0,5,3.6.4.4,0,0,0,5.4,4Z" />
-            </svg>
-            <span>Share</span>
-          </button>
-        </td>
-        <td class="pt-3">
-          <button [variant]="btn.variant" outline>Outline</button>
-        </td>
-        <td class="pt-3">
-          <button [variant]="btn.variant" outline>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="w-4 h-4">
-              <path fill="currentColor" d="M16.5,5h-3a.5.5,0,0,0-.5.5v1a.5.5,0,0,0,.5.5H15v8H3V7H4.5A.5.5,0,0,0,5,6.5v-1A.5.5,0,0,0,4.5,5h-3a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V5.5A.5.5,0,0,0,16.5,5Z" />
-              <path fill="currentColor" d="M5.4,4H8V9.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2.6a.4.4,0,0,0,.4-.4.39352.39352,0,0,0-.1-.2635L9.1755.072a.25.25,0,0,0-.35,0L5.1,3.334A.39353.39353,0,0,0,5,3.6.4.4,0,0,0,5.4,4Z" />
-            </svg>
-            <span>Share</span>
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td class="pt-3">
-          <h6 class="w-32 text-xs uppercase tracking-wider">Disabled</h6>
-          <p class="text-[10px]">/w disabled attribute</p>
-        </td>
-        <td class="pt-3">
-          <button variant="cta" disabled>Disabled</button>
-        </td>
-        <td class="pt-3">
-          <button variant="cta" disabled>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="w-4 h-4">
-              <path fill="currentColor" d="M16.5,5h-3a.5.5,0,0,0-.5.5v1a.5.5,0,0,0,.5.5H15v8H3V7H4.5A.5.5,0,0,0,5,6.5v-1A.5.5,0,0,0,4.5,5h-3a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V5.5A.5.5,0,0,0,16.5,5Z" />
-              <path fill="currentColor" d="M5.4,4H8V9.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2.6a.4.4,0,0,0,.4-.4.39352.39352,0,0,0-.1-.2635L9.1755.072a.25.25,0,0,0-.35,0L5.1,3.334A.39353.39353,0,0,0,5,3.6.4.4,0,0,0,5.4,4Z" />
-            </svg>
-            <span>Share</span>
-          </button>
-        </td>
-        <td class="pt-3">
-          <button variant="cta" disabled outline>Outline</button>
-        </td>
-        <td class="pt-3">
-          <button variant="cta" disabled outline>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="w-4 h-4">
-              <path fill="currentColor" d="M16.5,5h-3a.5.5,0,0,0-.5.5v1a.5.5,0,0,0,.5.5H15v8H3V7H4.5A.5.5,0,0,0,5,6.5v-1A.5.5,0,0,0,4.5,5h-3a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V5.5A.5.5,0,0,0,16.5,5Z" />
-              <path fill="currentColor" d="M5.4,4H8V9.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2.6a.4.4,0,0,0,.4-.4.39352.39352,0,0,0-.1-.2635L9.1755.072a.25.25,0,0,0-.35,0L5.1,3.334A.39353.39353,0,0,0,5,3.6.4.4,0,0,0,5.4,4Z" />
-            </svg>
-            <span>Share</span>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="w-full px-6">
+    <table class="w-full mb-6">
+      <thead>
+        <tr class="py-3">
+          <th class="w-32"></th>
+          <th class="text-left w-36">
+            <div class="w-20 border-b-4 border-gray-900">Default</div>
+          </th>
+          <th class="text-left w-36">
+            <div class="w-28 border-b-4 border-gray-900">Default + Icon</div>
+          </th>
+          <th class="text-left w-36">
+            <div class="w-28 border-b-4 border-gray-900">Outline</div>
+          </th>
+          <th class="text-left w-36">
+            <div class="w-28 border-b-4 border-gray-900">Outline + Icon</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let btn of btns">
+          <td class="pt-3">
+            <h6 class="w-32 text-xs uppercase tracking-wider">{{btn.label}}</h6>
+          </td>
+          <td class="pt-3">
+            <button [variant]="btn.variant">Action</button>
+          </td>
+          <td class="pt-3">
+            <button [variant]="btn.variant">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="w-4 h-4">
+                <path fill="currentColor" d="M16.5,5h-3a.5.5,0,0,0-.5.5v1a.5.5,0,0,0,.5.5H15v8H3V7H4.5A.5.5,0,0,0,5,6.5v-1A.5.5,0,0,0,4.5,5h-3a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V5.5A.5.5,0,0,0,16.5,5Z" />
+                <path fill="currentColor" d="M5.4,4H8V9.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2.6a.4.4,0,0,0,.4-.4.39352.39352,0,0,0-.1-.2635L9.1755.072a.25.25,0,0,0-.35,0L5.1,3.334A.39353.39353,0,0,0,5,3.6.4.4,0,0,0,5.4,4Z" />
+              </svg>
+              <span>Share</span>
+            </button>
+          </td>
+          <td class="pt-3">
+            <button [variant]="btn.variant" outline>Outline</button>
+          </td>
+          <td class="pt-3">
+            <button [variant]="btn.variant" outline>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="w-4 h-4">
+                <path fill="currentColor" d="M16.5,5h-3a.5.5,0,0,0-.5.5v1a.5.5,0,0,0,.5.5H15v8H3V7H4.5A.5.5,0,0,0,5,6.5v-1A.5.5,0,0,0,4.5,5h-3a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V5.5A.5.5,0,0,0,16.5,5Z" />
+                <path fill="currentColor" d="M5.4,4H8V9.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2.6a.4.4,0,0,0,.4-.4.39352.39352,0,0,0-.1-.2635L9.1755.072a.25.25,0,0,0-.35,0L5.1,3.334A.39353.39353,0,0,0,5,3.6.4.4,0,0,0,5.4,4Z" />
+              </svg>
+              <span>Share</span>
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td class="pt-3">
+            <h6 class="w-32 text-xs uppercase tracking-wider">Disabled</h6>
+            <p class="text-[10px]">/w disabled attribute</p>
+          </td>
+          <td class="pt-3">
+            <button variant="cta" disabled>Disabled</button>
+          </td>
+          <td class="pt-3">
+            <button variant="cta" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="w-4 h-4">
+                <path fill="currentColor" d="M16.5,5h-3a.5.5,0,0,0-.5.5v1a.5.5,0,0,0,.5.5H15v8H3V7H4.5A.5.5,0,0,0,5,6.5v-1A.5.5,0,0,0,4.5,5h-3a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V5.5A.5.5,0,0,0,16.5,5Z" />
+                <path fill="currentColor" d="M5.4,4H8V9.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2.6a.4.4,0,0,0,.4-.4.39352.39352,0,0,0-.1-.2635L9.1755.072a.25.25,0,0,0-.35,0L5.1,3.334A.39353.39353,0,0,0,5,3.6.4.4,0,0,0,5.4,4Z" />
+              </svg>
+              <span>Share</span>
+            </button>
+          </td>
+          <td class="pt-3">
+            <button variant="cta" disabled outline>Outline</button>
+          </td>
+          <td class="pt-3">
+            <button variant="cta" disabled outline>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="w-4 h-4">
+                <path fill="currentColor" d="M16.5,5h-3a.5.5,0,0,0-.5.5v1a.5.5,0,0,0,.5.5H15v8H3V7H4.5A.5.5,0,0,0,5,6.5v-1A.5.5,0,0,0,4.5,5h-3a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V5.5A.5.5,0,0,0,16.5,5Z" />
+                <path fill="currentColor" d="M5.4,4H8V9.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2.6a.4.4,0,0,0,.4-.4.39352.39352,0,0,0-.1-.2635L9.1755.072a.25.25,0,0,0-.35,0L5.1,3.334A.39353.39353,0,0,0,5,3.6.4.4,0,0,0,5.4,4Z" />
+              </svg>
+              <span>Share</span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <div class="bg-gray-200 p-6 m-0 flex flex-col gap-3">
     <h6 class="text-xs uppercase tracking-wider">usage:</h6>
     <div class="text-xs p-3 bg-gray-300">
@@ -127,6 +91,65 @@
       <code class="block py-1">&lt;button variant="primary" outline&gt;Action&lt;/button&gt;</code>
       <code class="block py-1">&lt;button variant="secondary" outline&gt;Action&lt;/button&gt;</code>
       <code class="block py-1">&lt;button variant="negative" disabled outline&gt;Action&lt;/button&gt;</code>
+    </div>
+  </div>
+</section>
+<section class="mb-3">
+  <header class="bg-gray-300 px-6 py-3 mb-6">
+    <h2 class="uppercase tracking-wider text-sm">Dropdown</h2>
+  </header>
+  <div class="w-full px-6">
+    <div class="w-full mb-6 flex gap-6">
+      <dropdown [options]="options"></dropdown>
+      <dropdown [options]="options"></dropdown>
+      <dropdown [options]="options"></dropdown>
+      <dropdown [options]="options"></dropdown>
+    </div>
+  </div>
+  <div class="bg-gray-200 p-6 m-0 flex flex-col gap-3">
+    <h6 class="text-xs uppercase tracking-wider">usage:</h6>
+    <div class="text-xs p-3 bg-gray-300">
+      <code class="block py-1">&lt;dropdown value="" [options]="someOptions"&gt;Action&lt;/dropdown&gt;</code>
+    </div>
+  </div>
+</section>
+<section class="mb-3">
+  <header class="bg-gray-300 px-6 py-3 mb-6">
+    <h2 class="uppercase tracking-wider text-sm">Color Pallete</h2>
+  </header>
+  <div class="w-full px-6">
+    <table class="w-full mb-6">
+      <thead>
+        <tr class="py-3">
+          <th class="text-left w-36">
+            <div class="w-20 border-b-4 border-gray-900">Name</div>
+          </th>
+          <th class="text-left">
+            <div class="w-20 border-b-4 border-gray-900">Weight</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let color of colors">
+          <td class="pt-2">
+            <h6 class="w-32 text-xs uppercase tracking-wider">{{color.name}}</h6>
+          </td>
+          <td class="pt-2">
+            <div class="flex flex-row gap-2 items-center justify-start">
+              <div class="w-10 h-7 text-[10px] text-center flex items-center justify-center" [ngClass]="getClass(color.name, weight)" *ngFor="let weight of color.weights">{{weight}}</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="bg-gray-200 p-6 m-0 flex flex-col gap-3">
+    <h6 class="text-xs uppercase tracking-wider">usage:</h6>
+    <div class="text-xs p-3 bg-gray-300">
+      <code class="block py-1">text-blue-400</code>
+      <code class="block py-1">bg-green-400</code>
+      <code class="block py-1">border-gray-200</code>
+      <code class="block py-1">stroke-red-600</code>
     </div>
   </div>
 </section>
