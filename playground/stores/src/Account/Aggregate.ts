@@ -1,4 +1,4 @@
-import { AggregateRoot } from "@valkyr/ledger";
+import { Ledger } from "@valkyr/ledger";
 
 import { Event } from "./Events";
 
@@ -29,7 +29,7 @@ type Name = {
  |--------------------------------------------------------------------------------
  */
 
-export class Account extends AggregateRoot {
+export class Account extends Ledger.AggregateRoot {
   public id = "";
   public status: Status = "onboarding";
   public name: Name = {

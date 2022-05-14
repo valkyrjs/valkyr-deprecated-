@@ -1,4 +1,4 @@
-import { generateStreamId } from "@valkyr/ledger";
+import { getId } from "@valkyr/security";
 import { clone } from "@valkyr/utils";
 
 import { DuplicateDocumentError } from "../Errors";
@@ -17,7 +17,7 @@ import { Insert } from "../Types";
 export function insert(storage: Storage, operation: Insert): string {
   const document = clone(operation.document);
   if (document.id === undefined) {
-    document.id = generateStreamId();
+    document.id = getId();
   }
   if (storage.documents.has(document.id)) {
     throw new DuplicateDocumentError(document, storage);

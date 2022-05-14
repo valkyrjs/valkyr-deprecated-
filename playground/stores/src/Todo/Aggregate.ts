@@ -1,4 +1,4 @@
-import { Aggregate, AggregateRoot } from "@valkyr/ledger";
+import { Ledger } from "@valkyr/ledger";
 
 import { Member, Workspace } from "../Workspace";
 import { Event } from "./Events";
@@ -34,7 +34,7 @@ export type Item = {
  |--------------------------------------------------------------------------------
  */
 
-export class Todo extends AggregateRoot {
+export class Todo extends Ledger.AggregateRoot {
   public id = "";
   public workspaceId = "";
   public name = "";
@@ -116,4 +116,4 @@ export class Todo extends AggregateRoot {
  |--------------------------------------------------------------------------------
  */
 
-class Items extends Aggregate<Todo, Item> {}
+class Items extends Ledger.Aggregate<Todo, Item> {}

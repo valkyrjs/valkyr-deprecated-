@@ -6,6 +6,30 @@ import type { Event } from "./Event";
  |--------------------------------------------------------------------------------
  */
 
+export type Stream = {
+  /**
+   * Unique stream identifier relative to the ledger it belongs to.
+   */
+  id: string;
+
+  /**
+   * List of event ids that belongs to the stream.
+   */
+  events: string[];
+
+  /**
+   * Hash value of the stream used for quick lookup of new events during ledger
+   * push and pull requests. Has value should be calculated in order of when the
+   * events were created.
+   */
+  hash: string;
+
+  /**
+   * Hybrid logical clock timestamp when the stream was first created.
+   */
+  created: string;
+};
+
 export type StreamSubscriptionHandler = (event: Event) => void;
 
 export type EventStatus = {

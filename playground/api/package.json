@@ -28,6 +28,7 @@
     "@nestjs/platform-ws": "^8.4.4",
     "@valkyr/ledger": "*",
     "@valkyr/nestjs": "*",
+    "@valkyr/security": "*",
     "@valkyr/utils": "*",
     "bcrypt": "^5.0.1",
     "dotenv": "^16.0.0",

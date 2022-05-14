@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { AuthService, DataSubscriber, LedgerService } from "@valkyr/angular";
-import { generateStreamId } from "@valkyr/ledger";
+import { getId } from "@valkyr/security";
 import { WorkspaceStore } from "stores";
 
 import { WorkspaceSubscriberService } from "./WorkspaceSubscriber";
@@ -31,12 +31,10 @@ export class WorkspaceService extends DataSubscriber {
 
   async create(name: string) {
     const member: WorkspaceStore.Member = {
-      id: generateStreamId(),
+      id: getId(),
       accountId: this.auth.auditor,
       name: ""
     };
-    this.ledger.append(
-      WorkspaceStore.events.created(generateStreamId(), { name, members: [member] }, { auditor: member.id })
-    );
+    this.ledger.append(WorkspaceStore.events.created(getId(), { name, members: [member] }, { auditor: member.id }));
   }
 }

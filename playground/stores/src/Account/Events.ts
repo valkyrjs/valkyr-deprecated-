@@ -1,4 +1,4 @@
-import { createEvent, Event as LedgerEvent } from "@valkyr/ledger";
+import { Ledger } from "@valkyr/ledger";
 
 import { State } from "./Aggregate";
 
@@ -9,12 +9,12 @@ import { State } from "./Aggregate";
  */
 
 export const events = {
-  created: createEvent<Created>("AccountCreated"),
-  activated: createEvent<Activated>("AccountActivated"),
-  aliasSet: createEvent<AliasSet>("AccountAliasSet"),
-  nameSet: createEvent<NameSet>("AccountNameSet"),
-  emailSet: createEvent<EmailSet>("AccountEmailSet"),
-  closed: createEvent<Closed>("AccountClosed")
+  created: Ledger.createEvent<Created>("AccountCreated"),
+  activated: Ledger.createEvent<Activated>("AccountActivated"),
+  aliasSet: Ledger.createEvent<AliasSet>("AccountAliasSet"),
+  nameSet: Ledger.createEvent<NameSet>("AccountNameSet"),
+  emailSet: Ledger.createEvent<EmailSet>("AccountEmailSet"),
+  closed: Ledger.createEvent<Closed>("AccountClosed")
 };
 
 /*
@@ -23,12 +23,12 @@ export const events = {
  |--------------------------------------------------------------------------------
  */
 
-export type Created = LedgerEvent<"AccountCreated", Pick<State, "email">, never>;
-export type Activated = LedgerEvent<"AccountActivated", never, never>;
-export type AliasSet = LedgerEvent<"AccountAliasSet", Pick<State, "alias">, never>;
-export type NameSet = LedgerEvent<"AccountNameSet", Pick<State, "name">, never>;
-export type EmailSet = LedgerEvent<"AccountEmailSet", Pick<State, "email">, never>;
-export type Closed = LedgerEvent<"AccountClosed", never, never>;
+export type Created = Ledger.Event<"AccountCreated", Pick<State, "email">, never>;
+export type Activated = Ledger.Event<"AccountActivated", never, never>;
+export type AliasSet = Ledger.Event<"AccountAliasSet", Pick<State, "alias">, never>;
+export type NameSet = Ledger.Event<"AccountNameSet", Pick<State, "name">, never>;
+export type EmailSet = Ledger.Event<"AccountEmailSet", Pick<State, "email">, never>;
+export type Closed = Ledger.Event<"AccountClosed", never, never>;
 
 /*
  |--------------------------------------------------------------------------------

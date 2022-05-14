@@ -1,7 +1,7 @@
 import { Logger, UseFilters, UseInterceptors } from "@nestjs/common";
 import { clc } from "@nestjs/common/utils/cli-colors.util";
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { generateStreamId } from "@valkyr/ledger";
+import { getId } from "@valkyr/security";
 import * as jwt from "jsonwebtoken";
 import { Server } from "ws";
 
@@ -85,7 +85,7 @@ export class ValkyrGateway extends SocketGateway {
   // ### Lifecycle Methods
 
   public handleConnection(socket: Socket) {
-    socket.id = generateStreamId();
+    socket.id = getId();
     socket.channels = new Set();
     logger.debug(`socket ${clc.cyanBright(`[${socket.id}]`)} ${clc.yellow("connected")}`);
   }

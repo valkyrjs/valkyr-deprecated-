@@ -1,7 +1,7 @@
 import "reflect-metadata";
 
 import { APP_INITIALIZER, Injectable } from "@angular/core";
-import { projection } from "@valkyr/ledger";
+import { Ledger } from "@valkyr/ledger";
 import { Logger } from "@valkyr/utils";
 
 export const PROJECTOR_WATERMARK = "projector";
@@ -21,7 +21,7 @@ export class EventProjector {
     const events = Reflect.getOwnMetadata(PROJECTOR_EVENT_METADATA, this.constructor);
     for (const { key, event, method } of events) {
       logger.log(`Registered ${event} { ${key}, ${method.toUpperCase()} }`);
-      projection[method as "on" | "once" | "all"](event, (this as any)[key].bind(this));
+      Ledger.projection[method as "on" | "once" | "all"](event, (this as any)[key].bind(this));
     }
   }
 

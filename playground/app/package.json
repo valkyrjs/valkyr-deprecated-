@@ -27,6 +27,7 @@
     "@valkyr/angular": "*",
     "@valkyr/db": "*",
     "@valkyr/ledger": "*",
+    "@valkyr/security": "*",
     "@valkyr/tailwind": "*",
     "@valkyr/utils": "*",
     "rxjs": "~7.5.0",

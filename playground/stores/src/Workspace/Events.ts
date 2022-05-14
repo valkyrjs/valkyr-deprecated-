@@ -1,4 +1,4 @@
-import { createEvent, Event as LedgerEvent } from "@valkyr/ledger";
+import { Ledger } from "@valkyr/ledger";
 
 import { Invite, Member, State } from "./Aggregate";
 
@@ -9,16 +9,16 @@ import { Invite, Member, State } from "./Aggregate";
  */
 
 export const events = {
-  created: createEvent<Created>("WorkspaceCreated"),
-  nameSet: createEvent<NameSet>("WorkspaceNameSet"),
-  removed: createEvent<Removed>("WorkspaceRemoved"),
+  created: Ledger.createEvent<Created>("WorkspaceCreated"),
+  nameSet: Ledger.createEvent<NameSet>("WorkspaceNameSet"),
+  removed: Ledger.createEvent<Removed>("WorkspaceRemoved"),
   invite: {
-    created: createEvent<InviteCreated>("WorkspaceInviteCreated"),
-    removed: createEvent<InviteRemoved>("WorkspaceInviteRemoved")
+    created: Ledger.createEvent<InviteCreated>("WorkspaceInviteCreated"),
+    removed: Ledger.createEvent<InviteRemoved>("WorkspaceInviteRemoved")
   },
   member: {
-    added: createEvent<MemberAdded>("WorkspaceMemberAdded"),
-    removed: createEvent<MemberRemoved>("WorkspaceMemberRemoved")
+    added: Ledger.createEvent<MemberAdded>("WorkspaceMemberAdded"),
+    removed: Ledger.createEvent<MemberRemoved>("WorkspaceMemberRemoved")
   }
 };
 
@@ -28,15 +28,15 @@ export const events = {
  |--------------------------------------------------------------------------------
  */
 
-export type Created = LedgerEvent<"WorkspaceCreated", Pick<State, "name" | "members">, Auditor>;
-export type NameSet = LedgerEvent<"WorkspaceNameSet", Pick<State, "name">, Auditor>;
-export type Removed = LedgerEvent<"WorkspaceRemoved", never, never>;
+export type Created = Ledger.Event<"WorkspaceCreated", Pick<State, "name" | "members">, Auditor>;
+export type NameSet = Ledger.Event<"WorkspaceNameSet", Pick<State, "name">, Auditor>;
+export type Removed = Ledger.Event<"WorkspaceRemoved", never, never>;
 
-export type InviteCreated = LedgerEvent<"WorkspaceInviteCreated", Invite, Auditor>;
-export type InviteRemoved = LedgerEvent<"WorkspaceInviteRemoved", Invite["id"], Auditor>;
+export type InviteCreated = Ledger.Event<"WorkspaceInviteCreated", Invite, Auditor>;
+export type InviteRemoved = Ledger.Event<"WorkspaceInviteRemoved", Invite["id"], Auditor>;
 
-export type MemberAdded = LedgerEvent<"WorkspaceMemberAdded", Member, Auditor>;
-export type MemberRemoved = LedgerEvent<"WorkspaceMemberRemoved", Pick<Member, "id">, Auditor>;
+export type MemberAdded = Ledger.Event<"WorkspaceMemberAdded", Member, Auditor>;
+export type MemberRemoved = Ledger.Event<"WorkspaceMemberRemoved", Pick<Member, "id">, Auditor>;
 
 /*
   |--------------------------------------------------------------------------------

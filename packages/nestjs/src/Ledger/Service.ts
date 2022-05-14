@@ -1,14 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { clc } from "@nestjs/common/utils/cli-colors.util";
 import { InjectModel } from "@nestjs/mongoose";
-import {
-  AggregateRootClass,
-  createEventRecord,
-  Event as LedgerEvent,
-  EventStatus,
-  projector,
-  validator
-} from "@valkyr/ledger";
+import { Ledger } from "@valkyr/ledger";
 import { Model } from "mongoose";
 
 import { LedgerGateway } from "./Gateway";
@@ -23,11 +16,11 @@ export class LedgerService {
   // ### Accessor Proxies
 
   get validate() {
-    return validator.validate;
+    return Ledger.validator.validate;
   }
 
   get project() {
-    return projector.project;
+    return Ledger.projector.project;
   }
 
   // ### Write Utilities
@@ -43,8 +36,8 @@ export class LedgerService {
    * @param event    - Event to insert into the local ledger.
    * @param hydrated - Is this a new event or originating from a different source?
    */
-  async append(event: LedgerEvent, hydrated = false) {
-    const record = createEventRecord(event);
+  async append(event: Ledger.Event, hydrated = false) {
+    const record = Ledger.createEventRecord(event);
     const status = await this.status(event);
     if (status.exists === true) {
       return; // event already exists, no further actions required
@@ -69,7 +62,7 @@ export class LedgerService {
   async rehydrate(streamId?: string, from?: string) {
     const events = streamId ? await this.stream(streamId, from) : await this.events();
     for (const event of events) {
-      await projector.project(event, { hydrated: true, outdated: false });
+      await Ledger.projector.project(event, { hydrated: true, outdated: false });
     }
   }
 
@@ -91,7 +84,7 @@ export class LedgerService {
    * is newer than the provided event, the provided event is considered
    * outdated.
    */
-  async status({ id, streamId, type, created }: LedgerEvent): Promise<EventStatus> {
+  async status({ id, streamId, type, created }: Ledger.Event): Promise<Ledger.EventStatus> {
     const record = await this.model.findOne({ id });
     if (record) {
       return { exists: true, outdated: true };
@@ -123,7 +116,7 @@ export class LedgerService {
    * stream and reduces them into a single current state representing of
    * the event stream.
    */
-  async reduce<AggregateRoot extends AggregateRootClass>(
+  async reduce<AggregateRoot extends Ledger.AggregateRootClass>(
     streamId: string,
     aggregate: AggregateRoot
   ): Promise<InstanceType<AggregateRoot> | undefined> {

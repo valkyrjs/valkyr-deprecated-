@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { DataSubscriber, LedgerService } from "@valkyr/angular";
-import { generateStreamId } from "@valkyr/ledger";
+import { getId } from "@valkyr/security";
 import { TodoStore } from "stores";
 
 import { TodoSubscriberService } from "./TodoSubscriber";
@@ -12,7 +12,7 @@ export class TodoService extends DataSubscriber {
   }
 
   public async create(workspaceId: string, name: string, auditor: string) {
-    const event = TodoStore.events.created(generateStreamId(), { workspaceId, name }, { auditor });
+    const event = TodoStore.events.created(getId(), { workspaceId, name }, { auditor });
     this.ledger.append(event);
     this.ledger.relay("workspace", workspaceId, event);
   }

@@ -1,4 +1,4 @@
-import { Aggregate, AggregateRoot } from "@valkyr/ledger";
+import { Ledger } from "@valkyr/ledger";
 
 import { Event } from "./Events";
 
@@ -32,7 +32,7 @@ export type Member = {
  |--------------------------------------------------------------------------------
  */
 
-export class Workspace extends AggregateRoot {
+export class Workspace extends Ledger.AggregateRoot {
   public id = "";
   public name = "";
   public invites = new Invites(this);
@@ -75,13 +75,13 @@ export class Workspace extends AggregateRoot {
  |--------------------------------------------------------------------------------
  */
 
-class Invites extends Aggregate<Workspace, Invite> {
+class Invites extends Ledger.Aggregate<Workspace, Invite> {
   public getByEmail(email: string) {
     return this.index.find((invite) => invite.email === email);
   }
 }
 
-class Members extends Aggregate<Workspace, Member> {
+class Members extends Ledger.Aggregate<Workspace, Member> {
   public getAccountIds() {
     return this.index.map((member) => member.accountId);
   }

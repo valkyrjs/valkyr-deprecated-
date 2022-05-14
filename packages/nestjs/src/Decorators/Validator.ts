@@ -1,7 +1,7 @@
 import "reflect-metadata";
 
 import { Logger } from "@nestjs/common";
-import { validator } from "@valkyr/ledger";
+import { Ledger } from "@valkyr/ledger";
 
 const logger = new Logger("Validator", { timestamp: true });
 
@@ -13,7 +13,7 @@ export function Validator(): ClassDecorator {
       const map = Reflect.getOwnMetadata(VALIDATOR_METADATA, this.constructor);
       for (const { key, event } of map) {
         logger.log(`Mapped {${event}, VALIDATE}`);
-        validator.on(event, (this as any)[key].bind(this));
+        Ledger.validator.on(event, (this as any)[key].bind(this));
       }
     };
   };

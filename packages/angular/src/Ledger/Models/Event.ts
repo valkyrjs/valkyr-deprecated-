@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Document, Model } from "@valkyr/db";
-import { createEventRecord } from "@valkyr/ledger";
+import { Ledger } from "@valkyr/ledger";
 
 export type EventDocument = Document & {
   streamId: string;
@@ -21,7 +21,7 @@ export class Event extends Model<EventDocument> {
   readonly recorded!: EventDocument["recorded"];
 
   static async insert(document: EventDocument) {
-    const record = createEventRecord(document);
+    const record = Ledger.createEventRecord(document);
     await this.insertOne(record);
   }
 }

@@ -1,7 +1,7 @@
 import "reflect-metadata";
 
 import { APP_INITIALIZER, Injectable } from "@angular/core";
-import { validator } from "@valkyr/ledger";
+import { Ledger } from "@valkyr/ledger";
 import { Logger } from "@valkyr/utils";
 
 const logger = new Logger("Validator");
@@ -15,7 +15,7 @@ export class EventValidator {
     const map = Reflect.getOwnMetadata(VALIDATOR_METADATA, this.constructor);
     for (const { key, event } of map) {
       logger.log(`Mapped {${event}, VALIDATE}`);
-      validator.on(event, (this as any)[key].bind(this));
+      Ledger.validator.on(event, (this as any)[key].bind(this));
     }
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { generateStreamId } from "@valkyr/ledger";
 import { LedgerService } from "@valkyr/nestjs";
+import { getId } from "@valkyr/security";
 import { AccountStore } from "stores";
 
 import { AccountService } from "./Account";
@@ -10,7 +10,7 @@ export class AccountLedgerService {
   constructor(private readonly ledger: LedgerService, private readonly accounts: AccountService) {}
 
   public async create(email: string) {
-    const accountId = generateStreamId();
+    const accountId = getId();
 
     const state = await this.ledger.reduce(accountId, AccountStore.Account);
     if (state) {
