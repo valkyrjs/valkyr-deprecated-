@@ -7,13 +7,15 @@ import { Component, Input, OnInit } from "@angular/core";
       state(
         "open",
         style({
-          opacity: 1
+          opacity: 1,
+          display: "block"
         })
       ),
       state(
         "closed",
         style({
-          opacity: 0
+          opacity: 0,
+          display: "none"
         })
       ),
       transition("open => closed", [animate("0.12s")]),
@@ -30,6 +32,7 @@ export class SelectComponent implements OnInit {
     this.isOpen = !this.isOpen;
   }
 
+  @Input() append = false;
   @Input() value: string | undefined = undefined;
 
   @Input() options: SelectOptions = [];

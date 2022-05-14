@@ -2,7 +2,7 @@
   @apply relative w-full;
   button {
     @apply relative w-full px-1 py-1;
-    @apply border border-primary-default;
+    @apply border border-white;
     @apply bg-white text-left;
     @apply text-black;
     @apply focus:outline-none focus:ring-0 focus:border-0 cursor-context-menu;
@@ -22,6 +22,8 @@
       }
     }
   }
+  .overlay {
+    @apply fixed;
+    @apply inset-0;
+  }
 }
-
-

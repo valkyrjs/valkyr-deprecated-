@@ -1,4 +1,4 @@
-<button type="button" (click)="toggle()" class="group" ngClass="append ? 'rounded-l-full' : 'rounded-full'">
+<button type="button" (click)="toggle()" class="group" [ngClass]="append ? 'rounded-l-full' : 'rounded-full'">
   <div class="flex flex-row justify-start items-center gap-2 pl-2">
     <span *ngIf="!value" class="font-normal block truncate">Select...</span>
     <span *ngIf="value" class="font-normal block truncate">{{ selectedOption()?.label }}</span>
@@ -11,3 +11,4 @@
     </div>
   </div>
 </div>
+<div *ngIf="isOpen" class="overlay" (click)="toggle()"></div>
