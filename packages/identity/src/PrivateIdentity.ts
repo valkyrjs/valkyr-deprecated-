@@ -1,72 +1,104 @@
-import { decrypt, encrypt, KeyLike } from "@valkyr/security";
+import { AccessKey } from "@valkyr/security";
 
-import { PublicIdentity } from "./PublicIdentity";
-import { UserIdentity } from "./UserIdentity";
+import { UserIdentity, UserIdentitySchema } from "./UserIdentity";
 
-type RecordLike = Record<string, unknown>;
+/**
+ * PrivateIdentity
+ *
+ * This class is designed to locally store a consumer nodes private identity
+ * information. Such as all the users it has created, the  users special
+ * access key (derived from alias + passphrase + secret key), and JsonWebToken
+ * used to facilitate communication with a identity provider node.
+ *
+ * This identity holds very sensitive security data and should be handled
+ * with great care. Make sure not to store this in a environment that is
+ * accessible by actors which should not be allowed full access to the
+ * nodes personal details and security keys.
+ *
+ * When resubmitting the details of the private identity to identity provider
+ * nodes. Or when persisting the data locally, only send or store the result
+ * from the `.encrypt()` method.
+ *
+ * NOTE! Never store this identity as is in any shape or form, always use
+ * the `.encrypt()` method for safe storage!
+ *
+ * NOTE! A private identity is never to be shared with third parties. It holds
+ * all the security information for a consumer node. For third party identity
+ * sharing use the UserIdentity class.
+ *
+ * @see {@link UserIdentity}
+ */
+export class PrivateIdentity {
+  #jwt: string;
+  #users: Users;
+  #accessKey: AccessKey;
 
-type Props<Profile extends RecordLike = any, Data extends RecordLike = any> = {
-  cid: string;
-  profile: Profile;
-  data: Data;
-  publicKey: KeyLike;
-  privateKey: KeyLike;
-};
-
-export class PrivateIdentity<Profile extends RecordLike = any, Data extends RecordLike = any> {
-  readonly cid: string;
-  readonly profile: Profile;
-  readonly data: Data;
-
-  #publicKey: KeyLike;
-  #privateKey: KeyLike;
-
-  constructor(props: Props) {
-    this.cid = props.cid;
-    this.profile = props.profile;
-    this.data = props.data;
-    this.#publicKey = props.publicKey;
-    this.#privateKey = props.privateKey;
+  constructor(props: PrivateIdentityProps) {
+    this.#users = props.users;
+    this.#jwt = props.jwt;
+    this.#accessKey = props.accessKey;
   }
 
-  /**
-   * Resolves a private identity profile with given public and user identity
-   * instances. This maps the user identity public information along with
-   * decrypted private data using the public identity keys for the given user
-   * profile.
-   *
-   * User profiles keypair is provided by the public identity instance.
-   *
-   * @param userIdentity   - User identity to map to the private identity.
-   * @param publicIdentity - Public identity instance to retrieve keypair from.
-   */
-  static async resolve(userIdentity: UserIdentity, publicIdentity: PublicIdentity): Promise<PrivateIdentity> {
-    const { publicKey, privateKey } = publicIdentity.keys.get(userIdentity.cid) ?? {};
-    if (!publicKey || !privateKey) {
-      throw new Error("Private Identity Violation: Could not resolve identity keypair");
+  // ### Instantiator
+
+  static async resolve(schema: PrivateIdentitySchema) {
+    const decrypted = schema.accessKey.decrypt<Record<string, UserIdentitySchema>>(schema.data);
+    const users: Users = new Map();
+    for (const user in decrypted) {
+      users.set(user, await UserIdentity.resolve(decrypted[user]));
     }
     return new PrivateIdentity({
-      cid: userIdentity.cid,
-      profile: userIdentity.profile,
-      data: await Promise.all(userIdentity.private.map((value) => decrypt(value, privateKey))),
-      publicKey,
-      privateKey
+      users,
+      jwt: schema.jwt,
+      accessKey: schema.accessKey
     });
   }
 
-  get publicKey(): KeyLike {
-    return this.#publicKey;
+  /**
+   * Token used to authorize the identity to make changes to itself on the
+   * server side identity provider.
+   */
+  get token() {
+    return this.#jwt;
   }
 
-  get privateKey(): KeyLike {
-    return this.#privateKey;
+  /**
+   * List of users registered under this identity.
+   */
+  get users() {
+    return Array.from(this.#users.values());
   }
 
-  async encrypt<T extends Record<string, unknown>>(obj: T): Promise<string> {
-    return encrypt(obj, this.publicKey);
+  /**
+   * Get public user identity based on provided content id.
+   *
+   * @param cid - Content id the user details are stored under.
+   */
+  user(cid: string): UserIdentity | undefined {
+    return this.#users.get(cid);
   }
 
-  async decrypt<T extends Record<string, unknown>>(cypherText: string): Promise<T> {
-    return decrypt(cypherText, this.privateKey);
+  /**
+   * Returns encrypted list of users which can be safely passed back to the
+   * server for persistent storage.
+   *
+   * @returns encrypted user list
+   */
+  encrypt() {
+    return this.#accessKey.encrypt(this.users);
   }
 }
+
+type PrivateIdentitySchema = {
+  data: string;
+  jwt: string;
+  accessKey: AccessKey;
+};
+
+type PrivateIdentityProps = {
+  users: Users;
+  jwt: string;
+  accessKey: AccessKey;
+};
+
+type Users = Map<string, UserIdentity>;
