@@ -1,0 +1,15 @@
+// :host {
+//   // @apply h-screen overflow-hidden w-full;
+//   // @apply relative;
+// }
+
+.p {
+  font-family: Lato;
+}
+
+#canvas-wrapper {
+  width: 100%;
+  height: 800px;
+  background: lightgrey;
+  overflow: hidden;
+}

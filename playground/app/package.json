@@ -30,6 +30,7 @@
     "@valkyr/security": "*",
     "@valkyr/tailwind": "*",
     "@valkyr/utils": "*",
+    "panzoom": "9.4.2",
     "rxjs": "~7.5.0",
     "stores": "*",
     "tslib": "^2.3.0",

@@ -55,6 +55,10 @@ export class DiscoveryComponent {
               href: "/editor"
             },
             {
+              name: "Designer",
+              href: "/designer"
+            },
+            {
               name: "Design System",
               href: "/ui"
             }

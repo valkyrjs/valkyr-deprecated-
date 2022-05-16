@@ -1,0 +1,11 @@
+<div
+  class="example-box"
+  [ngStyle]="{ left: pos.x + 'px', top: pos.y + 'px' }"
+  cdkDrag
+  (cdkDragStarted)="startDragging()"
+  (cdkDragEnded)="endDragging($event)"
+  [cdkDragConstrainPosition]="dragConstrainPoint"
+  [cdkDragFreeDragPosition]="pos"
+>
+  Drag me around
+</div>

@@ -1,0 +1,8 @@
+<p>Scroll to zoom, drag to move</p>
+<div id="canvas-wrapper">
+  <div #canvas>
+    <!-- (wheel)="onCanvasZoom($event)" [ngStyle]="{ transform: 'scale(' + zoomScale + ')' }" -->
+    <draggable [zoomScale]="zoomScale" (dragStart)="pausePanzoom()" (dragEnd)="resumePanzoom()"></draggable>
+    <draggable [zoomScale]="zoomScale" (dragStart)="pausePanzoom()" (dragEnd)="resumePanzoom()"></draggable>
+  </div>
+</div>
