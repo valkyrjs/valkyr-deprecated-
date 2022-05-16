@@ -100,8 +100,8 @@
   </header>
   <div class="w-full px-6">
     <div class="w-full mb-6 flex gap-6">
-      <dropdown [options]="options"></dropdown>
-      <dropdown [options]="options"></dropdown>
+      <dropdown value="2" [options]="options"></dropdown>
+      <dropdown value="3" [options]="options"></dropdown>
       <div class="flex w-40">
         <dropdown [options]="options" [append]="true"></dropdown>
         <div class="flex justify-end items-center w-10 text-cta-default border border-white bg-white rounded-r-full px-1 py-1 pr-2">
@@ -116,6 +116,7 @@
     <h6 class="text-xs uppercase tracking-wider">usage:</h6>
     <div class="text-xs p-3 bg-gray-300">
       <code class="block py-1">&lt;dropdown value="" [options]="someOptions"&gt;Action&lt;/dropdown&gt;</code>
+      <code class="block py-1">&lt;dropdown value="" [options]="someOptions" [append]="true"&gt;Action&lt;/dropdown&gt;</code>
     </div>
   </div>
 </section>

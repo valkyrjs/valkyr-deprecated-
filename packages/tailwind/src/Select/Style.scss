@@ -5,7 +5,8 @@
     @apply border border-white;
     @apply bg-white text-left;
     @apply text-black;
-    @apply focus:outline-none focus:ring-0 focus:border-0 cursor-context-menu;
+    @apply cursor-context-menu;
+    @apply focus:outline-none focus:ring-0 focus:shadow-none focus:outline-offset-0;
   }
   .options {
     @apply absolute z-10 mt-1 w-full max-h-60;
