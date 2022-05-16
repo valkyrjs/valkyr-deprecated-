@@ -13,4 +13,9 @@ export class TodoProjector extends EventProjector {
       name
     });
   }
+
+  @On("TodoSortSet")
+  public async handleTodoSortSet({ streamId, data: { sort } }: TodoStore.SortSet) {
+    await Todo.updateOne({ id: streamId }, { $set: { sort } });
+  }
 }

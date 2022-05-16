@@ -16,6 +16,6 @@ export class TodoItemService extends DataSubscriber {
   }
 
   public async move(todoId: string, id: string, sort: number, auditor: string) {
-    return this.ledger.append(TodoStore.events.item.sortSet(todoId, { id, sort }, { auditor }));
+    this.ledger.append(TodoStore.events.item.sortSet(todoId, { id, sort }, { auditor }));
   }
 }

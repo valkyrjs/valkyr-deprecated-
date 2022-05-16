@@ -1,9 +1,5 @@
 <div className="p-6 h-full w-full">
-  <ul
-    cdkDropList
-    (cdkDropListDropped)="drop($event)"
-    role="list" class="w-full min-h-full grid grid-areas-workspaces grid-cols-workspaces grid-rows-workspaces gap-6"
-  >
+  <ul cdkDropList (cdkDropListDropped)="drop($event)" role="list" class="todo-thing-list w-full min-h-full grid grid-areas-workspaces grid-cols-workspaces grid-rows-workspaces gap-6">
     <li>
       <button (click)="openAddTodo()">
         <div class="flex flex-col justify-start items-center w-52 h-64 group border border-dashed border-gray-400">
@@ -24,7 +20,8 @@
         </div>
       </button>
     </li>
-    <li *ngFor="let todo of todos | sorttodos" cdkDrag [cdkDragData]="todo">
+    <li class="todo-placeholder" *cdkDragPlaceholder></li>
+    <li class="todo" *ngFor="let todo of todos | sorttodos" cdkDrag [cdkDragData]="todo">
       <a routerLink="/workspaces/{{todo.workspaceId}}/todos/{{todo.id}}">
         <div class="flex flex-col justify-start items-center w-52 h-64 group border border-gray-500">
           <div class="w-full h-44 bg-gradient-to-br from-blue-400 to-indigo-700"></div>

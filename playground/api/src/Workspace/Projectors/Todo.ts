@@ -15,4 +15,9 @@ export class TodoProjector {
       workspaceId
     });
   }
+
+  @On("TodoSortSet")
+  public async SortSet({ streamId, data }: TodoStore.SortSet) {
+    await this.todo.update(streamId, data);
+  }
 }

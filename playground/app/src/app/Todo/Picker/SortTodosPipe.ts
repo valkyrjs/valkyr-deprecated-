@@ -9,7 +9,7 @@ export class SortTodosPipe {
     return value.sort((a: Todo, b: Todo) => {
       if (a.sort == b.sort) return 0;
       else if (!a.sort) return -1;
-      else if (!a.sort || (b.sort && a.sort < b.sort)) return -1;
+      else if (b.sort && a.sort < b.sort) return -1;
 
       return 1;
     });

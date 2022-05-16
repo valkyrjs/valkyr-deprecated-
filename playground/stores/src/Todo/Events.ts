@@ -12,7 +12,7 @@ import type { Item, State } from "./Aggregate";
 export const events = {
   created: Ledger.createEvent<Created>("TodoCreated"),
   removed: Ledger.createEvent<Removed>("TodoRemoved"),
-  sortSet: Ledger.createEvent<ItemSortSet>("TodoItemSortSet"),
+  sortSet: Ledger.createEvent<SortSet>("TodoSortSet"),
   item: {
     added: Ledger.createEvent<ItemAdded>("TodoItemAdded"),
     textSet: Ledger.createEvent<ItemTextSet>("TodoItemTextSet"),
@@ -31,7 +31,7 @@ export const events = {
 
 export type Created = Ledger.Event<"TodoCreated", Pick<State, "workspaceId" | "name">, Auditor>;
 export type Removed = Ledger.Event<"TodoRemoved", never, Auditor>;
-export type SortSet = Ledger.Event<"TodoSortSet", Pick<Item, "id" | "sort">, Auditor>;
+export type SortSet = Ledger.Event<"TodoSortSet", Pick<Item, "sort">, Auditor>;
 
 export type ItemAdded = Ledger.Event<"TodoItemAdded", Pick<Item, "id" | "text">, Auditor>;
 export type ItemTextSet = Ledger.Event<"TodoItemTextSet", Pick<Item, "id" | "text">, Auditor>;

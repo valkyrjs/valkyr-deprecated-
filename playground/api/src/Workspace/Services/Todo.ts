@@ -16,4 +16,8 @@ export class TodoService {
     const todos = await this.model.find({ workspaceId });
     return todos.map((todo) => todo.id);
   }
+
+  public async update(id: string, data: AnyKeys<TodoDocument>) {
+    return this.model.updateOne({ id }, data);
+  }
 }

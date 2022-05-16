@@ -18,6 +18,8 @@ export class TodoService extends DataSubscriber {
   }
 
   public async move(workspaceId: string, id: string, sort: number, auditor: string) {
-    return this.ledger.append(TodoStore.events.sortSet(workspaceId, { id, sort }, { auditor }));
+    const event = TodoStore.events.sortSet(id, { sort }, { auditor });
+    this.ledger.append(event);
+    this.ledger.relay("workspace", workspaceId, event);
   }
 }

@@ -9,7 +9,6 @@ import { WorkspaceService } from "../../Workspace";
 import { CreateTodoDialog } from "../Dialogues/CreateTodo/Component";
 import { Todo } from "../Models/Todo";
 import { TodoService } from "../Services/Todo";
-import { TodoItemService } from "../Services/TodoItem";
 
 @Component({
   selector: "todo-picker",
@@ -28,7 +27,6 @@ export class TodoPickerComponent implements OnInit, OnDestroy {
     readonly title: TitleService,
     readonly params: ParamsService,
     readonly route: ActivatedRoute,
-    readonly todoItem: TodoItemService,
     readonly auth: AuthService
   ) {
     title.set("Todos", DOCUMENT_TITLE, "workspace");
@@ -89,7 +87,7 @@ export class TodoPickerComponent implements OnInit, OnDestroy {
       if (!member) {
         throw new Error("Could not resolve workspace member");
       }
-      this.todoItem.move(this.workspace.selected, event.item.data.id, event.currentIndex, member.id);
+      this.todo.move(this.workspace.selected, event.item.data.id, event.currentIndex, member.id);
     }
   }
 }
