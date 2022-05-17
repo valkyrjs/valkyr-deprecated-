@@ -1,8 +1,17 @@
-<p>Scroll to zoom, drag to move</p>
-<div id="canvas-wrapper">
-  <div #canvas>
-    <!-- (wheel)="onCanvasZoom($event)" [ngStyle]="{ transform: 'scale(' + zoomScale + ')' }" -->
-    <draggable [zoomScale]="zoomScale" (dragStart)="pausePanzoom()" (dragEnd)="resumePanzoom()"></draggable>
-    <draggable [zoomScale]="zoomScale" (dragStart)="pausePanzoom()" (dragEnd)="resumePanzoom()"></draggable>
-  </div>
+<div class="actions">
+  <h6>Scroll to zoom, drag to move</h6>
+</div>
+<div class="canvas">
+  <draggable [zoomScale]="zoomScale" (dragStart)="pausePanzoom()" (dragEnd)="resumePanzoom()" [pos]="{ x: 10, y: 10 }">
+    <div class="view">Week View</div>
+  </draggable>
+  <draggable [zoomScale]="zoomScale" (dragStart)="pausePanzoom()" (dragEnd)="resumePanzoom()" [pos]="{ x: 10, y: 140 }">
+    <div class="view">Item View</div>
+  </draggable>
+  <draggable [zoomScale]="zoomScale" (dragStart)="pausePanzoom()" (dragEnd)="resumePanzoom()" [pos]="{ x: 210, y: 10 }">
+    <div class="item">Chore</div>
+  </draggable>
+  <draggable [zoomScale]="zoomScale" (dragStart)="pausePanzoom()" (dragEnd)="resumePanzoom()" [pos]="{ x: 280, y: 10 }">
+    <div class="item">Event</div>
+  </draggable>
 </div>
