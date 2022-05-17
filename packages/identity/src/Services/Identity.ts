@@ -7,16 +7,12 @@ type PrivateIdentityData = {
   users: Map<string, UserIdentity>;
 };
 
-type IdentityCreationResponse = {
-  alias: string;
-  secretKey: string;
-};
-
 export class IdentityService {
   #connections: DataConnection[] = [];
 
   #peer: Peer;
 
+  #alias?: string;
   #identity?: PrivateIdentity<PrivateIdentityData>;
   #accessKey?: AccessKey;
 
@@ -35,11 +31,25 @@ export class IdentityService {
 
   // ### Accessors
 
+  get alias(): string {
+    if (!this.#alias) {
+      throw new Error("Identity Violation: No alias has been resolved");
+    }
+    return this.#alias;
+  }
+
   get identity(): PrivateIdentity<PrivateIdentityData> {
     if (!this.#identity) {
       throw new Error("Identity Violation: No identity has been resolved");
     }
     return this.#identity;
+  }
+
+  get accessKey(): AccessKey {
+    if (!this.#accessKey) {
+      throw new Error("Identity Violation: No access key has been resolved");
+    }
+    return this.#accessKey;
   }
 
   get peer() {
@@ -54,14 +64,12 @@ export class IdentityService {
    * @param alias    - Alias to identify the identity.
    * @param password - Password used to create account access key.
    */
-  async create(alias: string, password: string): Promise<IdentityCreationResponse> {
+  async create(alias: string, password: string): Promise<string> {
     const secretKey = generateSecretKey();
+    this.#alias = alias;
     this.#identity = await PrivateIdentity.create<PrivateIdentityData>({ users: new Map() });
     this.#accessKey = AccessKey.resolve(password, secretKey);
-    return {
-      alias,
-      secretKey
-    };
+    return secretKey;
   }
 
   /**

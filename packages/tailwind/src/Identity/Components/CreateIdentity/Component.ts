@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { IdentityService } from "@valkyr/identity";
 
 @Component({
   selector: "vlk-identity-create",
@@ -6,5 +7,13 @@ import { Component } from "@angular/core";
   styleUrls: ["./Styles.scss"]
 })
 export class CreateIdentityComponent {
-  constructor() {}
+  alias = "";
+  password = "";
+
+  constructor(readonly service: IdentityService) {}
+
+  async create() {
+    const secretKey = await this.service.create(this.alias, this.password);
+    console.log(secretKey);
+  }
 }

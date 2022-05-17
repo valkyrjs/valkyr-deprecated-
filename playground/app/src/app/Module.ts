@@ -5,6 +5,7 @@ import { RouterModule } from "@angular/router";
 import { AccessModule, LedgerModule, ModalModule } from "@valkyr/angular";
 import { IdentityModule } from "@valkyr/tailwind";
 
+import { IdentityProviderService } from "../../../../packages/identity/src/Services/IdentityProvider";
 import { AuthorizationModule } from "./Authorization";
 import { AppComponent } from "./Component";
 import { DesignSystemModule } from "./DesignSystem/Module";
@@ -25,7 +26,8 @@ import { WorkspaceModule } from "./Workspace";
     DesignSystemModule,
     IdentityModule.forRoot({
       host: "188.166.248.32",
-      port: 9000
+      port: 9000,
+      path: "/myapp"
     }),
     LedgerModule,
     ModalModule,
@@ -37,4 +39,6 @@ import { WorkspaceModule } from "./Workspace";
   bootstrap: [AppComponent],
   exports: [RouterModule]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(readonly provider: IdentityProviderService) {}
+}
