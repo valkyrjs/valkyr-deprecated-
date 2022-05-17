@@ -6,6 +6,7 @@ import { AccessModule, LedgerModule, ModalModule } from "@valkyr/angular";
 
 import { AuthorizationModule } from "./Authorization";
 import { AppComponent } from "./Component";
+import { DesignerModule } from "./Designer/Module";
 import { DesignSystemModule } from "./DesignSystem/Module";
 import { DiscoveryModule } from "./Discovery";
 import { routes } from "./Routing";
@@ -19,6 +20,7 @@ import { WorkspaceModule } from "./Workspace";
     BrowserModule,
     DragDropModule,
     DiscoveryModule,
+    DesignerModule,
     DesignSystemModule,
     LedgerModule,
     ModalModule,

@@ -1,13 +1,10 @@
 import { CdkDrag } from "@angular/cdk/drag-drop";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
-/**
- * @title Basic Drag&Drop
- */
 @Component({
   selector: "draggable",
-  templateUrl: "Template.html",
-  styleUrls: ["Style.scss"]
+  templateUrl: "./Template.html",
+  styleUrls: ["./Style.scss"]
 })
 export class DraggableComponent {
   @Input() zoomScale = 1;
