@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { AccessModule, LedgerModule, ModalModule } from "@valkyr/angular";
+import { IdentityModule } from "@valkyr/tailwind";
 
 import { AuthorizationModule } from "./Authorization";
 import { AppComponent } from "./Component";
@@ -22,6 +23,10 @@ import { WorkspaceModule } from "./Workspace";
     DiscoveryModule,
     TemplateModule,
     DesignSystemModule,
+    IdentityModule.forRoot({
+      host: "188.166.248.32",
+      port: 9000
+    }),
     LedgerModule,
     ModalModule,
     RouterModule.forRoot(routes),

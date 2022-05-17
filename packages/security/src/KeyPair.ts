@@ -36,8 +36,8 @@ export class KeyPair {
 
   static async import({ publicKey, privateKey }: ExportedKeyPair) {
     return new KeyPair({
-      publicKey: await Jose.importSPKI(publicKey, ALG),
-      privateKey: await Jose.importPKCS8(privateKey, ALG)
+      publicKey: await importPublicKey(publicKey),
+      privateKey: await importPrivateKey(privateKey)
     });
   }
 
@@ -45,9 +45,17 @@ export class KeyPair {
 
   async export() {
     return {
-      publicKey: await Jose.exportSPKI(this.#publicKey),
-      privateKey: await Jose.exportPKCS8(this.#privateKey)
+      publicKey: await this.exportPublicKey(),
+      privateKey: await this.exportPrivateKey()
     };
+  }
+
+  async exportPublicKey() {
+    return Jose.exportSPKI(this.#publicKey);
+  }
+
+  async exportPrivateKey() {
+    return Jose.exportPKCS8(this.#privateKey);
   }
 
   // ### KeyPair Access Key
@@ -111,4 +119,12 @@ export class KeyPair {
     const { plaintext } = await Jose.compactDecrypt(cypherText, this.#privateKey);
     return JSON.parse(new TextDecoder().decode(plaintext));
   }
+}
+
+export async function importPublicKey(publicKey: string): Promise<Jose.KeyLike> {
+  return Jose.importSPKI(publicKey, ALG);
+}
+
+export async function importPrivateKey(privateKey: string): Promise<Jose.KeyLike> {
+  return Jose.importPKCS8(privateKey, ALG);
 }

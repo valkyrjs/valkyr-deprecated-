@@ -23,9 +23,15 @@ export class AccessKey {
     return new AccessKey(PBKDF2(passphrase, salt).toString());
   }
 
+  // ### Accessors
+
+  get key(): string {
+    return this.#key;
+  }
+
   // ### Encrypt & Decrypt
 
-  encrypt(value: object | object[]) {
+  encrypt(value: object | object[]): string {
     return AES.encrypt(JSON.stringify(value), this.#key).toString();
   }
 

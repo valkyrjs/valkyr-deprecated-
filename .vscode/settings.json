@@ -28,6 +28,7 @@
     "nestjs",
     "nocheck",
     "paramtypes",
+    "peerjs",
     "pids",
     "rfdc",
     "signin",

@@ -1,4 +1,4 @@
-import { KeyPair } from "@valkyr/security";
+import { ExportedKeyPair, getId, KeyPair } from "@valkyr/security";
 
 /**
  * UserIdentity
@@ -29,17 +29,41 @@ export class UserIdentity<Data extends RecordLike = any> {
     this.#keys = props.keys;
   }
 
-  // ### Instantiator
+  // ### Instantiators
+
+  static async create<Data extends RecordLike = any>(data: Data): Promise<UserIdentity> {
+    return new UserIdentity({
+      cid: getId(),
+      data,
+      keys: await KeyPair.create()
+    });
+  }
 
   static async resolve(schema: UserIdentitySchema): Promise<UserIdentity> {
     return new UserIdentity({
       cid: schema.cid,
       data: schema.data,
-      keys: await KeyPair.import({
-        publicKey: schema.publicKey,
-        privateKey: schema.privateKey
-      })
+      keys: await KeyPair.import(schema.keys)
     });
+  }
+
+  /**
+   * Encrypt given data using the users public key.
+   *
+   * @param value - Value to encrypt.
+   */
+  get encrypt() {
+    return this.#keys.encrypt.bind(this.#keys);
+  }
+
+  /**
+   * Decrypt provided text using the users private key. This allows users
+   * to receive encrypted personal data or data provided by third parties.
+   *
+   * @param text - Text value to decrypt.
+   */
+  get decrypt() {
+    return this.#keys.decrypt.bind(this.#keys);
   }
 
   /**
@@ -49,32 +73,12 @@ export class UserIdentity<Data extends RecordLike = any> {
   async publicKey(): Promise<string> {
     return (await this.#keys.export()).publicKey;
   }
-
-  /**
-   * Encrypt given data using the users public key.
-   *
-   * @param value - Value to encrypt.
-   */
-  async encrypt<T extends RecordLike>(value: T): Promise<string> {
-    return this.#keys.encrypt(value);
-  }
-
-  /**
-   * Decrypt provided text using the users private key. This allows users
-   * to receive encrypted personal data or data provided by third parties.
-   *
-   * @param text - Text value to decrypt.
-   */
-  async decrypt<T extends RecordLike>(text: string): Promise<T> {
-    return this.#keys.decrypt(text);
-  }
 }
 
 export type UserIdentitySchema<Data extends RecordLike = any> = {
   cid: string;
   data: Data;
-  publicKey: string;
-  privateKey: string;
+  keys: ExportedKeyPair;
 };
 
 type UserIdentityProps<Data extends RecordLike = any> = {
