@@ -3,11 +3,11 @@ import { DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
 import panzoom, { PanZoom } from "panzoom";
 
 @Component({
-  selector: "designer",
+  selector: "template",
   templateUrl: "./Template.html",
   styleUrls: ["./Style.scss"]
 })
-export class DesignerComponent implements AfterViewInit {
+export class TemplateItemComponent implements AfterViewInit {
   zoomScale = 1;
   zoomFactor = 0.05;
   panzoomCanvas?: PanZoom;
@@ -15,7 +15,7 @@ export class DesignerComponent implements AfterViewInit {
   @ViewChild("canvas") canvasElement: ElementRef;
 
   constructor(title: TitleService, el: ElementRef<HTMLElement>) {
-    title.set("Editor", DOCUMENT_TITLE, "discovery");
+    title.set("Template Designer", DOCUMENT_TITLE, "discovery");
     this.canvasElement = el;
   }
 

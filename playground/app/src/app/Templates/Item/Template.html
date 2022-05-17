@@ -1,7 +1,7 @@
 <div class="actions">
   <h6>Scroll to zoom, drag to move</h6>
 </div>
-<div class="canvas">
+<div #canvas>
   <draggable [zoomScale]="zoomScale" (dragStart)="pausePanzoom()" (dragEnd)="resumePanzoom()" [pos]="{ x: 10, y: 10 }">
     <div class="view">Week View</div>
   </draggable>

@@ -3,14 +3,15 @@
   @apply relative;
 }
 .actions {
-  @apply text-secondary-default hover:text-secondary-hover;
+  @apply flex justify-between w-full;
   @apply mb-2;
 }
 h6 {
-  @apply pointer-events-none;
+  @apply text-secondary-default hover:text-secondary-hover;
+  @apply cursor-default;
   @apply text-xs tracking-wider uppercase;
 }
-.canvas {
+#canvas {
   @apply relative;
   .item {
     @apply flex justify-center items-center text-center;

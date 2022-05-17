@@ -2,9 +2,9 @@ import { Routes } from "@angular/router";
 import { AuthGuard, GuestGuard } from "@valkyr/angular";
 
 import { AuthorizationComponent } from "./Authorization";
-import { DesignerComponent } from "./Designer";
 import { DesignSystemComponent } from "./DesignSystem";
 import { DiscoveryComponent } from "./Discovery";
+import { TemplateItemComponent, TemplateListComponent } from "./Templates";
 import { TextEditorComponent } from "./TextEditor";
 import { TodoListComponent } from "./Todo/List/Component";
 import { TodoPickerComponent } from "./Todo/Picker/Component";
@@ -31,18 +31,15 @@ export const routes: Routes = [
     children: [
       { path: "", component: WorkspaceItemComponent },
       { path: "todos", component: TodoPickerComponent },
-      { path: "todos/:todo", component: TodoListComponent }
+      { path: "todos/:todo", component: TodoListComponent },
+      { path: "templates", component: TemplateListComponent },
+      { path: "templates/:template", component: TemplateItemComponent }
     ]
   },
   {
     path: "editor",
     component: DiscoveryComponent,
     children: [{ path: "", component: TextEditorComponent }]
-  },
-  {
-    path: "designer",
-    component: DiscoveryComponent,
-    children: [{ path: "", component: DesignerComponent }]
   },
   {
     path: "ui",
