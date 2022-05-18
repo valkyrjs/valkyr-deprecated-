@@ -34,14 +34,17 @@ export class DiscoveryComponent {
           name: "Workspaces",
           items: [
             {
+              type: "link",
               name: "My workspaces",
               href: "/workspaces"
             },
             {
+              type: "link",
               name: "Shared workspaces",
               href: "/workspaces"
             },
             {
+              type: "link",
               name: "Invites",
               href: "/workspaces"
             }
@@ -51,14 +54,17 @@ export class DiscoveryComponent {
           name: "Sandbox",
           items: [
             {
+              type: "link",
               name: "Text Editor",
               href: "/editor"
             },
             {
+              type: "link",
               name: "Designer",
               href: "/designer"
             },
             {
+              type: "link",
               name: "Design System",
               href: "/ui"
             }

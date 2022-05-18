@@ -21,7 +21,7 @@ export class CreateTemplateDialog {
 
   async create() {
     this.close();
-    const workspaceId = this.workspace.selected;
+    const workspaceId = this.workspace.selected; // this doesnt work when not inside the workspace layout.
     if (!workspaceId) {
       throw new Error("Could not resolve workspace id");
     }

@@ -4,12 +4,19 @@ import { RouterModule } from "@angular/router";
 
 import { MenuCategoryComponent } from "./Category/Component";
 import { MenuComponent } from "./Component";
-import { MenuItemComponent } from "./Item/Component";
+import { MenuItemActionComponent } from "./ItemAction/Component";
+import { MenuItemLinkComponent } from "./ItemLink/Component";
 import { MenuListComponent } from "./List/Component";
 
 @NgModule({
-  declarations: [MenuComponent, MenuListComponent, MenuCategoryComponent, MenuItemComponent],
   imports: [BrowserModule, RouterModule],
-  exports: [MenuComponent, MenuListComponent, MenuCategoryComponent, MenuItemComponent]
+  declarations: [
+    MenuComponent,
+    MenuListComponent,
+    MenuCategoryComponent,
+    MenuItemLinkComponent,
+    MenuItemActionComponent
+  ],
+  exports: [MenuComponent, MenuListComponent, MenuCategoryComponent, MenuItemActionComponent, MenuItemLinkComponent]
 })
 export class MenuModule {}

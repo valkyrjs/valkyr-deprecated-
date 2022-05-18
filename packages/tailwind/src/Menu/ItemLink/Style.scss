@@ -4,6 +4,7 @@
 }
 
 a {
+  @apply w-full;
   @apply px-3;
   @apply py-1;
   @apply hover:bg-gray-200;

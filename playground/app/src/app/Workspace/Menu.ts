@@ -4,14 +4,19 @@ export function getMainMenu(workspaceId: string): Menu {
   return new Menu({
     categories: [
       {
-        name: "Workspace",
+        name: "Areas",
         items: [
           {
-            name: "Dashboard",
-            href: "/workspaces/{{workspaceId}}"
+            type: "link",
+            isActive: false,
+            name: "Templates",
+            icon: "template",
+            href: "/workspaces/{{workspaceId}}/templates"
           },
           {
-            name: "Todos",
+            type: "link",
+            isActive: false,
+            name: "Todo",
             href: "/workspaces/{{workspaceId}}/todos"
           }
         ]
@@ -30,6 +35,8 @@ export function getFooterMenu(workspaceId: string): Menu {
         name: "Actions",
         items: [
           {
+            type: "link",
+            isActive: false,
             name: "Design",
             href: "/workspaces/{{workspaceId}}/edit"
           }

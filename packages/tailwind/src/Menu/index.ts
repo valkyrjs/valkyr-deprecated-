@@ -1,5 +1,6 @@
 export * from "./Category/Component";
 export * from "./Component";
-export * from "./Item/Component";
+export * from "./ItemAction/Component";
+export * from "./ItemLink/Component";
 export * from "./List/Component";
 export * from "./Module";

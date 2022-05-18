@@ -33,25 +33,42 @@ class MenuCategory {
     return this.#category.name ?? "";
   }
 
-  get items(): MenuItem[] {
-    return this.#category.items.map((item) => new MenuItem(item, this.#params));
+  get items(): MenuListItem[] {
+    return this.#category.items.map((item) => new MenuListItem(item, this.#params));
   }
 }
 
-class MenuItem {
-  readonly #item: Item;
+export class MenuListItem {
+  readonly #item: MenuItem;
   readonly #params: Params;
 
-  constructor(item: Item, params: Params) {
+  constructor(item: MenuItem, params: Params) {
     this.#item = item;
     this.#params = params;
+  }
+
+  get type(): MenuItemType {
+    return this.#item.type;
   }
 
   get name(): string {
     return this.#item.name;
   }
 
+  get isActive(): boolean {
+    return this.#item.isActive ? this.#item.isActive : false;
+  }
+
+  get action(): any {
+    if (this.#item.action && this.#item.type === "action") {
+      return this.#item.action;
+    }
+  }
+
   get href(): string {
+    if (!(this.#item.href && this.#item.type === "link")) {
+      return "/";
+    }
     let link = this.#item.href;
     for (const key in this.#params) {
       link = link.replace(`{{${key}}}`, this.#params[key]);
@@ -73,13 +90,18 @@ export type MenuSettings = {
 type Category = {
   name?: string;
   icon?: string;
-  items: Item[];
+  items: MenuItem[];
 };
 
-type Item = {
+export type MenuItem = {
   name: string;
-  href: string;
+  type: MenuItemType;
+  isActive?: boolean;
+  href?: string;
+  action?: any;
   icon?: string;
 };
 
 type Params = Record<string, string>;
+
+export type MenuItemType = "link" | "action";

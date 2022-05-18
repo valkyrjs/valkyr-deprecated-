@@ -1,11 +1,20 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { AuthService, DOCUMENT_TITLE, LedgerService, ParamsService, TitleService } from "@valkyr/angular";
+import {
+  AuthService,
+  DOCUMENT_TITLE,
+  LedgerService,
+  Menu,
+  MenuItem,
+  ParamsService,
+  TitleService
+} from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
 import panzoom, { PanZoom } from "panzoom";
 
 import { WorkspaceService } from "../../Workspace";
 import { CreateTemplateDialog } from "../Dialogues/CreateTemplate/Component";
+import { getFooterMenu } from "../Menu";
 import { Template } from "../Models/Template";
 import { TemplateService } from "../Services/Template";
 
@@ -18,9 +27,11 @@ export class TemplateListComponent implements AfterViewInit {
   zoomScale = 1;
   zoomFactor = 0.05;
   panzoomCanvas?: PanZoom;
-
+  aside!: Menu;
+  footer!: Menu;
   templates: Template[] = [];
   name = "";
+  selectedTemplate?: string = undefined;
 
   @ViewChild("canvas") canvasElement: ElementRef;
 
@@ -39,12 +50,56 @@ export class TemplateListComponent implements AfterViewInit {
   }
 
   ngOnInit(): void {
-    const workspaceId = this.workspace.selected;
+    const workspaceId = this.route.snapshot.paramMap.get("workspace")
+    // const workspaceId = this.workspace.selected;
     if (!workspaceId) {
-      throw new Error("TodoPickerComponent Violation: Could not resolve current workspace");
+      throw new Error("Component Violation: Could not resolve current workspace");
     }
+    this.workspace.selected = workspaceId;
     this.#loadWorkspace(workspaceId);
     this.#loadTemplates(workspaceId);
+  }
+
+  #selectTemplate(templateId: string): void {
+    this.selectedTemplate = templateId;
+    //this.aside.categories.find(f => f.name === "Templates")?.items.filter(f => f.name === )
+  }
+
+  #loadMenu() {
+    if (this.workspace.selected) {
+      this.footer = getFooterMenu(this.workspace.selected);
+      const items: MenuItem[] = this.templates.map((t) => ({
+        type: "action",
+        isActive: t.id === this.selectedTemplate,
+        name: t.name,
+        icon: "template",
+        action: () => this.#selectTemplate(t.id)
+      }));
+
+      this.aside = new Menu({
+        categories: [
+          {
+            name: "Templates",
+            items
+          },
+          {
+            name: "Actions",
+            items: [
+              {
+                type: "action",
+                isActive: false,
+                name: "Add new template...",
+                icon: "template-add",
+                action: () => this.openAddTemplate()
+              }
+            ]
+          }
+        ],
+        params: {
+          workspaceId: this.workspace.selected
+        }
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -72,6 +127,9 @@ export class TemplateListComponent implements AfterViewInit {
       },
       (templates) => {
         this.templates = templates;
+        if (this.templates) {
+          this.#loadMenu();
+        }
       }
     );
   }
