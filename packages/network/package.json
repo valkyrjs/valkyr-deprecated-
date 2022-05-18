@@ -1,21 +1,19 @@
 {
-  "name": "@valkyr/identity",
+  "name": "@valkyr/network",
   "version": "0.0.0",
-  "description": "Identity provider for @valkyr projects.",
+  "description": "Networking tools for @valkyr projects.",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
   "main": "src/index.ts",
   "keywords": [
-    "identity",
-    "idp"
+    "network"
   ],
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
-    "@valkyr/network": "*",
-    "@valkyr/security": "*",
+    "@valkyr/utils": "*",
     "peerjs": "^1.4.4"
   }
 }

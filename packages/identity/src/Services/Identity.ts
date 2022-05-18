@@ -1,28 +1,27 @@
 import { Provider } from "@angular/core";
 import { PrivateIdentity, UserIdentity } from "@valkyr/identity";
+import { JsonRpc, JsonRpcClient } from "@valkyr/network";
 import { AccessKey, generateSecretKey, getAlphaUppercase } from "@valkyr/security";
-import { DataConnection, Peer, PeerJSOption } from "peerjs";
+
+import { IdentityData } from "../IdentityStorage";
+import { IdentityServiceOptions } from "./Types";
 
 type PrivateIdentityData = {
-  users: Map<string, UserIdentity>;
+  users: Record<string, UserIdentity>;
 };
 
-export class IdentityService {
-  #connections: DataConnection[] = [];
-
-  #peer: Peer;
-
+export class IdentityService extends JsonRpcClient {
   #alias?: string;
   #identity?: PrivateIdentity<PrivateIdentityData>;
   #accessKey?: AccessKey;
 
-  constructor(options: PeerJSOption) {
-    this.#peer = new Peer(getAlphaUppercase(6), options);
+  constructor(options: IdentityServiceOptions) {
+    super(getAlphaUppercase(6), options);
   }
 
   // ### Factory
 
-  static for(options: PeerJSOption): Provider {
+  static for(options: IdentityServiceOptions): Provider {
     return {
       provide: IdentityService,
       useFactory: () => new IdentityService(options)
@@ -30,6 +29,10 @@ export class IdentityService {
   }
 
   // ### Accessors
+
+  get isAuthenticated(): boolean {
+    return this.#identity !== undefined;
+  }
 
   get alias(): string {
     if (!this.#alias) {
@@ -52,10 +55,6 @@ export class IdentityService {
     return this.#accessKey;
   }
 
-  get peer() {
-    return this.#peer;
-  }
-
   // ### Resolvers
 
   /**
@@ -67,7 +66,7 @@ export class IdentityService {
   async create(alias: string, password: string): Promise<string> {
     const secretKey = generateSecretKey();
     this.#alias = alias;
-    this.#identity = await PrivateIdentity.create<PrivateIdentityData>({ users: new Map() });
+    this.#identity = await PrivateIdentity.create<PrivateIdentityData>({ users: {} });
     this.#accessKey = AccessKey.resolve(password, secretKey);
     return secretKey;
   }
@@ -78,23 +77,41 @@ export class IdentityService {
    *
    * @param peerId - Remote peer listening for authentication requests.
    */
-  async resolve(peerId: string): Promise<void> {
-    const connection = this.#peer.connect(peerId);
+  async authorize(peerId: string, alias: string): Promise<any> {
+    const res = await this.call<{ status: string; data: IdentityData }>(peerId, "authorize", [alias]);
 
-    connection.on("open", () => {
-      console.log("Connection established with", peerId);
-    });
+    if (res instanceof JsonRpc.ErrorResponse) {
+      return res.error.message;
+    }
 
-    connection.on("data", (data) => {
-      console.log("Data received from", peerId, data);
-    });
+    switch (res.result.status) {
+      case "NOT_FOUND": {
+        alert("No identity found under provided alias");
+        break;
+      }
+      case "FOUND": {
+        this.#alias = alias;
+        this.#accessKey = new AccessKey(res.result.data.accessKey);
+        this.#identity = await PrivateIdentity.import(res.result.data.identity);
+        break;
+      }
+      case "REJECTED": {
+        alert("Authentication request rejected by provider");
+        break;
+      }
+    }
+  }
 
-    connection.on("error", (err) => {
-      console.log("Error occurred with", peerId, err);
-    });
-
-    connection.on("close", () => {
-      console.log("Connection closed with", peerId);
-    });
+  async persist(peerId: string): Promise<any> {
+    if (this.isAuthenticated === false) {
+      throw new Error("Identity Service Violation: Cannot persist unauthenticated identity");
+    }
+    return this.call(peerId, "persist", [
+      this.alias,
+      {
+        identity: await this.identity.export(),
+        accessKey: this.#accessKey!.value
+      }
+    ]);
   }
 }

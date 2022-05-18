@@ -31,7 +31,7 @@ export class KeyPair {
   // ### Instantiators
 
   static async create(): Promise<KeyPair> {
-    return new KeyPair(await Jose.generateKeyPair(ALG));
+    return new KeyPair(await Jose.generateKeyPair(ALG, { extractable: true }));
   }
 
   static async import({ publicKey, privateKey }: ExportedKeyPair) {

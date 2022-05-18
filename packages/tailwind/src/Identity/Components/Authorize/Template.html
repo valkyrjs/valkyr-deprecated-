@@ -1,0 +1,23 @@
+<div>
+  <div class="text-center">
+    <h1 class="my-3 text-3xl font-semibold text-gray-700 dark:text-gray-200">Authenticate</h1>
+    <p class="text-gray-500 dark:text-gray-400">Enter provider id and alias and confirm your session id</p>
+    <div class="text-black dark:text-white text-3xl font-bold mt-4">
+      {{peerId}}
+    </div>
+  </div>
+  <div class="m-7">
+    <div class="mb-6">
+      <label for="provider">Provider</label>
+      <input type="text" name="provider" id="provider" placeholder="Provider Code" [(ngModel)]="provider" (keyup.enter)="authenticate()" tabindex="1" />
+    </div>
+    <div class="mb-6">
+      <label for="alias">Alias</label>
+      <input type="text" name="alias" id="alias" placeholder="John Doe" [(ngModel)]="alias" (keyup.enter)="authenticate()" tabindex="1" />
+    </div>
+    <div class="mb-6">
+      <button type="button" (click)="authenticate()" class="submit">Authorize</button>
+    </div>
+    <p class="text-sm text-center text-gray-400">Don't have an account? <a routerLink="/identity/register" class="text-indigo-400 focus:outline-none focus:underline focus:text-indigo-500 dark:focus:border-indigo-800">Register</a>.</p>
+  </div>
+</div>

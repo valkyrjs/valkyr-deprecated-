@@ -1,5 +1,7 @@
 import { ExportedKeyPair, KeyPair } from "@valkyr/security";
 
+import { UserIdentity } from "./UserIdentity";
+
 /**
  * PrivateIdentity
  *
@@ -26,7 +28,7 @@ import { ExportedKeyPair, KeyPair } from "@valkyr/security";
  *
  * @see {@link UserIdentity}
  */
-export class PrivateIdentity<Data = unknown> {
+export class PrivateIdentity<Data extends PrivateIdentityData> {
   #data: Data;
   #keys: KeyPair;
 
@@ -37,14 +39,14 @@ export class PrivateIdentity<Data = unknown> {
 
   // ### Instantiator
 
-  static async create<Data = unknown>(data: Data): Promise<PrivateIdentity<Data>> {
+  static async create<Data extends PrivateIdentityData>(data: Data): Promise<PrivateIdentity<Data>> {
     return new PrivateIdentity({
       data,
       keys: await KeyPair.create()
     });
   }
 
-  static async resolve<Data = unknown>(schema: PrivateIdentitySchema): Promise<PrivateIdentity<Data>> {
+  static async import<Data extends PrivateIdentityData>(schema: PrivateIdentitySchema): Promise<PrivateIdentity<Data>> {
     const keys = await KeyPair.import(schema.keys);
     return new PrivateIdentity({
       data: await keys.decrypt(schema.data),
@@ -65,14 +67,32 @@ export class PrivateIdentity<Data = unknown> {
   get decrypt() {
     return this.#keys.decrypt.bind(this.#keys);
   }
+
+  // ### Utilities
+
+  async addUser(name: string): Promise<void> {
+    const user = await UserIdentity.create({ name });
+    this.data.users[user.cid] = user;
+  }
+
+  async export(): Promise<PrivateIdentitySchema> {
+    return {
+      data: await this.encrypt(this.data),
+      keys: await this.#keys.export()
+    };
+  }
 }
 
-type PrivateIdentitySchema = {
+export type PrivateIdentitySchema = {
   data: string;
   keys: ExportedKeyPair;
 };
 
-type PrivateIdentityProps<Data = unknown> = {
+type PrivateIdentityProps<Data extends PrivateIdentityData> = {
   data: Data;
   keys: KeyPair;
 };
+
+type PrivateIdentityData = {
+  users: Record<string, UserIdentity>;
+} & Record<string, unknown>;

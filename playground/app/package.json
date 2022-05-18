@@ -26,6 +26,7 @@
     "@tiptap/starter-kit": "^2.0.0-beta.184",
     "@valkyr/angular": "*",
     "@valkyr/db": "*",
+    "@valkyr/identity": "*",
     "@valkyr/ledger": "*",
     "@valkyr/security": "*",
     "@valkyr/tailwind": "*",

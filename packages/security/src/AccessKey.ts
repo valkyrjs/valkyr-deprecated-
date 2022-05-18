@@ -25,7 +25,7 @@ export class AccessKey {
 
   // ### Accessors
 
-  get key(): string {
+  get value(): string {
     return this.#key;
   }
 

@@ -3,9 +3,9 @@ import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import { AccessModule, LedgerModule, ModalModule } from "@valkyr/angular";
+import { IdentityProviderService, localIdentityStorage } from "@valkyr/identity";
 import { IdentityModule } from "@valkyr/tailwind";
 
-import { IdentityProviderService } from "../../../../packages/identity/src/Services/IdentityProvider";
 import { AuthorizationModule } from "./Authorization";
 import { AppComponent } from "./Component";
 import { DesignSystemModule } from "./DesignSystem/Module";
@@ -24,11 +24,14 @@ import { WorkspaceModule } from "./Workspace";
     DiscoveryModule,
     TemplateModule,
     DesignSystemModule,
-    IdentityModule.forRoot({
-      host: "188.166.248.32",
-      port: 9000,
-      path: "/myapp"
-    }),
+    IdentityModule.forRoot(
+      {
+        host: "188.166.248.32",
+        port: 9000,
+        path: "/myapp"
+      },
+      localIdentityStorage
+    ),
     LedgerModule,
     ModalModule,
     RouterModule.forRoot(routes),
@@ -40,5 +43,7 @@ import { WorkspaceModule } from "./Workspace";
   exports: [RouterModule]
 })
 export class AppModule {
-  constructor(readonly provider: IdentityProviderService) {}
+  constructor(readonly provider: IdentityProviderService) {
+    console.log("Provider:", provider.id);
+  }
 }

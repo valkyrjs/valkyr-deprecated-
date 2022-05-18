@@ -1,10 +1,8 @@
 import { Component } from "@angular/core";
 
 @Component({
-  selector: "vlk-identity-confirm",
+  selector: "vlk-identity-shell",
   templateUrl: "Template.html",
   styleUrls: ["./Styles.scss"]
 })
-export class ConfirmIdentityComponent {
-  constructor() {}
-}
+export class ShellComponent {}
