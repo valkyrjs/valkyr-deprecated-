@@ -30,7 +30,7 @@ class MenuCategory {
   }
 
   get showLabel(): boolean {
-    return this.#category.showLabel === undefined ? true : this.#category.showLabel;
+    return this.#category.showLabel ?? true;
   }
 
   get name(): string {
@@ -60,7 +60,7 @@ export class MenuListItem {
   }
 
   get isActive(): boolean {
-    return this.#item.isActive === undefined ? false : this.#item.isActive;
+    return this.#item.isActive ?? false;
   }
 
   get action(): any {

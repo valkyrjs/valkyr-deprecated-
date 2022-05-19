@@ -1,4 +1,4 @@
 <button (click)="action()" class="group">
-  <icon class="w-[18px] h-[18px]" name="{{icon}}"></icon>    
+  <icon *ngIf="icon" class="w-[18px] h-[18px]" name="{{icon}}"></icon>    
   <span>{{name}}</span>
 </button>
