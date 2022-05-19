@@ -2,9 +2,9 @@
   @apply list-item;
   @apply list-none;
   @apply text-sm;
-  @apply mb-3;
+  @apply mb-6;
 }
 
 h3 {
-  @apply mb-1 px-3 text-xs uppercase pointer-events-none;
+  @apply mb-3 px-3 text-xs text-gray-600 uppercase tracking-wider pointer-events-none;
 }

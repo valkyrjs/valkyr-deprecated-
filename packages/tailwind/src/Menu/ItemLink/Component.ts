@@ -10,5 +10,6 @@ export class MenuItemLinkComponent {
 
   @Input("name") public name!: string;
   @Input("icon") public icon: string | undefined;
+  @Input("isActive") public isActive!: boolean;
   @Input("link") public link!: string;
 }

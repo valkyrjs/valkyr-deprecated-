@@ -22,7 +22,7 @@ export class WorkspaceListComponent implements OnInit, OnDestroy {
     readonly auth: AuthService,
     title: TitleService
   ) {
-    title.set("Workspaces", DOCUMENT_TITLE, "discovery");
+    title.set("Design to Launch", DOCUMENT_TITLE, "discovery");
   }
 
   ngOnInit(): void {

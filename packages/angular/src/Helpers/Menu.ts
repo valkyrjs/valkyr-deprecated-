@@ -29,6 +29,10 @@ class MenuCategory {
     this.#params = params;
   }
 
+  get showLabel(): boolean {
+    return this.#category.showLabel === undefined ? true : this.#category.showLabel;
+  }
+
   get name(): string {
     return this.#category.name ?? "";
   }
@@ -56,7 +60,7 @@ export class MenuListItem {
   }
 
   get isActive(): boolean {
-    return this.#item.isActive ? this.#item.isActive : false;
+    return this.#item.isActive === undefined ? false : this.#item.isActive;
   }
 
   get action(): any {
@@ -89,6 +93,7 @@ export type MenuSettings = {
 
 type Category = {
   name?: string;
+  showLabel?: boolean;
   icon?: string;
   items: MenuItem[];
 };

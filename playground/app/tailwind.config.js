@@ -112,13 +112,13 @@ module.exports = {
       },
       gridTemplateColumns: {
         "layout": "226px 1fr",
-        "workspaces": "repeat(auto-fill, 208px)"
+        "workspaces": "repeat(auto-fill, 144px)"
       },
       gridTemplateRows: {
         "layout": `42px
                    56px
                    1fr`,
-        "workspaces": "repeat(auto-fill, 256px)"
+        "workspaces": "repeat(auto-fill, 196px)"
       }
     },
     colors: addColors()

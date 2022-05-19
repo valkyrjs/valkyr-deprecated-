@@ -9,4 +9,5 @@ export class MenuCategoryComponent {
   public readonly type = "category";
 
   @Input("name") public name!: string;
+  @Input("showLabel") public showLabel!: boolean;
 }

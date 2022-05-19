@@ -1,3 +1,15 @@
+:host {
+  @apply grid grid-areas-layout grid-cols-layout grid-rows-layout h-screen overflow-hidden w-full;
+  .view {
+    @apply p-3;
+    @apply flex flex-col justify-start gap-1;
+    @apply border-2 border-dashed;
+    .viewport {
+      @apply bg-white;
+    }
+  }
+}
+
 .actions {
   @apply flex justify-between w-full;
   @apply mb-2;
@@ -15,21 +27,8 @@ h6 {
     @apply border border-dotted border-primary-light;
     @apply bg-white;
   }
-  .view {
-    @apply flex justify-center items-center text-center;
-    @apply w-60 h-60;
-    @apply border border-dotted border-primary-light;
-    @apply bg-white;
-  }
 }
 
-
-
-
-
-:host {
-  @apply grid grid-areas-layout grid-cols-layout grid-rows-layout h-screen overflow-hidden w-full;
-}
 
 header {
   @apply grid-in-header text-gray-800 bg-gray-100 border-b-2 border-b-gray-200;
@@ -59,3 +58,4 @@ nav {
 main {
   @apply relative grid-in-main min-h-full overflow-y-scroll bg-gray-100 text-gray-900 p-4;
 }
+

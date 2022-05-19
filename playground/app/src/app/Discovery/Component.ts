@@ -7,7 +7,8 @@ import { Menu } from "@valkyr/angular";
   styleUrls: ["./Style.scss"]
 })
 export class DiscoveryComponent {
-  aside!: Menu;
+  mainMenu!: Menu;
+  footerMenu!: Menu;
 
   constructor() {
     this.#loadMenu();
@@ -27,44 +28,71 @@ export class DiscoveryComponent {
     this.selectedPerson = person;
   }
 
+  hmm() {
+    window.alert("need to think this through more");
+  }
+
   #loadMenu() {
-    this.aside = new Menu({
+    this.mainMenu = new Menu({
       categories: [
         {
-          name: "Workspaces",
+          name: "Main",
+          showLabel: false,
           items: [
             {
               type: "link",
-              name: "My workspaces",
-              href: "/workspaces"
-            },
-            {
-              type: "link",
-              name: "Shared workspaces",
-              href: "/workspaces"
-            },
-            {
-              type: "link",
-              name: "Invites",
+              icon: "home",
+              name: "Home",
+              isActive: true,
               href: "/workspaces"
             }
           ]
         },
         {
+          name: "Workspaces",
+          items: [
+            {
+              type: "link",
+              icon: "workspace",
+              name: "My workspaces",
+              href: "/workspaces"
+            },
+            {
+              type: "link",
+              icon: "users",
+              name: "Shared with you",
+              href: "/workspaces"
+            },
+            {
+              type: "link",
+              name: "Invites",
+              icon: "mail",
+              href: "/workspaces"
+            },
+            {
+              type: "link",
+              name: "Archived",
+              icon: "trash",
+              href: "/workspaces"
+            }
+          ]
+        }
+      ]
+    });
+    this.footerMenu = new Menu({
+      categories: [
+        {
           name: "Sandbox",
           items: [
             {
               type: "link",
+              icon: "text-edit",
               name: "Text Editor",
               href: "/editor"
             },
             {
               type: "link",
-              name: "Designer",
-              href: "/designer"
-            },
-            {
-              type: "link",
+              icon: "design",
               name: "Design System",
               href: "/ui"
             }

@@ -24,8 +24,8 @@ import { TemplateService } from "../Services/Template";
   styleUrls: ["./Style.scss"]
 })
 export class TemplateListComponent implements AfterViewInit {
-  zoomScale = 1;
-  zoomFactor = 0.05;
+  zoomScale = 0.1;
+  zoomFactor = 0.025;
   panzoomCanvas?: PanZoom;
   aside!: Menu;
   footer!: Menu;
@@ -50,7 +50,7 @@ export class TemplateListComponent implements AfterViewInit {
   }
 
   ngOnInit(): void {
-    const workspaceId = this.route.snapshot.paramMap.get("workspace")
+    const workspaceId = this.route.snapshot.paramMap.get("workspace");
     // const workspaceId = this.workspace.selected;
     if (!workspaceId) {
       throw new Error("Component Violation: Could not resolve current workspace");
@@ -135,12 +135,11 @@ export class TemplateListComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log(this.canvasElement);
     this.panzoomCanvas = panzoom(this.canvasElement.nativeElement, {
+      initialZoom: this.zoomScale,
       maxZoom: 1,
       minZoom: 0.1
     });
-    console.log(this.panzoomCanvas);
 
     this.panzoomCanvas.on("transform", () => {
       const result = this.panzoomCanvas?.getTransform();
