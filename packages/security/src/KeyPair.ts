@@ -122,9 +122,9 @@ export class KeyPair {
 }
 
 export async function importPublicKey(publicKey: string): Promise<Jose.KeyLike> {
-  return Jose.importSPKI(publicKey, ALG);
+  return Jose.importSPKI(publicKey, ALG, { extractable: true });
 }
 
 export async function importPrivateKey(privateKey: string): Promise<Jose.KeyLike> {
-  return Jose.importPKCS8(privateKey, ALG);
+  return Jose.importPKCS8(privateKey, ALG, { extractable: true });
 }

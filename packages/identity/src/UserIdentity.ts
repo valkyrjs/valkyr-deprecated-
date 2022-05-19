@@ -19,13 +19,13 @@ import { ExportedKeyPair, getId, KeyPair } from "@valkyr/security";
  */
 export class UserIdentity<Data extends RecordLike = any> {
   readonly cid: string;
-  readonly data: Data;
 
+  #data: Data;
   #keys: KeyPair;
 
   constructor(props: UserIdentityProps) {
     this.cid = props.cid;
-    this.data = props.data;
+    this.#data = props.data;
     this.#keys = props.keys;
   }
 
@@ -45,6 +45,10 @@ export class UserIdentity<Data extends RecordLike = any> {
       data: schema.data,
       keys: await KeyPair.import(schema.keys)
     });
+  }
+
+  get data() {
+    return this.#data;
   }
 
   /**
@@ -73,7 +77,18 @@ export class UserIdentity<Data extends RecordLike = any> {
   async publicKey(): Promise<string> {
     return (await this.#keys.export()).publicKey;
   }
+
+  // ### Data Utilities
+
+  update(data: Partial<Data>) {
+    this.#data = {
+      ...this.#data,
+      ...data
+    };
+  }
 }
+
+export type RecordLike = Record<string, unknown>;
 
 export type UserIdentitySchema<Data extends RecordLike = any> = {
   cid: string;
@@ -86,5 +101,3 @@ type UserIdentityProps<Data extends RecordLike = any> = {
   data: Data;
   keys: KeyPair;
 };
-
-type RecordLike = Record<string, unknown>;

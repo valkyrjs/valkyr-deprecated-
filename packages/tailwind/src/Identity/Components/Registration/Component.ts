@@ -10,6 +10,7 @@ import { IdentityService } from "@valkyr/identity";
 export class RegistrationComponent {
   step: Step = "create";
 
+  provider = "";
   alias = "";
   password = "";
   secret = "";
@@ -32,8 +33,10 @@ export class RegistrationComponent {
   }
 
   async user() {
-    await this.service.identity.addUser(this.name);
-    await this.service.persist("development");
+    const user = await this.service.identity.addUser({ name: this.name });
+    await this.service.persistToProvider(this.provider);
+    await this.service.persistToDevice(true);
+    this.service.setSelectedUser(user.cid, true);
     this.router.navigate(["/"]);
   }
 

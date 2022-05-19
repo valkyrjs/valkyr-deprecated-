@@ -23,7 +23,7 @@ export class StreamService {
       streamIds = await this.remoteService.get<string[]>(endpoint);
     }
 
-    const subscriptions = streamIds.map((id) => this.ledgerService.subscribe(aggregate, id, true));
+    const subscriptions = streamIds.map((id) => this.ledgerService.subscribe(id, aggregate));
     return {
       unsubscribe() {
         for (const subscription of subscriptions) {

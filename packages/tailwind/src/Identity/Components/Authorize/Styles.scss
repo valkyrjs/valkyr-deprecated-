@@ -39,6 +39,10 @@ input {
   @apply dark:border-gray-600;
   @apply dark:focus:ring-gray-900;
   @apply dark:focus:border-gray-500;
+
+  &[type="checkbox"] {
+    @apply w-5;
+  }
 }
 
 button {
@@ -50,6 +54,42 @@ button {
 
   &.print {
     @apply border-2 border-green-400;
+  }
+}
+
+.users {
+  @apply shadow bg-white z-40 w-full rounded overflow-y-auto;
+
+  .container {
+    @apply flex flex-col w-full;
+  }
+
+  .user {
+    @apply cursor-pointer w-full border-gray-100 rounded-t border-b hover:bg-gray-200;
+  }
+
+  .wrapper {
+    @apply flex w-full items-center p-2 pl-2 border-transparent border-l-2 relative;
+  }
+
+  .avatar {
+    @apply w-6 flex flex-col items-center;
+
+    .avatar-inner {
+      @apply flex relative w-5 h-5 bg-orange-500 justify-center items-center m-1 mr-2 w-4 h-4 mt-1 rounded-full;
+    }
+  }
+
+  .meta {
+    @apply w-full items-center flex;
+
+    .meta-inner {
+      @apply mx-2 -mt-1;
+    }
+
+    .meta-details {
+      @apply text-xs truncate w-full normal-case font-normal -mt-1 text-gray-500;
+    }
   }
 }
 

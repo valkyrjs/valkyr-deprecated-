@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
-import { IdentityService } from "@valkyr/identity";
+import { IdentityService, UserIdentity } from "@valkyr/identity";
 
 @Component({
   selector: "vlk-identity-authorize",
@@ -8,20 +8,35 @@ import { IdentityService } from "@valkyr/identity";
   styleUrls: ["./Styles.scss"]
 })
 export class AuthorizeComponent {
+  step: Step = "authenticate";
+
   provider = "";
   alias = "";
   peerId = "";
+
+  users: UserIdentity[] = [];
+
+  remember = false;
 
   constructor(readonly router: Router, readonly service: IdentityService) {
     this.peerId = service.id;
   }
 
   async authenticate() {
-    try {
-      await this.service.authorize(this.provider, this.alias);
-      this.router.navigate(["/"]);
-    } catch (err) {
-      console.log(err);
+    await this.service.authorize(this.provider, this.alias);
+    await this.service.persistToDevice(this.remember);
+    this.users = this.service.identity.getUsers();
+    this.step = "users";
+  }
+
+  async select(cid: string) {
+    const user = this.service.identity.getUser(cid);
+    if (user === undefined) {
+      throw new Error("Authorization Violation: User could not be resolved");
     }
+    this.service.setSelectedUser(cid);
+    this.router.navigate(["/"]);
   }
 }
+
+type Step = "authenticate" | "users";

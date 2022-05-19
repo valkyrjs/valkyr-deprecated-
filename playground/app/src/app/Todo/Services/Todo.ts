@@ -14,12 +14,10 @@ export class TodoService extends DataSubscriber {
   public async create(workspaceId: string, name: string, auditor: string) {
     const event = TodoStore.events.created(getId(), { workspaceId, name }, { auditor });
     this.ledger.append(event);
-    this.ledger.relay("workspace", workspaceId, event);
   }
 
   public async move(workspaceId: string, id: string, sort: number, auditor: string) {
     const event = TodoStore.events.sortSet(id, { sort }, { auditor });
     this.ledger.append(event);
-    this.ledger.relay("workspace", workspaceId, event);
   }
 }

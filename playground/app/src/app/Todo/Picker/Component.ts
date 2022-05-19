@@ -1,8 +1,9 @@
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { AuthService, DOCUMENT_TITLE, LedgerService, ParamsService, TitleService } from "@valkyr/angular";
+import { DOCUMENT_TITLE, LedgerService, ParamsService, TitleService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
+import { IdentityService } from "@valkyr/identity";
 import { WorkspaceStore } from "stores";
 
 import { WorkspaceService } from "../../Workspace";
@@ -27,7 +28,7 @@ export class TodoPickerComponent implements OnInit, OnDestroy {
     readonly title: TitleService,
     readonly params: ParamsService,
     readonly route: ActivatedRoute,
-    readonly auth: AuthService
+    readonly identity: IdentityService
   ) {
     title.set("Todos", DOCUMENT_TITLE, "workspace");
   }
@@ -83,7 +84,7 @@ export class TodoPickerComponent implements OnInit, OnDestroy {
       if (!workspace) {
         throw new Error("Could not resolve workspace");
       }
-      const member = workspace.members.getByAccount(this.auth.auditor);
+      const member = workspace.members.getById(this.identity.auditor);
       if (!member) {
         throw new Error("Could not resolve workspace member");
       }

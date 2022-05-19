@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { AuthService, DOCUMENT_TITLE, LedgerService, ParamsService, TitleService } from "@valkyr/angular";
+import { DOCUMENT_TITLE, LedgerService, ParamsService, TitleService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
 import { Menu, MenuItem } from "@valkyr/tailwind";
 import panzoom, { PanZoom } from "panzoom";
@@ -36,8 +36,7 @@ export class TemplateListComponent implements AfterViewInit {
     readonly modal: ModalService,
     readonly title: TitleService,
     readonly params: ParamsService,
-    readonly route: ActivatedRoute,
-    readonly auth: AuthService
+    readonly route: ActivatedRoute
   ) {
     this.canvasElement = el;
   }

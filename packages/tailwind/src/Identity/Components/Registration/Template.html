@@ -6,6 +6,10 @@
     </div>
     <div class="m-7">
       <div class="mb-6">
+        <label for="provider">Provider</label>
+        <input type="text" name="provider" id="provider" placeholder="Provider ID" [(ngModel)]="provider" (keyup.enter)="create()" tabindex="1" />
+      </div>
+      <div class="mb-6">
         <label for="alias">Alias</label>
         <input type="text" name="alias" id="alias" placeholder="John Doe" [(ngModel)]="alias" (keyup.enter)="create()" tabindex="1" />
       </div>

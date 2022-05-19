@@ -11,6 +11,8 @@ type PrivateIdentityData = {
 };
 
 export class IdentityService extends JsonRpcClient {
+  provider?: string;
+
   #alias?: string;
   #identity?: PrivateIdentity<PrivateIdentityData>;
   #accessKey?: AccessKey;
@@ -31,7 +33,7 @@ export class IdentityService extends JsonRpcClient {
   // ### Accessors
 
   get isAuthenticated(): boolean {
-    return this.#identity !== undefined;
+    return this.#alias !== undefined && this.#identity !== undefined && this.#accessKey !== undefined;
   }
 
   get alias(): string {
@@ -48,6 +50,14 @@ export class IdentityService extends JsonRpcClient {
     return this.#identity;
   }
 
+  get auditor() {
+    const user = this.getSelectedUser();
+    if (user === undefined) {
+      throw new Error("Identity Violation: No auditor has been resolved");
+    }
+    return user.cid;
+  }
+
   get accessKey(): AccessKey {
     if (!this.#accessKey) {
       throw new Error("Identity Violation: No access key has been resolved");
@@ -55,7 +65,7 @@ export class IdentityService extends JsonRpcClient {
     return this.#accessKey;
   }
 
-  // ### Resolvers
+  // ### Factory Utilities
 
   /**
    * Create a new private identity along with a generated secret key.
@@ -70,6 +80,23 @@ export class IdentityService extends JsonRpcClient {
     this.#accessKey = AccessKey.resolve(password, secretKey);
     return secretKey;
   }
+
+  async init(): Promise<void> {
+    const value = localStorage.getItem("identity") || sessionStorage.getItem("identity");
+    if (value) {
+      const data = JSON.parse(value) as IdentityData;
+      await this.resolve(data.alias, data);
+    }
+  }
+
+  async resolve(alias: string, data: IdentityData): Promise<void> {
+    const { accessKey, identity } = await this.import(data);
+    this.#alias = alias;
+    this.#accessKey = accessKey;
+    this.#identity = identity;
+  }
+
+  // ### Authorization Utilities
 
   /**
    * Resolve a private identity using a provider service listening on the
@@ -90,9 +117,7 @@ export class IdentityService extends JsonRpcClient {
         break;
       }
       case "FOUND": {
-        this.#alias = alias;
-        this.#accessKey = new AccessKey(res.result.data.accessKey);
-        this.#identity = await PrivateIdentity.import(res.result.data.identity);
+        await this.resolve(alias, res.result.data);
         break;
       }
       case "REJECTED": {
@@ -102,16 +127,96 @@ export class IdentityService extends JsonRpcClient {
     }
   }
 
-  async persist(peerId: string): Promise<any> {
-    if (this.isAuthenticated === false) {
-      throw new Error("Identity Service Violation: Cannot persist unauthenticated identity");
+  // ### Persistence Utilities
+
+  async persistToProvider(providerId: string): Promise<any> {
+    return this.call(providerId, "persist", [this.alias, await this.export(this.accessKey)]);
+  }
+
+  async persistToDevice(remember = false) {
+    const identity = JSON.stringify(await this.export(this.accessKey));
+    if (remember === true) {
+      localStorage.setItem("identity", identity);
+    } else {
+      sessionStorage.setItem("identity", identity);
     }
-    return this.call(peerId, "persist", [
-      this.alias,
-      {
-        identity: await this.identity.export(),
-        accessKey: this.#accessKey!.value
-      }
-    ]);
+  }
+
+  // ### User Utilities
+
+  setSelectedUser(cid: string, remember = false) {
+    if (remember === true) {
+      localStorage.setItem("user", cid);
+    } else {
+      sessionStorage.setItem("user", cid);
+    }
+  }
+
+  getSelectedUser(): UserIdentity | undefined {
+    const cid = localStorage.getItem("user") || sessionStorage.getItem("user") || undefined;
+    if (cid === undefined) {
+      return undefined;
+    }
+    return this.identity.getUser(cid);
+  }
+
+  // ### Cryptographic Utilities
+
+  /**
+   * Import a resolved identity object based on the given encrypted identity data.
+   *
+   * @remarks The access key can be part of the identity data or has to be provided
+   * in the rawAccessKey argument. If no valid access key is found an error is
+   * thrown.
+   *
+   * When access key is not part of the data this signals that the key must be
+   * generated through the `AccessKey.resolve` method which is created through the
+   * accounts `password` and `secretKey`.
+   *
+   * @see {@link AccessKey.ts}
+   *
+   * @param data         - Identity data to resolve.
+   * @param rawAccessKey - Access key used to decrypt the data. (Optional)
+   */
+  async import(data: IdentityData, rawAccessKey?: string) {
+    const key = data.accessKey ?? rawAccessKey;
+    if (key === undefined) {
+      throw new Error("Identity Import Violation: Cannot import identity, access key is missing");
+    }
+    const accessKey = new AccessKey(key);
+    const identity = await PrivateIdentity.import(accessKey.decrypt(data.identity));
+    return {
+      accessKey,
+      identity
+    };
+  }
+
+  /**
+   * Export the current identity to a storable identity data object.
+   *
+   * TODO: Make the access key false by default, right now its true for development
+   * convenience. But should optimally be false so that its always a conscious opt
+   * in to avoid security leaks.
+   *
+   * @param accessKey - Access key used to encrypt the identity.
+   */
+  async export(accessKey: AccessKey, storeAccessKey = true): Promise<IdentityData> {
+    if (this.isAuthenticated === false) {
+      throw new Error("Identity Export Violation: No authenticated identity to export");
+    }
+    const identity = await this.identity.export();
+    return {
+      alias: this.alias,
+      identity: accessKey.encrypt(identity),
+      accessKey: storeAccessKey === true ? accessKey.value : undefined
+    };
+  }
+
+  async publicKey(): Promise<string> {
+    return this.identity.keys.exportPublicKey();
+  }
+
+  async privateKey(): Promise<string> {
+    return this.identity.keys.exportPublicKey();
   }
 }

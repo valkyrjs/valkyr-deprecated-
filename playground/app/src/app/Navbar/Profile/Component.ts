@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { AuthService } from "@valkyr/angular";
 
 import { ThemeService } from "../../Services/ThemeService";
 
@@ -10,7 +9,7 @@ import { ThemeService } from "../../Services/ThemeService";
 export class NavbarProfileComponent implements OnInit {
   isLight: boolean;
 
-  constructor(readonly auth: AuthService, readonly theme: ThemeService) {
+  constructor(readonly theme: ThemeService) {
     this.isLight = theme.currentTheme === "light";
   }
 

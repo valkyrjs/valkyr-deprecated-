@@ -1,6 +1,6 @@
 import { ExportedKeyPair, KeyPair } from "@valkyr/security";
 
-import { UserIdentity } from "./UserIdentity";
+import { RecordLike, UserIdentity } from "./UserIdentity";
 
 /**
  * PrivateIdentity
@@ -61,19 +61,43 @@ export class PrivateIdentity<Data extends PrivateIdentityData> {
   }
 
   get encrypt() {
-    return this.#keys.encrypt.bind(this.#keys);
+    return this.keys.encrypt.bind(this.#keys);
   }
 
   get decrypt() {
-    return this.#keys.decrypt.bind(this.#keys);
+    return this.keys.decrypt.bind(this.#keys);
+  }
+
+  get keys() {
+    return this.#keys;
+  }
+
+  // ### User Utilities
+
+  async addUser<Data extends RecordLike = any>(data: Data): Promise<UserIdentity<Data>> {
+    const user = await UserIdentity.create(data);
+    this.data.users[user.cid] = user;
+    return user;
+  }
+
+  getUsers(): UserIdentity[] {
+    return Object.values(this.data.users);
+  }
+
+  getUser(cid: string): UserIdentity | undefined {
+    console.log(this.data.users);
+    return this.data.users[cid];
+  }
+
+  putUser<Data extends RecordLike = any>(cid: string, data: Data): void {
+    const user = this.getUser(cid);
+    if (!user) {
+      throw new Error("User Update Violation: User does not exist");
+    }
+    user.update(data);
   }
 
   // ### Utilities
-
-  async addUser(name: string): Promise<void> {
-    const user = await UserIdentity.create({ name });
-    this.data.users[user.cid] = user;
-  }
 
   async export(): Promise<PrivateIdentitySchema> {
     return {

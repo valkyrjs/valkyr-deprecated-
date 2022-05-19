@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
-import { AuthService, LedgerService, ModalService } from "@valkyr/angular";
+import { LedgerService, ModalService } from "@valkyr/angular";
+import { IdentityService } from "@valkyr/identity";
 import { WorkspaceStore } from "stores";
 
 import { WorkspaceService } from "../../../Workspace";
@@ -12,7 +13,7 @@ export class CreateTemplateDialog {
   name = "";
 
   constructor(
-    private auth: AuthService,
+    private identity: IdentityService,
     private ledger: LedgerService,
     private modal: ModalService,
     private template: TemplateService,
@@ -29,7 +30,7 @@ export class CreateTemplateDialog {
     if (!workspace) {
       throw new Error("Could not resolve workspace");
     }
-    const member = workspace.members.getByAccount(this.auth.auditor);
+    const member = workspace.members.getById(this.identity.auditor);
     if (!member) {
       throw new Error("Could not resolve workspace member");
     }

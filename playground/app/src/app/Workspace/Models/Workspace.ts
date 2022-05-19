@@ -77,11 +77,11 @@ class Members {
   /**
    * Get a member from the members array by the assigned account id.
    *
-   * @param accountId - Account id to find membership for.
+   * @param id - Id to find the member for.
    *
    * @returns Member details if exists
    */
-  public getByAccountId(accountId: string) {
-    return this.members.find((member) => member.accountId === accountId);
+  public getById(id: string) {
+    return this.members.find((member) => member.id === id);
   }
 }

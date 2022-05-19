@@ -16,7 +16,6 @@ export class TemplateService extends DataSubscriber {
     const color = getRandomColor();
     const event = TemplateStore.events.created(getId(), { workspaceId, name, color }, { auditor });
     this.ledger.append(event);
-    this.ledger.relay("workspace", workspaceId, event);
   }
 
   //   public async move(workspaceId: string, id: string, sort: number, auditor: string) {
