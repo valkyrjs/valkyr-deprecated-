@@ -15,6 +15,7 @@
     "@angular/forms": "~13.3.0",
     "@angular/router": "^13.3.5",
     "@angular/cdk": "^13.3.6",
-    "@valkyr/angular": "*"
+    "@valkyr/angular": "*",
+    "angular-svg-icon": "13.0.0"
   }
 }

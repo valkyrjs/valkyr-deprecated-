@@ -10,7 +10,10 @@
       "mode": "auto"
     }
   ],
-  "[html]": {
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "[html,svg]": {
     "editor.formatOnSaveMode": "file",
     "editor.defaultFormatter": "HookyQR.beautify"
   },  
