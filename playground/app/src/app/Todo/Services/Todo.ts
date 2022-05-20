@@ -12,12 +12,10 @@ export class TodoService extends DataSubscriber {
   }
 
   public async create(workspaceId: string, name: string, auditor: string) {
-    const event = TodoStore.events.created(getId(), { workspaceId, name }, { auditor });
-    this.ledger.append(event);
+    this.ledger.append(getId(), TodoStore.events.created({ workspaceId, name }, { auditor }));
   }
 
-  public async move(workspaceId: string, id: string, sort: number, auditor: string) {
-    const event = TodoStore.events.sortSet(id, { sort }, { auditor });
-    this.ledger.append(event);
+  public async move(id: string, sort: number, auditor: string) {
+    this.ledger.append(id, TodoStore.events.sortSet({ sort }, { auditor }));
   }
 }

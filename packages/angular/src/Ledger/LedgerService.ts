@@ -2,7 +2,16 @@
 
 import { Inject, Injectable } from "@angular/core";
 import { IdentityService } from "@valkyr/identity";
-import { Ledger } from "@valkyr/ledger";
+import {
+  AggregateRootClass,
+  createEventRecord,
+  LedgerEvent,
+  LedgerEventRecord,
+  LedgerEventStatus,
+  projector,
+  Queue,
+  validator
+} from "@valkyr/ledger";
 
 import { Event, EventDocument, EventModel } from "./Models/Event";
 import { StreamSubscriber } from "./StreamSubscriber";
@@ -10,40 +19,42 @@ import { StreamSubscriber } from "./StreamSubscriber";
 export const PUBLIC_LEDGER_ALIAS = "ledger:public";
 export const LEDGER_STREAM_KEY = "ledger:streams";
 
+type EventRecord = LedgerEventRecord<LedgerEvent>;
+
 @Injectable({ providedIn: "root" })
 export class LedgerService {
   readonly #streams: Record<string, StreamSubscriber> = {};
-  readonly #queue: Ledger.Queue<Ledger.Event>;
+  readonly #queue: Queue<EventRecord>;
 
   constructor(@Inject(Event) readonly events: EventModel, readonly identity: IdentityService) {
-    this.#queue = new Ledger.Queue<Ledger.Event>(this.#handleEvent.bind(this));
+    this.#queue = new Queue<EventRecord>(this.#handleEvent.bind(this));
   }
 
   // ### Event Handler
 
-  async #handleEvent(event: Ledger.Event) {
+  async #handleEvent(event: EventRecord) {
     await this.events.insert(event);
   }
 
   // ### Write Utilities
 
-  async append(event: Ledger.Event, alias = PUBLIC_LEDGER_ALIAS, hydrated = false): Promise<void> {
-    await this.insert(event, hydrated);
-    this.#push(event, alias);
+  async append(streamId: string, event: LedgerEvent): Promise<void> {
+    const record = createEventRecord(streamId, event);
+    await this.insert(record, false);
+    this.#push(record);
   }
 
-  async insert(event: Ledger.Event, hydrated = false): Promise<void> {
-    const record = Ledger.createEventRecord(event);
+  async insert(event: EventRecord, hydrated = false): Promise<void> {
     const status = await this.status(event);
     if (status.exists === true) {
       return; // event already exists, no further actions required
     }
-    await Ledger.validator.validate(event);
-    await this.#queue.push(record, Promise.resolve, Promise.reject);
-    await Ledger.projector.project(event, { hydrated, outdated: status.outdated }).catch(console.log);
+    await validator.validate(event);
+    await this.#queue.push(event, Promise.resolve, Promise.reject);
+    await projector.project(event, { hydrated, outdated: status.outdated }).catch(console.log);
   }
 
-  #push(event: Ledger.Event, alias: string) {
+  #push(event: EventRecord) {
     // this.gun.get(alias).get(LEDGER_STREAM_KEY).get(event.streamId).get(event.id).put(JSON.stringify(event));
   }
 
@@ -65,7 +76,7 @@ export class LedgerService {
    * is newer than the provided event, the provided event is considered
    * outdated.
    */
-  async status({ id, streamId, type, created }: EventDocument): Promise<Ledger.EventStatus> {
+  async status({ id, streamId, type, created }: EventDocument): Promise<LedgerEventStatus> {
     const record = await this.events.findOne({ id });
     if (record) {
       return { exists: true, outdated: true };
@@ -100,7 +111,7 @@ export class LedgerService {
    * stream and reduces them into a single current state representing of
    * the event stream.
    */
-  reduce<AggregateRoot extends Ledger.AggregateRootClass>(
+  reduce<AggregateRoot extends AggregateRootClass>(
     streamId: string,
     aggregate: AggregateRoot
   ): InstanceType<AggregateRoot> | undefined {

@@ -1,6 +1,6 @@
-import { Ledger } from "@valkyr/ledger";
+import { Aggregate, AggregateRoot } from "@valkyr/ledger";
 
-import { Event } from "./Events";
+import { EventRecord } from "./Events";
 
 /*
  |--------------------------------------------------------------------------------
@@ -32,13 +32,13 @@ export type Member = {
  |--------------------------------------------------------------------------------
  */
 
-export class Workspace extends Ledger.AggregateRoot {
-  id = "";
-  name = "";
+export class Workspace extends AggregateRoot {
+  id!: string;
+  name!: string;
   invites = new Invites(this);
   members = new Members(this);
 
-  apply(event: Event): void {
+  apply(event: EventRecord): void {
     switch (event.type) {
       case "WorkspaceCreated": {
         this.id = event.streamId;
@@ -75,13 +75,13 @@ export class Workspace extends Ledger.AggregateRoot {
  |--------------------------------------------------------------------------------
  */
 
-class Invites extends Ledger.Aggregate<Workspace, Invite> {
+class Invites extends Aggregate<Workspace, Invite> {
   getByEmail(email: string) {
     return this.index.find((invite) => invite.email === email);
   }
 }
 
-class Members extends Ledger.Aggregate<Workspace, Member> {
+class Members extends Aggregate<Workspace, Member> {
   getById(id: string) {
     return this.get(id);
   }

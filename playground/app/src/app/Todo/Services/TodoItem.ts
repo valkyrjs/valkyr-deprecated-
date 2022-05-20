@@ -12,10 +12,10 @@ export class TodoItemService extends DataSubscriber {
   }
 
   public async create(todoId: string, text: string, auditor: string) {
-    this.ledger.append(TodoStore.events.item.added(todoId, { id: getId(), text }, { auditor }));
+    this.ledger.append(todoId, TodoStore.events.item.added({ id: getId(), text }, { auditor }));
   }
 
   public async move(todoId: string, id: string, sort: number, auditor: string) {
-    this.ledger.append(TodoStore.events.item.sortSet(todoId, { id, sort }, { auditor }));
+    this.ledger.append(todoId, TodoStore.events.item.sortSet({ id, sort }, { auditor }));
   }
 }

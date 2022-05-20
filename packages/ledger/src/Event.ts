@@ -1,50 +1,29 @@
-import { nanoid } from "@valkyr/utils";
+import { getId } from "@valkyr/security";
 
 import { getLogicalTimestamp } from "./Time";
 
 /*
  |--------------------------------------------------------------------------------
- | Event
+ | Event Factory
  |--------------------------------------------------------------------------------
  */
 
-/**
- * Allows us to define a specific event definition and provide a method that
- * enforces this definition upon creating new events.
- *
- * @param type - Type of event being created by the factory.
- *
- * @returns Event factory
- */
-export function createEvent<E extends Event>(type: E["type"]): EventFactory<E> {
-  return function (streamId: string, data: E["data"] = {}, meta: E["meta"] = {}) {
-    const timestamp = getLogicalTimestamp();
-    return {
-      id: nanoid(),
-      streamId,
-      type,
-      data,
-      meta,
-      created: timestamp,
-      recorded: timestamp
-    } as E;
-  };
+export function makeEventFactory<Event extends LedgerEvent>(type: Event["type"]): EventFactory<Event> {
+  return (data: Event["data"] = {}, meta: Event["meta"] = {}) => ({ type, data, meta } as Event);
 }
 
-/**
- * Allows us to create a local version of the given event. A local version
- * refers to the recorded timestamp of the given event. This is used to assign
- * cursor values based on the originating central authority use in stream
- * synchronization logic.
- *
- * @param event - Event to create a new recorded timestamp for.
- *
- * @returns Event with new local recorded timestamp.
+/*
+ |--------------------------------------------------------------------------------
+ | Event Recorder
+ |--------------------------------------------------------------------------------
  */
-export function createEventRecord<E extends Event>(event: E): E {
+
+export function createEventRecord<Event extends LedgerEvent>(streamId: string, event: Event): LedgerEventRecord<Event> {
   return {
+    id: getId(),
+    streamId,
     ...event,
-    recorded: getLogicalTimestamp()
+    created: getLogicalTimestamp()
   };
 }
 
@@ -54,60 +33,43 @@ export function createEventRecord<E extends Event>(event: E): E {
  |--------------------------------------------------------------------------------
  */
 
-type EventFactory<E extends Event> = E["data"] extends never
-  ? (streamId: string) => E
-  : E["meta"] extends never
-  ? (streamId: string, data: E["data"]) => E
-  : (streamId: string, data: E["data"], meta: E["meta"]) => E;
+type EventFactory<Event extends LedgerEvent> = Event["data"] extends never
+  ? (data: Event["data"]) => Event
+  : (data: Event["data"], meta: Event["meta"]) => Event;
 
-export interface Event<EventType = string, EventData = unknown | never, EventMeta = unknown | never> {
-  /**
-   * A unique event identifier correlating its identity in the **event store**
-   * _(database)_.
-   */
+export type EventRecord = LedgerEventRecord<LedgerEvent>;
+
+export type LedgerEventRecord<Event extends LedgerEvent> = {
   id: string;
-
-  /**
-   * Identifier representing the stream in which many individual events/transactions
-   * belongs to and is used to generate a specific aggregate state representation of
-   * that particular identity.
-   */
   streamId: string;
-
-  /**
-   * Event identifier describing the intent of the event in a past tense format.
-   */
-  type: EventType;
-
-  /**
-   * Stores the recorded partial piece of data that makes up a larger aggregate
-   * state.
-   */
-  data: EventData;
-
-  /**
-   * Stores additional meta data about the event that is not directly related
-   * to the aggregate state.
-   */
-  meta: EventMeta;
-
-  /**
-   * An immutable logical hybrid clock timestamp representing the wall time when
-   * the event was created.
-   *
-   * This value is used to identify the date of its creation as well as a sorting
-   * key when performing reduction logic to generate aggregate state for the stream
-   * in which the event belongs.
-   */
+  type: Event["type"];
+  data: Event["data"];
+  meta: Event["meta"];
   created: string;
+};
+
+export type LedgerEvent<EventType = string, EventData = unknown | never, EventMeta = unknown | never> = {
+  type: EventType;
+  data: EventData;
+  meta: EventMeta;
+};
+
+export type LedgerEventStatus = {
+  /**
+   * Does the event already exist in the containing stream. This is an
+   * optimization flag so that we can potentially ignore the processing of the
+   * event if it already exists.
+   */
+  exists: boolean;
 
   /**
-   * A mutable logical hybrid clock timestamps representing the wall time when the
-   * event was recorded to the local **event ledger** _(database)_ as opposed to
-   * when the event was actually created.
+   * Is there another event in the stream of the same type that is newer than
+   * the provided event. This is passed into projectors so that they can
+   * route the event to the correct projection handlers.
    *
-   * This value is used when performing event synchronization between two different
-   * event ledgers.
+   * @see {@link Projection [once|on|all]}
    */
-  recorded: string;
-}
+  outdated: boolean;
+};
+
+export type LedgerEventToLedgerRecord<E> = E extends LedgerEvent ? LedgerEventRecord<E> : never;

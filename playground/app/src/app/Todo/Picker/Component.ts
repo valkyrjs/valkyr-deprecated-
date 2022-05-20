@@ -88,7 +88,7 @@ export class TodoPickerComponent implements OnInit, OnDestroy {
       if (!member) {
         throw new Error("Could not resolve workspace member");
       }
-      this.todo.move(this.workspace.selected, event.item.data.id, event.currentIndex, member.id);
+      this.todo.move(event.item.data.id, event.currentIndex, member.id);
     }
   }
 }

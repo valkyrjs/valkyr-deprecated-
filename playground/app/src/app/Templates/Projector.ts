@@ -1,4 +1,5 @@
 import { EventProjector, On, Projector } from "@valkyr/angular";
+import { LedgerEventRecord } from "@valkyr/ledger";
 import { TemplateStore } from "stores";
 
 import { Template } from "./Models/Template";
@@ -6,7 +7,10 @@ import { Template } from "./Models/Template";
 @Projector()
 export class TemplateProjector extends EventProjector {
   @On("TemplateCreated")
-  public async onTemplateCreated({ streamId, data: { workspaceId, name, color } }: TemplateStore.Created) {
+  public async onTemplateCreated({
+    streamId,
+    data: { workspaceId, name, color }
+  }: LedgerEventRecord<TemplateStore.Created>) {
     await Template.insertOne({
       id: streamId,
       workspaceId,

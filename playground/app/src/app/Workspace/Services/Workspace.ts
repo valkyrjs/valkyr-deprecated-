@@ -35,13 +35,12 @@ export class WorkspaceService extends DataSubscriber {
     if (!user) {
       throw new Error("Workspace Violation: Cannot create workspace, no initial member could be resolved");
     }
-    console.log(user);
     const workspaceId = getId();
     const member: WorkspaceStore.Member = {
       id: user.cid,
       name: user.data.name,
       publicKey: await this.identity.publicKey()
     };
-    this.ledger.append(WorkspaceStore.events.created(workspaceId, { name, members: [member] }, { auditor: member.id }));
+    this.ledger.append(workspaceId, WorkspaceStore.events.created({ name, members: [member] }, { auditor: member.id }));
   }
 }

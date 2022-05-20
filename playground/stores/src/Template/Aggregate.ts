@@ -1,8 +1,8 @@
-import { Ledger } from "@valkyr/ledger";
+import { Aggregate, AggregateRoot } from "@valkyr/ledger";
 
 import { ComponentKind, ComponentSettings, Layouts } from "../Types";
 import { Member, Workspace } from "../Workspace";
-import { Event } from "./Events";
+import { EventRecord } from "./Events";
 
 export type TemplateComponent = {
   id: string;
@@ -22,7 +22,7 @@ export type State = {
   updatedAt?: string;
 };
 
-export class Template extends Ledger.AggregateRoot {
+export class Template extends AggregateRoot {
   public id = "";
   public workspaceId = "";
   public name = "";
@@ -33,7 +33,7 @@ export class Template extends Ledger.AggregateRoot {
   public updatedBy?: Member["id"];
   public updatedAt?: string;
 
-  public apply(event: Event) {
+  public apply(event: EventRecord) {
     switch (event.type) {
       case "TemplateCreated": {
         this.id = event.streamId;
@@ -112,4 +112,4 @@ export class Template extends Ledger.AggregateRoot {
  |--------------------------------------------------------------------------------
  */
 
-class Components extends Ledger.Aggregate<Template, TemplateComponent> {}
+class Components extends Aggregate<Template, TemplateComponent> {}

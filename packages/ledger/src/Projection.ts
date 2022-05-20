@@ -1,4 +1,4 @@
-import type { Event } from "./Event";
+import type { EventRecord } from "./Event";
 import { Queue } from "./Queue";
 
 export const FILTER_ONCE = Object.freeze<Filter>({
@@ -22,14 +22,14 @@ export const FILTER_ALL = Object.freeze<Filter>({
  |--------------------------------------------------------------------------------
  */
 
-export class Projection<E extends Event> {
-  public readonly type: E["type"];
-  public readonly handle: Handler<E>;
+export class Projection<Event extends EventRecord> {
+  public readonly type: Event["type"];
+  public readonly handle: Handler<Event>;
   public readonly filter: Filter;
 
   private listener?: () => void;
 
-  constructor(type: E["type"], handler: Handler<E>, options: Options) {
+  constructor(type: Event["type"], handler: Handler<Event>, options: Options) {
     this.type = type;
     this.handle = handler;
     this.filter = options.filter;
@@ -68,7 +68,7 @@ export class Projection<E extends Event> {
   public start() {
     this.listener = projector.on(this.type as string, async (event, state) => {
       if (this.isValid(state)) {
-        await this.handle(event as E);
+        await this.handle(event as Event);
       }
     });
   }
@@ -100,7 +100,7 @@ export const projector = new (class Projector {
     });
   }
 
-  public async project<E extends Event>(event: E, state: State) {
+  public async project<Event extends EventRecord>(event: Event, state: State) {
     return new Promise<boolean>((resolve, reject) => {
       this.queue.push({ event, state }, resolve, reject);
     });
@@ -143,8 +143,8 @@ export const projection = {
    * We disallow `hydrate` and `outdated` as these events represents events
    * that has already been processed.
    */
-  once<E extends Event>(type: E["type"], handler: Handler<E>) {
-    return new Projection<E>(type, handler, { filter: FILTER_ONCE });
+  once<Event extends EventRecord>(type: Event["type"], handler: Handler<Event>) {
+    return new Projection<Event>(type, handler, { filter: FILTER_ONCE });
   },
 
   /**
@@ -167,8 +167,8 @@ export const projection = {
    * have processing requirements that needs to know about every unknown
    * events that has occurred in the event stream.
    */
-  on<E extends Event>(type: E["type"], handler: Handler<E>) {
-    return new Projection<E>(type, handler, { filter: FILTER_CONTINUOUS });
+  on<Event extends EventRecord>(type: Event["type"], handler: Handler<Event>) {
+    return new Projection<Event>(type, handler, { filter: FILTER_CONTINUOUS });
   },
 
   /**
@@ -180,8 +180,8 @@ export const projection = {
    * stricter definitions of once and on patterns. This is a good place
    * to deal with data that does not depend on a strict order of events.
    */
-  all<E extends Event>(type: E["type"], handler: Handler<E>) {
-    return new Projection<E>(type, handler, { filter: FILTER_ALL });
+  all<Event extends EventRecord>(type: Event["type"], handler: Handler<Event>) {
+    return new Projection<Event>(type, handler, { filter: FILTER_ALL });
   }
 };
 
@@ -263,13 +263,13 @@ export type State = {
   outdated: boolean;
 };
 
-export type Message<E extends Event = Event> = {
-  event: E;
+export type Message<Event extends EventRecord = EventRecord> = {
+  event: Event;
   state: State;
 };
 
-export type Handler<E extends Event = Event> = (event: E) => Promise<void>;
+export type Handler<Event extends EventRecord = EventRecord> = (event: Event) => Promise<void>;
 
 export type Listeners = Record<string, Set<ProjectionHandler> | undefined>;
 
-export type ProjectionHandler<E extends Event = Event> = (event: E, state: State) => Promise<void>;
+export type ProjectionHandler<Event extends EventRecord = EventRecord> = (event: Event, state: State) => Promise<void>;
