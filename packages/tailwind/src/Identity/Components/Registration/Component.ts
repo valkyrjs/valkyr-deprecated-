@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
-import { IdentityService } from "@valkyr/identity";
+import { IdentityService, UserIdentity } from "@valkyr/identity";
 
 @Component({
   selector: "vlk-identity-registration",
@@ -33,10 +33,15 @@ export class RegistrationComponent {
   }
 
   async user() {
-    const user = await this.service.identity.addUser({ name: this.name });
+    const user = await UserIdentity.create({ name: this.name });
+
+    this.service.identity.users.push(user);
+
     await this.service.persistToProvider(this.provider);
     await this.service.persistToDevice(true);
+
     this.service.setSelectedUser(user.cid, true);
+
     this.router.navigate(["/"]);
   }
 

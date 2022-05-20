@@ -111,11 +111,11 @@ export class LedgerService {
    * stream and reduces them into a single current state representing of
    * the event stream.
    */
-  reduce<AggregateRoot extends AggregateRootClass>(
+  async reduce<AggregateRoot extends AggregateRootClass>(
     streamId: string,
     aggregate: AggregateRoot
-  ): InstanceType<AggregateRoot> | undefined {
-    const events = this.stream(streamId);
+  ): Promise<InstanceType<AggregateRoot> | undefined> {
+    const events = await this.stream(streamId);
     if (events.length === 0) {
       return undefined;
     }
@@ -149,25 +149,15 @@ export class LedgerService {
    * of the request, we send a pull request to the attached remote service
    * before executing the local event query.
    */
-  stream(streamId: string, alias = PUBLIC_LEDGER_ALIAS, timestamp?: string, sortDirection: 1 | -1 = 1): Event[] {
-    // const filter: any = { streamId };
-    // if (timestamp) {
-    //   filter.created = {
-    //     [sortDirection === 1 ? "$gt" : "$lt"]: timestamp
-    //   };
-    // }
-    const events: any[] = [];
-    // this.gun
-    //   .get(alias)
-    //   .get(LEDGER_STREAM_KEY)
-    //   .get(streamId)
-    //   .map()
-    //   .once((events) => {
-    //     for (const eventId in events) {
-    //       events.push(JSON.parse(events[eventId]));
-    //     }
-    //   });
-    return events;
+  async stream(streamId: string, timestamp?: string, sortDirection: 1 | -1 = 1): Promise<EventRecord[]> {
+    const filter: any = { streamId };
+    if (timestamp) {
+      filter.created = {
+        [sortDirection === 1 ? "$gt" : "$lt"]: timestamp
+      };
+    }
+    // await this.pull(streamId);
+    return this.events.find(filter, { sort: { created: sortDirection } });
   }
 
   // ### Subscription Utilities

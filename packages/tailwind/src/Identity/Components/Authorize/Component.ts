@@ -25,12 +25,12 @@ export class AuthorizeComponent {
   async authenticate() {
     await this.service.authorize(this.provider, this.alias);
     await this.service.persistToDevice(this.remember);
-    this.users = this.service.identity.getUsers();
+    this.users = this.service.identity.users;
     this.step = "users";
   }
 
   async select(cid: string) {
-    const user = this.service.identity.getUser(cid);
+    const user = this.service.identity.users.find((user) => user.cid === cid);
     if (user === undefined) {
       throw new Error("Authorization Violation: User could not be resolved");
     }

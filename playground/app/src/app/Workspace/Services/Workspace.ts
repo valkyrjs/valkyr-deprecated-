@@ -38,7 +38,7 @@ export class WorkspaceService extends DataSubscriber {
     const workspaceId = getId();
     const member: WorkspaceStore.Member = {
       id: user.cid,
-      name: user.data.name,
+      name: user.data["name"] as string,
       publicKey: await this.identity.publicKey()
     };
     this.ledger.append(workspaceId, WorkspaceStore.events.created({ name, members: [member] }, { auditor: member.id }));

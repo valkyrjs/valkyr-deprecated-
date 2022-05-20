@@ -39,7 +39,7 @@ export class WorkspaceListComponent implements OnInit, OnDestroy {
       this,
       {
         criteria: {
-          "members.accountId": this.identity.auditor
+          "members.id": this.identity.auditor
         },
         stream: {
           aggregate: "workspace",

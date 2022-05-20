@@ -1,6 +1,6 @@
 import { ExportedKeyPair, KeyPair } from "@valkyr/security";
 
-import { RecordLike, UserIdentity } from "./UserIdentity";
+import { UserIdentity, UserIdentitySchema } from "./UserIdentity";
 
 /**
  * PrivateIdentity
@@ -28,19 +28,22 @@ import { RecordLike, UserIdentity } from "./UserIdentity";
  *
  * @see {@link UserIdentity}
  */
-export class PrivateIdentity<Data extends PrivateIdentityData> {
+export class PrivateIdentity<Data extends PrivateIdentityData = PrivateIdentityData> {
+  #users: UserIdentity[];
   #data: Data;
   #keys: KeyPair;
 
   constructor(props: PrivateIdentityProps<Data>) {
+    this.#users = props.users;
     this.#data = props.data;
     this.#keys = props.keys;
   }
 
   // ### Instantiator
 
-  static async create<Data extends PrivateIdentityData>(data: Data): Promise<PrivateIdentity<Data>> {
+  static async create<Data extends PrivateIdentityData>(data: Data = {} as Data): Promise<PrivateIdentity<Data>> {
     return new PrivateIdentity({
+      users: [],
       data,
       keys: await KeyPair.create()
     });
@@ -48,13 +51,25 @@ export class PrivateIdentity<Data extends PrivateIdentityData> {
 
   static async import<Data extends PrivateIdentityData>(schema: PrivateIdentitySchema): Promise<PrivateIdentity<Data>> {
     const keys = await KeyPair.import(schema.keys);
+    const data = await keys.decrypt<Data>(schema.data);
+    const users = await keys.decrypt<UserIdentitySchema[]>(schema.users);
+
+    for (const user of users) {
+      console.log("User", await UserIdentity.import(user));
+    }
+
     return new PrivateIdentity({
-      data: await keys.decrypt(schema.data),
+      users: await Promise.all(users.map((user) => UserIdentity.import(user))),
+      data,
       keys
     });
   }
 
   // ### Accessors
+
+  get users(): UserIdentity[] {
+    return this.#users;
+  }
 
   get data(): Data {
     return this.#data;
@@ -72,35 +87,12 @@ export class PrivateIdentity<Data extends PrivateIdentityData> {
     return this.#keys;
   }
 
-  // ### User Utilities
-
-  async addUser<Data extends RecordLike = any>(data: Data): Promise<UserIdentity<Data>> {
-    const user = await UserIdentity.create(data);
-    this.data.users[user.cid] = user;
-    return user;
-  }
-
-  getUsers(): UserIdentity[] {
-    return Object.values(this.data.users);
-  }
-
-  getUser(cid: string): UserIdentity | undefined {
-    console.log(this.data.users);
-    return this.data.users[cid];
-  }
-
-  putUser<Data extends RecordLike = any>(cid: string, data: Data): void {
-    const user = this.getUser(cid);
-    if (!user) {
-      throw new Error("User Update Violation: User does not exist");
-    }
-    user.update(data);
-  }
-
   // ### Utilities
 
   async export(): Promise<PrivateIdentitySchema> {
+    const users = await Promise.all(this.users.map((user) => user.export()));
     return {
+      users: await this.encrypt(users),
       data: await this.encrypt(this.data),
       keys: await this.#keys.export()
     };
@@ -108,15 +100,15 @@ export class PrivateIdentity<Data extends PrivateIdentityData> {
 }
 
 export type PrivateIdentitySchema = {
+  users: string;
   data: string;
   keys: ExportedKeyPair;
 };
 
 type PrivateIdentityProps<Data extends PrivateIdentityData> = {
+  users: UserIdentity[];
   data: Data;
   keys: KeyPair;
 };
 
-type PrivateIdentityData = {
-  users: Record<string, UserIdentity>;
-} & Record<string, unknown>;
+type PrivateIdentityData = Record<string, unknown>;

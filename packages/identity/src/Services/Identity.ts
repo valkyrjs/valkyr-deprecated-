@@ -6,15 +6,11 @@ import { AccessKey, generateSecretKey, getAlphaUppercase } from "@valkyr/securit
 import { IdentityData } from "../IdentityStorage";
 import { IdentityServiceOptions } from "./Types";
 
-type PrivateIdentityData = {
-  users: Record<string, UserIdentity>;
-};
-
 export class IdentityService extends JsonRpcClient {
   provider?: string;
 
   #alias?: string;
-  #identity?: PrivateIdentity<PrivateIdentityData>;
+  #identity?: PrivateIdentity;
   #accessKey?: AccessKey;
 
   constructor(options: IdentityServiceOptions) {
@@ -43,7 +39,7 @@ export class IdentityService extends JsonRpcClient {
     return this.#alias;
   }
 
-  get identity(): PrivateIdentity<PrivateIdentityData> {
+  get identity(): PrivateIdentity {
     if (!this.#identity) {
       throw new Error("Identity Violation: No identity has been resolved");
     }
@@ -76,7 +72,7 @@ export class IdentityService extends JsonRpcClient {
   async create(alias: string, password: string): Promise<string> {
     const secretKey = generateSecretKey();
     this.#alias = alias;
-    this.#identity = await PrivateIdentity.create<PrivateIdentityData>({ users: {} });
+    this.#identity = await PrivateIdentity.create();
     this.#accessKey = AccessKey.resolve(password, secretKey);
     return secretKey;
   }
@@ -157,7 +153,7 @@ export class IdentityService extends JsonRpcClient {
     if (cid === undefined) {
       return undefined;
     }
-    return this.identity.getUser(cid);
+    return this.identity.users.find((user) => user.cid === cid);
   }
 
   // ### Cryptographic Utilities

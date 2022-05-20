@@ -109,13 +109,13 @@ export class KeyPair {
 
   // ### Encrypt & Decrypt
 
-  async encrypt<T extends Record<string, unknown>>(value: T): Promise<string> {
+  async encrypt<T extends Record<string, unknown> | unknown[] | string>(value: T): Promise<string> {
     const header = { alg: ALG, enc: ENC };
     const text = new TextEncoder().encode(JSON.stringify(value));
     return new Jose.CompactEncrypt(text).setProtectedHeader(header).encrypt(this.#publicKey);
   }
 
-  async decrypt(cypherText: string) {
+  async decrypt<T>(cypherText: string): Promise<T> {
     const { plaintext } = await Jose.compactDecrypt(cypherText, this.#privateKey);
     return JSON.parse(new TextDecoder().decode(plaintext));
   }

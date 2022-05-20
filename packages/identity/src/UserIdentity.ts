@@ -17,13 +17,13 @@ import { ExportedKeyPair, getId, KeyPair } from "@valkyr/security";
  * the users cid, publicKey, and partial data points such as name, email,
  * username, etc.
  */
-export class UserIdentity<Data extends RecordLike = any> {
+export class UserIdentity<Data extends RecordLike = RecordLike> {
   readonly cid: string;
 
   #data: Data;
   #keys: KeyPair;
 
-  constructor(props: UserIdentityProps) {
+  constructor(props: UserIdentityProps<Data>) {
     this.cid = props.cid;
     this.#data = props.data;
     this.#keys = props.keys;
@@ -31,7 +31,7 @@ export class UserIdentity<Data extends RecordLike = any> {
 
   // ### Instantiators
 
-  static async create<Data extends RecordLike = any>(data: Data): Promise<UserIdentity> {
+  static async create<Data extends RecordLike = RecordLike>(data: Data): Promise<UserIdentity> {
     return new UserIdentity({
       cid: getId(),
       data,
@@ -39,7 +39,7 @@ export class UserIdentity<Data extends RecordLike = any> {
     });
   }
 
-  static async resolve(schema: UserIdentitySchema): Promise<UserIdentity> {
+  static async import(schema: UserIdentitySchema): Promise<UserIdentity> {
     return new UserIdentity({
       cid: schema.cid,
       data: schema.data,
@@ -57,7 +57,7 @@ export class UserIdentity<Data extends RecordLike = any> {
    * @param value - Value to encrypt.
    */
   get encrypt() {
-    return this.#keys.encrypt.bind(this.#keys);
+    return this.keys.encrypt.bind(this.#keys);
   }
 
   /**
@@ -67,7 +67,11 @@ export class UserIdentity<Data extends RecordLike = any> {
    * @param text - Text value to decrypt.
    */
   get decrypt() {
-    return this.#keys.decrypt.bind(this.#keys);
+    return this.keys.decrypt.bind(this.#keys);
+  }
+
+  get keys() {
+    return this.#keys;
   }
 
   /**
@@ -86,17 +90,25 @@ export class UserIdentity<Data extends RecordLike = any> {
       ...data
     };
   }
+
+  async export(): Promise<UserIdentitySchema> {
+    return {
+      cid: this.cid,
+      data: this.data,
+      keys: await this.keys.export()
+    };
+  }
 }
 
 export type RecordLike = Record<string, unknown>;
 
-export type UserIdentitySchema<Data extends RecordLike = any> = {
+export type UserIdentitySchema<Data extends RecordLike = RecordLike> = {
   cid: string;
   data: Data;
   keys: ExportedKeyPair;
 };
 
-type UserIdentityProps<Data extends RecordLike = any> = {
+type UserIdentityProps<Data extends RecordLike = RecordLike> = {
   cid: string;
   data: Data;
   keys: KeyPair;
