@@ -1,15 +1,8 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import {
-  AuthService,
-  DOCUMENT_TITLE,
-  LedgerService,
-  Menu,
-  MenuItem,
-  ParamsService,
-  TitleService
-} from "@valkyr/angular";
+import { AuthService, DOCUMENT_TITLE, LedgerService, ParamsService, TitleService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
+import { Menu, MenuItem } from "@valkyr/tailwind";
 import panzoom, { PanZoom } from "panzoom";
 
 import { WorkspaceService } from "../../Workspace";

@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { Menu } from "@valkyr/angular";
+import { Menu } from "@valkyr/tailwind";
 
 @Component({
   selector: "discovery",

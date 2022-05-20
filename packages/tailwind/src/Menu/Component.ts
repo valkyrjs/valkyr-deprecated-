@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
-import { Menu } from "@valkyr/angular";
+
+import { Menu } from "./Models";
 
 @Component({
   selector: "menu",

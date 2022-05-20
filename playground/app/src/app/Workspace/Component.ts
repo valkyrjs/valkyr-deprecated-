@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { LedgerService, LedgerSubscription, Menu } from "@valkyr/angular";
+import { LedgerService, LedgerSubscription } from "@valkyr/angular";
+import { Menu } from "@valkyr/tailwind";
 
 import { getFooterMenu, getMainMenu } from "./Menu";
 import { WorkspaceService } from "./Services/Workspace";

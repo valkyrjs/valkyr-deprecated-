@@ -1,4 +1,4 @@
-import { Menu } from "@valkyr/angular";
+import { Menu } from "@valkyr/tailwind";
 
 export function getMainMenu(workspaceId: string): Menu {
   return new Menu({

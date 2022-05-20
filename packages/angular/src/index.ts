@@ -6,7 +6,6 @@ export * from "./Decorators/Projector";
 export * from "./Decorators/Validator";
 export * from "./Guards/AuthGuard";
 export * from "./Guards/GuestGuard";
-export * from "./Helpers/Menu";
 export * from "./Helpers/SubscriberService";
 export * from "./Ledger";
 export * from "./Services/Auth/AuthService";
