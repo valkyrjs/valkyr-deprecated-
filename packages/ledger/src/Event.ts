@@ -33,7 +33,7 @@ export function createEventRecord<Event extends LedgerEvent>(streamId: string, e
  |--------------------------------------------------------------------------------
  */
 
-type EventFactory<Event extends LedgerEvent> = Event["data"] extends never
+type EventFactory<Event extends LedgerEvent> = Event["meta"] extends never
   ? (data: Event["data"]) => Event
   : (data: Event["data"], meta: Event["meta"]) => Event;
 

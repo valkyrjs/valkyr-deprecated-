@@ -1,4 +1,5 @@
-import { Event, foo } from "./mocks/Events";
+import { createEventRecord } from "../src/Event";
+import { EventRecord, foo } from "./mocks/Events";
 import { reducer } from "./mocks/Reducer";
 
 /*
@@ -16,13 +17,13 @@ const streamId = "xyz";
  */
 
 describe("EventReducer", () => {
-  let mockEvents: Event[];
+  let mockEvents: EventRecord[];
 
   beforeAll(async () => {
     mockEvents = [
-      foo.created(streamId, { title: "Bar" }),
-      foo.memberAdded(streamId, { name: "John Foo" }),
-      foo.memberAdded(streamId, { name: "Jane Foo" })
+      createEventRecord(streamId, foo.created({ title: "Bar" })),
+      createEventRecord(streamId, foo.memberAdded({ name: "John Foo" })),
+      createEventRecord(streamId, foo.memberAdded({ name: "Jane Foo" }))
     ];
   });
 
