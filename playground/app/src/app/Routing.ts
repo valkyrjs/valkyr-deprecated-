@@ -31,7 +31,7 @@ export const routes: Routes = [
   {
     path: "workspaces/:workspace/templates",
     component: TemplateListComponent,
-    canActivate: [AuthGuard]
+    canActivate: [IdentityGuard]
   },
   {
     path: "editor",
