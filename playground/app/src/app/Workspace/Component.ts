@@ -42,6 +42,6 @@ export class WorkspaceComponent implements OnDestroy {
   }
 
   #loadWorkspace(workspaceId: string) {
-    this.#subscription = this.ledger.subscribe("workspace", workspaceId, true);
+    this.#subscription = this.ledger.subscribe(workspaceId);
   }
 }

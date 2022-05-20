@@ -31,7 +31,7 @@ export class KeyPair {
   // ### Instantiators
 
   static async create(): Promise<KeyPair> {
-    return new KeyPair(await Jose.generateKeyPair(ALG));
+    return new KeyPair(await Jose.generateKeyPair(ALG, { extractable: true }));
   }
 
   static async import({ publicKey, privateKey }: ExportedKeyPair) {
@@ -109,22 +109,22 @@ export class KeyPair {
 
   // ### Encrypt & Decrypt
 
-  async encrypt<T extends Record<string, unknown>>(value: T): Promise<string> {
+  async encrypt<T extends Record<string, unknown> | unknown[] | string>(value: T): Promise<string> {
     const header = { alg: ALG, enc: ENC };
     const text = new TextEncoder().encode(JSON.stringify(value));
     return new Jose.CompactEncrypt(text).setProtectedHeader(header).encrypt(this.#publicKey);
   }
 
-  async decrypt(cypherText: string) {
+  async decrypt<T>(cypherText: string): Promise<T> {
     const { plaintext } = await Jose.compactDecrypt(cypherText, this.#privateKey);
     return JSON.parse(new TextDecoder().decode(plaintext));
   }
 }
 
 export async function importPublicKey(publicKey: string): Promise<Jose.KeyLike> {
-  return Jose.importSPKI(publicKey, ALG);
+  return Jose.importSPKI(publicKey, ALG, { extractable: true });
 }
 
 export async function importPrivateKey(privateKey: string): Promise<Jose.KeyLike> {
-  return Jose.importPKCS8(privateKey, ALG);
+  return Jose.importPKCS8(privateKey, ALG, { extractable: true });
 }

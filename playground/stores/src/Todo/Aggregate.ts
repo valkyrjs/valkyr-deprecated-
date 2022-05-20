@@ -1,7 +1,7 @@
-import { Ledger } from "@valkyr/ledger";
+import { Aggregate, AggregateRoot } from "@valkyr/ledger";
 
 import { Member, Workspace } from "../Workspace";
-import { Event } from "./Events";
+import { EventRecord } from "./Events";
 
 /*
  |--------------------------------------------------------------------------------
@@ -34,14 +34,14 @@ export type Item = {
  |--------------------------------------------------------------------------------
  */
 
-export class Todo extends Ledger.AggregateRoot {
+export class Todo extends AggregateRoot {
   public id = "";
   public workspaceId = "";
   public name = "";
   public sort: number | undefined = undefined;
   public items = new Items(this);
 
-  public apply(event: Event) {
+  public apply(event: EventRecord) {
     switch (event.type) {
       case "TodoCreated": {
         this.id = event.streamId;
@@ -116,4 +116,4 @@ export class Todo extends Ledger.AggregateRoot {
  |--------------------------------------------------------------------------------
  */
 
-class Items extends Ledger.Aggregate<Todo, Item> {}
+class Items extends Aggregate<Todo, Item> {}

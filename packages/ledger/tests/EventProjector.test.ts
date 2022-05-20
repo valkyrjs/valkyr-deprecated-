@@ -1,20 +1,19 @@
-import { createEvent, createEventRecord, Event as EventBase } from "../src/Event";
+import { createEventRecord, LedgerEvent, LedgerEventRecord, makeEventFactory } from "../src/Event";
 import { Projection, projection, projector } from "../src/Projection";
 
-type MockEventAdded = EventBase<"MockEventAdded", { streamId: string }, never>;
+type MockEventAdded = LedgerEvent<"MockEventAdded", { streamId: string }, never>;
+type MockEventAddedRecord = LedgerEventRecord<MockEventAdded>;
+
+const MockEventAdded = makeEventFactory<MockEventAdded>("MockEventAdded");
 
 function getMockedEventRecord() {
-  return createEventRecord(
-    createEvent<MockEventAdded>("MockEventAdded")("mock", {
-      streamId: "xyz"
-    })
-  );
+  return createEventRecord("mock", MockEventAdded({ streamId: "xyz" }));
 }
 
 describe("Event Projector", () => {
   describe("when registered with .once", () => {
-    let mockEvent: MockEventAdded;
-    let mockProjection: Projection<MockEventAdded>;
+    let mockEvent: MockEventAddedRecord;
+    let mockProjection: Projection<MockEventAddedRecord>;
     let handler: jest.Mock;
 
     beforeAll(() => {
@@ -23,7 +22,7 @@ describe("Event Projector", () => {
 
     beforeEach(() => {
       handler = jest.fn();
-      mockProjection = projection.once<MockEventAdded>("MockEventAdded", handler);
+      mockProjection = projection.once<MockEventAddedRecord>("MockEventAdded", handler);
     });
 
     afterEach(() => {
@@ -47,8 +46,8 @@ describe("Event Projector", () => {
   });
 
   describe("when registered with .on", () => {
-    let mockEvent: MockEventAdded;
-    let mockProjection: Projection<MockEventAdded>;
+    let mockEvent: MockEventAddedRecord;
+    let mockProjection: Projection<MockEventAddedRecord>;
     let handler: jest.Mock;
 
     beforeAll(() => {
@@ -57,7 +56,7 @@ describe("Event Projector", () => {
 
     beforeEach(() => {
       handler = jest.fn();
-      mockProjection = projection.on<MockEventAdded>("MockEventAdded", handler);
+      mockProjection = projection.on<MockEventAddedRecord>("MockEventAdded", handler);
     });
 
     afterEach(() => {
@@ -81,8 +80,8 @@ describe("Event Projector", () => {
   });
 
   describe("when registered with .all", () => {
-    let mockEvent: MockEventAdded;
-    let mockProjection: Projection<MockEventAdded>;
+    let mockEvent: MockEventAddedRecord;
+    let mockProjection: Projection<MockEventAddedRecord>;
     let handler: jest.Mock;
 
     beforeAll(() => {
@@ -91,7 +90,7 @@ describe("Event Projector", () => {
 
     beforeEach(() => {
       handler = jest.fn();
-      mockProjection = projection.all<MockEventAdded>("MockEventAdded", handler);
+      mockProjection = projection.all<MockEventAddedRecord>("MockEventAdded", handler);
     });
 
     afterEach(() => {

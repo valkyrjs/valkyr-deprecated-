@@ -1,6 +1,6 @@
-import { Ledger } from "@valkyr/ledger";
+import { Aggregate, AggregateRoot } from "@valkyr/ledger";
 
-import { Event } from "./Events";
+import { EventRecord } from "./Events";
 
 /*
  |--------------------------------------------------------------------------------
@@ -22,8 +22,8 @@ export type Invite = {
 
 export type Member = {
   id: string;
-  accountId: string;
   name: string;
+  publicKey: string;
 };
 
 /*
@@ -32,13 +32,13 @@ export type Member = {
  |--------------------------------------------------------------------------------
  */
 
-export class Workspace extends Ledger.AggregateRoot {
-  public id = "";
-  public name = "";
-  public invites = new Invites(this);
-  public members = new Members(this);
+export class Workspace extends AggregateRoot {
+  id!: string;
+  name!: string;
+  invites = new Invites(this);
+  members = new Members(this);
 
-  public apply(event: Event): void {
+  apply(event: EventRecord): void {
     switch (event.type) {
       case "WorkspaceCreated": {
         this.id = event.streamId;
@@ -59,7 +59,7 @@ export class Workspace extends Ledger.AggregateRoot {
     }
   }
 
-  public toJSON(): State {
+  toJSON(): State {
     return {
       id: this.id,
       name: this.name,
@@ -75,22 +75,14 @@ export class Workspace extends Ledger.AggregateRoot {
  |--------------------------------------------------------------------------------
  */
 
-class Invites extends Ledger.Aggregate<Workspace, Invite> {
-  public getByEmail(email: string) {
+class Invites extends Aggregate<Workspace, Invite> {
+  getByEmail(email: string) {
     return this.index.find((invite) => invite.email === email);
   }
 }
 
-class Members extends Ledger.Aggregate<Workspace, Member> {
-  public getAccountIds() {
-    return this.index.map((member) => member.accountId);
-  }
-
-  public getByAccount(id: string) {
-    return this.index.find((member) => member.accountId === id);
-  }
-
-  public getByMember(id: string) {
+class Members extends Aggregate<Workspace, Member> {
+  getById(id: string) {
     return this.get(id);
   }
 }

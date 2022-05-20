@@ -13,10 +13,19 @@ export class TemplateService extends DataSubscriber {
   }
 
   public async create(workspaceId: string, name: string, auditor: string) {
-    const color = getRandomColor();
-    const event = TemplateStore.events.created(getId(), { workspaceId, name, color }, { auditor });
-    this.ledger.append(event);
-    this.ledger.relay("workspace", workspaceId, event);
+    this.ledger.append(
+      getId(),
+      TemplateStore.events.created(
+        {
+          workspaceId,
+          name,
+          color: getRandomColor()
+        },
+        {
+          auditor
+        }
+      )
+    );
   }
 
   //   public async move(workspaceId: string, id: string, sort: number, auditor: string) {

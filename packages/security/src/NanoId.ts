@@ -1,10 +1,16 @@
 import { customAlphabet, nanoid } from "nanoid";
 
-const numeric = customAlphabet("1234567890", 6);
-const alphaUppercase = customAlphabet("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-const alphaLowercase = customAlphabet("abcdefghijklmnopqrstuvwxyz");
-const alphaNumeric = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-const alphaUppercaseNumeric = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+const values = {
+  uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+  lowercase: "abcdefghijklmnopqrstuvwxyz",
+  numeric: "1234567890"
+};
+
+const numeric = customAlphabet(values.numeric, 6);
+const alphaUppercase = customAlphabet(values.uppercase);
+const alphaLowercase = customAlphabet(values.lowercase);
+const alphaNumeric = customAlphabet(values.numeric + values.uppercase + values.lowercase);
+const alphaUppercaseNumeric = customAlphabet(values.numeric + values.uppercase);
 
 export function getNumeric(size = 6): string {
   return numeric(size);

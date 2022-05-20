@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { Document, Model } from "@valkyr/db";
-import { Ledger } from "@valkyr/ledger";
 
 export type EventDocument = Document & {
   streamId: string;
@@ -8,7 +7,6 @@ export type EventDocument = Document & {
   data: any;
   meta: any;
   created: string;
-  recorded: string;
 };
 
 @Injectable({ providedIn: "root" })
@@ -18,11 +16,9 @@ export class Event extends Model<EventDocument> {
   readonly data!: EventDocument["data"];
   readonly meta!: EventDocument["meta"];
   readonly created!: EventDocument["created"];
-  readonly recorded!: EventDocument["recorded"];
 
-  static async insert(document: EventDocument) {
-    const record = Ledger.createEventRecord(document);
-    await this.insertOne(record);
+  static async insert(document: EventDocument): Promise<Event> {
+    return this.insertOne(document);
   }
 }
 

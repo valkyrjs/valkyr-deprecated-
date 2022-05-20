@@ -16,6 +16,7 @@
     "@angular/router": "^13.3.5",
     "@angular/cdk": "^13.3.6",
     "@valkyr/angular": "*",
-    "angular-svg-icon": "13.0.0"
+    "angular-svg-icon": "13.0.0",
+    "ng-qrcode": "^6.0.0"
   }
 }

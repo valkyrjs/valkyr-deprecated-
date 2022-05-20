@@ -1,5 +1,7 @@
 import { ExportedKeyPair, KeyPair } from "@valkyr/security";
 
+import { UserIdentity, UserIdentitySchema } from "./UserIdentity";
+
 /**
  * PrivateIdentity
  *
@@ -26,53 +28,87 @@ import { ExportedKeyPair, KeyPair } from "@valkyr/security";
  *
  * @see {@link UserIdentity}
  */
-export class PrivateIdentity<Data = unknown> {
+export class PrivateIdentity<Data extends PrivateIdentityData = PrivateIdentityData> {
+  #users: UserIdentity[];
   #data: Data;
   #keys: KeyPair;
 
   constructor(props: PrivateIdentityProps<Data>) {
+    this.#users = props.users;
     this.#data = props.data;
     this.#keys = props.keys;
   }
 
   // ### Instantiator
 
-  static async create<Data = unknown>(data: Data): Promise<PrivateIdentity<Data>> {
+  static async create<Data extends PrivateIdentityData>(data: Data = {} as Data): Promise<PrivateIdentity<Data>> {
     return new PrivateIdentity({
+      users: [],
       data,
       keys: await KeyPair.create()
     });
   }
 
-  static async resolve<Data = unknown>(schema: PrivateIdentitySchema): Promise<PrivateIdentity<Data>> {
+  static async import<Data extends PrivateIdentityData>(schema: PrivateIdentitySchema): Promise<PrivateIdentity<Data>> {
     const keys = await KeyPair.import(schema.keys);
+    const data = await keys.decrypt<Data>(schema.data);
+    const users = await keys.decrypt<UserIdentitySchema[]>(schema.users);
+
+    for (const user of users) {
+      console.log("User", await UserIdentity.import(user));
+    }
+
     return new PrivateIdentity({
-      data: await keys.decrypt(schema.data),
+      users: await Promise.all(users.map((user) => UserIdentity.import(user))),
+      data,
       keys
     });
   }
 
   // ### Accessors
 
+  get users(): UserIdentity[] {
+    return this.#users;
+  }
+
   get data(): Data {
     return this.#data;
   }
 
   get encrypt() {
-    return this.#keys.encrypt.bind(this.#keys);
+    return this.keys.encrypt.bind(this.#keys);
   }
 
   get decrypt() {
-    return this.#keys.decrypt.bind(this.#keys);
+    return this.keys.decrypt.bind(this.#keys);
+  }
+
+  get keys() {
+    return this.#keys;
+  }
+
+  // ### Utilities
+
+  async export(): Promise<PrivateIdentitySchema> {
+    const users = await Promise.all(this.users.map((user) => user.export()));
+    return {
+      users: await this.encrypt(users),
+      data: await this.encrypt(this.data),
+      keys: await this.#keys.export()
+    };
   }
 }
 
-type PrivateIdentitySchema = {
+export type PrivateIdentitySchema = {
+  users: string;
   data: string;
   keys: ExportedKeyPair;
 };
 
-type PrivateIdentityProps<Data = unknown> = {
+type PrivateIdentityProps<Data extends PrivateIdentityData> = {
+  users: UserIdentity[];
   data: Data;
   keys: KeyPair;
 };
+
+type PrivateIdentityData = Record<string, unknown>;

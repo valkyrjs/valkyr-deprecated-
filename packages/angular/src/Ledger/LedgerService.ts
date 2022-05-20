@@ -1,59 +1,61 @@
-import { Inject, Injectable } from "@angular/core";
-import { Ledger } from "@valkyr/ledger";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { RemoteService } from "../Services/RemoteService";
-import { SocketService } from "../Services/Socket/SocketService";
-import { Cursor, CursorModel } from "./Models/Cursor";
+import { Inject, Injectable } from "@angular/core";
+import { IdentityService } from "@valkyr/identity";
+import {
+  AggregateRootClass,
+  createEventRecord,
+  LedgerEvent,
+  LedgerEventRecord,
+  LedgerEventStatus,
+  projector,
+  Queue,
+  validator
+} from "@valkyr/ledger";
+
 import { Event, EventDocument, EventModel } from "./Models/Event";
 import { StreamSubscriber } from "./StreamSubscriber";
+
+export const PUBLIC_LEDGER_ALIAS = "ledger:public";
+export const LEDGER_STREAM_KEY = "ledger:streams";
+
+type EventRecord = LedgerEventRecord<LedgerEvent>;
 
 @Injectable({ providedIn: "root" })
 export class LedgerService {
   readonly #streams: Record<string, StreamSubscriber> = {};
-  readonly #queue: Ledger.Queue<Ledger.Event>;
+  readonly #queue: Queue<EventRecord>;
 
-  constructor(
-    @Inject(Cursor) readonly cursors: CursorModel,
-    @Inject(Event) readonly events: EventModel,
-    readonly remote: RemoteService,
-    readonly socket: SocketService
-  ) {
-    this.#queue = new Ledger.Queue<Ledger.Event>(this.#handleEvent.bind(this));
-    socket.on("ledger:event", (event: Ledger.Event) => {
-      this.append(event, true, true);
-    });
+  constructor(@Inject(Event) readonly events: EventModel, readonly identity: IdentityService) {
+    this.#queue = new Queue<EventRecord>(this.#handleEvent.bind(this));
   }
 
   // ### Event Handler
 
-  async #handleEvent(event: Ledger.Event) {
+  async #handleEvent(event: EventRecord) {
     await this.events.insert(event);
   }
 
   // ### Write Utilities
 
-  /**
-   *
-   */
-  async append(event: Ledger.Event, hydrated = false, remote = false): Promise<void> {
-    const record = Ledger.createEventRecord(event);
+  async append(streamId: string, event: LedgerEvent): Promise<void> {
+    const record = createEventRecord(streamId, event);
+    await this.insert(record, false);
+    this.#push(record);
+  }
+
+  async insert(event: EventRecord, hydrated = false): Promise<void> {
     const status = await this.status(event);
     if (status.exists === true) {
-      if (remote === true) {
-        await this.cursors.set(event.streamId, event.recorded);
-      }
       return; // event already exists, no further actions required
     }
+    await validator.validate(event);
+    await this.#queue.push(event, Promise.resolve, Promise.reject);
+    await projector.project(event, { hydrated, outdated: status.outdated }).catch(console.log);
+  }
 
-    await Ledger.validator.validate(event);
-    await this.#queue.push(record, Promise.resolve, Promise.reject);
-    await Ledger.projector.project(event, { hydrated, outdated: status.outdated }).catch(console.log);
-
-    if (remote === true) {
-      await this.cursors.set(event.streamId, event.recorded);
-    } else {
-      await this.remote.post("/ledger", { event });
-    }
+  #push(event: EventRecord) {
+    // this.gun.get(alias).get(LEDGER_STREAM_KEY).get(event.streamId).get(event.id).put(JSON.stringify(event));
   }
 
   /**
@@ -74,7 +76,7 @@ export class LedgerService {
    * is newer than the provided event, the provided event is considered
    * outdated.
    */
-  async status({ id, streamId, type, created }: EventDocument): Promise<Ledger.EventStatus> {
+  async status({ id, streamId, type, created }: EventDocument): Promise<LedgerEventStatus> {
     const record = await this.events.findOne({ id });
     if (record) {
       return { exists: true, outdated: true };
@@ -109,7 +111,7 @@ export class LedgerService {
    * stream and reduces them into a single current state representing of
    * the event stream.
    */
-  async reduce<AggregateRoot extends Ledger.AggregateRootClass>(
+  async reduce<AggregateRoot extends AggregateRootClass>(
     streamId: string,
     aggregate: AggregateRoot
   ): Promise<InstanceType<AggregateRoot> | undefined> {
@@ -124,6 +126,20 @@ export class LedgerService {
     return instance as InstanceType<AggregateRoot>;
   }
 
+  streams(alias = PUBLIC_LEDGER_ALIAS): string[] {
+    const streams: string[] = [];
+    // this.gun
+    //   .get(alias)
+    //   .get(LEDGER_STREAM_KEY)
+    //   .map()
+    //   .once((streams) => {
+    //     for (const streamId in streams) {
+    //       streams.push(streamId);
+    //     }
+    //   });
+    return streams;
+  }
+
   /**
    * Retrieve all events for a given stream. Provided timestamp allows for
    * providing a specific point in time to retrieve before or after based
@@ -133,50 +149,18 @@ export class LedgerService {
    * of the request, we send a pull request to the attached remote service
    * before executing the local event query.
    */
-  async stream(streamId: string, timestamp?: string, sortDirection: 1 | -1 = 1): Promise<Event[]> {
+  async stream(streamId: string, timestamp?: string, sortDirection: 1 | -1 = 1): Promise<EventRecord[]> {
     const filter: any = { streamId };
     if (timestamp) {
       filter.created = {
         [sortDirection === 1 ? "$gt" : "$lt"]: timestamp
       };
     }
-    await this.pull(streamId);
+    // await this.pull(streamId);
     return this.events.find(filter, { sort: { created: sortDirection } });
   }
 
-  /**
-   * As part of ledger synchronization we pull events from the attached
-   * remote service based on the last known remote event position. The
-   * position being used is the `recorded` event timestamp locally on
-   * the remote endpoint.
-   *
-   * The pull operation will keep firing until there are no unknown
-   * events being returned or we hit the maximum iteration limit of the
-   * pull operation. A limiter is added to eliminate the possibility of
-   * an infinite refresh loop.
-   */
-  async pull(streamId: string, iterations = 0): Promise<void> {
-    if (iterations > 10) {
-      throw new Error(
-        `Event Stream Violation: Escaping pull operation, infinite loop candidate detected after ${iterations} pull iterations.`
-      );
-    }
-    const recorded = await this.cursors.get(streamId);
-    const url = `/ledger/${streamId}/pull` + (recorded ? `?recorded=${recorded}` : "");
-    const events = await this.remote.get<Ledger.Event[]>(url);
-    if (events.length > 0) {
-      for (const event of events) {
-        await this.append(event, true, true);
-      }
-      await this.pull(streamId, iterations + 1); // keep pulling the stream until its hydrated
-    }
-  }
-
   // ### Subscription Utilities
-
-  relay(aggregate: string, streamId: string, event: Ledger.Event) {
-    this.socket.send("streams:relay", { aggregate, streamId, event });
-  }
 
   /**
    * When subscribing we keep track of all instances that are currently observing
@@ -187,23 +171,18 @@ export class LedgerService {
    * subscribers removing the issue of having multiple subscribers attempting to
    * update the event store with the same event.
    *
-   * @param aggregate  - Aggregate the stream is being access controlled within.
-   * @param streamId   - Stream to subscribe to.
-   * @param pullEvents - Should we pull potential unknown events from the server? (Default: false)
+   * @param streamId - Stream to subscribe to.
+   * @param alias    - Alias in which the event stream is located.
    */
-  subscribe(aggregate: string, streamId: string, pullEvents = false): LedgerSubscription {
+  subscribe(streamId: string, alias = PUBLIC_LEDGER_ALIAS): LedgerSubscription {
     const subscriber = this.#getSubscriber(streamId);
     if (subscriber.isEmpty === true) {
-      this.#join(aggregate, streamId);
-    }
-    if (pullEvents === true && subscriber.isSynced === false) {
-      subscriber.synced();
-      this.pull(streamId);
+      this.#join(streamId, alias);
     }
     subscriber.increment();
     return {
       unsubscribe: () => {
-        this.unsubscribe(streamId);
+        this.unsubscribe(streamId, alias);
       }
     };
   }
@@ -211,22 +190,32 @@ export class LedgerService {
   /**
    * Decrement observer amount by 1 and delete the stream stream observer if the
    * remaining subscribers is 0 or less.
+   *
+   * @param streamId - Stream to unsubscribe from.
+   * @param alias    - Alias in which the event stream is located.
    */
-  unsubscribe(streamId: string): void {
+  unsubscribe(streamId: string, alias: string): void {
     const subscriber = this.#streams[streamId];
     subscriber.decrement();
     if (subscriber.isEmpty) {
-      this.#leave(streamId);
+      this.#leave(streamId, alias);
       delete this.#streams[streamId];
     }
   }
 
-  #join(aggregate: string, streamId: string): void {
-    this.socket.send("streams:join", { aggregate, streamId });
+  #join(streamId: string, alias: string): void {
+    // this.gun
+    //   .get(alias)
+    //   .get(LEDGER_STREAM_KEY)
+    //   .get(streamId)
+    //   .on((message) => {
+    //     const event = JSON.parse(message); // message will be encrypted, here we decrypt
+    //     this.append(event);
+    //   });
   }
 
-  #leave(streamId: string): void {
-    this.socket.send("streams:leave", { streamId });
+  #leave(streamId: string, alias: string): void {
+    // this.socket.send("streams:leave", { streamId });
   }
 
   // ### State Utilities

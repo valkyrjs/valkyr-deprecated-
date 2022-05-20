@@ -1,4 +1,4 @@
-import { Event } from "./Event";
+import { LedgerEvent, LedgerEventRecord } from "./Event";
 
 type Entity = {
   id: string;
@@ -9,7 +9,7 @@ export type AggregateRootClass<T extends AggregateRoot = AggregateRoot> = {
 };
 
 export abstract class AggregateRoot {
-  public abstract apply(event: Event): void;
+  public abstract apply(event: LedgerEventRecord<LedgerEvent>): void;
   public abstract toJSON(): any;
 }
 

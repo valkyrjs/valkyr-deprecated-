@@ -1,7 +1,6 @@
 import { Routes } from "@angular/router";
-import { AuthGuard, GuestGuard } from "@valkyr/angular";
+import { IdentityGuard } from "@valkyr/tailwind";
 
-import { AuthorizationComponent } from "./Authorization";
 import { DesignSystemComponent } from "./DesignSystem";
 import { DiscoveryComponent } from "./Discovery";
 import { TemplateListComponent } from "./Templates";
@@ -14,20 +13,15 @@ import { WorkspaceComponent } from "./Workspace/Component";
 export const routes: Routes = [
   { path: "", redirectTo: "/workspaces", pathMatch: "full" },
   {
-    path: "authorize",
-    component: AuthorizationComponent,
-    canActivate: [GuestGuard]
-  },
-  {
     path: "workspaces",
     component: DiscoveryComponent,
-    canActivate: [AuthGuard],
+    canActivate: [IdentityGuard],
     children: [{ path: "", component: WorkspaceListComponent }]
   },
   {
     path: "workspaces/:workspace",
     component: WorkspaceComponent,
-    canActivate: [AuthGuard],
+    canActivate: [IdentityGuard],
     children: [
       { path: "", component: WorkspaceItemComponent },
       { path: "todos", component: TodoPickerComponent },
@@ -37,7 +31,7 @@ export const routes: Routes = [
   {
     path: "workspaces/:workspace/templates",
     component: TemplateListComponent,
-    canActivate: [AuthGuard]
+    canActivate: [IdentityGuard]
   },
   {
     path: "editor",
