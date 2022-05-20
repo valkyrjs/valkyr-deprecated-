@@ -114,7 +114,6 @@ function getQueryOptions({ sort, skip, limit }: Options): Options {
 
 type SingleNextFn<T extends Type> = (document: InstanceType<T> | undefined) => void;
 type ManyNextFn<T extends Type> = (documents: InstanceType<T>[]) => void;
-type NextFn<T extends Type> = (documents: InstanceType<T>[] | InstanceType<T> | undefined) => void;
 
 type SubscribeToSingle = SubscriptionOptions & {
   limit: 1;
