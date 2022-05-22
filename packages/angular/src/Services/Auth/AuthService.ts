@@ -12,24 +12,24 @@ type Data = {
   providedIn: "root"
 })
 export class AuthService {
-  constructor(private readonly remote: RemoteService, private socket: SocketService) {
+  constructor(readonly remote: RemoteService, readonly socket: SocketService) {
     if (this.isAuthenticated === true) {
       socket.send("token", { token: jwt.token });
     }
   }
 
-  public get isAuthenticated(): boolean {
+  get isAuthenticated(): boolean {
     return jwt.token !== null;
   }
 
-  public get details(): Data {
+  get details(): Data {
     if (jwt.token === null) {
       throw new Error(`Auth Violation: Cannot retrieve details for unauthenticated client`);
     }
     return jwt.decode<Data>(jwt.token);
   }
 
-  public get auditor() {
+  get auditor() {
     if (this.isAuthenticated === false) {
       throw new Error("Auth Violation: Cannot retrieve auditor for unauthenticated client");
     }
@@ -42,7 +42,7 @@ export class AuthService {
    *
    * @param email - Email identifier to generate a token for.
    */
-  public async create(email: string) {
+  async create(email: string) {
     return this.remote.post("/accounts", { email });
   }
 
@@ -52,7 +52,7 @@ export class AuthService {
    * @param email - Email identifier to sign.
    * @param token - Single sign on token to validate the signature.
    */
-  public async sign(email: string, token: string) {
+  async sign(email: string, token: string) {
     await this.remote.post<{ token: string }>("/accounts/validate", { email, token }).then(({ token }) => {
       return this.resolve(token);
     });
@@ -64,7 +64,7 @@ export class AuthService {
    *
    * @param token - Signed token to resolve.
    */
-  public async resolve(token: string) {
+  async resolve(token: string) {
     await this.socket.send("token", { token });
     jwt.token = token;
   }
@@ -74,7 +74,7 @@ export class AuthService {
    * This is used when you want to remove the credentials without
    * destroying the socket connection.
    */
-  public async destroy() {
+  async destroy() {
     await this.remote.send("account:logout");
   }
 }

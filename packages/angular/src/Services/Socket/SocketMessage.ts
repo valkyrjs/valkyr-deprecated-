@@ -19,26 +19,22 @@ export type MessagePromise = {
 type MessageData = Record<string, unknown>;
 
 export class SocketMessage {
-  public readonly id = nanoid();
+  readonly id = nanoid();
 
-  public readonly resolve = this.promise.resolve;
-  public readonly reject = this.promise.reject;
+  readonly resolve = this.promise.resolve;
+  readonly reject = this.promise.reject;
 
-  private constructor(
-    public readonly event: string,
-    public readonly data: MessageData,
-    public readonly promise: MessagePromise
-  ) {}
+  constructor(readonly event: string, readonly data: MessageData, readonly promise: MessagePromise) {}
 
-  public static create(event: string, data: MessageData, promise: MessagePromise) {
+  static create(event: string, data: MessageData, promise: MessagePromise) {
     return new SocketMessage(event, data, promise);
   }
 
-  public static from({ event, data }: MessageJSON) {
+  static from({ event, data }: MessageJSON) {
     return new SocketMessage(event, data, EMPTY_PROMISE);
   }
 
-  public print() {
+  print() {
     return JSON.stringify(
       {
         id: this.id,
@@ -50,7 +46,7 @@ export class SocketMessage {
     );
   }
 
-  public toString() {
+  toString() {
     return JSON.stringify({
       event: this.event,
       data: [this.id, this.data]

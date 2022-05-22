@@ -1,10 +1,10 @@
-import { Event } from "./Event";
+import { EventRecord } from "./Event";
 import { Queue } from "./Queue";
 
 export const validator = new (class Projector {
   public listeners: Listeners = {};
 
-  public queue: Queue<Event>;
+  public queue: Queue<EventRecord>;
 
   constructor() {
     this.validate = this.validate.bind(this);
@@ -13,7 +13,7 @@ export const validator = new (class Projector {
     });
   }
 
-  public async validate<E extends Event>(event: E) {
+  public async validate<Event extends EventRecord>(event: Event) {
     return new Promise<boolean>((resolve, reject) => {
       this.queue.push(event, resolve, reject);
     });
@@ -44,4 +44,4 @@ export const validator = new (class Projector {
 
 type Listeners = Record<string, Set<ValidationHandler>>;
 
-type ValidationHandler<E extends Event = Event> = (event: E) => Promise<void>;
+type ValidationHandler<Event extends EventRecord = EventRecord> = (event: Event) => Promise<void>;

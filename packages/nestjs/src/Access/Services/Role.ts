@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Role as AccessRole, RoleData } from "@valkyr/access";
-import { generateStreamId } from "@valkyr/ledger";
+import { getId } from "@valkyr/security";
 import { Model } from "mongoose";
 
 import { Role, RoleDocument } from "../Model";
@@ -12,7 +12,7 @@ export class RoleService<Permissions extends AccessRole["permissions"] = AccessR
 
   public async create(role: Partial<RoleData<Permissions>>) {
     await this.model.create({
-      roleId: generateStreamId(),
+      roleId: getId(),
       ...role
     });
   }

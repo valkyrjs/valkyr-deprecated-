@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { jwt } from "./Auth/JsonWebToken";
 
 export class ApiErrorResponse extends Error {
-  constructor(public readonly code: number, message: string, public readonly data: Record<string, unknown>) {
+  constructor(readonly code: number, message: string, readonly data: Record<string, unknown>) {
     super(message);
   }
 }
@@ -12,8 +12,6 @@ export class ApiErrorResponse extends Error {
   providedIn: "root"
 })
 export class RemoteService {
-  constructor() {}
-
   /**
    * Perform a post request against given resource.
    *

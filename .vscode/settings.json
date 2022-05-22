@@ -4,27 +4,45 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
+  "scss.lint.unknownAtRules": "ignore",
   "eslint.workingDirectories": [
     {
       "mode": "auto"
     }
   ],
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "[html,svg]": {
+    "editor.formatOnSaveMode": "file",
+    "editor.defaultFormatter": "HookyQR.beautify"
+  },  
   "cSpell.words": [
     "bitflag",
     "Bitflags",
     "camelcase",
+    "Instantiator",
+    "Instantiators",
     "jsxdev",
     "keyval",
+    "kodemon",
+    "Merkle",
     "mingo",
+    "myapp",
     "nestjs",
     "nocheck",
     "paramtypes",
+    "peerjs",
+    "pids",
+    "qrcode",
     "rfdc",
     "signin",
+    "tiptap",
     "todos",
     "tsbuildinfo",
     "upsert",
     "valkyr",
+    "vlkr",
     "websockets",
     "Wksp"
   ]

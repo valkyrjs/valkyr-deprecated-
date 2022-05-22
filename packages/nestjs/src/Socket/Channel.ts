@@ -5,7 +5,6 @@ import { Socket } from "./Socket";
 
 export type Channels = Map<string, Set<Socket>>;
 
-type Sockets = Set<Socket>;
 type Excluded = Map<Socket, boolean>;
 
 /*
@@ -15,35 +14,23 @@ type Excluded = Map<Socket, boolean>;
  */
 
 export class SocketChannel {
-  public readonly sockets: Sockets = new Set();
+  constructor(readonly gateway: SocketGateway, readonly channelId: string, readonly excluded: Excluded = new Map()) {}
 
-  constructor(
-    public readonly gateway: SocketGateway,
-    public readonly channelId: string,
-    public readonly excluded: Excluded = new Map()
-  ) {
-    const channel = gateway.channels.get(this.channelId);
-    if (channel) {
-      for (const socket of channel) {
-        this.add(socket);
+  get sockets() {
+    const sockets = this.gateway.channels.get(this.channelId);
+    if (sockets === undefined) {
+      return [];
+    }
+    return Array.from(sockets).filter((socket) => {
+      const isAvailable = isSocketAvailable(socket);
+      if (isAvailable === true && this.excluded.has(socket) === false) {
+        return true;
       }
-    }
-  }
-
-  /**
-   * Add a socket to the channel.
-   *
-   * @param socket - WebSocket to add to the channel.
-   *
-   * @returns SocketChannel
-   */
-  public add(socket: Socket): this {
-    if (isSocketAvailable(socket) && this.excluded.has(socket) === false) {
-      this.sockets.add(socket);
-    } else if (this.excluded.has(socket)) {
-      this.gateway.leave(socket, this.channelId); // clean up disconnected sockets
-    }
-    return this;
+      if (isAvailable === false) {
+        this.gateway.leave(socket, this.channelId);
+      }
+      return false;
+    });
   }
 
   /**
@@ -57,13 +44,11 @@ export class SocketChannel {
    * ```
    *
    */
-  public emit<Data extends Record<string, any>>(event: string, data: Data = {} as Data): void {
+  emit<Data extends Record<string, any>>(event: string, data: Data = {} as Data): void {
     const message = JSON.stringify({ event, data });
-    // this.server.redis?.publish(this.channelId, message);
+    // todo(kodemon) this.server.redis?.publish(this.channelId, message);
     for (const socket of this.sockets) {
-      if (isSocketAvailable(socket)) {
-        socket.send(message);
-      }
+      socket.send(message);
     }
   }
 }

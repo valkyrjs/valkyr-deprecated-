@@ -6,6 +6,7 @@
 .gitignore
 .prettierrc
 node_modules
+docs
 src
 tests
 

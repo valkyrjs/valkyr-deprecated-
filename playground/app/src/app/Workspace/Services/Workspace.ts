@@ -1,22 +1,46 @@
 import { Injectable } from "@angular/core";
-import { AuthService, LedgerService } from "@valkyr/angular";
-import { generateStreamId } from "@valkyr/ledger";
+import { DataSubscriber, LedgerService } from "@valkyr/angular";
+import { IdentityService } from "@valkyr/identity";
+import { getId } from "@valkyr/security";
 import { WorkspaceStore } from "stores";
 
-@Injectable({
-  providedIn: "root"
-})
-export class WorkspaceService {
-  constructor(private ledger: LedgerService, private auth: AuthService) {}
+import { WorkspaceSubscriberService } from "./WorkspaceSubscriber";
 
-  public async create(name: string) {
+@Injectable({ providedIn: "root" })
+export class WorkspaceService extends DataSubscriber {
+  #selected?: string;
+
+  constructor(
+    readonly subscriber: WorkspaceSubscriberService,
+    readonly ledger: LedgerService,
+    readonly identity: IdentityService
+  ) {
+    super();
+  }
+
+  set selected(id: string | undefined) {
+    this.#selected = id;
+  }
+
+  get selected(): string | undefined {
+    return this.#selected;
+  }
+
+  isActive(workspaceId: string): boolean {
+    return this.#selected === workspaceId;
+  }
+
+  async create(name: string) {
+    const user = this.identity.getSelectedUser();
+    if (!user) {
+      throw new Error("Workspace Violation: Cannot create workspace, no initial member could be resolved");
+    }
+    const workspaceId = getId();
     const member: WorkspaceStore.Member = {
-      id: generateStreamId(),
-      accountId: this.auth.auditor,
-      name: ""
+      id: user.cid,
+      name: user.data["name"] as string,
+      publicKey: await this.identity.publicKey()
     };
-    this.ledger.push(
-      WorkspaceStore.events.created(generateStreamId(), { name, members: [member] }, { auditor: member.id })
-    );
+    this.ledger.append(workspaceId, WorkspaceStore.events.created({ name, members: [member] }, { auditor: member.id }));
   }
 }

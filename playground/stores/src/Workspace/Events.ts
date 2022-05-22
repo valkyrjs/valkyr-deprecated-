@@ -1,4 +1,4 @@
-import { createEvent, Event as LedgerEvent } from "@valkyr/ledger";
+import { LedgerEvent, LedgerEventToLedgerRecord, makeEventFactory } from "@valkyr/ledger";
 
 import { Invite, Member, State } from "./Aggregate";
 
@@ -9,16 +9,16 @@ import { Invite, Member, State } from "./Aggregate";
  */
 
 export const events = {
-  created: createEvent<Created>("WorkspaceCreated"),
-  nameSet: createEvent<NameSet>("WorkspaceNameSet"),
-  removed: createEvent<Removed>("WorkspaceRemoved"),
+  created: makeEventFactory<Created>("WorkspaceCreated"),
+  nameSet: makeEventFactory<NameSet>("WorkspaceNameSet"),
+  removed: makeEventFactory<Removed>("WorkspaceRemoved"),
   invite: {
-    created: createEvent<InviteCreated>("WorkspaceInviteCreated"),
-    removed: createEvent<InviteRemoved>("WorkspaceInviteRemoved")
+    created: makeEventFactory<InviteCreated>("WorkspaceInviteCreated"),
+    removed: makeEventFactory<InviteRemoved>("WorkspaceInviteRemoved")
   },
   member: {
-    added: createEvent<MemberAdded>("WorkspaceMemberAdded"),
-    removed: createEvent<MemberRemoved>("WorkspaceMemberRemoved")
+    added: makeEventFactory<MemberAdded>("WorkspaceMemberAdded"),
+    removed: makeEventFactory<MemberRemoved>("WorkspaceMemberRemoved")
   }
 };
 
@@ -39,18 +39,20 @@ export type MemberAdded = LedgerEvent<"WorkspaceMemberAdded", Member, Auditor>;
 export type MemberRemoved = LedgerEvent<"WorkspaceMemberRemoved", Pick<Member, "id">, Auditor>;
 
 /*
-  |--------------------------------------------------------------------------------
-  | Event Union
-  |--------------------------------------------------------------------------------
-  */
+ |--------------------------------------------------------------------------------
+ | Event Union
+ |--------------------------------------------------------------------------------
+ */
 
 export type Event = Created | NameSet | Removed | InviteCreated | InviteRemoved | MemberAdded | MemberRemoved;
 
+export type EventRecord = LedgerEventToLedgerRecord<Event>;
+
 /*
-  |--------------------------------------------------------------------------------
-  | Event Meta
-  |--------------------------------------------------------------------------------
-  */
+ |--------------------------------------------------------------------------------
+ | Event Meta
+ |--------------------------------------------------------------------------------
+ */
 
 export type Auditor = {
   auditor: Member["id"];

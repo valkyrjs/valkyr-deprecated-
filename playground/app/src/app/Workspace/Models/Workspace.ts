@@ -1,22 +1,16 @@
-import { Collection, Document, IndexedDbAdapter, Model } from "@valkyr/db";
+import { Document, Model } from "@valkyr/db";
 import { WorkspaceStore } from "stores";
 
-type WorkspaceDocument = Document & {
+export type WorkspaceDocument = Document & {
   name: string;
+  color: string;
   invites: WorkspaceStore.State["invites"];
   members: WorkspaceStore.State["members"];
 };
 
-/*
- |--------------------------------------------------------------------------------
- | Workspace
- |--------------------------------------------------------------------------------
- */
-
 export class Workspace extends Model<WorkspaceDocument> {
-  public static override readonly $collection = new Collection<WorkspaceDocument>("workspaces", new IndexedDbAdapter());
-
   public readonly name!: WorkspaceDocument["name"];
+  public readonly color!: WorkspaceDocument["color"];
   public readonly invites: Invites;
   public readonly members: Members;
 
@@ -29,6 +23,8 @@ export class Workspace extends Model<WorkspaceDocument> {
     Object.freeze(this);
   }
 }
+
+export type WorkspaceModel = typeof Workspace;
 
 /*
  |--------------------------------------------------------------------------------
@@ -81,11 +77,11 @@ class Members {
   /**
    * Get a member from the members array by the assigned account id.
    *
-   * @param accountId - Account id to find membership for.
+   * @param id - Id to find the member for.
    *
    * @returns Member details if exists
    */
-  public getByAccountId(accountId: string) {
-    return this.members.find((member) => member.accountId === accountId);
+  public getById(id: string) {
+    return this.members.find((member) => member.id === id);
   }
 }

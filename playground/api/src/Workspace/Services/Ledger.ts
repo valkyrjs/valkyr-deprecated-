@@ -1,6 +1,6 @@
 import { ConflictException, ForbiddenException, Injectable } from "@nestjs/common";
-import { generateStreamId } from "@valkyr/ledger";
 import { LedgerService } from "@valkyr/nestjs";
+import { getId } from "@valkyr/security";
 import { WorkspaceStore } from "stores";
 
 import { WorkspaceAccess } from "../Access";
@@ -11,13 +11,13 @@ export class WorkspaceLedgerService {
 
   public async create(name: string, auditor: string) {
     const member: WorkspaceStore.Member = {
-      id: generateStreamId(),
+      id: getId(),
       accountId: auditor,
       name: ""
     };
     await this.ledger.append(
       WorkspaceStore.events.created(
-        generateStreamId(),
+        getId(),
         {
           name,
           members: [member]
@@ -51,7 +51,7 @@ export class WorkspaceLedgerService {
       WorkspaceStore.events.invite.created(
         workspaceId,
         {
-          id: generateStreamId(),
+          id: getId(),
           email
         },
         {

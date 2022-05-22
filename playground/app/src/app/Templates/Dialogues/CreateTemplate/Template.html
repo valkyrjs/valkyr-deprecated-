@@ -1,0 +1,20 @@
+<vlk-modal-container>
+  <vlk-modal-header>Create Template</vlk-modal-header>
+  <vlk-modal-content>
+    <input id="name" placeholder="Enter todo name" [(ngModel)]="name" (keyup.enter)="create()" class="
+      bg-gray-200 border
+      rounded
+      text-xs
+      font-medium
+      leading-none
+      text-gray-800
+      py-3
+      w-full
+      pl-3
+      mt-2" />
+  </vlk-modal-content>
+  <vlk-modal-footer>
+    <button variant="secondary" (click)="cancel()"> Cancel </button>
+    <button variant="cta" (click)="create()"> Create </button>
+  </vlk-modal-footer>
+</vlk-modal-container>

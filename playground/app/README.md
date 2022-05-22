@@ -1,27 +1,58 @@
 # App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.4.
+# Angular Cheat Sheet
 
-## Development server
+## Elements
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+A quick list of angular elements and their use cases in comparison with react.
 
-## Code scaffolding
+### ng-container
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+@see [ng-container](https://www.digitalocean.com/community/tutorials/angular-ng-container-element)
 
-## Build
+In react this would be `React.Fragment`, its an element that serves as a invisible wrapper and does not render into the dom.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### ng-content
 
-## Running unit tests
+@see [ng-content](https://www.geeksforgeeks.org/ng-content-in-angular/)
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+In react this would be `React.Children`, its an element that designates the spot where all child elements will render out.
 
-## Running end-to-end tests
+```html
+<div>
+  <h1>My Component</h1>
+  <ng-content></ng-content>
+</div>
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```html
+<my-component>
+  <p>I will render in ng-content</p>
+</my-component>
+```
 
-## Further help
+## Styles
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+A quick reference to style isolation in angular.
+
+### Encapsulation
+
+@see [encapsulation](https://michalmuszynski.com/blog/styling-child-component-from-parent-in-angular/)
+
+By default the only style classes available in the component is the ones defined in the components `style` or `styleUrls` configuration. If you want to expose the component to external classes you have to change the encapsulation state of the parent component.
+
+```ts
+import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+
+@Component({
+  selector: "app-parent",
+  templateUrl: "./parent.component.html",
+  styleUrls: ["./parent.component.scss"],
+  encapsulation: ViewEncapsulation.None
+})
+export class ParentComponent implements OnInit {
+  constructor() {}
+
+  ngOnInit(): void {}
+}
+```

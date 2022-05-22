@@ -1,0 +1,64 @@
+<ng-container *ngIf="step === 'authenticate'">
+  <div class="text-center">
+    <h1 class="my-3 text-3xl font-semibold text-gray-700 dark:text-gray-200">Authenticate</h1>
+    <p class="text-gray-500 dark:text-gray-400">Enter provider id and alias and confirm your session id</p>
+    <div class="text-black dark:text-white text-3xl font-bold mt-4">
+      {{peerId}}
+    </div>
+  </div>
+  <div class="m-7">
+    <div class="mb-6">
+      <label for="provider">Provider</label>
+      <input type="text" name="provider" id="provider" placeholder="Provider Code" [(ngModel)]="provider" (keyup.enter)="authenticate()" tabindex="1" />
+    </div>
+    <div class="mb-6">
+      <label for="alias">Alias</label>
+      <input type="text" name="alias" id="alias" placeholder="John Doe" [(ngModel)]="alias" (keyup.enter)="authenticate()" tabindex="2" />
+    </div>
+    <div class="mb-6">
+      <div class="flex items-start">
+        <div class="flex items-start">
+          <div class="flex items-center h-5">
+            <input id="remember" aria-describedby="remember" type="checkbox" [(ngModel)]="remember" class="bg-gray-50 border border-gray-300 focus:ring-3 focus:ring-blue-300 h-4 w-4 rounded dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required="">
+          </div>
+          <div class="text-sm ml-3">
+            <label for="remember" class="font-medium text-gray-900 dark:text-gray-300">Remember me</label>
+          </div>
+        </div>
+        <a href="#" class="text-sm text-blue-700 hover:underline ml-auto dark:text-blue-500">Security information</a>
+      </div>
+    </div>
+    <div class="mb-6">
+      <button type="button" (click)="authenticate()" class="submit">Authorize</button>
+    </div>
+    <p class="text-sm text-center text-gray-400">Don't have an account? <a routerLink="/identity/register" class="text-indigo-400 focus:outline-none focus:underline focus:text-indigo-500 dark:focus:border-indigo-800">Register</a>.</p>
+  </div>
+</ng-container>
+<ng-container *ngIf="step === 'users'">
+  <div class="text-center">
+    <h1 class="my-3 text-3xl font-semibold text-gray-700 dark:text-gray-200">User</h1>
+    <p class="text-gray-500 dark:text-gray-400">Select the user you wish to sign in as</p>
+  </div>
+  <div class="m-7">
+    <div class="users">
+      <div class="container">
+        <ng-container *ngFor="let user of users">
+          <div class="user" (click)="select(user.cid)">
+            <div class="wrapper">
+              <div class="avatar">
+                <div class="avatar-inner">
+                  <img class="rounded-full" alt="A" src="https://randomuser.me/api/portraits/men/62.jpg">
+                </div>
+              </div>
+              <div class="meta">
+                <div class="meta-inner">{{user.data["name"]}}
+                  <div class="meta-details">User Identity</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>

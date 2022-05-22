@@ -1,0 +1,28 @@
+<header>
+  <navbar></navbar>
+</header>
+<aside>
+  <div>
+    <menu class="menu-main" [menu]="aside"></menu>
+    <menu class="menu-footer" [menu]="footer"></menu>
+  </div>
+</aside>
+<nav>
+  <title area="workspace"></title>
+</nav>
+<main>
+  <div class="actions">
+    <h6>Scroll to zoom, drag to move</h6>
+  </div>
+  <div #canvas>
+    <draggable [zoomScale]="zoomScale" (dragStart)="pausePanzoom()" (dragEnd)="resumePanzoom()" [pos]="{ x: 10, y: (768 * i) + 10 * zoomScale }" *ngFor="let template of templates; let i = index">
+      <div class="view group" [ngClass]="template.id === selectedTemplate ? 'border-cta-default' : 'border-primary-light'">
+        <div class="text-xs uppercase text-gray-600 group-hover:text-gray-800">{{template.name}} {{zoomScale}}</div>
+        <div class="flex gap-3">
+          <div class="viewport border w-[1920px] h-[1080px]"></div>
+          <div class="viewport border w-[500px] h-[1080px]" [ngClass]="{ 'bg-cta-default': template.name === 'Chore' }"></div>
+        </div>
+      </div>
+    </draggable>
+  </div>
+</main>

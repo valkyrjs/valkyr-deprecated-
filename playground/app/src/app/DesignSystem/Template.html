@@ -1,0 +1,188 @@
+<section class="mb-3">
+  <header class="bg-gray-300 px-6 py-3 mb-6">
+    <h2 class="uppercase tracking-wider text-sm">Buttons</h2>
+  </header>
+  <div class="w-full px-6">
+    <table class="w-full mb-6">
+      <thead>
+        <tr class="py-3">
+          <th class="w-32"></th>
+          <th class="text-left w-36">
+            <div class="w-20 border-b-4 border-gray-900">Default</div>
+          </th>
+          <th class="text-left w-36">
+            <div class="w-28 border-b-4 border-gray-900">Default + Icon</div>
+          </th>
+          <th class="text-left w-36">
+            <div class="w-28 border-b-4 border-gray-900">Outline</div>
+          </th>
+          <th class="text-left w-36">
+            <div class="w-28 border-b-4 border-gray-900">Outline + Icon</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let btn of btns">
+          <td class="pt-3">
+            <h6 class="w-32 text-xs uppercase tracking-wider">{{btn.label}}</h6>
+          </td>
+          <td class="pt-3">
+            <button [variant]="btn.variant">Action</button>
+          </td>
+          <td class="pt-3">
+            <button [variant]="btn.variant">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="w-4 h-4">
+                <path fill="currentColor" d="M16.5,5h-3a.5.5,0,0,0-.5.5v1a.5.5,0,0,0,.5.5H15v8H3V7H4.5A.5.5,0,0,0,5,6.5v-1A.5.5,0,0,0,4.5,5h-3a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V5.5A.5.5,0,0,0,16.5,5Z" />
+                <path fill="currentColor" d="M5.4,4H8V9.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2.6a.4.4,0,0,0,.4-.4.39352.39352,0,0,0-.1-.2635L9.1755.072a.25.25,0,0,0-.35,0L5.1,3.334A.39353.39353,0,0,0,5,3.6.4.4,0,0,0,5.4,4Z" />
+              </svg>
+              <span>Share</span>
+            </button>
+          </td>
+          <td class="pt-3">
+            <button [variant]="btn.variant" outline>Outline</button>
+          </td>
+          <td class="pt-3">
+            <button [variant]="btn.variant" outline>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="w-4 h-4">
+                <path fill="currentColor" d="M16.5,5h-3a.5.5,0,0,0-.5.5v1a.5.5,0,0,0,.5.5H15v8H3V7H4.5A.5.5,0,0,0,5,6.5v-1A.5.5,0,0,0,4.5,5h-3a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V5.5A.5.5,0,0,0,16.5,5Z" />
+                <path fill="currentColor" d="M5.4,4H8V9.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2.6a.4.4,0,0,0,.4-.4.39352.39352,0,0,0-.1-.2635L9.1755.072a.25.25,0,0,0-.35,0L5.1,3.334A.39353.39353,0,0,0,5,3.6.4.4,0,0,0,5.4,4Z" />
+              </svg>
+              <span>Share</span>
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td class="pt-3">
+            <h6 class="w-32 text-xs uppercase tracking-wider">Disabled</h6>
+            <p class="text-[10px]">/w disabled attribute</p>
+          </td>
+          <td class="pt-3">
+            <button variant="cta" disabled>Disabled</button>
+          </td>
+          <td class="pt-3">
+            <button variant="cta" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="w-4 h-4">
+                <path fill="currentColor" d="M16.5,5h-3a.5.5,0,0,0-.5.5v1a.5.5,0,0,0,.5.5H15v8H3V7H4.5A.5.5,0,0,0,5,6.5v-1A.5.5,0,0,0,4.5,5h-3a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V5.5A.5.5,0,0,0,16.5,5Z" />
+                <path fill="currentColor" d="M5.4,4H8V9.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2.6a.4.4,0,0,0,.4-.4.39352.39352,0,0,0-.1-.2635L9.1755.072a.25.25,0,0,0-.35,0L5.1,3.334A.39353.39353,0,0,0,5,3.6.4.4,0,0,0,5.4,4Z" />
+              </svg>
+              <span>Share</span>
+            </button>
+          </td>
+          <td class="pt-3">
+            <button variant="cta" disabled outline>Outline</button>
+          </td>
+          <td class="pt-3">
+            <button variant="cta" disabled outline>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" class="w-4 h-4">
+                <path fill="currentColor" d="M16.5,5h-3a.5.5,0,0,0-.5.5v1a.5.5,0,0,0,.5.5H15v8H3V7H4.5A.5.5,0,0,0,5,6.5v-1A.5.5,0,0,0,4.5,5h-3a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h15a.5.5,0,0,0,.5-.5V5.5A.5.5,0,0,0,16.5,5Z" />
+                <path fill="currentColor" d="M5.4,4H8V9.5a.5.5,0,0,0,.5.5h1a.5.5,0,0,0,.5-.5V4h2.6a.4.4,0,0,0,.4-.4.39352.39352,0,0,0-.1-.2635L9.1755.072a.25.25,0,0,0-.35,0L5.1,3.334A.39353.39353,0,0,0,5,3.6.4.4,0,0,0,5.4,4Z" />
+              </svg>
+              <span>Share</span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="bg-gray-200 p-6 m-0 flex flex-col gap-3">
+    <h6 class="text-xs uppercase tracking-wider">usage:</h6>
+    <div class="text-xs p-3 bg-gray-300">
+      <code class="block py-1">&lt;button variant="cta"&gt;Action&lt;/button&gt;</code>
+      <code class="block py-1">&lt;button variant="primary" outline&gt;Action&lt;/button&gt;</code>
+      <code class="block py-1">&lt;button variant="secondary" outline&gt;Action&lt;/button&gt;</code>
+      <code class="block py-1">&lt;button variant="negative" disabled outline&gt;Action&lt;/button&gt;</code>
+    </div>
+  </div>
+</section>
+<section class="mb-3">
+  <header class="bg-gray-300 px-6 py-3 mb-6">
+    <h2 class="uppercase tracking-wider text-sm">Dropdown</h2>
+  </header>
+  <div class="w-full px-6">
+    <div class="w-full mb-6 flex gap-6">
+      <dropdown value="2" [options]="options"></dropdown>
+      <dropdown value="3" [options]="options"></dropdown>
+      <div class="flex w-40">
+        <dropdown [options]="options" [append]="true"></dropdown>
+        <div class="flex justify-end items-center w-10 text-cta-default border border-white bg-white rounded-r-full px-1 py-1 pr-2">
+          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+            <path fill="currentColor" d="M16.45,7.8965H14.8945a5.97644,5.97644,0,0,0-.921-2.2535L15.076,4.54a.55.55,0,0,0,.00219-.77781L15.076,3.76l-.8365-.836a.55.55,0,0,0-.77781-.00219L13.4595,2.924,12.357,4.0265a5.96235,5.96235,0,0,0-2.2535-.9205V1.55a.55.55,0,0,0-.55-.55H8.45a.55.55,0,0,0-.55.55V3.106a5.96235,5.96235,0,0,0-2.2535.9205l-1.1-1.1025a.55.55,0,0,0-.77781-.00219L3.7665,2.924,2.924,3.76a.55.55,0,0,0-.00219.77781L2.924,4.54,4.0265,5.643a5.97644,5.97644,0,0,0-.921,2.2535H1.55a.55.55,0,0,0-.55.55V9.55a.55.55,0,0,0,.55.55H3.1055a5.967,5.967,0,0,0,.921,2.2535L2.924,13.4595a.55.55,0,0,0-.00219.77782l.00219.00218.8365.8365a.55.55,0,0,0,.77781.00219L4.5405,15.076,5.643,13.9735a5.96235,5.96235,0,0,0,2.2535.9205V16.45a.55.55,0,0,0,.55.55H9.55a.55.55,0,0,0,.55-.55V14.894a5.96235,5.96235,0,0,0,2.2535-.9205L13.456,15.076a.55.55,0,0,0,.77782.00219L14.236,15.076l.8365-.8365a.55.55,0,0,0,.00219-.77781l-.00219-.00219L13.97,12.357a5.967,5.967,0,0,0,.921-2.2535H16.45a.55.55,0,0,0,.55-.55V8.45a.55.55,0,0,0-.54649-.55349ZM11.207,9A2.207,2.207,0,1,1,9,6.793H9A2.207,2.207,0,0,1,11.207,9Z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-gray-200 p-6 m-0 flex flex-col gap-3">
+    <h6 class="text-xs uppercase tracking-wider">usage:</h6>
+    <div class="text-xs p-3 bg-gray-300">
+      <code class="block py-1">&lt;dropdown value="" [options]="someOptions"&gt;Action&lt;/dropdown&gt;</code>
+      <code class="block py-1">&lt;dropdown value="" [options]="someOptions" [append]="true"&gt;Action&lt;/dropdown&gt;</code>
+    </div>
+  </div>
+</section>
+<section class="mb-3">
+  <header class="bg-gray-300 px-6 py-3 mb-6">
+    <h2 class="uppercase tracking-wider text-sm">Icons</h2>
+  </header>
+  <div class="w-full px-6">
+    <div class="w-full mb-6 flex gap-6">
+      <icon class="h-5 w-5 text-primary-default" name="home"></icon>
+      <icon class="h-5 w-5 text-negative-default hover:text-negative-hover" name="trash"></icon>
+      <icon class="h-5 w-5 text-secondary-default" name="workspace"></icon>
+      <icon class="h-5 w-5 text-primary-default" name="mail"></icon>
+      <icon class="h-5 w-5 text-cta-default" name="design"></icon>
+      <icon class="h-5 w-5 text-secondary-default" name="text-edit"></icon>
+      <icon class="h-5 w-5 text-cta-default" name="template"></icon>
+      <icon class="h-5 w-5 text-cta-default hover:text-cta-hover" name="users"></icon>
+      <icon class="h-5 w-5 text-cta-default" name="template-add"></icon>
+      <icon class="h-5 w-5 text-cta-default" name="mail"></icon>
+    </div>
+  </div>
+  <div class="bg-gray-200 p-6 m-0 flex flex-col gap-3">
+    <h6 class="text-xs uppercase tracking-wider">usage:</h6>
+    <div class="text-xs p-3 bg-gray-300">
+      <code class="block py-1">&lt;icon class="h-5 w-5 text-primary-default" name="home"&gt;Action&lt;/icon&gt;</code>
+      <code class="block py-1">&lt;icon class="h-5 w-5 text-red-400 hover:text-red-500" name="template-add"&gt;Action&lt;/icon&gt;</code>
+    </div>
+  </div>
+</section>
+<section class="mb-3">
+  <header class="bg-gray-300 px-6 py-3 mb-6">
+    <h2 class="uppercase tracking-wider text-sm">Color Pallete</h2>
+  </header>
+  <div class="w-full px-6">
+    <table class="w-full mb-6">
+      <thead>
+        <tr class="py-3">
+          <th class="text-left w-36">
+            <div class="w-20 border-b-4 border-gray-900">Name</div>
+          </th>
+          <th class="text-left">
+            <div class="w-20 border-b-4 border-gray-900">Weight</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let color of colors">
+          <td class="pt-2">
+            <h6 class="w-32 text-xs uppercase tracking-wider">{{color.name}}</h6>
+          </td>
+          <td class="pt-2">
+            <div class="flex flex-row gap-2 items-center justify-start">
+              <div class="w-10 h-7 text-[10px] text-center flex items-center justify-center" [ngClass]="getClass(color.name, weight)" *ngFor="let weight of color.weights">{{weight}}</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="bg-gray-200 p-6 m-0 flex flex-col gap-3">
+    <h6 class="text-xs uppercase tracking-wider">usage:</h6>
+    <div class="text-xs p-3 bg-gray-300">
+      <code class="block py-1">text-blue-400</code>
+      <code class="block py-1">bg-green-400</code>
+      <code class="block py-1">border-gray-200</code>
+      <code class="block py-1">stroke-red-600</code>
+    </div>
+  </div>
+</section>

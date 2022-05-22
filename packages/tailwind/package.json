@@ -1,0 +1,22 @@
+{
+  "name": "@valkyr/tailwind",
+  "version": "0.0.0",
+  "description": "Tailwind toolkit for @valkyr/angular applications.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json"
+  },
+  "dependencies": {
+    "@angular/animations": "~13.3.0",
+    "@angular/core": "^13.3.5",
+    "@angular/forms": "~13.3.0",
+    "@angular/router": "^13.3.5",
+    "@angular/cdk": "^13.3.6",
+    "@valkyr/angular": "*",
+    "angular-svg-icon": "13.0.0",
+    "ng-qrcode": "^6.0.0"
+  }
+}

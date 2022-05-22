@@ -1,12 +1,12 @@
 import { createReducer } from "../../src/Reducer";
-import type { Event } from "./Events";
+import type { EventRecord } from "./Events";
 
 type State = {
   title: string;
   members: string[];
 };
 
-export const reducer = createReducer<State, Event>(
+export const reducer = createReducer<State, EventRecord>(
   {
     title: "",
     members: []

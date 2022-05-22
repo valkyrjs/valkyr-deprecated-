@@ -1,19 +1,13 @@
 import { Injectable } from "@angular/core";
 import { ParamMap } from "@angular/router";
-import { Subject } from "rxjs";
+
+import { SubscriberService } from "../Helpers/SubscriberService";
 
 @Injectable({
   providedIn: "root"
 })
-export class ParamsService {
-  private observer = new Subject<ParamMap>();
-  private subscriber = this.observer.asObservable();
-
-  public get subscribe() {
-    return this.subscriber.subscribe.bind(this.subscriber);
-  }
-
-  public next(params: ParamMap) {
+export class ParamsService extends SubscriberService<ParamMap> {
+  next(params: ParamMap) {
     this.observer.next(params);
   }
 }

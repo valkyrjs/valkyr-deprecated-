@@ -22,6 +22,9 @@ export class Todo {
 
   @Prop({ required: true })
   workspaceId!: string;
+
+  @Prop({ required: false })
+  sort?: number;
 }
 
 /*

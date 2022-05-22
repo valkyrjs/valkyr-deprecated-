@@ -1,0 +1,20 @@
+<header>
+  <navbar></navbar>
+</header>
+<aside>
+  <div class="left-aside">
+    <div class="actions">
+      <button variant="cta" (click)="hmm()">New workspace</button>
+    </div>
+    <div class="menus">
+      <menu [menu]="mainMenu"></menu>
+      <menu [menu]="footerMenu"></menu>
+    </div>
+  </div>
+</aside>
+<nav>
+  <title area="discovery"></title>
+</nav>
+<main>
+  <router-outlet></router-outlet>
+</main>

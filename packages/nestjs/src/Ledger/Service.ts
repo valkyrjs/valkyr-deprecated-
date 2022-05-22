@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { clc } from "@nestjs/common/utils/cli-colors.util";
 import { InjectModel } from "@nestjs/mongoose";
-import { AggregateRootClass, createEventRecord, Event as LedgerEvent, projector, validator } from "@valkyr/ledger";
+import { Ledger } from "@valkyr/ledger";
 import { Model } from "mongoose";
 
 import { LedgerGateway } from "./Gateway";
@@ -11,18 +11,19 @@ const logger = new Logger("Ledger");
 
 @Injectable()
 export class LedgerService {
-  constructor(
-    @InjectModel(Event.name) private readonly model: Model<EventDocument>,
-    private readonly gateway: LedgerGateway
-  ) {}
+  constructor(@InjectModel(Event.name) readonly model: Model<EventDocument>, readonly gateway: LedgerGateway) {}
 
-  public get validate() {
-    return validator.validate;
+  // ### Accessor Proxies
+
+  get validate() {
+    return Ledger.validator.validate;
   }
 
-  public get project() {
-    return projector.project;
+  get project() {
+    return Ledger.projector.project;
   }
+
+  // ### Write Utilities
 
   /**
    * Append event to the local ledger.
@@ -35,14 +36,18 @@ export class LedgerService {
    * @param event    - Event to insert into the local ledger.
    * @param hydrated - Is this a new event or originating from a different source?
    */
-  public async append(event: LedgerEvent, hydrated = false) {
-    const record = createEventRecord(event);
+  async append(event: Ledger.Event, hydrated = false) {
+    const record = Ledger.createEventRecord(event);
+    const status = await this.status(event);
+    if (status.exists === true) {
+      return; // event already exists, no further actions required
+    }
 
     await this.validate(record);
     await this.model.create(record);
-    await this.project(record, { hydrated, outdated: await this.outdated(event) });
+    await this.project(record, { hydrated, outdated: status.outdated });
 
-    this.gateway.to(`stream:${event.streamId}`).emit("event", event);
+    this.gateway.to(`stream:${event.streamId}`).emit("ledger:event", event);
 
     logger.debug(`Event '${record.type}' Appended\n${clc.cyanBright(JSON.stringify(record, null, 2))}`);
   }
@@ -54,25 +59,64 @@ export class LedgerService {
    * @param streamId - Stream id to hydrate. (Optional)
    * @param from     - Get events starting at a specific time position. (Optional)
    */
-  public async rehydrate(streamId?: string, from?: string) {
+  async rehydrate(streamId?: string, from?: string) {
     const events = streamId ? await this.stream(streamId, from) : await this.events();
     for (const event of events) {
-      await projector.project(event, { hydrated: true, outdated: false });
+      await Ledger.projector.project(event, { hydrated: true, outdated: false });
     }
   }
 
   /**
-   * Reduce an event stream down to its final aggregate state representation.
+   * Enable the ability to check an incoming events status in relation to
+   * the local ledger. This is to determine what actions to take upon the
+   * ledger based on the current status.
    *
-   * We do this by left folding all events in a stream down to a single
-   * representation of the entire stream.
+   * **Exists**
    *
-   * @param streamId - Stream to pull events from.
-   * @param reducer  - Reducer method used to fold the stream events.
+   * References the existence of the event in the local ledger. It is
+   * determined by looking at the recorded event id which should be unique
+   * to the entirety of the ledger.
    *
-   * @returns Aggregate state of the stream
+   * **Outdated**
+   *
+   * References the events created relationship to the same event type in
+   * the hosted stream. If another event of the same type in the stream
+   * is newer than the provided event, the provided event is considered
+   * outdated.
    */
-  public async reduce<AggregateRoot extends AggregateRootClass>(
+  async status({ id, streamId, type, created }: Ledger.Event): Promise<Ledger.EventStatus> {
+    const record = await this.model.findOne({ id });
+    if (record) {
+      return { exists: true, outdated: true };
+    }
+    const count = await this.model.count({
+      streamId,
+      type,
+      created: {
+        $gt: created
+      }
+    });
+    return { exists: false, outdated: count > 0 };
+  }
+
+  // ### Stream Utilities
+
+  /**
+   * An event reducer aims to create an aggregate state that is as close
+   * to up to date as possible. This is handy when we want to perform
+   * things such as business logic on the command/action layer of the event
+   * creation lifecycle.
+   *
+   * By default the state is as close as possible since we are operating
+   * in a distributed system without a central authority or sequential
+   * event bus. As such developers is advised to build with failure at a
+   * later date as an option.
+   *
+   * This method operates by pulling all the latest known events of an event
+   * stream and reduces them into a single current state representing of
+   * the event stream.
+   */
+  async reduce<AggregateRoot extends Ledger.AggregateRootClass>(
     streamId: string,
     aggregate: AggregateRoot
   ): Promise<InstanceType<AggregateRoot> | undefined> {
@@ -88,24 +132,6 @@ export class LedgerService {
   }
 
   /**
-   * Enable the ability to check if an incoming even is outdated within its
-   * stream or not. This is used to avoid overwriting newer events that may
-   * arrive later in distributed environments.
-   *
-   * Outdated checks works by checking the actual creation date of the event
-   * when it was created for the first time. If another event of the same
-   * type in the same stream exists and is newer the event is considered
-   * outdated.
-   *
-   * @param event - Event to check against the local ledger.
-   *
-   * @returns Outdated state of the event
-   */
-  public async outdated({ streamId, type, created }: LedgerEvent): Promise<boolean> {
-    return this.model.count({ streamId, type, created: { $gt: created } }).then((count) => count > 0);
-  }
-
-  /**
    * Provide all the events for the entire ledger.
    *
    * @param created   - Get events from a specific point in time.
@@ -113,7 +139,7 @@ export class LedgerService {
    *
    * @returns Events in the ledger
    */
-  public async events(created?: string, direction?: 1 | -1) {
+  async events(created?: string, direction?: 1 | -1) {
     const filter: any = {};
     if (created) {
       filter.created = {
@@ -124,22 +150,22 @@ export class LedgerService {
   }
 
   /**
-   * Provide all the events for a given stream.
+   * Retrieve all events for a given stream. Provided timestamp allows for
+   * providing a specific point in time to retrieve before or after based
+   * on a provided sort direction.
    *
-   * @param streamId  - Stream identifier to retrieve events from.
-   * @param created   - Get events from a specific point in time.
-   * @param direction - Get the events in ascending or descending order.
-   *
-   * @returns Events found for the given stream
+   * To ensure that we have the latest events in the stream at the time
+   * of the request, we send a pull request to the attached remote service
+   * before executing the local event query.
    */
-  public async stream(streamId: string, created?: string, direction: 1 | -1 = 1) {
+  async stream(streamId: string, timestamp?: string, sortDirection: 1 | -1 = 1) {
     const filter: any = { streamId };
-    if (created) {
+    if (timestamp) {
       filter.created = {
-        [direction === 1 ? "$gt" : "$lt"]: created
+        [sortDirection === 1 ? "$gt" : "$lt"]: timestamp
       };
     }
-    return this.model.find(filter).sort({ created: direction });
+    return this.model.find(filter).sort({ created: sortDirection });
   }
 
   /**
@@ -150,7 +176,7 @@ export class LedgerService {
    *
    * @returns Events
    */
-  public async pull(streamId: string, recorded?: string) {
+  async pull(streamId: string, recorded?: string) {
     const filter: any = { streamId };
     if (recorded) {
       filter.recorded = {

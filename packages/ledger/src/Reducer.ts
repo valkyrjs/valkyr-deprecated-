@@ -1,4 +1,4 @@
-import type { Event } from "./Event";
+import type { EventRecord } from "./Event";
 
 /*
  |--------------------------------------------------------------------------------
@@ -6,8 +6,11 @@ import type { Event } from "./Event";
  |--------------------------------------------------------------------------------
  */
 
-export function createReducer<State, E extends Event>(state: State = {} as State, reducer: Reducer<State, E>) {
-  return function (events: E[]): State {
+export function createReducer<State, Event extends EventRecord>(
+  state: State = {} as State,
+  reducer: Reducer<State, Event>
+) {
+  return function (events: Event[]): State {
     return events.reduce(reducer, { ...state });
   };
 }
@@ -18,6 +21,6 @@ export function createReducer<State, E extends Event>(state: State = {} as State
  |--------------------------------------------------------------------------------
  */
 
-export type Reducer<State, E extends Event> = (state: State, event: E) => State;
+export type Reducer<State, Event extends EventRecord> = (state: State, event: Event) => State;
 
-export type ReduceHandler<State = any, E extends Event = any> = (events: E[]) => State;
+export type ReduceHandler<State = any, Event extends EventRecord = any> = (events: Event[]) => State;

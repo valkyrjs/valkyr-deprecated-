@@ -1,8 +1,8 @@
 ---
-id: role-permissions
+id: access-permissions
 title: Permissions
 sidebar_label: Permissions
-slug: /role-permissions
+slug: /access-permissions
 ---
 
 ## Permissions

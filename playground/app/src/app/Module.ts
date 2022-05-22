@@ -1,17 +1,60 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from "@angular/core";
+import { DragDropModule } from "@angular/cdk/drag-drop";
+import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-import { RouterModule, Routes } from "@angular/router";
+import { RouterModule } from "@angular/router";
+import { AccessModule, LedgerModule, ModalModule } from "@valkyr/angular";
+import { IdentityProviderService, IdentityService, localIdentityStorage } from "@valkyr/identity";
+import { IdentityModule } from "@valkyr/tailwind";
+import { from, Observable } from "rxjs";
 
-import { AuthorizationModule } from "./Authorization/Module";
 import { AppComponent } from "./Component";
-import { WorkspaceModule } from "./Workspace/Module";
-
-const routes: Routes = [{ path: "", redirectTo: "/workspaces", pathMatch: "full" }];
+import { DesignSystemModule } from "./DesignSystem/Module";
+import { DiscoveryModule } from "./Discovery";
+import { routes } from "./Routing";
+import { TemplateModule } from "./Templates/Module";
+import { TodoModule } from "./Todo";
+import { WorkspaceModule } from "./Workspace";
 
 @NgModule({
-  imports: [BrowserModule, RouterModule.forRoot(routes), AuthorizationModule, WorkspaceModule],
+  imports: [
+    AccessModule,
+    BrowserModule,
+    DragDropModule,
+    DiscoveryModule,
+    TemplateModule,
+    DesignSystemModule,
+    IdentityModule.forRoot(
+      {
+        host: "188.166.248.32",
+        port: 9000,
+        path: "/myapp"
+      },
+      localIdentityStorage
+    ),
+    LedgerModule,
+    ModalModule,
+    RouterModule.forRoot(routes),
+    TodoModule,
+    WorkspaceModule
+  ],
   declarations: [AppComponent],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAppFactory,
+      deps: [IdentityService],
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  exports: [RouterModule]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(readonly client: IdentityService, readonly provider: IdentityProviderService) {
+    console.log("Provider:", provider.id);
+  }
+}
+
+function initializeAppFactory(identity: IdentityService): () => Observable<any> {
+  return () => from(identity.init());
+}

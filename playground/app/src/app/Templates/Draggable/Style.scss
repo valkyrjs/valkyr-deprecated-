@@ -1,0 +1,12 @@
+:host {
+  .component {
+    @apply z-10 absolute;
+    @apply shadow-sm;
+    @apply cursor-move;
+    transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+    &:active {
+      @apply shadow-2xl;
+    }
+  }
+}
+  
