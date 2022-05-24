@@ -1,9 +1,9 @@
 import type { MenuCategory, MenuItem } from "../../Library/Layout";
 
-export function getWorkspaceMainMenu(workspaceId: string): MenuCategory[] {
+export function getWorkspaceMainMenu(workspaceName: string, workspaceId: string): MenuCategory[] {
   return [
     {
-      name: "Areas",
+      name: workspaceName,
       items: [
         {
           type: "link",
@@ -21,13 +21,19 @@ export function getWorkspaceMainMenu(workspaceId: string): MenuCategory[] {
   ];
 }
 
-export function getHeaderMenu(): MenuItem[] {
+export function getWorkspaceHeaderMenu(workspaceName: string, workspaceId: string): MenuItem[] {
   return [
     {
       type: "link",
       icon: "home",
       name: "Home",
       href: "/workspaces"
+    },
+    {
+      type: "link",
+      icon: "template",
+      name: workspaceName,
+      href: `/workspaces/${workspaceId}`
     }
   ];
 }
@@ -43,6 +49,17 @@ export function getWorkspaceFooterMenu(workspaceId: string): MenuCategory[] {
           href: `/workspaces/${workspaceId}}/edit`
         }
       ]
+    }
+  ];
+}
+
+export function getHeaderMenu(): MenuItem[] {
+  return [
+    {
+      type: "link",
+      icon: "home",
+      name: "Home",
+      href: "/workspaces"
     }
   ];
 }
