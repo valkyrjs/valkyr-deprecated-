@@ -5,10 +5,7 @@ import { WorkspaceItemComponent } from "./Item/Component";
 import { WorkspaceListComponent } from "./List/Component";
 
 const routes: Routes = [
-  {
-    path: "",
-    component: WorkspaceListComponent
-  },
+  { path: "", component: WorkspaceListComponent },
   { path: ":workspace", component: WorkspaceItemComponent }
 ];
 

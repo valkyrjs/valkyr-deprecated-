@@ -5,7 +5,7 @@ import { TodoStore } from "stores";
 
 import { TodoItemSubscriberService } from "./TodoItemSubscriber";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class TodoItemService extends DataSubscriber {
   constructor(readonly ledger: LedgerService, readonly subscriber: TodoItemSubscriberService) {
     super();

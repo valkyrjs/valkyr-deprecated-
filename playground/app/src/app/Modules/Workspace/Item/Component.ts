@@ -53,6 +53,8 @@ export class WorkspaceItemComponent implements OnInit, OnDestroy {
       (workspace) => {
         if (workspace) {
           this.workspace = workspace;
+          // hack
+          this.service.selected = workspace.id;
           this.layoutService.updateLayout({
             header: {
               isVisible: true,

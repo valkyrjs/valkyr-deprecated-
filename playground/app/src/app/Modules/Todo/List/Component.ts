@@ -1,67 +1,95 @@
+import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { DOCUMENT_TITLE, TitleService } from "@valkyr/angular";
+import { LedgerService, ParamsService } from "@valkyr/angular";
+import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
+import { IdentityService } from "@valkyr/identity";
+import { WorkspaceStore } from "stores";
 
-import { TodoItem } from "../Models/TodoItem";
-import { TodoService } from "../Services/Todo";
-import { TodoItemService } from "../Services/TodoItem";
+import { LayoutService } from "../../../Library/Layout/Services/LayoutService";
+import { Todo } from "../../../Library/TaskServices";
+import { TodoService } from "../../../Library/TaskServices/Services/Todo";
+import { WorkspaceService } from "../../../Library/WorkspaceServices";
+import { CreateTodoDialog } from "../Dialogues/CreateTodo/Component";
 
 @Component({
   selector: "todo-list",
   templateUrl: "./Template.html"
 })
 export class TodoListComponent implements OnInit, OnDestroy {
-  items: TodoItem[] = [];
+  todos: Todo[] = [];
+
+  name = "";
 
   constructor(
-    readonly todo: TodoService,
-    readonly item: TodoItemService,
+    readonly workspace: WorkspaceService,
+    readonly todoService: TodoService,
+    readonly ledger: LedgerService,
+    readonly modal: ModalService,
+    readonly layoutService: LayoutService,
+    readonly params: ParamsService,
     readonly route: ActivatedRoute,
-    readonly title: TitleService
+    readonly identity: IdentityService
   ) {}
 
   ngOnInit(): void {
-    const todoId = this.route.snapshot.paramMap.get("todo");
-    if (!todoId) {
-      throw new Error("TodoListComponent Violation: Could not resolve todo id");
+    const workspaceId = this.workspace.selected;
+    if (!workspaceId) {
+      throw new Error("TodoListComponent Violation: Could not resolve current workspace");
     }
-    this.#loadTodo(todoId);
-    this.#loadTodoList(todoId);
+    this.#loadWorkspace(workspaceId);
+    this.#loadTodos(workspaceId);
   }
 
   ngOnDestroy(): void {
-    this.todo.unsubscribe(this);
-    this.item.unsubscribe(this);
+    this.workspace.unsubscribe(this);
+    this.todoService.unsubscribe(this);
   }
 
-  #loadTodo(todoId: string) {
-    this.todo.subscribe(
+  #loadWorkspace(workspaceId: string) {
+    this.workspace.subscribe(this, { criteria: { id: workspaceId }, limit: 1 }, (workspace) => {
+      if (workspace) {
+        this.layoutService.updateLayout({
+          nav: { title: `${workspace.name} Todo Boards` }
+        });
+      }
+    });
+  }
+
+  #loadTodos(workspaceId: string) {
+    this.todoService.subscribe(
       this,
       {
-        criteria: { id: todoId },
-        limit: 1,
+        criteria: { workspaceId },
         stream: {
           aggregate: "todo",
-          streamIds: [todoId]
+          endpoint: `/workspaces/${workspaceId}/todos`
         }
       },
-      (todo) => {
-        if (todo) {
-          this.title.set(`${todo.name} Todo`, DOCUMENT_TITLE, "workspace");
-        }
+      (todos) => {
+        this.todos = todos;
       }
     );
   }
 
-  #loadTodoList(todoId: string) {
-    this.item.subscribe(
-      this,
-      {
-        criteria: { todoId }
-      },
-      (items) => {
-        this.items = items;
+  public openAddTodo() {
+    this.modal.open(CreateTodoDialog);
+  }
+
+  public async drop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      if (!this.workspace.selected) {
+        throw new Error("Could not resolve workspace id");
       }
-    );
+      const workspace = await this.ledger.reduce(this.workspace.selected, WorkspaceStore.Workspace);
+      if (!workspace) {
+        throw new Error("Could not resolve workspace");
+      }
+      const member = workspace.members.getById(this.identity.auditor);
+      if (!member) {
+        throw new Error("Could not resolve workspace member");
+      }
+      this.todoService.move(event.item.data.id, event.currentIndex, member.id);
+    }
   }
 }

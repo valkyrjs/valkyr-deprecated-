@@ -1,6 +1,6 @@
 import { Pipe } from "@angular/core";
 
-import { Todo } from "../Models/Todo";
+import { Todo } from "../../../Library/TaskServices";
 
 @Pipe({ name: "sorttodos" })
 export class SortTodosPipe {

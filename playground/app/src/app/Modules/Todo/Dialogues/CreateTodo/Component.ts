@@ -3,8 +3,8 @@ import { LedgerService, ModalService } from "@valkyr/angular";
 import { IdentityService } from "@valkyr/identity";
 import { WorkspaceStore } from "stores";
 
+import { TodoService } from "../../../../Library/TaskServices/Services/Todo";
 import { WorkspaceService } from "../../../../Library/WorkspaceServices";
-import { TodoService } from "../../Services/Todo";
 
 @Component({
   templateUrl: "./Template.html"

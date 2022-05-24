@@ -11,6 +11,7 @@ import { from, Observable } from "rxjs";
 import { AppRoutingModule } from "./AppRouting";
 import { AppComponent } from "./Component";
 import { LayoutModule } from "./Library/Layout/Module";
+import { TaskServicesModule } from "./Library/TaskServices";
 import { ThemeModule } from "./Library/ThemeService";
 import { WorkspaceServicesModule } from "./Library/WorkspaceServices";
 
@@ -33,6 +34,7 @@ import { WorkspaceServicesModule } from "./Library/WorkspaceServices";
     LedgerModule,
     ModalModule,
     ThemeModule,
+    TaskServicesModule,
     WorkspaceServicesModule,
     RouterModule.forRoot([]),
     AppRoutingModule

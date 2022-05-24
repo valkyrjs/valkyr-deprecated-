@@ -5,7 +5,6 @@ import { RouterModule } from "@angular/router";
 import { ModalModule } from "@valkyr/angular";
 import { ButtonModule, SelectModule } from "@valkyr/tailwind";
 
-import { WorkspaceServicesModule } from "../../Library/WorkspaceServices";
 import { CreateWorkspaceDialog } from "./Dialogues/CreateWorkspace/Component";
 import { WorkspaceItemComponent } from "./Item/Component";
 import { WorkspaceListComponent } from "./List/Component";
@@ -13,15 +12,6 @@ import { WorkspaceRoutingModule } from "./Routing";
 
 @NgModule({
   declarations: [WorkspaceListComponent, WorkspaceItemComponent, CreateWorkspaceDialog],
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    ModalModule,
-    ButtonModule,
-    SelectModule,
-    WorkspaceServicesModule,
-    WorkspaceRoutingModule
-  ]
+  imports: [CommonModule, FormsModule, RouterModule, ModalModule, ButtonModule, SelectModule, WorkspaceRoutingModule]
 })
 export class WorkspaceModule {}

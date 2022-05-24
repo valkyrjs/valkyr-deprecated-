@@ -13,8 +13,9 @@ export function getWorkspaceMainMenu(workspaceName: string, workspaceId: string)
         },
         {
           type: "link",
-          name: "Todo",
-          href: `/workspaces/${workspaceId}/todos`
+          name: "Task Boards",
+          icon: "tasks",
+          href: `/boards`
         }
       ]
     }
