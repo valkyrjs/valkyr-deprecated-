@@ -1,6 +1,6 @@
+import { CommonModule } from "@angular/common";
 import { ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 import {
   IdentityProviderService,
@@ -16,7 +16,7 @@ import { ShellComponent } from "./Components/Shell/Component";
 import { routes } from "./Routes";
 
 @NgModule({
-  imports: [BrowserModule, FormsModule, QrCodeModule, RouterModule.forRoot(routes)],
+  imports: [CommonModule, FormsModule, QrCodeModule, RouterModule.forRoot(routes)],
   declarations: [ShellComponent, RegistrationComponent, AuthorizeComponent],
   exports: [RouterModule]
 })

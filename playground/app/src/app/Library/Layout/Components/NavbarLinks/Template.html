@@ -1,0 +1,6 @@
+<div class="w-6 h-6 mr-12">
+  <icon name="playground" class="text-cta-default"></icon>
+</div>
+<ng-container *ngIf="menu && menu.length">
+  <app-navbar-link link="{{link.href}}" name="{{link.name}}" *ngFor="let link of menu"></app-navbar-link>
+</ng-container>

@@ -1,0 +1,7 @@
+:host {
+  @apply relative min-h-full overflow-y-scroll bg-gray-100 text-gray-900;
+  &.grid-content {
+    grid-area: content;
+    @apply p-4;
+  }
+}

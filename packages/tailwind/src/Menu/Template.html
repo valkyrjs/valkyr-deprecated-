@@ -1,8 +1,0 @@
-<menu-category *ngFor="let category of menu.categories" [name]="category.name" [showLabel]="category.showLabel">
-  <menu-list>
-    <ng-container [ngSwitch]="item.type" *ngFor="let item of category.items">
-      <menu-item-action *ngSwitchCase="'action'" [name]="item.name" [action]="item.action" [icon]="item.icon"></menu-item-action>
-      <menu-item-link *ngSwitchDefault [name]="item.name" [link]="item.href" [icon]="item.icon" [isActive]="item.isActive"></menu-item-link>
-    </ng-container>
-  </menu-list>
-</menu-category>

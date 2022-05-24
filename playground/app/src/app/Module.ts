@@ -1,28 +1,27 @@
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
 import { AccessModule, LedgerModule, ModalModule } from "@valkyr/angular";
 import { IdentityProviderService, IdentityService, localIdentityStorage } from "@valkyr/identity";
-import { IdentityModule } from "@valkyr/tailwind";
+import { ButtonModule, IdentityModule } from "@valkyr/tailwind";
 import { from, Observable } from "rxjs";
 
+import { AppRoutingModule } from "./AppRouting";
 import { AppComponent } from "./Component";
-import { DesignSystemModule } from "./DesignSystem/Module";
-import { DiscoveryModule } from "./Discovery";
-import { routes } from "./Routing";
-import { TemplateModule } from "./Templates/Module";
-import { TodoModule } from "./Todo";
-import { WorkspaceModule } from "./Workspace";
+import { LayoutModule } from "./Library/Layout/Module";
+import { ThemeModule } from "./Library/ThemeService";
+import { WorkspaceServicesModule } from "./Library/WorkspaceServices";
 
 @NgModule({
   imports: [
     AccessModule,
     BrowserModule,
+    ButtonModule,
+    BrowserAnimationsModule,
+    LayoutModule,
     DragDropModule,
-    DiscoveryModule,
-    TemplateModule,
-    DesignSystemModule,
     IdentityModule.forRoot(
       {
         host: "188.166.248.32",
@@ -33,9 +32,10 @@ import { WorkspaceModule } from "./Workspace";
     ),
     LedgerModule,
     ModalModule,
-    RouterModule.forRoot(routes),
-    TodoModule,
-    WorkspaceModule
+    ThemeModule,
+    WorkspaceServicesModule,
+    RouterModule.forRoot([]),
+    AppRoutingModule
   ],
   declarations: [AppComponent],
   providers: [
