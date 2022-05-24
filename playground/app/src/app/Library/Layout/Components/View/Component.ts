@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit } from "@angular/core";
 
-import { DefaultViewLayout, ViewLayout } from "../../Models/ViewLayout";
+import { DefaultViewLayout } from "../../Models/ViewLayout";
 import { LayoutService } from "../../Services/LayoutService";
 
 @Component({

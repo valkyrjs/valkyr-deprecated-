@@ -11,6 +11,7 @@ import { Todo } from "../../../Library/TaskServices";
 import { TodoService } from "../../../Library/TaskServices/Services/Todo";
 import { WorkspaceService } from "../../../Library/WorkspaceServices";
 import { CreateTodoDialog } from "../Dialogues/CreateTodo/Component";
+import { getFooterMenu, getHeaderMenu, getMainMenu } from "../Menu";
 
 @Component({
   selector: "todo-list",
@@ -50,7 +51,19 @@ export class TodoListComponent implements OnInit, OnDestroy {
     this.workspace.subscribe(this, { criteria: { id: workspaceId }, limit: 1 }, (workspace) => {
       if (workspace) {
         this.layoutService.updateLayout({
-          nav: { title: `${workspace.name} Todo Boards` }
+          header: {
+            isVisible: true,
+            menu: getHeaderMenu()
+          },
+          sidebar: { isVisible: false },
+          sidepane: {
+            isVisible: true,
+            isBordered: true,
+            actions: [{ name: "New board", variant: "secondary", type: "action", action: this.openAddTodo.bind(this) }],
+            mainMenu: getMainMenu(workspaceId),
+            footerMenu: getFooterMenu()
+          },
+          nav: { isVisible: true, isBordered: true, title: `${workspace.name} Todo Boards` }
         });
       }
     });
