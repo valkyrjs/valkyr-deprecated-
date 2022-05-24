@@ -36,11 +36,12 @@ export class WorkspaceListComponent implements OnInit, OnDestroy {
       sidebar: { isVisible: false },
       sidepane: {
         isVisible: true,
+        isBordered: false,
         actions: this.getActions(),
         mainMenu: getMainMenu(),
         footerMenu: getFooterMenu()
       },
-      nav: { isVisible: true, title: "Workspaces" }
+      nav: { isVisible: true, isBordered: false, title: "Workspaces" }
     });
   }
 

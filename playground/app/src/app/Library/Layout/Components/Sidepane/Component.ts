@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
 
 @Component({
-  selector: "app-small-sidebar",
+  selector: "app-sidepane",
   templateUrl: "./Template.html",
   styleUrls: ["./Style.scss"]
 })
-export class SmallSidebarComponent {}
+export class SidepaneComponent {}

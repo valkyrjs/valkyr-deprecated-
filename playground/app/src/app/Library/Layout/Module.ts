@@ -14,7 +14,7 @@ import { MenuListComponent } from "./Components/MenuList/Component";
 import { NavbarLinkComponent } from "./Components/NavbarLink/Component";
 import { NavbarLinksComponent } from "./Components/NavbarLinks/Component";
 import { SidebarComponent } from "./Components/Sidebar/Component";
-import { SmallSidebarComponent } from "./Components/SmallSidebar/Component";
+import { SidepaneComponent } from "./Components/Sidepane/Component";
 import { ViewComponent } from "./Components/View/Component";
 import { LayoutService } from "./Services/LayoutService";
 
@@ -30,8 +30,8 @@ import { LayoutService } from "./Services/LayoutService";
     MenuListComponent,
     NavbarLinkComponent,
     NavbarLinksComponent,
+    SidepaneComponent,
     SidebarComponent,
-    SmallSidebarComponent,
     ViewComponent
   ],
   exports: [ViewComponent],

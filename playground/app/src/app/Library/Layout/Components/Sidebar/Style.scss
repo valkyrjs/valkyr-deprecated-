@@ -1,10 +1,10 @@
 :host {
-  grid-area: sidebar;
+  grid-area: small-sidebar;
   @apply h-full overflow-y-auto overflow-x-hidden text-gray-800 bg-gray-100 flex flex-col justify-start;
   > .left-aside {
-    @apply px-6 pt-6 h-full w-full flex flex-col justify-start gap-6;
+    @apply px-6 h-full w-full flex flex-col justify-start gap-6;
     .actions {
-      @apply pb-6;
+      @apply mt-6 pb-6;
       @apply border-b border-gray-200;
     }
     .menus {
