@@ -1,3 +1,3 @@
-<app-menu-category *ngFor="let category of categories" [name]="category.name" [showLabel]="category.showLabel ?? false">
+<app-menu-category *ngFor="let category of categories" [name]="category.name" [showLabel]="category.showLabel ?? true">
   <app-menu-list [items]="category.items"></app-menu-list>
 </app-menu-category>

@@ -5,7 +5,7 @@ import { RouterModule } from "@angular/router";
 import { ModalModule } from "@valkyr/angular";
 import { ButtonModule, SelectModule } from "@valkyr/tailwind";
 
-import { WorkspaceServicesModule } from "../../Library/WorkspaceServices/Module";
+import { WorkspaceServicesModule } from "../../Library/WorkspaceServices";
 import { CreateWorkspaceDialog } from "./Dialogues/CreateWorkspace/Component";
 import { WorkspaceItemComponent } from "./Item/Component";
 import { WorkspaceListComponent } from "./List/Component";

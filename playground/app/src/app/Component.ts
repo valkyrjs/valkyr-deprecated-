@@ -4,8 +4,7 @@ import { ThemeService } from "./Library/ThemeService/ThemeService";
 
 @Component({
   selector: "app-root",
-  templateUrl: "./Template.html",
-  styleUrls: ["./Style.scss"]
+  templateUrl: "./Template.html"
 })
 export class AppComponent implements OnInit {
   constructor(readonly theme: ThemeService) {}

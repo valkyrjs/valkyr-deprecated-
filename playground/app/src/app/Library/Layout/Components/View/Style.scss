@@ -80,7 +80,7 @@
     }
     .menus {
       @apply h-full flex flex-col justify-between;
-      > menu {
+      > app-menu-categories {
         @apply h-auto;
         @apply list-none;
         @apply text-sm;

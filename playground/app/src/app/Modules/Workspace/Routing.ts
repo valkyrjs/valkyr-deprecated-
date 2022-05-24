@@ -12,17 +12,6 @@ const routes: Routes = [
   { path: ":workspace", component: WorkspaceItemComponent }
 ];
 
-// {
-//   path: "workspaces/:workspace",
-//   component: WorkspaceComponent,
-//   canActivate: [IdentityGuard],
-//   children: [
-//     { path: "", component: WorkspaceItemComponent },
-//     { path: "todos", component: TodoPickerComponent },
-//     { path: "todos/:todo", component: TodoListComponent }
-//   ]
-// },
-
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
