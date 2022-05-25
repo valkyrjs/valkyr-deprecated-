@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import {  NavigationEnd, Router } from "@angular/router";
+import { NavigationEnd, Router } from "@angular/router";
 
 import { MenuItem } from "../../Models/MenuItem";
 
