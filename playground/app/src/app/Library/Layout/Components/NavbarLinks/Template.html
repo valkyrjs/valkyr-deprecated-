@@ -2,5 +2,5 @@
   <icon name="playground" class="text-cta-default"></icon>
 </div>
 <ng-container *ngIf="menu && menu.length">
-  <app-navbar-link link="{{link.href}}" name="{{link.name}}" *ngFor="let link of menu"></app-navbar-link>
+  <app-navbar-link link="{{link.href}}" name="{{link.name}}" [isActive]="isActive(link)" *ngFor="let link of menu"></app-navbar-link>
 </ng-container>

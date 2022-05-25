@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component, Input } from "@angular/core";
+import {  NavigationEnd, Router } from "@angular/router";
 
 import { MenuItem } from "../../Models/MenuItem";
 
@@ -8,14 +8,20 @@ import { MenuItem } from "../../Models/MenuItem";
   templateUrl: "./Template.html",
   styleUrls: ["./Style.scss"]
 })
-export class NavbarLinksComponent implements OnInit {
+export class NavbarLinksComponent {
   @Input("menu") menu?: MenuItem[];
+  activeItem = "/";
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private router: Router) {
+    this.activeItem = router.url;
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.activeItem = event.url;
+      }
+    });
+  }
 
-  public ngOnInit(): void {}
-
-  public isCurrentRoute(route: string): boolean {
-    return this.route.snapshot.url.some((u) => route.includes(u.path));
+  isActive(item: MenuItem): boolean {
+    return item.href ? this.activeItem === item.href : false;
   }
 }

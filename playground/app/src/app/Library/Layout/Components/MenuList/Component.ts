@@ -1,4 +1,5 @@
 import { Component, Input } from "@angular/core";
+import { NavigationEnd, Router } from "@angular/router";
 
 import { MenuItem } from "../../Models/MenuItem";
 
@@ -8,12 +9,19 @@ import { MenuItem } from "../../Models/MenuItem";
   styleUrls: ["./Style.scss"]
 })
 export class MenuListComponent {
-  public readonly type = "category";
-  activeItem?: string;
-
   @Input("items") public items!: MenuItem[];
+  activeItem = "/";
+
+  constructor(private router: Router) {
+    this.activeItem = router.url;
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.activeItem = event.url;
+      }
+    });
+  }
 
   isActive(item: MenuItem): boolean {
-    return item.href === this.activeItem;
+    return item.href ? this.activeItem === item.href : false;
   }
 }
