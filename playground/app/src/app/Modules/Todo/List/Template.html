@@ -1,0 +1,33 @@
+<div className="p-6 h-full w-full">
+  <section class="mb-6">
+    <div class="p-12 bg-white flex items-center">
+      <button (click)="openAddTodo()">
+        <div class="flex flex-col gap-2 justify-start items-center w-32 group">
+          <div class="w-full flex flex-col justify-center items-center">
+            <div class="h-16 w-16 transition-colors text-gray-500 scale-100 group-hover:scale-105 group-hover:text-accent">
+              <icon name="tasks"></icon>
+            </div>
+          </div>
+          <div class="flex flex-col justify-center items-center w-full">
+            <div class="text-sm text-gray-600 group-hover:text-gray-800">New Task board...</div>
+          </div>
+        </div>
+      </button>
+    </div>
+  </section>
+  <section class="mb-6">
+    <header class="pb-4">
+      <h6 class=" text-base font-bold text-gray-700">Recent</h6>
+    </header>
+    <ul cdkDropList (cdkDropListDropped)="drop($event)" role="list" class="todo-thing-list w-full min-h-full grid grid-areas-workspaces grid-cols-workspaces grid-rows-workspaces gap-6">
+      <li class="todo" *ngFor="let board of todos | sorttodos" cdkDrag [cdkDragData]="board">
+        <a routerLink="/boards/{{board.id}}">
+          <div class="flex flex-col justify-start w-36 group">
+            <div class="w-full h-36 bg-gray-200 group-hover:bg-gray-300 transition-colors duration-500"></div>
+            <div class="text-xs uppercase text-gray-600 pt-2">{{board.name}}</div>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </section>
+</div>

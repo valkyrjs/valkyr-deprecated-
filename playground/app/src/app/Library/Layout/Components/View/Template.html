@@ -1,0 +1,27 @@
+<app-header [ngClass]="{ 'border-b-2 border-b-gray-200': layout.header.isBordered }" *ngIf="layout.header.isVisible" [menu]="layout.header.menu"></app-header>
+<app-sidebar *ngIf="layout.sidebar.isVisible">
+  <button>A</button>
+</app-sidebar>
+<app-sidepane [ngClass]="{ 'border-r-2 border-r-gray-200': layout.sidepane.isBordered }" *ngIf="layout.sidepane.isVisible">
+  <div class="left-aside">
+    <div class="actions" *ngIf="layout.sidepane.actions">
+      <button [variant]="action.variant ?? 'cta'" (click)="action.action()" *ngFor="let action of layout.sidepane.actions">{{ action.name }}</button>
+    </div>
+    <div class="menus">
+      <div>
+        <app-menu-list *ngIf="layout.sidepane.homeMenu" [items]="layout.sidepane.homeMenu"></app-menu-list>
+        <app-menu-categories *ngIf="layout.sidepane.mainMenu" [categories]="layout.sidepane.mainMenu"></app-menu-categories>
+      </div>
+      <app-menu-categories *ngIf="layout.sidepane.footerMenu" [categories]="layout.sidepane.footerMenu"></app-menu-categories>
+    </div>
+  </div>
+</app-sidepane>
+<nav *ngIf="layout.nav.isVisible" [ngClass]="{ 'border-b-2 border-b-gray-200': layout.nav.isBordered }">
+  <header>
+    <h2>{{ layout.nav.title }}</h2>
+  </header>
+</nav>
+<app-content [ngClass]="isRaw ? 'root-content' : 'grid-content'">
+  <ng-content></ng-content>
+</app-content>
+

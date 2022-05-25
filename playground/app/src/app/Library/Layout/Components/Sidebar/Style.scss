@@ -1,0 +1,23 @@
+:host {
+  grid-area: small-sidebar;
+  @apply h-full overflow-y-auto overflow-x-hidden text-gray-800 bg-gray-100 flex flex-col justify-start;
+  > .left-aside {
+    @apply px-6 h-full w-full flex flex-col justify-start gap-6;
+    .actions {
+      @apply mt-6 pb-6;
+      @apply border-b border-gray-200;
+    }
+    .menus {
+      @apply h-full flex flex-col justify-between;
+      > menu {
+        @apply h-auto;
+        @apply list-none;
+        @apply text-sm;
+        &.menu-footer {
+          @apply mt-0;
+          @apply mb-1;
+        }
+      }
+    }
+  }
+}
