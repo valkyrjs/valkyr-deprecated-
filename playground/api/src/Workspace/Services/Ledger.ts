@@ -9,30 +9,26 @@ import { WorkspaceAccess } from "../Access";
 export class WorkspaceLedgerService {
   constructor(private readonly ledger: LedgerService, private readonly access: WorkspaceAccess) {}
 
-  public async create(name: string, auditor: string) {
-    const member: WorkspaceStore.Member = {
-      id: getId(),
-      accountId: auditor,
-      name: ""
-    };
-    await this.ledger.append(
-      WorkspaceStore.events.created(
-        getId(),
-        {
-          name,
-          members: [member]
-        },
-        {
-          auditor: member.id
-        }
-      )
-    );
+  public async create(name: string, publicKey: string) {
+    // const member: WorkspaceStore.Member = { id: getId(), name, publicKey };
+    // await this.ledger.append(
+    //   getId(),
+    //   WorkspaceStore.events.created(
+    //     {
+    //       name,
+    //       members: [member]
+    //     },
+    //     {
+    //       auditor: member.id
+    //     }
+    //   )
+    // );
   }
 
-  public async invite(workspaceId: string, email: string, auditor: string) {
+  public async invite(workspaceId: string, email: string, memberId: string) {
     const workspace = await this.getWorkspace(workspaceId);
 
-    const member = workspace.members.getByAccount(auditor);
+    const member = workspace.members.getById(memberId);
     if (member === undefined) {
       throw new ForbiddenException("You are not a member of this workspace");
     }
@@ -48,14 +44,14 @@ export class WorkspaceLedgerService {
     }
 
     await this.ledger.append(
+      workspaceId,
       WorkspaceStore.events.invite.created(
-        workspaceId,
         {
           id: getId(),
           email
         },
         {
-          auditor
+          auditor: memberId
         }
       )
     );

@@ -1,12 +1,12 @@
 import { Global, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
-import { AccessController } from "./Controller";
-import { Role, RoleSchema } from "./Model";
-import { AccessService } from "./Services/Access";
-import { MemberService } from "./Services/Member";
-import { PermissionService } from "./Services/Permission";
-import { RoleService } from "./Services/Role";
+import { AccessController } from "./Controllers/AccessController";
+import { Role, RoleSchema } from "./Models/Role";
+import { AccessService } from "./Services/AccessService";
+import { MemberService } from "./Services/MemberService";
+import { PermissionService } from "./Services/PermissionService";
+import { RoleService } from "./Services/RoleService";
 
 @Global()
 @Module({

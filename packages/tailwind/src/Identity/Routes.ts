@@ -1,9 +1,9 @@
 import { Routes } from "@angular/router";
+import { GuestGuard } from "@valkyr/angular";
 
-import { AuthorizeComponent } from "./Components/Authorize/Component";
 import { RegistrationComponent } from "./Components/Registration/Component";
 import { ShellComponent } from "./Components/Shell/Component";
-import { GuestGuard } from "./Guards/GuestGuard";
+import { BasicStrategyComponent } from "./Strategies/Basic/Component";
 
 export const routes: Routes = [
   {
@@ -13,7 +13,7 @@ export const routes: Routes = [
     children: [
       {
         path: "",
-        component: AuthorizeComponent
+        component: BasicStrategyComponent
       }
     ]
   },

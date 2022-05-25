@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
-import { DataSubscriber, LedgerService } from "@valkyr/angular";
-import { IdentityService } from "@valkyr/identity";
+import { AuthService, DataSubscriber, LedgerService } from "@valkyr/angular";
 import { getId } from "@valkyr/security";
 import { WorkspaceStore } from "stores";
 
@@ -13,7 +12,7 @@ export class WorkspaceService extends DataSubscriber {
   constructor(
     readonly subscriber: WorkspaceSubscriberService,
     readonly ledger: LedgerService,
-    readonly identity: IdentityService
+    readonly auth: AuthService
   ) {
     super();
   }
@@ -31,15 +30,12 @@ export class WorkspaceService extends DataSubscriber {
   }
 
   async create(name: string) {
-    const user = this.identity.getSelectedUser();
-    if (!user) {
-      throw new Error("Workspace Violation: Cannot create workspace, no initial member could be resolved");
-    }
+    const user = await this.auth.getUser();
     const workspaceId = getId();
     const member: WorkspaceStore.Member = {
-      id: user.cid,
+      id: user.id,
       name: user.data["name"] as string,
-      publicKey: await this.identity.publicKey()
+      keys: user.publicKeys
     };
     this.ledger.append(workspaceId, WorkspaceStore.events.created({ name, members: [member] }, { auditor: member.id }));
   }

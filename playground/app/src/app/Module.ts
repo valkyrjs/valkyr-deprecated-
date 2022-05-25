@@ -1,12 +1,10 @@
 import { DragDropModule } from "@angular/cdk/drag-drop";
-import { APP_INITIALIZER, NgModule } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
-import { AccessModule, LedgerModule, ModalModule } from "@valkyr/angular";
-import { IdentityProviderService, IdentityService, localIdentityStorage } from "@valkyr/identity";
-import { ButtonModule, IdentityModule } from "@valkyr/tailwind";
-import { from, Observable } from "rxjs";
+import { AccessModule, IdentityModule, LedgerModule, ModalModule } from "@valkyr/angular";
+import { ButtonModule, TailwindIdentityModule } from "@valkyr/tailwind";
 
 import { AppComponent } from "./Component";
 import { AppRoutingModule } from "./Routing";
@@ -22,14 +20,8 @@ import { WorkspaceServicesModule } from "./Shared/WorkspaceServices";
     BrowserAnimationsModule,
     LayoutModule,
     DragDropModule,
-    IdentityModule.forRoot(
-      {
-        host: "188.166.248.32",
-        port: 9000,
-        path: "/myapp"
-      },
-      localIdentityStorage
-    ),
+    IdentityModule,
+    TailwindIdentityModule,
     LedgerModule,
     ModalModule,
     ThemeModule,
@@ -38,23 +30,7 @@ import { WorkspaceServicesModule } from "./Shared/WorkspaceServices";
     AppRoutingModule
   ],
   declarations: [AppComponent],
-  providers: [
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeAppFactory,
-      deps: [IdentityService],
-      multi: true
-    }
-  ],
   bootstrap: [AppComponent],
   exports: [RouterModule]
 })
-export class AppModule {
-  constructor(readonly client: IdentityService, readonly provider: IdentityProviderService) {
-    console.log("Provider:", provider.id);
-  }
-}
-
-function initializeAppFactory(identity: IdentityService): () => Observable<any> {
-  return () => from(identity.init());
-}
+export class AppModule {}

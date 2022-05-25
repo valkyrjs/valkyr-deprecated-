@@ -1,3 +1,4 @@
+import { PublicIdentityKeys } from "@valkyr/identity";
 import { Aggregate, AggregateRoot } from "@valkyr/ledger";
 
 import { EventRecord } from "./Events";
@@ -23,7 +24,7 @@ export type Invite = {
 export type Member = {
   id: string;
   name: string;
-  publicKey: string;
+  keys: PublicIdentityKeys;
 };
 
 /*

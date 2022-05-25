@@ -1,9 +1,8 @@
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { LedgerService, ParamsService } from "@valkyr/angular";
+import { AuthService, LedgerService, ParamsService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
-import { IdentityService } from "@valkyr/identity";
 import { WorkspaceStore } from "stores";
 
 import { LayoutService } from "../../../Shared/Layout/Services/LayoutService";
@@ -30,7 +29,7 @@ export class TodoListComponent implements OnInit, OnDestroy {
     readonly layoutService: LayoutService,
     readonly params: ParamsService,
     readonly route: ActivatedRoute,
-    readonly identity: IdentityService
+    readonly auth: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -73,11 +72,7 @@ export class TodoListComponent implements OnInit, OnDestroy {
     this.todoService.subscribe(
       this,
       {
-        criteria: { workspaceId },
-        stream: {
-          aggregate: "todo",
-          endpoint: `/workspaces/${workspaceId}/todos`
-        }
+        criteria: { workspaceId }
       },
       (todos) => {
         this.todos = todos;
@@ -98,7 +93,7 @@ export class TodoListComponent implements OnInit, OnDestroy {
       if (!workspace) {
         throw new Error("Could not resolve workspace");
       }
-      const member = workspace.members.getById(this.identity.auditor);
+      const member = workspace.members.getById(this.auth.auditor);
       if (!member) {
         throw new Error("Could not resolve workspace member");
       }

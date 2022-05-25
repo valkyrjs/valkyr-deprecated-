@@ -3,7 +3,7 @@ import { Observable, Subscription } from "rxjs";
 
 import type { Collection, Options } from "./Collection";
 import { observe, observeOne } from "./Observe";
-import { Document, DocumentNotFoundError, UpdateActions } from "./Storage";
+import { Document, DocumentNotFoundError, PartialDocument, UpdateActions } from "./Storage";
 
 export type ModelDefinition<T = any> = {
   name?: string;
@@ -41,17 +41,17 @@ export abstract class Model<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  public static async insertOne<D extends Document, T extends Model<D>>(
+  static async insertOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
-    document: D
+    document: PartialDocument<D>
   ): Promise<T> {
     const { insertedId } = await this.$collection.insertOne(document);
     return (this as any).findById(insertedId);
   }
 
-  public static async insertMany<D extends Document, T extends Model<D>>(
+  static async insertMany<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
-    documents: D[]
+    documents: PartialDocument<D>[]
   ): Promise<T[]> {
     const { insertedIds } = await this.$collection.insertMany(documents);
     return (this as any).find({
@@ -61,7 +61,7 @@ export abstract class Model<D extends Document = any> {
     });
   }
 
-  public static async updateOne<D extends Document, T extends Model<D>>(
+  static async updateOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
     actions: UpdateActions
@@ -72,7 +72,7 @@ export abstract class Model<D extends Document = any> {
     }
   }
 
-  public static async updateMany<D extends Document, T extends Model<D>>(
+  static async updateMany<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
     actions: UpdateActions
@@ -83,7 +83,7 @@ export abstract class Model<D extends Document = any> {
     }
   }
 
-  public static async replaceOne<D extends Document, T extends Model<D>>(
+  static async replaceOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
     document: D
@@ -94,10 +94,7 @@ export abstract class Model<D extends Document = any> {
     }
   }
 
-  public static async delete<D extends Document, T extends Model<D>>(
-    this: ModelContext<T, D>,
-    id: string
-  ): Promise<void> {
+  static async delete<D extends Document, T extends Model<D>>(this: ModelContext<T, D>, id: string): Promise<void> {
     const result = await this.$collection.delete(id);
     if (result.deletedCount === 0) {
       throw new DocumentNotFoundError({ id });
@@ -110,19 +107,19 @@ export abstract class Model<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  public static subscribe<D extends Document, T extends Model<D>>(
+  static subscribe<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria?: RawObject,
     options?: SubscribeToSingle,
     next?: (document: T | undefined) => void
   ): Subscription;
-  public static subscribe<D extends Document, T extends Model<D>>(
+  static subscribe<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria?: RawObject,
     options?: SubscribeToMany,
     next?: (documents: T[]) => void
   ): Subscription;
-  public static subscribe<D extends Document, T extends Model<D>>(
+  static subscribe<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject = {},
     options?: Options,
@@ -134,7 +131,7 @@ export abstract class Model<D extends Document = any> {
     return (this as ModelClass<T, D>).observe(criteria, options).subscribe({ next });
   }
 
-  public static observe<D extends Document, T extends Model<D>>(
+  static observe<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject = {},
     options?: Options
@@ -146,7 +143,7 @@ export abstract class Model<D extends Document = any> {
     });
   }
 
-  public static observeOne<D extends Document, T extends Model<D>>(
+  static observeOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject = {}
   ): Observable<T | undefined> {
@@ -163,7 +160,7 @@ export abstract class Model<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  public static async findById<D extends Document, T extends Model<D>>(
+  static async findById<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     id: string
   ): Promise<T | undefined> {
@@ -171,20 +168,19 @@ export abstract class Model<D extends Document = any> {
     if (!document) {
       return undefined;
     }
-    return new this(document as D);
+    return new this(document as D).onInit();
   }
 
-  public static async find<D extends Document, T extends Model<D>>(
+  static async find<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject = {},
     options?: Options
   ): Promise<T[]> {
-    return this.$collection
-      .find(criteria, options)
-      .then((documents) => documents.map((document) => new this(document as D)));
+    const documents = await this.$collection.find(criteria, options);
+    return Promise.all(documents.map((document) => new this(document as D).onInit()));
   }
 
-  public static async findOne<D extends Document, T extends Model<D>>(
+  static async findOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject = {},
     options?: Options
@@ -193,11 +189,21 @@ export abstract class Model<D extends Document = any> {
     if (!document) {
       return undefined;
     }
-    return new this(document as D);
+    return new this(document as D).onInit();
   }
 
-  public static async count(criteria: RawObject = {}, options?: Options): Promise<number> {
+  static async count(criteria: RawObject = {}, options?: Options): Promise<number> {
     return this.$collection.count(criteria, options);
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Lifecycle
+   |--------------------------------------------------------------------------------
+   */
+
+  async onInit(): Promise<this> {
+    return this;
   }
 }
 

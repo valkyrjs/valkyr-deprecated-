@@ -2,7 +2,7 @@ import { Inject } from "@nestjs/common";
 import { SubscribeMessage } from "@nestjs/websockets";
 
 import { Socket, SocketGateway } from "../Socket";
-import { LedgerStreamGuard, STREAM_GUARD } from "./Guards";
+import { LedgerStreamGuard, STREAM_GUARD } from "./Guards/LedgerStreamGuards";
 
 export class LedgerGateway extends SocketGateway {
   constructor(@Inject(STREAM_GUARD) private readonly guard: LedgerStreamGuard) {

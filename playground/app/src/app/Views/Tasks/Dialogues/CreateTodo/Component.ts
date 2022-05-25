@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
-import { LedgerService, ModalService } from "@valkyr/angular";
-import { IdentityService } from "@valkyr/identity";
+import { AuthService, LedgerService, ModalService } from "@valkyr/angular";
 import { WorkspaceStore } from "stores";
 
 import { WorkspaceService } from "../../../../Shared/WorkspaceServices";
@@ -13,7 +12,7 @@ export class CreateTodoDialog {
   name = "";
 
   constructor(
-    private identity: IdentityService,
+    private auth: AuthService,
     private ledger: LedgerService,
     private modal: ModalService,
     private todo: TodoService,
@@ -30,7 +29,7 @@ export class CreateTodoDialog {
     if (!workspace) {
       throw new Error("Could not resolve workspace");
     }
-    const member = workspace.members.getById(this.identity.auditor);
+    const member = workspace.members.getById(this.auth.auditor);
     if (!member) {
       throw new Error("Could not resolve workspace member");
     }

@@ -1,15 +1,14 @@
 import { AES, enc } from "crypto-js";
 import * as Jose from "jose";
 
-export const ALG = "ECDH-ES+A256KW";
-export const ENC = "A256GCM";
-
 export type ExportedKeyPair = {
   publicKey: string;
   privateKey: string;
 };
 
 export class KeyPair {
+  static readonly ALG: string;
+
   #publicKey: Jose.KeyLike;
   #privateKey: Jose.KeyLike;
 
@@ -18,7 +17,32 @@ export class KeyPair {
     this.#privateKey = privateKey;
   }
 
+  // ### Factories
+
+  static async create(): Promise<Jose.GenerateKeyPairResult> {
+    return Jose.generateKeyPair(this.ALG, { extractable: true });
+  }
+
+  static async import({ publicKey, privateKey }: ExportedKeyPair): Promise<Jose.GenerateKeyPairResult> {
+    return {
+      publicKey: await this.importPublicKey(publicKey),
+      privateKey: await this.importPrivateKey(privateKey)
+    };
+  }
+
+  static async importPublicKey(publicKey: string): Promise<Jose.KeyLike> {
+    return Jose.importSPKI(publicKey, this.ALG, { extractable: true });
+  }
+
+  static async importPrivateKey(publicKey: string): Promise<Jose.KeyLike> {
+    return Jose.importPKCS8(publicKey, this.ALG, { extractable: true });
+  }
+
   // ### Accessors
+
+  get ALG() {
+    return (this as any).constructor.ALG;
+  }
 
   get publicKey() {
     return this.#publicKey;
@@ -28,20 +52,7 @@ export class KeyPair {
     return this.#privateKey;
   }
 
-  // ### Instantiators
-
-  static async create(): Promise<KeyPair> {
-    return new KeyPair(await Jose.generateKeyPair(ALG, { extractable: true }));
-  }
-
-  static async import({ publicKey, privateKey }: ExportedKeyPair) {
-    return new KeyPair({
-      publicKey: await importPublicKey(publicKey),
-      privateKey: await importPrivateKey(privateKey)
-    });
-  }
-
-  // ### Exporter
+  // ### Exporters
 
   async export() {
     return {
@@ -102,29 +113,8 @@ export class KeyPair {
   async decryptKeyPair(keyPair: string, accessKey: string): Promise<Jose.GenerateKeyPairResult> {
     const decoded = JSON.parse(AES.decrypt(keyPair, accessKey).toString(enc.Utf8));
     return new KeyPair({
-      publicKey: await Jose.importSPKI(decoded.publicKey, ALG),
-      privateKey: await Jose.importPKCS8(decoded.privateKey, ALG)
+      publicKey: await Jose.importSPKI(decoded.publicKey, this.ALG),
+      privateKey: await Jose.importPKCS8(decoded.privateKey, this.ALG)
     });
   }
-
-  // ### Encrypt & Decrypt
-
-  async encrypt<T extends Record<string, unknown> | unknown[] | string>(value: T): Promise<string> {
-    const header = { alg: ALG, enc: ENC };
-    const text = new TextEncoder().encode(JSON.stringify(value));
-    return new Jose.CompactEncrypt(text).setProtectedHeader(header).encrypt(this.#publicKey);
-  }
-
-  async decrypt<T>(cypherText: string): Promise<T> {
-    const { plaintext } = await Jose.compactDecrypt(cypherText, this.#privateKey);
-    return JSON.parse(new TextDecoder().decode(plaintext));
-  }
-}
-
-export async function importPublicKey(publicKey: string): Promise<Jose.KeyLike> {
-  return Jose.importSPKI(publicKey, ALG, { extractable: true });
-}
-
-export async function importPrivateKey(privateKey: string): Promise<Jose.KeyLike> {
-  return Jose.importPKCS8(privateKey, ALG, { extractable: true });
 }

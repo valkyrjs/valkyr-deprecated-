@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { AuthService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/angular/src/Components/Modal/Service";
-import { IdentityService } from "@valkyr/identity";
 import { SelectOptions } from "@valkyr/tailwind/src/Select/Component";
 import { MenuItem } from "src/app/Shared/Layout/Models/MenuItem";
 import { Workspace } from "stores/src/Workspace";
@@ -23,7 +23,7 @@ export class WorkspaceListComponent implements OnInit, OnDestroy {
     readonly layout: LayoutService,
     readonly modal: ModalService<CreateWorkspaceDialog>,
     readonly workspace: WorkspaceService,
-    readonly identity: IdentityService
+    readonly auth: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -54,11 +54,7 @@ export class WorkspaceListComponent implements OnInit, OnDestroy {
       this,
       {
         criteria: {
-          "members.id": this.identity.auditor
-        },
-        stream: {
-          aggregate: "workspace",
-          endpoint: "/workspaces"
+          "members.id": this.auth.auditor
         }
       },
       (workspaces) => {
