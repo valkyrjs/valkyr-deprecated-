@@ -54,10 +54,11 @@ export class SelectComponent implements OnInit {
     return this.options.find((o) => o.value === this.value);
   }
 }
+
+export type SelectOptions = SelectOption[];
+
 export type SelectOption = {
   icon?: string;
   label: string;
   value: string;
 };
-
-export type SelectOptions = SelectOption[];

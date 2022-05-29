@@ -1,24 +1,23 @@
-import { Inject } from "@nestjs/common";
 import { SubscribeMessage } from "@nestjs/websockets";
 
 import { Socket, SocketGateway } from "../Socket";
-import { LedgerStreamGuard, STREAM_GUARD } from "./Guards";
+import { LedgerStreamGuard } from "./Guards/LedgerStreamGuards";
 
 export class LedgerGateway extends SocketGateway {
-  constructor(@Inject(STREAM_GUARD) private readonly guard: LedgerStreamGuard) {
+  constructor(readonly guard: LedgerStreamGuard) {
     super();
   }
 
   @SubscribeMessage("streams:relay")
   public async handleStreamRelay(socket: Socket, { aggregate, streamId, event }: any) {
-    if (await this.guard.canEnter(aggregate, streamId, socket.auditor)) {
+    if (socket.signature && (await this.guard.canEnter(aggregate, streamId, socket.signature))) {
       this.to(`stream:${streamId}`, [socket]).emit("ledger:event", event);
     }
   }
 
   @SubscribeMessage("streams:join")
   public async handleJoinStream(socket: Socket, { aggregate, streamId }: any) {
-    if (await this.guard.canEnter(aggregate, streamId, socket.auditor)) {
+    if (socket.signature && (await this.guard.canEnter(aggregate, streamId, socket.signature))) {
       this.join(socket, `stream:${streamId}`);
     }
   }

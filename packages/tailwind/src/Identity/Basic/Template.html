@@ -1,0 +1,73 @@
+<ng-container *ngIf="step === 'authenticate'">
+  <header>
+    <h1>Sign in</h1>
+    <p>Enter your credentials</p>
+  </header>
+  <section>
+    <div class="mb-6">
+      <label for="alias">Alias</label>
+      <input type="text" name="alias" id="alias" placeholder="John Doe" [(ngModel)]="alias" (keyup.enter)="authenticate()" tabindex="1" />
+    </div>
+    <div class="mb-6">
+      <label for="password">Password</label>
+      <input type="password" name="provider" id="password" placeholder="Your password" [(ngModel)]="password" (keyup.enter)="authenticate()" tabindex="2" />
+    </div>
+    <div class="mb-6">
+      <label for="secret">Secret Key</label>
+      <input type="text" name="secret" id="secret" placeholder="Your secret key" [(ngModel)]="secret" (keyup.enter)="authenticate()" tabindex="3" />
+    </div>
+    <div class="mb-6">
+      <div class="flex justify-between items-center">
+        <div class="flex flex-row items-center">
+          <input id="remember" aria-describedby="remember" type="checkbox" [(ngModel)]="remember" required="">
+          <div class="text-sm ml-3">
+            <label for="remember" class="remember">Remember me</label>
+          </div>
+        </div>
+        <div>
+          <button variant="cta" type="button" (click)="authenticate()" class="submit">Authorize</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div>
+      <span>Don't have an account? <a routerLink="/identity/register">Register</a>.</span>
+    </div>
+    <div>
+      <a href="#" class="info">Security information</a>
+    </div>
+  </footer>
+</ng-container>
+<ng-container *ngIf="step === 'users'">
+<header>
+  <h1>User</h1>
+  <p>Select the user you wish to sign in as</p>
+</header>
+<section>
+</section>
+<footer>
+</footer>
+  <div class="m-7">
+    <div class="users">
+      <div class="container">
+        <ng-container *ngFor="let user of users">
+          <div class="user" (click)="select(user.id)">
+            <div class="wrapper">
+              <div class="avatar">
+                <div class="avatar-inner">
+                  <img class="rounded-full" alt="A" src="https://randomuser.me/api/portraits/men/62.jpg">
+                </div>
+              </div>
+              <div class="meta">
+                <div class="meta-inner">{{user.data["name"]}}
+                  <div class="meta-details">User Identity</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>

@@ -1,46 +1,32 @@
-import { Routes } from "@angular/router";
-import { IdentityGuard } from "@valkyr/tailwind";
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { IdentityGuard } from "@valkyr/angular";
 
-import { DesignSystemComponent } from "./DesignSystem";
-import { DiscoveryComponent } from "./Discovery";
-import { TemplateListComponent } from "./Templates";
-import { TextEditorComponent } from "./TextEditor";
-import { TodoListComponent } from "./Todo/List/Component";
-import { TodoPickerComponent } from "./Todo/Picker/Component";
-import { WorkspaceItemComponent, WorkspaceListComponent } from "./Workspace";
-import { WorkspaceComponent } from "./Workspace/Component";
-
-export const routes: Routes = [
+const routes: Routes = [
   { path: "", redirectTo: "/workspaces", pathMatch: "full" },
   {
     path: "workspaces",
-    component: DiscoveryComponent,
     canActivate: [IdentityGuard],
-    children: [{ path: "", component: WorkspaceListComponent }]
+    loadChildren: () => import("./Views/Workspaces").then((m) => m.WorkspacesModule)
   },
   {
-    path: "workspaces/:workspace",
-    component: WorkspaceComponent,
+    path: "boards",
     canActivate: [IdentityGuard],
-    children: [
-      { path: "", component: WorkspaceItemComponent },
-      { path: "todos", component: TodoPickerComponent },
-      { path: "todos/:todo", component: TodoListComponent }
-    ]
-  },
-  {
-    path: "workspaces/:workspace/templates",
-    component: TemplateListComponent,
-    canActivate: [IdentityGuard]
+    loadChildren: () => import("./Views/Tasks").then((m) => m.TasksModule)
   },
   {
     path: "editor",
-    component: DiscoveryComponent,
-    children: [{ path: "", component: TextEditorComponent }]
+    loadChildren: () => import("./Views/TextEditor").then((m) => m.TextEditorModule)
   },
   {
     path: "ui",
-    component: DiscoveryComponent,
-    children: [{ path: "", component: DesignSystemComponent }]
+    canActivate: [],
+    loadChildren: () => import("./Views/DesignSystem").then((m) => m.DesignSystemModule)
   }
 ];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {}

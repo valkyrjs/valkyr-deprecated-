@@ -31,7 +31,7 @@ export class AccessKey {
 
   // ### Encrypt & Decrypt
 
-  encrypt(value: object | object[]): string {
+  encrypt<T = unknown>(value: T | T[]): string {
     return AES.encrypt(JSON.stringify(value), this.#key).toString();
   }
 

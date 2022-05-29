@@ -10,6 +10,7 @@ import {
   Document,
   InsertManyResponse,
   InsertOneResponse,
+  PartialDocument,
   Storage,
   UpdateActions,
   UpdateResponse
@@ -50,14 +51,14 @@ export class Collection<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  public async insertOne(document: D): Promise<InsertOneResponse> {
+  public async insertOne(document: PartialDocument<D>): Promise<InsertOneResponse> {
     return {
       acknowledged: true,
       insertedId: await this.storage.insert(document)
     };
   }
 
-  public async insertMany(documents: D[]): Promise<InsertManyResponse> {
+  public async insertMany(documents: PartialDocument<D>[]): Promise<InsertManyResponse> {
     return {
       acknowledged: true,
       insertedIds: await Promise.all(documents.map((document) => this.storage.insert(document)))

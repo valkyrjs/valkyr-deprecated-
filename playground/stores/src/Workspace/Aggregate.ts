@@ -1,3 +1,4 @@
+import { PublicIdentityKeys } from "@valkyr/identity";
 import { Aggregate, AggregateRoot } from "@valkyr/ledger";
 
 import { EventRecord } from "./Events";
@@ -17,13 +18,14 @@ export type State = {
 
 export type Invite = {
   id: string;
-  email: string;
+  alias: string;
+  signature: string;
 };
 
 export type Member = {
   id: string;
   name: string;
-  publicKey: string;
+  keys: PublicIdentityKeys;
 };
 
 /*
@@ -76,8 +78,12 @@ export class Workspace extends AggregateRoot {
  */
 
 class Invites extends Aggregate<Workspace, Invite> {
-  getByEmail(email: string) {
-    return this.index.find((invite) => invite.email === email);
+  getById(id: string) {
+    return this.index.find((invite) => invite.id === id);
+  }
+
+  getByAlias(alias: string) {
+    return this.index.find((invite) => invite.alias === alias);
   }
 }
 

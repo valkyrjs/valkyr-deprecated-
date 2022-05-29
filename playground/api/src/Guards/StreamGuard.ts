@@ -1,32 +1,28 @@
-import { Injectable } from "@nestjs/common";
-import { LedgerService, LedgerStreamGuard } from "@valkyr/nestjs";
+import { ForbiddenException, NotFoundException } from "@nestjs/common";
+import { IdentitySignature, LedgerStreamGuard } from "@valkyr/nestjs";
+import { Signature } from "@valkyr/security";
 import { WorkspaceStore } from "stores";
 
-@Injectable()
 export class StreamGuard extends LedgerStreamGuard {
-  // constructor(private readonly ledger: LedgerService) {
-  //   super();
-  // }
-
-  public async canEnter(aggregate: string, streamId: string, auditor?: string): Promise<boolean> {
+  async canEnter(aggregate: string, streamId: string, signature: IdentitySignature): Promise<boolean> {
     switch (aggregate) {
       case "workspace": {
-        return this.canEnterWorkspace(streamId, auditor);
+        return this.canEnterWorkspace(streamId, signature);
       }
     }
     return true;
   }
 
-  public async canEnterWorkspace(streamId: string, auditor?: string) {
-    this.requireAuditor(auditor);
-    // const workspace = await this.ledger.reduce(streamId, WorkspaceStore.Workspace);
-    // console.log(workspace);
-    return true;
-  }
-
-  public requireAuditor(auditor?: string) {
-    if (auditor === undefined) {
-      throw new Error("You are not authorized to subscribe to this stream");
+  async canEnterWorkspace(streamId: string, signature: IdentitySignature) {
+    const workspace = await this.ledger.reduce(streamId, WorkspaceStore.Workspace);
+    if (workspace === undefined) {
+      throw new NotFoundException();
     }
+    const member = workspace.members.getById(signature.auditor);
+    if (member === undefined) {
+      throw new ForbiddenException("You are not a member of this workspace");
+    }
+    await Signature.verify(signature.token, member.keys.signature);
+    return true;
   }
 }

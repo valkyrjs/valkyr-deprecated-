@@ -10,53 +10,59 @@ export class Logger {
     this.error = this.error.bind(this);
   }
 
-  public log(message: string, ...optionalParams: any[]) {
-    this.printMessage(message, optionalParams, "log");
+  static color = color;
+
+  log(message: string, ...optionalParams: any[]) {
+    this.#printMessage(message, optionalParams, "log");
   }
 
-  public debug(message: string, ...optionalParams: any[]) {
-    this.printMessage(message, optionalParams, "debug");
+  debug(message: string, ...optionalParams: any[]) {
+    this.#printMessage(message, optionalParams, "debug");
   }
 
-  public warn(message: string, ...optionalParams: any[]) {
-    this.printMessage(message, optionalParams, "warn");
+  warn(message: string, ...optionalParams: any[]) {
+    this.#printMessage(message, optionalParams, "warn");
   }
 
-  public error(message: string, ...optionalParams: any[]) {
-    this.printMessage(message, optionalParams, "error");
+  error(message: string, ...optionalParams: any[]) {
+    this.#printMessage(message, optionalParams, "error");
   }
 
-  public isLogLevelEnabled(logLevel: LogLevel) {
-    if (globalThis.window !== undefined) {
-      const levels = localStorage.getItem("logger");
-      if (levels !== null) {
-        if (levels === "*") {
-          return true;
-        }
-        return levels.split(",").includes(logLevel);
+  isLogLevelEnabled(logLevel: LogLevel) {
+    const levels = this.#getLogLevel() ?? "log";
+    if (levels !== undefined) {
+      if (levels === "*") {
+        return true;
       }
-      return false;
+      return levels.split(",").includes(logLevel);
     }
     return false;
   }
 
-  protected printMessage(message: string, optionalParams: any[] = [], logLevel: LogLevel = "log"): void {
+  #printMessage(message: string, optionalParams: any[] = [], logLevel: LogLevel = "log"): void {
     if (this.isLogLevelEnabled(logLevel) === false) {
       return;
     }
 
-    const logColor = this.getColorByLogLevel(logLevel);
+    const logColor = this.#getColorByLogLevel(logLevel);
     const output = logColor(message);
 
     const pidMessage = logColor(`[Valkyr] `);
     const contextMessage = color.yellow(`[${this.context}] `);
     const formattedLogLevel = logColor(logLevel.toUpperCase());
-    const computedMessage = `${pidMessage}${formattedLogLevel} ${contextMessage}${output}`;
+    const computedMessage = `${pidMessage}${this.#timestamp()} ${formattedLogLevel} ${contextMessage}${output}`;
 
     console.log(computedMessage, ...optionalParams);
   }
 
-  private getColorByLogLevel(level: LogLevel) {
+  #timestamp() {
+    const date = new Date();
+    return `${zeroPadding(date.getDay())}/${zeroPadding(date.getMonth())}/${zeroPadding(
+      date.getFullYear()
+    )} [${zeroPadding(date.getHours())}:${zeroPadding(date.getMinutes())}:${zeroPadding(date.getSeconds())}]`;
+  }
+
+  #getColorByLogLevel(level: LogLevel) {
     switch (level) {
       case "debug":
         return color.magentaBright;
@@ -68,4 +74,28 @@ export class Logger {
         return color.green;
     }
   }
+
+  #getLogLevel() {
+    if (globalThis.window === undefined) {
+      return this.#getNodeLoggerLevel();
+    }
+    return localStorage.getItem("logger") || undefined;
+  }
+
+  #getNodeLoggerLevel() {
+    const index = globalThis.process?.argv.findIndex((value) => value.includes("--logger")) ?? -1;
+    if (index === -1) {
+      return undefined;
+    }
+    const [, value] = process.argv[index].split("=");
+    return value;
+  }
+}
+
+function zeroPadding(value: number) {
+  const number = String(value);
+  if (number.length === 1) {
+    return `0${number}`;
+  }
+  return number;
 }

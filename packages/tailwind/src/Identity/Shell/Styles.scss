@@ -1,0 +1,118 @@
+:host {
+  @apply relative block;
+  @apply items-center;
+  @apply h-full min-h-screen w-full;
+  @apply bg-cover bg-center;
+  @apply bg-white;
+}
+
+.vlk-canvas-background {
+  @apply block h-full;
+  @apply overflow-x-hidden overflow-y-auto;
+}
+
+.vlk-canvas-layout {
+  @apply visible;
+  @apply relative grid;
+  @apply min-h-full;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 60px min-content minmax(min-content, 1fr) minmax(35px, min-content);
+}
+
+.vlk-canvas-grid {
+  @apply relative block justify-center box-border w-full pl-4 pr-4;
+  grid-row: 1/5;
+  grid-column: 1/4;
+}
+
+.vlk-canvas-brand {
+  @apply hidden;
+  grid-row:1;
+  grid-column: 2/6;
+}
+.vlk-canvas-brand-container {
+  @apply relative flex h-full w-96;
+  @apply items-center;
+}
+.vlk-brand-header {
+  @apply flex flex-row gap-5;
+  @apply mb-2;
+  @apply items-center;
+  @apply text-white;
+  @apply font-bold;
+  @apply text-static-white fill-static-white;
+  span {
+    @apply text-2xl;
+  }
+}
+
+.vlk-brand-copy {
+  @apply text-xl;
+  @apply font-light;
+  @apply text-static-white;
+  @apply m-0;
+  @apply leading-6;
+}
+
+.vlk-canvas-panel  {
+  @apply w-full flex flex-col justify-center my-0 mx-auto;
+  grid-column: 1/13;
+  grid-row: 1;
+}
+
+.vlk-content {
+  @apply relative flex flex-col min-h-full;
+  @apply pt-6 px-0 pb-10;
+  @apply bg-white;
+  @apply rounded;
+  border: 1px solid hsla(0,0%,100%,0);
+}
+
+@media screen and (min-width: 510px) {
+  :host {
+    background-image: url("//source.unsplash.com/JOzv_pAkcMk");
+  }
+  .vlk-canvas-background {
+    background: #00000080;
+  }
+  .vlk-canvas-layout {
+    @apply h-full;
+    grid-template-columns: 1fr minmax(min-content, 1280px) 1fr;
+  }
+  .vlk-canvas-grid {
+    @apply grid;
+    @apply items-center;
+    @apply pl-0 pr-0 mx-auto my-0;
+    grid-template-rows: 1fr;
+    grid-template-columns: repeat(12, 1fr);
+    @apply gap-y-0 gap-x-8;
+    grid-column: 2/3;
+    grid-row: 1/5;
+    background: #0000;
+  }
+  .vlk-canvas-panel {
+    @apply h-full;
+    width: 510px;
+  }  
+  .vlk-content {
+    box-sizing: border-box;
+    min-height: 430px;
+    padding: 24px 56px 40px;    
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .vlk-content {
+    padding: 40px 56px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .vlk-canvas-brand {
+    display: block;
+  }
+  .vlk-canvas-panel {
+    justify-content: center;
+    grid-column: 7/12;
+  }
+}

@@ -1,60 +1,57 @@
 import { DragDropModule } from "@angular/cdk/drag-drop";
-import { APP_INITIALIZER, NgModule } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
-import { AccessModule, LedgerModule, ModalModule } from "@valkyr/angular";
-import { IdentityProviderService, IdentityService, localIdentityStorage } from "@valkyr/identity";
-import { IdentityModule } from "@valkyr/tailwind";
-import { from, Observable } from "rxjs";
+import { AccessModule, IdentityModule, LedgerModule, LedgerService } from "@valkyr/angular";
+import { ButtonModule, ModalModule, TailwindIdentityModule } from "@valkyr/tailwind";
 
 import { AppComponent } from "./Component";
-import { DesignSystemModule } from "./DesignSystem/Module";
-import { DiscoveryModule } from "./Discovery";
-import { routes } from "./Routing";
-import { TemplateModule } from "./Templates/Module";
-import { TodoModule } from "./Todo";
-import { WorkspaceModule } from "./Workspace";
+import { AppRoutingModule } from "./Routing";
+import { LayoutModule } from "./Shared/Layout/Module";
+import { ThemeModule } from "./Shared/ThemeService";
+import { WorkspaceServicesModule } from "./Shared/WorkspaceServices";
+import { WorkspaceAccess } from "./Shared/WorkspaceServices/Access";
+import { WorkspaceProjector } from "./Shared/WorkspaceServices/Projector";
+import { WorkspaceValidator } from "./Shared/WorkspaceServices/Validators/Workspace";
+import { TodoProjector } from "./Views/Tasks/Projector";
 
 @NgModule({
   imports: [
     AccessModule,
     BrowserModule,
+    ButtonModule,
+    BrowserAnimationsModule,
+    LayoutModule,
     DragDropModule,
-    DiscoveryModule,
-    TemplateModule,
-    DesignSystemModule,
-    IdentityModule.forRoot(
-      {
-        host: "188.166.248.32",
-        port: 9000,
-        path: "/myapp"
-      },
-      localIdentityStorage
-    ),
-    LedgerModule,
+    IdentityModule,
+    TailwindIdentityModule,
+    LedgerModule.forRoot({
+      projectors: [
+        {
+          projector: WorkspaceProjector,
+          deps: [WorkspaceAccess]
+        },
+
+        {
+          projector: TodoProjector
+        }
+      ],
+      validators: [
+        {
+          validator: WorkspaceValidator,
+          deps: [WorkspaceAccess, LedgerService]
+        }
+      ]
+    }),
     ModalModule,
-    RouterModule.forRoot(routes),
-    TodoModule,
-    WorkspaceModule
+    ThemeModule,
+    WorkspaceServicesModule,
+    RouterModule.forRoot([]),
+    AppRoutingModule
   ],
   declarations: [AppComponent],
-  providers: [
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeAppFactory,
-      deps: [IdentityService],
-      multi: true
-    }
-  ],
   bootstrap: [AppComponent],
   exports: [RouterModule]
 })
-export class AppModule {
-  constructor(readonly client: IdentityService, readonly provider: IdentityProviderService) {
-    console.log("Provider:", provider.id);
-  }
-}
-
-function initializeAppFactory(identity: IdentityService): () => Observable<any> {
-  return () => from(identity.init());
-}
+export class AppModule {}
