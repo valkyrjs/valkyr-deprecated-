@@ -13,7 +13,7 @@ describe("Storage Insert", () => {
     try {
       await collection.insertOne(documents[0]);
     } catch (err) {
-      expect(err instanceof DuplicateDocumentError).toBeTrue;
+      expect(err instanceof DuplicateDocumentError).toEqual(true);
       expect(err).toEqual(new DuplicateDocumentError(documents[0], collection.storage));
     }
   });

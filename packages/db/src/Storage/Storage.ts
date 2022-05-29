@@ -10,6 +10,7 @@ import type {
   Document,
   Insert,
   Operation,
+  PartialDocument,
   Replace,
   Status,
   Update,
@@ -126,7 +127,7 @@ export class Storage<D extends Document = any> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  public async insert(document: D): Promise<string> {
+  public async insert(document: PartialDocument<D>): Promise<string> {
     this.logger.debug(`${this.name} [${this.id}] Insert`, document.id);
     return this.run({ type: "insert", document } as Insert<D>);
   }

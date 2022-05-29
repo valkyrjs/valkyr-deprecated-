@@ -1,30 +1,23 @@
 import { Routes } from "@angular/router";
+import { GuestGuard } from "@valkyr/angular";
 
-import { AuthorizeComponent } from "./Components/Authorize/Component";
-import { RegistrationComponent } from "./Components/Registration/Component";
-import { ShellComponent } from "./Components/Shell/Component";
-import { GuestGuard } from "./Guards/GuestGuard";
+import { BasicStrategyComponent } from "./Basic/Component";
+import { RegistrationComponent } from "./Registration/Component";
+import { ShellComponent } from "./Shell/Component";
 
 export const routes: Routes = [
   {
-    path: "authorize",
+    path: "identity",
     component: ShellComponent,
     canActivate: [GuestGuard],
     children: [
       {
-        path: "",
-        component: AuthorizeComponent
-      }
-    ]
-  },
-  {
-    path: "identity",
-    component: ShellComponent,
-    children: [
+        path: "authorize",
+        component: BasicStrategyComponent
+      },
       {
         path: "register",
-        component: RegistrationComponent,
-        canActivate: [GuestGuard]
+        component: RegistrationComponent
       }
     ]
   }

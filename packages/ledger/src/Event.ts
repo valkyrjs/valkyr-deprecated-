@@ -19,11 +19,13 @@ export function makeEventFactory<Event extends LedgerEvent>(type: Event["type"])
  */
 
 export function createEventRecord<Event extends LedgerEvent>(streamId: string, event: Event): LedgerEventRecord<Event> {
+  const timestamp = getLogicalTimestamp();
   return {
     id: getId(),
     streamId,
     ...event,
-    created: getLogicalTimestamp()
+    created: timestamp,
+    recorded: timestamp
   };
 }
 
@@ -46,6 +48,7 @@ export type LedgerEventRecord<Event extends LedgerEvent> = {
   data: Event["data"];
   meta: Event["meta"];
   created: string;
+  recorded: string;
 };
 
 export type LedgerEvent<EventType = string, EventData = unknown | never, EventMeta = unknown | never> = {

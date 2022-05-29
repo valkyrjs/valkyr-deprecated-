@@ -1,7 +1,7 @@
 import "reflect-metadata";
 
 import { Logger } from "@nestjs/common";
-import { Ledger } from "@valkyr/ledger";
+import { projection } from "@valkyr/ledger";
 
 const logger = new Logger("Projector", { timestamp: true });
 
@@ -24,8 +24,8 @@ export function Projector(): ClassDecorator {
     target.prototype.onModuleInit = async function () {
       const map = Reflect.getOwnMetadata(PROJECTION_METADATA, this.constructor);
       for (const { key, event, method } of map) {
-        logger.log(`Mapped {${event}, ${method.toUpperCase()}}`);
-        Ledger.projection[method as "on" | "once" | "all"](event, (this as any)[key].bind(this));
+        logger.log(`Registered ${event} ${method.toUpperCase()}`);
+        projection[method as "on" | "once" | "all"](event, (this as any)[key].bind(this));
       }
     };
   };

@@ -7,6 +7,7 @@ export type EventDocument = Document & {
   data: any;
   meta: any;
   created: string;
+  recorded: string;
 };
 
 @Injectable({ providedIn: "root" })
@@ -16,6 +17,7 @@ export class Event extends Model<EventDocument> {
   readonly data!: EventDocument["data"];
   readonly meta!: EventDocument["meta"];
   readonly created!: EventDocument["created"];
+  readonly recorded!: EventDocument["recorded"];
 
   static async insert(document: EventDocument): Promise<Event> {
     return this.insertOne(document);

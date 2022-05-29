@@ -10,15 +10,14 @@ import { RolePermission, RolePermissions } from "./RolePermission";
  */
 
 export class Role<Permissions extends RolePermissions = RolePermissions> {
+  readonly id = this.role.id;
   readonly tenantId = this.role.tenantId;
-  readonly roleId = this.role.roleId;
-
   readonly name = this.role.name;
   readonly settings = this.role.settings;
   readonly permissions = this.role.permissions;
   readonly members = Object.freeze(this.role.members);
 
-  constructor(private readonly role: RoleData<Permissions>) {
+  constructor(readonly role: RoleData<Permissions>) {
     Object.freeze(this);
   }
 
@@ -55,11 +54,11 @@ export class Role<Permissions extends RolePermissions = RolePermissions> {
    */
 
   get grant() {
-    return new RolePermission<Permissions>(this.roleId).grant;
+    return new RolePermission<Permissions>(this.id).grant;
   }
 
   get deny() {
-    return new RolePermission<Permissions>(this.roleId).deny;
+    return new RolePermission<Permissions>(this.id).deny;
   }
 
   /*
@@ -69,16 +68,16 @@ export class Role<Permissions extends RolePermissions = RolePermissions> {
    */
 
   toJSON(): {
+    id: string;
     tenantId: string;
-    roleId: string;
     name: string;
     settings: Record<string, unknown>;
     permissions: Permissions;
     members: string[];
   } {
     return clone({
+      id: this.id,
       tenantId: this.tenantId,
-      roleId: this.roleId,
       name: this.name,
       settings: this.settings,
       permissions: this.permissions,
@@ -99,6 +98,7 @@ export type RoleClass<T = unknown, P extends RolePermissions = RolePermissions> 
 };
 
 export type RoleSettings<P extends RolePermissions> = {
+  id: RoleData["id"];
   tenantId: RoleData["tenantId"];
   name: RoleData["name"];
   settings?: RoleData["settings"];

@@ -102,11 +102,13 @@ function runUnset(document: Document, $unset: UpdateActions["$unset"] = {}) {
  |--------------------------------------------------------------------------------
  */
 
-function runPush(notation: any, $push: UpdateActions["$push"] = {}) {
+function runPush(document: Document, $push: UpdateActions["$push"] = {}) {
   for (const key in $push) {
-    const value = notation.get(key);
-    if (Array.isArray(value)) {
-      notation.set(key, [...value, $push[key]]);
+    const value = dot.getProperty(document, key);
+    if (value === undefined) {
+      dot.setProperty(document, key, [$push[key]]);
+    } else if (Array.isArray(value)) {
+      dot.setProperty(document, key, [...value, $push[key]]);
     }
   }
 }

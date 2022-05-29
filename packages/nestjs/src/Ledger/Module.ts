@@ -1,11 +1,11 @@
 import { DynamicModule, Global, Module, Type } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
-import { LedgerController } from "./Controller";
+import { LedgerController } from "./Controllers/LedgerController";
 import { LedgerGateway } from "./Gateway";
-import { LedgerStreamGuard, STREAM_GUARD } from "./Guards";
-import { Event, EventSchema } from "./Model";
-import { LedgerService } from "./Service";
+import { LedgerStreamGuard } from "./Guards/LedgerStreamGuards";
+import { Event, EventSchema } from "./Models/Event";
+import { LedgerService } from "./Services/LedgerService";
 
 @Global()
 @Module({})
@@ -24,7 +24,7 @@ export class LedgerModule {
       controllers: [LedgerController],
       providers: [
         {
-          provide: STREAM_GUARD,
+          provide: LedgerStreamGuard,
           useClass: options.StreamGuard
         },
         LedgerService,

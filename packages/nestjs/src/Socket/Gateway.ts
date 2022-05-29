@@ -107,8 +107,8 @@ export class ValkyrGateway extends SocketGateway {
   @SubscribeMessage("token")
   public async onToken(socket: Socket, { token }: any) {
     const res: any = jwt.verify(token, "development");
-    socket.auditor = res.auditor;
-    this.join(socket, res.auditor);
+    socket.signature = res.signature;
+    this.join(socket, res.signature);
     logger.debug(`socket ${clc.cyanBright(`[${socket.id}]`)} ${clc.yellow("authenticated")} ${res.auditor}`);
   }
 }

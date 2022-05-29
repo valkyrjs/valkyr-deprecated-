@@ -1,7 +1,9 @@
+const docs = require("./docs");
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Valkyr",
-  tagline: "One way to build applications",
+  tagline: "A collection of tools for building applications using web based technologies",
   url: "https://your-docusaurus-test-site.com",
   baseUrl: "/",
   onBrokenLinks: "warn",
@@ -18,52 +20,16 @@ const config = {
     navbar: {
       title: "Valkyr",
       logo: {
-        alt: "My Site Logo",
-        src: "img/logo.svg",
+        alt: "Valkyr Site Logo",
+        src: "img/logo.png",
       },
       items: [
-        {
-          to: "access",
-          activeBasePath: "access",
-          label: "Access",
+        ...docs.map(doc => ({
+          to: doc,
+          activeBasePath: doc,
+          label: capitalizeFirstLetter(doc),
           position: "left"
-        },
-        {
-          to: "auth",
-          activeBasePath: "auth",
-          label: "Auth",
-          position: "left"
-        },
-        {
-          to: "db",
-          activeBasePath: "db",
-          label: "DB",
-          position: "left"
-        },
-        {
-          to: "ledger",
-          activeBasePath: "ledger",
-          label: "Ledger",
-          position: "left"
-        },
-        {
-          to: "router",
-          activeBasePath: "router",
-          label: "Router",
-          position: "left"
-        },
-        {
-          to: "server",
-          activeBasePath: "server",
-          label: "Server",
-          position: "left"
-        },
-        {
-          to: "socket",
-          activeBasePath: "socket",
-          label: "Socket",
-          position: "left"
-        },
+        })),
         {
           href: "https://github.com/kodemon/valkyr",
           label: "GitHub",
@@ -117,77 +83,21 @@ const config = {
   ],
 
   plugins: [
-    [
+    ...docs.map(doc => ([
       "@docusaurus/plugin-content-docs",
       {
-        id: "access",
-        path: "../packages/access/docs",
-        routeBasePath: "access",
+        id: doc,
+        path: `../packages/${doc}/docs`,
+        routeBasePath: doc,
         editUrl: "https://github.com/kodemon/valkyr/tree/main/docs",
         sidebarCollapsed: false
       }
-    ],
-    [
-      "@docusaurus/plugin-content-docs",
-      {
-        id: "auth",
-        path: "../packages/auth/docs",
-        routeBasePath: "auth",
-        editUrl: "https://github.com/kodemon/valkyr/tree/main/docs",
-        sidebarCollapsed: false
-      }
-    ],
-    [
-      "@docusaurus/plugin-content-docs",
-      {
-        id: "db",
-        path: "../packages/db/docs",
-        routeBasePath: "db",
-        editUrl: "https://github.com/kodemon/valkyr/tree/main/docs",
-        sidebarCollapsed: false
-      }
-    ],
-    [
-      "@docusaurus/plugin-content-docs",
-      {
-        id: "ledger",
-        path: "../packages/ledger/docs",
-        routeBasePath: "ledger",
-        editUrl: "https://github.com/kodemon/valkyr/tree/main/docs",
-        sidebarCollapsed: false
-      }
-    ],
-    [
-      "@docusaurus/plugin-content-docs",
-      {
-        id: "router",
-        path: "../packages/router/docs",
-        routeBasePath: "router",
-        editUrl: "https://github.com/kodemon/valkyr/tree/main/docs",
-        sidebarCollapsed: false
-      }
-    ],
-    [
-      "@docusaurus/plugin-content-docs",
-      {
-        id: "server",
-        path: "../packages/server/docs",
-        routeBasePath: "server",
-        editUrl: "https://github.com/kodemon/valkyr/tree/main/docs",
-        sidebarCollapsed: false
-      }
-    ],
-    [
-      "@docusaurus/plugin-content-docs",
-      {
-        id: "socket",
-        path: "../packages/socket/docs",
-        routeBasePath: "socket",
-        editUrl: "https://github.com/kodemon/valkyr/tree/main/docs",
-        sidebarCollapsed: false
-      }
-    ]
+    ]))
   ]
 };
 
 module.exports = config;
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}

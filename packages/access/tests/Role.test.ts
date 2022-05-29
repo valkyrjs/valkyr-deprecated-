@@ -4,8 +4,8 @@ let role: TestRole;
 
 beforeEach(async () => {
   role = new TestRole({
+    id: "abc",
     tenantId: "xyz",
-    roleId: "abc",
     name: "Owner",
     settings: {},
     permissions: {

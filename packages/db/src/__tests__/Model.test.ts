@@ -15,7 +15,7 @@ describe("Model", () => {
       try {
         await User.insertOne(data[0]);
       } catch (err) {
-        expect(err instanceof DuplicateDocumentError).toBeTrue;
+        expect(err instanceof DuplicateDocumentError).toEqual(true);
         expect(err).toEqual(new DuplicateDocumentError(data[0], User.$collection.storage));
       }
     });
@@ -38,7 +38,7 @@ describe("Model", () => {
       try {
         await User.updateOne({ id: "user-4" }, { $set: { name: "James Doe" } });
       } catch (err) {
-        expect(err instanceof DuplicateDocumentError).toBeTrue;
+        expect(err instanceof DocumentNotFoundError).toEqual(true);
         expect(err).toEqual(new DocumentNotFoundError({ id: "user-4" }));
       }
     });

@@ -1,4 +1,5 @@
-import { Attributes, Role } from "@valkyr/access";
+import { Attributes, Role, RoleSettings } from "@valkyr/access";
+import { getId } from "@valkyr/security";
 
 /*
  |--------------------------------------------------------------------------------
@@ -64,3 +65,56 @@ export class WorkspaceRole extends Role<{
     };
   }
 }
+
+export const roles = {
+  admin: (workspaceId: string, members: string[]): RoleSettings<WorkspaceRole["permissions"]> => ({
+    id: getId(),
+    tenantId: workspaceId,
+    name: "Admin",
+    settings: {},
+    permissions: {
+      workspace: {
+        setName: true,
+        delete: true,
+        createInvite: true,
+        removeInvite: true,
+        removeMember: true
+      },
+      todo: {
+        create: true,
+        remove: true,
+        addItem: true,
+        addItemText: true,
+        setItemDone: true,
+        setItemUndone: true,
+        removeItem: true
+      }
+    },
+    members
+  }),
+  member: (workspaceId: string, members: string[]): RoleSettings<WorkspaceRole["permissions"]> => ({
+    id: getId(),
+    tenantId: workspaceId,
+    name: "Member",
+    settings: {},
+    permissions: {
+      workspace: {
+        setName: false,
+        delete: false,
+        createInvite: false,
+        removeInvite: false,
+        removeMember: false
+      },
+      todo: {
+        create: false,
+        remove: false,
+        addItem: true,
+        addItemText: true,
+        setItemDone: true,
+        setItemUndone: true,
+        removeItem: true
+      }
+    },
+    members
+  })
+};

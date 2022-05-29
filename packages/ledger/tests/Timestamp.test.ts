@@ -3,7 +3,7 @@ import { getDate, getLogicalTimestamp, getTimestamp, Timestamp } from "../src/Ti
 describe("Timestamp", () => {
   it("should create non conflicting timestamps", async () => {
     const result = await runTimestampTest(10, 0, 0);
-    expect(result.validated).toBeTrue;
+    expect(result.validated).toEqual(true);
   });
 });
 

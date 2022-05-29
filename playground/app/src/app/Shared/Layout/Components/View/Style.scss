@@ -1,0 +1,102 @@
+:host {
+  @apply grid h-screen overflow-hidden w-full;
+  &[layout=""] {
+    @apply block w-full overflow-auto;
+  }
+  &[layout="header__nav"] {
+    grid-template-areas: 
+      "header"
+      "nav"
+      "content"
+    ;
+    grid-template-columns: 1fr;
+    grid-template-rows: 42px 56px 1fr;
+  }
+  &[layout="header__nav__sidebar"] {
+    grid-template-areas: 
+      "header header"
+      "small-sidebar nav"
+      "small-sidebar content"
+    ;
+    grid-template-columns: 42px 1fr;
+    grid-template-rows: 42px 56px 1fr;
+  }
+  &[layout="header__nav__sidepane"] {
+    grid-template-areas: 
+      "header header"
+      "sidebar nav"
+      "sidebar content"
+    ;
+    grid-template-columns: 226px 1fr;
+    grid-template-rows: 42px 56px 1fr;
+  }
+  &[layout="header__nav__sidebar__sidepane"] {
+    grid-template-areas: 
+      "header header header"
+      "small-sidebar sidebar nav"
+      "small-sidebar sidebar content"
+    ;
+    grid-template-columns: 42px 226px 1fr;
+    grid-template-rows: 42px 56px 1fr;
+  }
+  &[layout="header"] {
+    grid-template-areas: 
+      "header"
+      "content"
+    ;
+    grid-template-columns: 1fr;
+    grid-template-rows: 42px 1fr;
+  }
+  &[layout="header__sidebar"] {
+    grid-template-areas: 
+      "header header"
+      "small-sidebar content"
+    ;
+    grid-template-columns: 42px 1fr;
+    grid-template-rows: 42px 1fr;
+  }
+  &[layout="header__sidepane"] {
+    grid-template-areas: 
+      "header header"
+      "sidebar content"
+    ;
+    grid-template-columns: 226px 1fr;
+    grid-template-rows: 42px 1fr;
+  }
+  &[layout="header__sidebar__sidepane"] {
+    grid-template-areas: 
+      "header header header"
+      "small-sidebar sidebar content"
+    ;
+    grid-template-columns: 42px 226px 1fr;
+    grid-template-rows: 42px 1fr;
+  }
+
+  .left-aside {
+    @apply px-6 pt-6 h-full w-full flex flex-col justify-start gap-6;
+    .actions {
+      @apply pb-6;
+      @apply border-b border-gray-200;
+    }
+    .menus {
+      @apply h-full flex flex-col justify-between;
+      > app-menu-categories {
+        @apply h-auto;
+        @apply list-none;
+        @apply text-sm;
+        &.menu-footer {
+          @apply mt-0;
+          @apply mb-1;
+        }
+      }
+    }
+  }
+  nav {
+    @apply grid-in-nav font-semibold text-gray-700 bg-gray-100;
+    header {
+      @apply flex justify-between items-center h-full px-4;
+    }
+  }
+}
+
+
