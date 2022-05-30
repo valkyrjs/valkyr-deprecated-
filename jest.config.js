@@ -1,6 +1,6 @@
 module.exports = {
   preset: "ts-jest",
-  testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.ts?$",
+  testRegex: "(/__tests__/.*|(\\.|/)(test|spec|cucumber.setup))\\.ts?$",
   moduleNameMapper: {
     "@valkyr/(.*)": "<rootDir>/packages/$1/src"
   },

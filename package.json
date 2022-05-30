@@ -22,24 +22,26 @@
     "app": "npm start --prefix playground/app",
     "web": "npm start --prefix website",
     "lint": "eslint ./packages --ext .ts --fix",
-    "test": "jest --maxWorkers=100% --detectOpenHandles",
+    "test": "cucumber-js --config cucumber.js",
     "coverage": "jest --ci --coverage --forceExit --maxWorkers=4"
   },
   "dependencies": {
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
-    "@types/jest": "27.5.1",
+    "@cucumber/cucumber": "8.2.2",
+    "@types/chai": "4.3.1",
     "@types/node": "16.10.3",
     "@typescript-eslint/eslint-plugin": "5.23.0",
     "@typescript-eslint/parser": "5.23.0",
+    "chai": "4.3.6",
     "eslint": "8.15.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-simple-import-sort": "7.0.0",
     "husky": "8.0.1",
     "process": "0.11.10",
-    "ts-jest": "28.0.3",
-    "typescript": "4.6.4"
+    "typescript": "4.6.4",
+    "ts-node": "10.8.0"
   }
 }

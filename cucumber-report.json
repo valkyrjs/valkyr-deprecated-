@@ -1,0 +1,847 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "projection;projecting-an-event",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Projecting an event",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 736811
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a projection that is registered under the \"once\" handler",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 345096
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the projected the event is hydrated false and outdated false",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1094964
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the projection outcome should be true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 489767
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "projection;projecting-an-event",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Projecting an event",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 87017
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a projection that is registered under the \"once\" handler",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 78254
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the projected the event is hydrated true and outdated false",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 118944
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the projection outcome should be false",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 78650
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "projection;projecting-an-event",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Projecting an event",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 56918
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a projection that is registered under the \"once\" handler",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 70764
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the projected the event is hydrated false and outdated true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 218763
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the projection outcome should be false",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 67109
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "projection;projecting-an-event",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Projecting an event",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 63725.00000000001
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a projection that is registered under the \"once\" handler",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 191850
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the projected the event is hydrated true and outdated true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 102250
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the projection outcome should be false",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 114296
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "projection;projecting-an-event",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Projecting an event",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 59498
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a projection that is registered under the \"on\" handler",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 167259
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the projected the event is hydrated false and outdated false",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 101528
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the projection outcome should be true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 49365
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "projection;projecting-an-event",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Projecting an event",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 43919
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a projection that is registered under the \"on\" handler",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 46321
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the projected the event is hydrated true and outdated false",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 137456
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the projection outcome should be true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 61157
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "projection;projecting-an-event",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Projecting an event",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 42975
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a projection that is registered under the \"on\" handler",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 105499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the projected the event is hydrated false and outdated true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 106237
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the projection outcome should be false",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 89174
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "projection;projecting-an-event",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Projecting an event",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 48001
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a projection that is registered under the \"on\" handler",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 41629
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the projected the event is hydrated true and outdated true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 90404
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the projection outcome should be false",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 45794
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "projection;projecting-an-event",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Projecting an event",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 127885
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a projection that is registered under the \"all\" handler",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 73287
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the projected the event is hydrated false and outdated false",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 176292
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the projection outcome should be true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 91339
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "projection;projecting-an-event",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Projecting an event",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 99049
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a projection that is registered under the \"all\" handler",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 74111
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the projected the event is hydrated true and outdated false",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 152347
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the projection outcome should be true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 48186
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "projection;projecting-an-event",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Projecting an event",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 42277
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a projection that is registered under the \"all\" handler",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 48001
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the projected the event is hydrated false and outdated true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 145153
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the projection outcome should be true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 41780
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "projection;projecting-an-event",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Projecting an event",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 110105
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a projection that is registered under the \"all\" handler",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 43756
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the projected the event is hydrated true and outdated true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 153275
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the projection outcome should be true",
+            "match": {
+              "location": "packages/ledger/features/tests/Projection.steps.ts:38"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 40657
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "projection",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Projection",
+    "tags": [],
+    "uri": "packages/ledger/features/Projection.feature"
+  },
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "reducer;reducing-a-series-of-events",
+        "keyword": "Scenario",
+        "line": 3,
+        "name": "Reducing a series of events",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 38177
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "a list of events",
+            "match": {
+              "location": "packages/ledger/features/tests/Reducer.steps.ts:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 106217
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "the events are reduced",
+            "match": {
+              "location": "packages/ledger/features/tests/Reducer.steps.ts:20"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 82587
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "the state should return a reduced result",
+            "match": {
+              "location": "packages/ledger/features/tests/Reducer.steps.ts:24"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 493835
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "reducer",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Reducer",
+    "tags": [],
+    "uri": "packages/ledger/features/Reducer.feature"
+  },
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "timestamp;generating-timestamps",
+        "keyword": "Scenario Outline",
+        "line": 3,
+        "name": "Generating timestamps",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 57701
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "an count of 100 timestamps with a min delay of 0 and max delay of 50",
+            "match": {
+              "location": "packages/ledger/features/tests/Timestamp.steps.ts:13"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 72839
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "when generating a list of timestamps",
+            "match": {
+              "location": "packages/ledger/features/tests/Timestamp.steps.ts:22"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2666443718
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 6,
+            "name": "it should create timestamps without conflicts",
+            "match": {
+              "location": "packages/ledger/features/tests/Timestamp.steps.ts:26"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 388036
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "timestamp",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Timestamp",
+    "tags": [],
+    "uri": "packages/ledger/features/Timestamp.feature"
+  }
+]
