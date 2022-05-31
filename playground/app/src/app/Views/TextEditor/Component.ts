@@ -21,6 +21,7 @@ export class TextEditorComponent implements OnInit, OnDestroy {
             type: "link",
             icon: "home",
             name: "Home",
+            isActive: false,
             href: "/workspaces"
           }
         ]
@@ -36,12 +37,15 @@ export class TextEditorComponent implements OnInit, OnDestroy {
                 type: "link",
                 icon: "home",
                 name: "Home",
+                isActive: false,
                 href: "/workspaces"
               },
               {
                 type: "link",
                 icon: "text-edit",
                 name: "Text Editor",
+                isActive: true,
+
                 href: "/editor"
               }
             ]

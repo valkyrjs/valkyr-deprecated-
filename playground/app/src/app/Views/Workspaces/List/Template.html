@@ -26,7 +26,7 @@
     </header>
     <ul role="list" class="w-full min-h-full grid grid-areas-workspaces grid-cols-workspaces grid-rows-workspaces gap-6">
       <li *ngFor="let workspace of workspaces">
-        <a routerLink="/workspaces/{{workspace.id}}">
+        <button (click)="activateWorkspace(workspace.id)">
           <div class="flex flex-col justify-start w-36 group">
             <div class="w-full h-36 bg-gray-200 group-hover:bg-gray-300 transition-colors duration-500"></div>
             <div class="text-xs uppercase text-gray-600 pt-2">{{workspace.name}}</div>
@@ -37,7 +37,7 @@
               </div>
             </div>
           </div>
-        </a>
+        </button>
       </li>
     </ul>
   </section>

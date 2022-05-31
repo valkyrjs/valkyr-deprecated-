@@ -14,7 +14,7 @@ import { WorkspaceServicesModule } from "./Shared/WorkspaceServices";
 import { WorkspaceAccess } from "./Shared/WorkspaceServices/Access";
 import { WorkspaceProjector } from "./Shared/WorkspaceServices/Projector";
 import { WorkspaceValidator } from "./Shared/WorkspaceServices/Validators/Workspace";
-import { TodoProjector } from "./Views/Tasks/Projector";
+import { ItemProjector } from "./Views/Items/Projector";
 
 @NgModule({
   imports: [
@@ -34,7 +34,7 @@ import { TodoProjector } from "./Views/Tasks/Projector";
         },
 
         {
-          projector: TodoProjector
+          projector: ItemProjector
         }
       ],
       validators: [

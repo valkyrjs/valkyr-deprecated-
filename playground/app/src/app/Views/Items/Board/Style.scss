@@ -1,0 +1,11 @@
+:host {
+  @apply p-6;
+  @apply flex flex-col gap-6;  
+}
+.actions {
+  @apply flex justify-end;  
+}
+.lists {
+  @apply w-full;
+  @apply flex justify-center items-center gap-6;
+}

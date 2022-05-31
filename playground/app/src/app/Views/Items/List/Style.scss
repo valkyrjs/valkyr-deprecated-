@@ -1,0 +1,16 @@
+:host {
+  @apply flex flex-col justify-start items-center;
+  @apply w-96;
+}
+
+header {
+  @apply w-full p-4;
+  @apply bg-gray-300;
+  @apply text-center;
+}
+
+ul {
+  @apply w-full p-4;
+  @apply h-96 overflow-y-auto;
+  @apply border-2 border-gray-300 border-dotted;
+}

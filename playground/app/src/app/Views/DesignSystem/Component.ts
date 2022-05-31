@@ -65,12 +65,14 @@ export class DesignSystemComponent {
                 type: "link",
                 icon: "home",
                 name: "Home",
+                isActive: false,
                 href: "/workspaces"
               },
               {
                 type: "link",
                 icon: "design",
                 name: "Design System",
+                isActive: true,
                 href: "/ui"
               }
             ]

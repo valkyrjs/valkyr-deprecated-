@@ -1,3 +1,0 @@
-<div class="component" [ngStyle]="{ left: pos.x + 'px', top: pos.y + 'px' }" cdkDrag (cdkDragStarted)="startDragging()" (cdkDragEnded)="endDragging($event)" [cdkDragConstrainPosition]="dragConstrainPoint" [cdkDragFreeDragPosition]="pos">
-  <ng-content></ng-content>
-</div>

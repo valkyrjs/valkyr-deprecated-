@@ -1,48 +1,68 @@
-import { Ledger } from "@valkyr/ledger";
+import { AggregateRoot } from "@valkyr/ledger";
 
-import { Template } from "../Template";
-import { Workspace } from "../Workspace";
-import { Event } from "./Events";
+import { Member, Workspace } from "../Workspace";
+import { EventRecord } from "./Events";
 
-/*
- |--------------------------------------------------------------------------------
- | State
- |--------------------------------------------------------------------------------
- */
+export type ItemState = "not-started" | "in-progress" | "done";
 
 export type State = {
   id: string;
   workspaceId: Workspace["id"];
-  templateId: Template["id"];
   name: string;
+  details: string;
+  sort?: number;
+  state: ItemState;
+  assignedTo?: Member["id"];
+  createdBy: Member["id"];
+  createdAt: string;
+  updatedAt?: string;
+  completedAt?: string;
 };
 
-/*
- |--------------------------------------------------------------------------------
- | Aggregate Root
- |--------------------------------------------------------------------------------
- */
-
-export class Item extends Ledger.AggregateRoot {
+export class Item extends AggregateRoot {
   public id = "";
   public workspaceId = "";
-  public templateId = "";
   public name = "";
+  public details = "";
+  public sort: number | undefined = undefined;
+  public state: ItemState = "not-started";
+  public assignedTo = "";
+  public createdBy = "";
+  public createdAt = "";
+  public updatedAt = "";
+  public completedAt = "";
 
-  public apply(event: Event) {
+  public apply(event: EventRecord) {
     switch (event.type) {
       case "ItemCreated": {
         this.id = event.streamId;
         this.workspaceId = event.data.workspaceId;
-        this.templateId = event.data.templateId;
         this.name = event.data.name;
+        this.state = "not-started";
+        this.createdBy = event.meta.auditor;
+        this.createdAt = event.created;
         break;
       }
-      case "ItemNameSet": {
-        this.name = event.data.name;
+      case "ItemSortSet": {
+        this.sort = event.data.sort;
+        this.updatedAt = event.created;
         break;
       }
-      case "ItemRemoved": {
+      case "ItemDetailsSet": {
+        this.details = event.data.details;
+        this.updatedAt = event.created;
+        break;
+      }
+      case "ItemDone": {
+        this.state = "done";
+        this.updatedAt = event.created;
+        this.completedAt = event.created;
+        break;
+      }
+      case "ItemUndone": {
+        this.state = "in-progress";
+        this.updatedAt = event.created;
+        this.completedAt = event.created;
         break;
       }
     }
@@ -52,8 +72,15 @@ export class Item extends Ledger.AggregateRoot {
     return {
       id: this.id,
       workspaceId: this.workspaceId,
-      templateId: this.templateId,
-      name: this.name
+      name: this.name,
+      details: this.details,
+      sort: this.sort,
+      state: this.state,
+      assignedTo: this.assignedTo,
+      createdBy: this.createdBy,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      completedAt: this.completedAt
     };
   }
 }

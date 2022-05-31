@@ -14,7 +14,7 @@ import { WorkspaceSubscriberService } from "./WorkspaceSubscriberService";
 
 @Injectable({ providedIn: "root" })
 export class WorkspaceService extends DataSubscriber {
-  #selected?: string;
+  #current?: string;
 
   constructor(
     readonly subscriber: WorkspaceSubscriberService,
@@ -26,16 +26,24 @@ export class WorkspaceService extends DataSubscriber {
     super();
   }
 
-  set selected(id: string | undefined) {
-    this.#selected = id;
+  set current(id: string | undefined) {
+    if (id) {
+      localStorage.setItem("workspace:id", id);
+    }
+    this.#current = id;
   }
 
-  get selected(): string | undefined {
-    return this.#selected;
+  get current(): string | undefined {
+    const id = localStorage.getItem("workspace:id");
+    if (id && id !== this.#current) {
+      this.#current = id;
+    }
+
+    return this.#current;
   }
 
   isActive(workspaceId: string): boolean {
-    return this.#selected === workspaceId;
+    return this.#current === workspaceId;
   }
 
   async create(name: string) {
@@ -56,13 +64,14 @@ export class WorkspaceService extends DataSubscriber {
       }
     });
     await this.storage.update(this.auth.identity, this.auth.access);
+    this.current = workspaceId;
   }
 
   async invite(alias: string) {
     const identity = await this.remote.get<RemoteIdentityResponse>(`/identities/${alias}`);
-    if (this.#selected && identity) {
+    if (this.#current && identity) {
       await this.ledger.append(
-        this.#selected,
+        this.#current,
         WorkspaceStore.events.invite.created(
           {
             id: identity.id,

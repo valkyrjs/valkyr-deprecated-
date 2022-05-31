@@ -1,12 +1,14 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import { AuthService } from "@valkyr/angular";
 import { ModalService, SelectOptions } from "@valkyr/tailwind";
+import { CurrentWorkspaceService } from "src/app/Shared/WorkspaceServices/CurrentWorkspaceService";
 import { WorkspaceStore } from "stores";
 
 import { MenuItem } from "../../../Shared/Layout/Models/MenuItem";
 import { LayoutService } from "../../../Shared/Layout/Services/LayoutService";
 import { WorkspaceService } from "../../../Shared/WorkspaceServices/WorkspaceService";
-import { CreateWorkspaceDialog } from "../Dialogues/CreateWorkspace/Component";
+import { CreateWorkspaceDialog } from "../CreateWorkspace/Component";
 import { getFooterMenu, getHeaderMenu, getMainMenu } from "../Menu";
 
 @Component({
@@ -20,8 +22,10 @@ export class WorkspaceListComponent implements OnInit, OnDestroy {
 
   constructor(
     readonly layout: LayoutService,
+    readonly router: Router,
     readonly modal: ModalService<CreateWorkspaceDialog>,
     readonly workspace: WorkspaceService,
+    readonly currentWorkspace: CurrentWorkspaceService,
     readonly auth: AuthService
   ) {}
 
@@ -68,11 +72,16 @@ export class WorkspaceListComponent implements OnInit, OnDestroy {
     );
   }
 
+  activateWorkspace(id: string) {
+    this.currentWorkspace.activateWorkspace(id);
+    this.router.navigateByUrl(`/`);
+  }
+
   openAddWorkspace() {
     this.modal.open(CreateWorkspaceDialog);
   }
 
   getActions(): MenuItem[] {
-    return [{ name: "New workspace", type: "action", action: this.openAddWorkspace.bind(this) }];
+    return [{ name: "New workspace", isActive: false, type: "action", action: this.openAddWorkspace.bind(this) }];
   }
 }
