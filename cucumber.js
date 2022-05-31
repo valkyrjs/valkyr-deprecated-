@@ -4,6 +4,6 @@ module.exports = {
     require: ["packages/**/tests/**/*steps.ts"],
     paths: ["packages/**/features/**/*.feature"],
     publishQuiet: true,
-    format:["progress-bar", "html:cucumber-report.html", "json:cucumber-report.json"]
+    format:["progress-bar", "html:cucumber-report.html"]
   }
 }

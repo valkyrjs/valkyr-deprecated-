@@ -1,4 +1,11 @@
 Feature: Projection
+  A projection represents the binding layer between write and read side of an application.
+  An event exists in a write and read state, the write state is represented as a combined
+  stream of events reduced to a single object. The same event exists on the read side in
+  one of many representations, and can be considered a volatile existence.
+
+  A projection handles one of three major behaviors. These are once, on and all, please
+  see the Projection.ts file for more details on each of these.
 
   Scenario Outline: Projecting an event
     Given a projection that is registered under the "<method>" handler

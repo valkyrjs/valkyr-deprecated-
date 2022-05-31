@@ -16,7 +16,7 @@ let projector: Projector;
 let event: EventRecord;
 let resolved: boolean;
 
-Before(() => {
+Before(function () {
   projector = new Projector();
   event = createEventRecord("stream-id", events.created({ title: "Foo" }));
   resolved = false;
