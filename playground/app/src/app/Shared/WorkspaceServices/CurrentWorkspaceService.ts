@@ -18,7 +18,7 @@ export class CurrentWorkspaceService {
   }
 
   isDefined(): boolean {
-    return localStorage.getItem("workspace:id") !== undefined;
+    return Boolean(localStorage.getItem("workspace:id"));
   }
 
   unsubscribe(): void {
