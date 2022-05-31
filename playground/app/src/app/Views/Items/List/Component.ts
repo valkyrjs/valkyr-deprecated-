@@ -8,7 +8,7 @@ import { Item } from "../Models";
 import { ItemService } from "../Services/Item";
 
 @Component({
-  selector: "item-list",
+  selector: "list",
   templateUrl: "./Template.html",
   styleUrls: ["./Style.scss"]
 })
@@ -41,7 +41,7 @@ export class ListComponent implements OnInit, OnDestroy {
   private loadItems(workspaceId: string) {
     this.itemService.subscribe(
       {
-        criteria: { workspaceId }
+        criteria: { workspaceId, state: this.state }
       },
       (items) => {
         this.items = items;

@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ParamsService } from "@valkyr/angular";
 import { LayoutService } from "src/app/Shared/Layout/Services/LayoutService";
 
 import type { MenuCategory, MenuItem } from "../../../Shared/Layout";
@@ -12,11 +11,7 @@ import { CurrentWorkspaceService, Workspace } from "../../../Shared/WorkspaceSer
 export class WorkspaceItemComponent implements OnInit, OnDestroy {
   workspace!: Workspace;
 
-  constructor(
-    readonly currentWorkspace: CurrentWorkspaceService,
-    readonly layoutService: LayoutService,
-    readonly params: ParamsService
-  ) {}
+  constructor(readonly currentWorkspace: CurrentWorkspaceService, readonly layoutService: LayoutService) {}
 
   ngOnInit(): void {
     this.currentWorkspace.workspace.subscribe((workspace) => {

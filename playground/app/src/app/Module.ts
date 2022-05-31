@@ -4,7 +4,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
 import { AccessModule, IdentityModule, LedgerModule, LedgerService } from "@valkyr/angular";
-import { ButtonModule, ModalModule, TailwindIdentityModule } from "@valkyr/tailwind";
+import { ButtonModule, TailwindIdentityModule } from "@valkyr/tailwind";
 
 import { AppComponent } from "./Component";
 import { AppRoutingModule } from "./Routing";
@@ -44,7 +44,6 @@ import { ItemProjector } from "./Views/Items/Projector";
         }
       ]
     }),
-    ModalModule,
     ThemeModule,
     WorkspaceServicesModule,
     RouterModule.forRoot([]),

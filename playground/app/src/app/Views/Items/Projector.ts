@@ -6,11 +6,16 @@ import { Item } from "./Models/Item";
 
 export class ItemProjector extends Projector {
   @On("ItemCreated")
-  public async handleItemCreated({ streamId, data: { workspaceId, name } }: LedgerEventRecord<ItemStore.Created>) {
+  public async handleItemCreated({
+    streamId,
+    data: { workspaceId, name, details, state }
+  }: LedgerEventRecord<ItemStore.Created>) {
     await Item.insertOne({
       id: streamId,
       workspaceId,
-      name
+      name,
+      details,
+      state
     });
   }
 

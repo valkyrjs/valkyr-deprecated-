@@ -13,4 +13,7 @@ ul {
   @apply w-full p-4;
   @apply h-96 overflow-y-auto;
   @apply border-2 border-gray-300 border-dotted;
+  li {
+    @apply mb-2;
+  }
 }

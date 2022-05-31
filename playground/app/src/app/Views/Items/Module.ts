@@ -9,7 +9,7 @@ import { ButtonModule, IconModule, ModalModule } from "@valkyr/tailwind";
 
 import { BoardComponent } from "./Board/Component";
 import { CreateItem } from "./CreateItem/Component";
-import { ItemComponent } from "./Item/Component";
+import { ItemComponent } from "./ListItem/Component";
 import { ListComponent } from "./List/Component";
 import { Item } from "./Models/Item";
 import { SortItemsPipe } from "./Pipes/SortItemsPipe";

@@ -24,7 +24,7 @@ export const events = {
  |--------------------------------------------------------------------------------
  */
 
-export type Created = LedgerEvent<"ItemCreated", Pick<State, "workspaceId" | "name">, Auditor>;
+export type Created = LedgerEvent<"ItemCreated", Pick<State, "workspaceId" | "name" | "details" | "state">, Auditor>;
 export type Removed = LedgerEvent<"ItemRemoved", never, Auditor>;
 export type SortSet = LedgerEvent<"ItemSortSet", Pick<Item, "sort">, Auditor>;
 export type DetailsSet = LedgerEvent<"ItemDetailsSet", Pick<Item, "id" | "details">, Auditor>;

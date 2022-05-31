@@ -1,11 +1,6 @@
 <header>{{ state }}</header>
 <ul role="list">
   <li class="item" *ngFor="let item of items | sortitems">
-    <a routerLink="/items/{{item.id}}">
-      <div class="flex flex-col justify-start w-36 group">
-        <div class="w-full h-36 bg-gray-200 group-hover:bg-gray-300 transition-colors duration-500"></div>
-        <div class="text-xs uppercase text-gray-600 pt-2">{{item.name}}</div>
-      </div>
-    </a>
+    <list-item [item]="item"></list-item>
   </li>
 </ul>
