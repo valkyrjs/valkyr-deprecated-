@@ -13,6 +13,7 @@ import { ItemService } from "../Services/Item";
   styleUrls: ["./Style.scss"]
 })
 export class ListComponent implements OnInit, OnDestroy {
+  @Input("title") title!: string;
   @Input("state") state!: ItemState;
 
   workspace!: Workspace;

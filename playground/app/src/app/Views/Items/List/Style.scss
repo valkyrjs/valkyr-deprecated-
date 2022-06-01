@@ -10,9 +10,9 @@ header {
 }
 
 ul {
-  @apply w-full p-4;
+  @apply w-full p-2;
   @apply h-96 overflow-y-auto;
-  @apply border-2 border-gray-300 border-dotted;
+  @apply border-2 border-gray-300 border-t-0;
   li {
     @apply mb-2;
   }
