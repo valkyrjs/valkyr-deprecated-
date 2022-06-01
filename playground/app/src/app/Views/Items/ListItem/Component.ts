@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
 import { Item } from "../Models";
@@ -8,22 +8,8 @@ import { ItemService } from "../Services/Item";
   selector: "list-item",
   templateUrl: "./Template.html"
 })
-export class ItemComponent implements OnInit, OnDestroy {
-  @Input("item") item!: Item;
+export class ItemComponent {
+  @Input("item") item!: Item; // we may not want to pass the Item, but just the ID, depending on how we store/query Items.
 
   constructor(readonly itemService: ItemService, readonly route: ActivatedRoute) {}
-
-  ngOnInit(): void {
-    const itemId = this.route.snapshot.paramMap.get("item");
-    if (!itemId) {
-      throw new Error("ItemComponent Violation: Could not resolve item id");
-    }
-    if (itemId !== this.item.id) {
-      throw new Error("ItemComponent Violation: Invalid Item");
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.itemService.unsubscribe();
-  }
 }
