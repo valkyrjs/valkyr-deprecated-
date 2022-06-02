@@ -2,6 +2,8 @@ import { color } from "./Colors";
 
 type LogLevel = "log" | "debug" | "warn" | "error";
 
+export { color };
+
 export class Logger {
   constructor(public readonly context: string) {
     this.log = this.log.bind(this);

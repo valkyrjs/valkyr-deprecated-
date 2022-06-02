@@ -55,18 +55,18 @@ feature(
           this.resolved = false;
         });
 
-        given(`a projection that is registered under the ${test!.handler} handler`, () => {
-          this.projector[test!.handler]("FooCreated", async () => {
+        given(`a projection that is registered with the ${test.handler} handler`, () => {
+          this.projector[test.handler]("FooCreated", async () => {
             this.resolved = true;
           });
         });
 
-        when(`the projected the event is hydrated ${test!.hydrated} and outdated ${test!.outdated}`, async () => {
-          await this.projector.project(this.event, { hydrated: test!.hydrated, outdated: test!.outdated });
+        when(`the projected event is hydrated ${test.hydrated} and outdated ${test.outdated}`, async () => {
+          await this.projector.project(this.event, { hydrated: test.hydrated, outdated: test.outdated });
         });
 
-        then(`the projection outcome should be ${test!.outcome}`, () => {
-          expect(this.resolved).toEqual(test!.outcome);
+        then(`the projection outcome should be ${test.outcome}`, () => {
+          expect(this.resolved).toEqual(test.outcome);
         });
       }
     );
