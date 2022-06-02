@@ -1,4 +1,4 @@
-import { createReducer, LedgerEvent, LedgerEventToLedgerRecord, makeEventFactory } from "../../src";
+import { createReducer, LedgerEvent, LedgerEventToLedgerRecord, makeEventFactory } from "../src";
 
 export type State = {
   title: string;

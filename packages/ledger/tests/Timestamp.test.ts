@@ -1,30 +1,32 @@
-import { Given, Then, When } from "@cucumber/cucumber";
-import { expect } from "chai";
+import { feature, given, scenario, then, when } from "@valkyr/testing";
 
-import { getDate, getLogicalTimestamp, getTimestamp, Timestamp } from "../../src/Time";
+import { getDate, getLogicalTimestamp, getTimestamp, Timestamp } from "../src/Time";
 
 type TimestampEntry = { count: number; id: string; ts: Timestamp; dt: Date };
 
-let count: number;
-let min: number;
-let max: number;
-let validated: boolean;
+type ScenarioState = {
+  count: number;
+  min: number;
+  max: number;
+  validated: boolean;
+};
 
-Given(
-  "an count of {int} timestamps with a min delay of {int} and max delay of {int}",
-  function (i: number, minDelay: number, maxDelay: number) {
-    count = i;
-    min = minDelay;
-    max = maxDelay;
-  }
-);
+feature("Timestamp", () => {
+  scenario<ScenarioState>("Generating timestamps", function () {
+    given("an count of {int} timestamps with a min delay of 0 and max delay of 100 ms", () => {
+      this.count = 100;
+      this.min = 0;
+      this.max = 10;
+    });
 
-When("when generating a list of timestamps", async function () {
-  validated = await runTimestampTest(count, min, max);
-});
+    when("when generating a list of timestamps", async () => {
+      this.validated = await runTimestampTest(this.count, this.min, this.max);
+    });
 
-Then("it should create timestamps without conflicts", function () {
-  expect(validated).true;
+    then("it should create timestamps without conflicts", () => {
+      expect(this.validated).toEqual(true);
+    });
+  });
 });
 
 export async function runTimestampTest(i = 10, minDelay = 0, maxDelay = 1000): Promise<boolean> {
