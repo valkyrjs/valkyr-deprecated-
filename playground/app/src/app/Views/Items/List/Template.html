@@ -1,6 +1,10 @@
-<header>{{ title }}</header>
-<ul role="list">
-  <li class="item" *ngFor="let item of items | sortitems">
-    <list-item [item]="item"></list-item>
-  </li>
-</ul>
+<header>
+  <div>{{ title }}</div>
+</header>
+<ng-scrollbar>
+  <ul role="list">
+    <li class="item" *ngFor="let item of items | sortitems">
+      <list-item [item]="item"></list-item>
+    </li>
+  </ul>
+</ng-scrollbar>
