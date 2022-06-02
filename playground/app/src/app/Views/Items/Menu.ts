@@ -1,22 +1,53 @@
-import type { MenuCategory, MenuItem } from "../../Shared/Layout";
+import type { HeaderMenu, MenuCategory, MenuItem, Nav, Sidebar, Sidepane } from "../../Shared/Layout";
 
-export function getHeaderMenu(workspaceName: string): MenuItem[] {
-  return [
-    {
-      type: "link",
-      icon: "home",
-      name: "Home",
-      isActive: false,
-      href: "/workspaces"
-    },
-    {
-      type: "link",
-      icon: "template",
-      isActive: true,
-      name: workspaceName,
-      href: `/`
-    }
-  ];
+export function getHeaderMenu(workspaceName: string): HeaderMenu {
+  return {
+    isBordered: true,
+    isVisible: true,
+    menu: [
+      {
+        type: "link",
+        icon: "home",
+        name: "Home",
+        isActive: false,
+        href: "/workspaces"
+      },
+      {
+        type: "link",
+        icon: "template",
+        isActive: true,
+        name: workspaceName,
+        href: `/`
+      }
+    ]
+  };
+}
+
+export function getNav(title: string): Nav {
+  return {
+    isBordered: true,
+    isVisible: true,
+    title
+  };
+}
+
+export function getSidebar(): Sidebar {
+  return {
+    isBordered: false,
+    isVisible: false,
+    menu: []
+  };
+}
+
+export function getSidepane(workspaceName: string, activeRoute: string, actions: MenuItem[]): Sidepane {
+  return {
+    isBordered: true,
+    isVisible: true,
+    actions,
+    homeMenu: [],
+    mainMenu: getMainMenu(workspaceName, activeRoute),
+    footerMenu: getFooterMenu(workspaceName)
+  };
 }
 
 export function getMainMenu(workspaceName: string, activeRoute: string): MenuCategory[] {
@@ -28,22 +59,22 @@ export function getMainMenu(workspaceName: string, activeRoute: string): MenuCat
           type: "link",
           name: "Dashboard",
           icon: "template",
-          isActive: false,
-          href: `/`
+          isActive: activeRoute === "/",
+          href: "/"
         },
         {
           type: "link",
           name: "Board",
           icon: "tasks",
-          isActive: true,
-          href: `/boards`
+          isActive: activeRoute === "/boards",
+          href: "/boards"
         },
         {
           type: "link",
           name: "Invites",
           icon: "mail",
-          isActive: false,
-          href: `/invites`
+          isActive: activeRoute === "/invites",
+          href: "/invites"
         }
       ]
     },

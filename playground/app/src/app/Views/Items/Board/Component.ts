@@ -4,7 +4,7 @@ import { ModalService } from "@valkyr/tailwind";
 import { LayoutService } from "../../../Shared/Layout/Services/LayoutService";
 import { CurrentWorkspaceService, Workspace } from "../../../Shared/WorkspaceServices";
 import { CreateItem } from "../CreateItem/Component";
-import { getFooterMenu, getHeaderMenu, getMainMenu } from "../Menu";
+import { getFooterMenu, getHeaderMenu, getMainMenu, getNav, getSidebar, getSidepane } from "../Menu";
 import { Item } from "../Models";
 import { ItemService } from "../Services/Item";
 
@@ -28,30 +28,16 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.currentWorkspaceService.workspace.subscribe((workspace) => {
       if (workspace) {
         this.workspace = workspace;
-        this.#loadMenu(workspace);
-        this.#loadItems(workspace.id);
-      } else {
-        console.log("no workspace yet...");
-      }
-    });
-  }
+        this.itemService.unsubscribe();
+        this.itemService.subscribe({ criteria: { workspaceId: workspace.id } }, (items) => {
+          this.items = items;
+        });
 
-  ngOnDestroy(): void {
-    this.itemService.unsubscribe();
-  }
-
-  #loadMenu(workspace: Workspace) {
-    if (workspace) {
-      this.layoutService.updateLayout({
-        header: {
-          isVisible: true,
-          menu: getHeaderMenu(workspace.name)
-        },
-        sidebar: { isVisible: false },
-        sidepane: {
-          isVisible: true,
-          isBordered: true,
-          actions: [
+        this.layoutService.updateLayout({
+          header: getHeaderMenu(workspace.name),
+          nav: getNav(`${workspace.name} Board`),
+          sidebar: getSidebar(),
+          sidepane: getSidepane(workspace.name, "/boards", [
             {
               name: "New item",
               isActive: false,
@@ -59,24 +45,14 @@ export class BoardComponent implements OnInit, OnDestroy {
               type: "action",
               action: this.openAddItem.bind(this)
             }
-          ],
-          mainMenu: getMainMenu(workspace.name, workspace.id),
-          footerMenu: getFooterMenu(workspace.name)
-        },
-        nav: { isVisible: true, isBordered: true, title: `${workspace.name} Item Boards` }
-      });
-    }
+          ])
+        });
+      }
+    });
   }
 
-  #loadItems(workspaceId: string) {
-    this.itemService.subscribe(
-      {
-        criteria: { workspaceId }
-      },
-      (items) => {
-        this.items = items;
-      }
-    );
+  ngOnDestroy(): void {
+    this.itemService.unsubscribe();
   }
 
   public openAddItem() {
