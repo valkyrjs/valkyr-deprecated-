@@ -26,13 +26,13 @@ export function scenario<S extends ScenarioState = ScenarioState, T = any>(
 ): void {
   if (typeof nameOrOptions === "string") {
     describe(`Scenario: ${nameOrOptions}`, () => {
-      fn.call({} as S, { before: beforeAll, test: {} as T });
+      fn.call({} as S, { before: beforeAll, after: afterAll, test: {} as T });
     });
   } else {
     let index = 1;
     for (const test of nameOrOptions.tests) {
       describe(`#${index} Scenario: ${nameOrOptions.name}`, () => {
-        fn.call({} as S, { before: beforeAll, test });
+        fn.call({} as S, { before: beforeAll, after: afterAll, test });
       });
       index++;
     }
@@ -46,7 +46,7 @@ type ScenarioOptions<T = any> = {
 
 type ScenarioState = Record<string, any>;
 
-type ScenarioFn<S, C = any> = (this: S, args: { before: typeof beforeAll; test: C }) => void;
+type ScenarioFn<S, C = any> = (this: S, args: { before: typeof beforeAll; after: typeof afterAll; test: C }) => void;
 
 // ### Steps
 

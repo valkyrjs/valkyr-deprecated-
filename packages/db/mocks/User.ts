@@ -1,4 +1,4 @@
-import { Collection, Document, InstanceAdapter, MemoryAdapter, Model } from "..";
+import { Collection, Document, InstanceAdapter, MemoryAdapter, Model } from "../src";
 
 export type UserDocument = Document & {
   name: string;

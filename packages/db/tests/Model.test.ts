@@ -1,38 +1,83 @@
-import { data, User } from "../__mocks__/User";
-import { DocumentNotFoundError, DuplicateDocumentError } from "../Storage";
+import { feature, given, scenario, then, when } from "@valkyr/testing";
+
+import { data, User } from "../mocks/User";
+import { DocumentNotFoundError, DuplicateDocumentError } from "../src/Storage";
+
+feature(
+  {
+    name: "Model",
+    desc: `
+      Model provides a layer on top of the collection functionality to simply
+      create entities which can provide its own logic and tooling.
+    `
+  },
+  () => {
+    scenario("Inserting valid document", function ({ after }) {
+      given("valid user data", () => {
+        this.data = data[0];
+      });
+
+      when("inserting the user", async () => {
+        this.user = await User.insertOne(this.data);
+      });
+
+      then("it should have successfully added the data", () => {
+        expect(User.$collection.storage.documents.get(this.data.id)).toEqual(this.data);
+      });
+
+      after(teardown);
+    });
+
+    scenario("Inserting duplicate document", function ({ after }) {
+      given("valid user data", () => {
+        this.data = data[0];
+      });
+
+      when("inserting the user twice", async () => {
+        try {
+          await User.insertOne(this.data);
+          await User.insertOne(this.data);
+        } catch (err) {
+          this.error = err;
+        }
+      });
+
+      then("it should throw a duplication error", () => {
+        expect(this.error instanceof DuplicateDocumentError).toEqual(true);
+        expect(this.error).toEqual(new DuplicateDocumentError(data[0], User.$collection.storage));
+      });
+
+      after(teardown);
+    });
+
+    scenario("Updating valid document", function ({ after }) {
+      given("user and update data", () => {
+        this.data = data[0];
+        this.payload = { name: "James Doe" };
+      });
+
+      when("inserting and updating document", async () => {
+        await User.insertOne(this.data);
+        await User.updateOne({ id: this.data.id }, { $set: this.payload });
+        this.user = await User.findById(this.data.id);
+      });
+
+      then("user should be defined", () => {
+        expect(this.user).toBeDefined();
+      });
+
+      then("user should have name James Doe", () => {
+        expect(this.user.name).toEqual("James Doe");
+      });
+
+      after(teardown);
+    });
+  }
+);
 
 describe("Model", () => {
-  describe("when inserting document", () => {
-    afterEach(teardown);
-
-    it("should successfully insert a new document", async () => {
-      await User.insertOne(data[0]);
-      expect(User.$collection.storage.documents.get(data[0].id)).toEqual(data[0]);
-    });
-
-    it("should throw an error if the document already exists", async () => {
-      await User.insertOne(data[0]);
-      try {
-        await User.insertOne(data[0]);
-      } catch (err) {
-        expect(err instanceof DuplicateDocumentError).toEqual(true);
-        expect(err).toEqual(new DuplicateDocumentError(data[0], User.$collection.storage));
-      }
-    });
-  });
-
   describe("when updating document", () => {
     afterEach(teardown);
-
-    it("should successfully update existing document", async () => {
-      await User.insertOne(data[0]);
-      await User.updateOne({ id: "user-1" }, { $set: { name: "James Doe" } });
-
-      const user = await User.findById("user-1");
-
-      expect(user).toBeDefined();
-      expect(user!.name).toEqual("James Doe");
-    });
 
     it("should throw error if document does not exist", async () => {
       try {
