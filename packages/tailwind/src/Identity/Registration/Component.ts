@@ -66,6 +66,14 @@ export class RegistrationComponent {
   async create() {
     const secret = generateSecretKey();
 
+    if (!this.registerForm.value.password) {
+      throw new Error("No password present");
+    }
+
+    if (!this.registerForm.value.alias) {
+      throw new Error("No alias present");
+    }
+
     this.#access = AccessKey.resolve(this.registerForm.value.password, secret);
     this.#identity = await this.privateIdentity.create(this.registerForm.value.alias);
 
@@ -85,6 +93,9 @@ export class RegistrationComponent {
   }
 
   async createUser() {
+    if (!this.userForm.value.name) {
+      throw new Error("No name present");
+    }
     const user = await this.userIdentity.create(this.identity.id, { name: this.userForm.value.name });
     await this.storage.export(this.identity.id, this.access);
     this.auth.setUser(user.id);

@@ -31,7 +31,15 @@ export class BasicStrategyComponent {
   ) {}
 
   async authenticate() {
-    console.log("hit");
+    if (!this.signinForm.value.password) {
+      throw new Error("No password present");
+    }
+    if (!this.signinForm.value.secret) {
+      throw new Error("No secret present");
+    }
+    if (!this.signinForm.value.alias) {
+      throw new Error("No alias present");
+    }
     const access = AccessKey.resolve(this.signinForm.value.password, this.signinForm.value.secret);
     const { identity, users } = await this.storage.import(this.signinForm.value.alias, access);
 
