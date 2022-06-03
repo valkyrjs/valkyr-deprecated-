@@ -23,4 +23,9 @@ export class ItemProjector extends Projector {
   public async handleItemSortSet({ streamId, data: { sort } }: LedgerEventRecord<ItemStore.SortSet>) {
     await Item.updateOne({ id: streamId }, { $set: { sort } });
   }
+
+  @On("ItemStateSet")
+  public async handleItemStateSet({ streamId, data: { state } }: LedgerEventRecord<ItemStore.StateSet>) {
+    await Item.updateOne({ id: streamId }, { $set: { state } });
+  }
 }

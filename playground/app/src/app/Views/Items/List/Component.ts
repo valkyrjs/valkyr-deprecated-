@@ -50,13 +50,16 @@ export class ListComponent implements OnInit, OnDestroy {
     );
   }
 
-  public async drop(event: CdkDragDrop<string[]>) {
+  public async drop(event: CdkDragDrop<ItemState, ItemState, Item>) {
+    const member = this.workspace.members.getById(this.auth.user);
+    if (!member) {
+      throw new Error("Could not resolve workspace member");
+    }
+
     if (event.previousContainer === event.container) {
-      const member = this.workspace.members.getById(this.auth.user);
-      if (!member) {
-        throw new Error("Could not resolve workspace member");
-      }
-      this.itemService.move(event.item.data.id, event.currentIndex, member.id);
+      this.itemService.setOrder(event.item.data.id, event.currentIndex, member.id);
+    } else {
+      this.itemService.setState(event.item.data.id, event.container.data, member.id);
     }
   }
 }

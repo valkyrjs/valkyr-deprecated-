@@ -48,6 +48,11 @@ export class Item extends AggregateRoot {
         this.updatedAt = event.created;
         break;
       }
+      case "ItemStateSet": {
+        this.state = event.data.state;
+        this.updatedAt = event.created;
+        break;
+      }
       case "ItemDetailsSet": {
         this.details = event.data.details;
         this.updatedAt = event.created;

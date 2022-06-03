@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { DataSubscriber, LedgerService } from "@valkyr/angular";
 import { getId } from "@valkyr/security";
 import { ItemStore } from "stores";
+import { ItemState } from "stores/src/Item";
 
 import { ItemSubscriberService } from "./ItemSubscriber";
 
@@ -17,7 +18,11 @@ export class ItemService extends DataSubscriber {
     this.ledger.append(getId(), ItemStore.events.created({ workspaceId, name, details, state }, { auditor }));
   }
 
-  public async move(id: string, sort: number, auditor: string) {
+  public async setOrder(id: string, sort: number, auditor: string) {
     this.ledger.append(id, ItemStore.events.sortSet({ sort }, { auditor }));
+  }
+
+  public async setState(id: string, state: ItemState, auditor: string) {
+    this.ledger.append(id, ItemStore.events.stateSet({ state }, { auditor }));
   }
 }
