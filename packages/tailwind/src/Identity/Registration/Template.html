@@ -1,79 +1,87 @@
-<div>
-  <ng-container *ngIf="step === 'create'">
-    <div class="text-center">
-      <h1 class="my-3 text-3xl font-semibold text-gray-700 dark:text-gray-200">Create Account</h1>
-      <p class="text-gray-500 dark:text-gray-400">Sign up to create your account</p>
-    </div>
-    <div class="m-7">
-      <div class="mb-6">
+<ng-container *ngIf="step === 'create'">
+  <header>
+    <h1>Create Account</h1>
+    <p>Sign up to create your account</p>
+  </header>      
+  <section>
+    <form [formGroup]="registerForm" (ngSubmit)="create()">
+      <div class="form-control">
         <label for="alias">Alias</label>
-        <input type="text" name="alias" id="alias" placeholder="John Doe" [(ngModel)]="alias" (keyup.enter)="create()" tabindex="1" />
+        <input type="text" name="alias" id="alias" placeholder="John Doe" formControlName="alias" tabindex="1" />
       </div>
-      <div class="mb-6">
-        <div class="flex justify-between mb-2">
-          <label for="password">Password</label>
-        </div>
-        <input type="text" name="password" id="password" placeholder="Your Password" [(ngModel)]="password" (keyup.enter)="create()" tabindex="2" />
-      </div>
-      <div class="mb-6">
-        <button type="button" (click)="create()" class="submit">Create</button>
-      </div>
-      <p class="text-sm text-center text-gray-400">Already have an account? <a routerLink="/identity/authorize" class="text-indigo-400 focus:outline-none focus:underline focus:text-indigo-500 dark:focus:border-indigo-800">Sign in</a>.</p>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="step === 'confirm'">
-    <div class="text-center">
-      <h1 class="my-3 text-3xl font-semibold text-gray-700 dark:text-gray-200">Security Kit</h1>
-      <p class="text-gray-500 dark:text-gray-400">If you get locked out of your account, you'll need these account details to sign in including your <strong>Secret Key</strong>, which we <strong>cannot</strong> access or recover for you. </p>
-    </div>
-    <div class="m-7">
-      <div class="mb-6">
-        <label for="alias">Alias</label>
-        <input type="text" name="alias" id="alias" [value]="alias" class="text-sm font-mono" disabled />
-      </div>
-      <div class="mb-6">
+      <div class="form-control">
         <label for="password">Password</label>
-        <input type="text" name="password" id="password" [value]="password" class="text-sm font-mono" disabled />
+        <input type="text" name="password" id="password" placeholder="Your Password" formControlName="password" tabindex="2" />
       </div>
-      <div class="mb-6">
-        <div class="flex justify-between">
-          <label for="secret">Secret Key</label>
+      <div class="flex justify-end items-center">
+        <div class="form-control">
+          <button variant="cta" size="large" type="submit" (click)="create()" [disabled]="!registerForm.valid">Create</button>
         </div>
-        <input type="text" name="secret" id="secret" [value]="secret" class="text-sm font-mono" disabled />
       </div>
-      <div class="flex items-center space-x-4 mb-4">
-        <hr class="w-full border border-gray-300" />
-        <div class="font-semibold text-gray-400">OR</div>
-        <hr class="w-full border border-gray-300" />
-      </div>
+    </form>
+  </section>
+  <footer>
+    <div>
+      <span>Already have an account? <a routerLink="/identity/authorize">Sign in</a>.</span>
+    </div>
+    <div>
+      <a href="#" class="info">Security information</a>
+    </div>
+  </footer>
+</ng-container>
+<ng-container *ngIf="step === 'confirm'">
+  <header>
+    <h1>Security Kit</h1>
+    <p>If you get locked out of your account, you'll need these account details to sign in including your <strong>Secret Key</strong>, which we <strong>cannot</strong> access or recover for you. </p>
+  </header> 
+  <section>
+    <form [formGroup]="confirmForm" (ngSubmit)="confirm()">
+    <div class="form-control">
+      <label for="alias">Alias</label>
+      <input type="text" name="alias" id="alias" formControlName="alias" />
+    </div>
+    <div class="form-control">
+      <label for="password">Password</label>
+      <input type="text" name="password" id="password" formControlName="password" />
+    </div>
+    <div class="form-control">
+      <label for="secret">Secret Key</label>
+      <input type="text" name="secret" id="secret" formControlName="secret" />
+    </div>
+    <div class="mt-12">
       <div class="flex flex-row">
-        <div class="basis-1/2 text-white pr-2">
+        <div class="basis-1/2 text-black pr-2">
           <h2 class="font-bold mb-2">Quick Recovery</h2>
-          <p>Quickly recover your account credentials by scanning the key with your client device.</p>
+          <p class="text-xs">Quickly recover your account credentials by scanning the key with your client device.</p>
         </div>
         <div class="flex basis-1/2 pl-2 justify-end">
           <qr-code [value]="qrcode" size="150" errorCorrectionLevel="M"></qr-code>
         </div>
       </div>
-      <div class="flex flex-row gap-4 mb-6 mt-6 no-print">
-        <button type="button" (click)="print()" class="print">Print</button>
-        <button type="button" (click)="confirm()" class="submit">Confirm</button>
+      <div class="flex flex-row justify-center items-center gap-4 my-6 no-print print:hidden">
+        <button variant="secondary" outline size="large" type="button" (click)="print()">Print</button>
+        <button variant="cta" size="large" type="submit">Confirm</button>
       </div>
     </div>
-  </ng-container>
-  <ng-container *ngIf="step === 'user'">
-    <div class="text-center">
-      <h1 class="my-3 text-3xl font-semibold text-gray-700 dark:text-gray-200">Create User</h1>
-      <p class="text-gray-500 dark:text-gray-400">Create your first user identity</p>
-    </div>
-    <div class="m-7">
-      <div class="mb-6">
+  </form>
+</section>
+</ng-container>
+<ng-container *ngIf="step === 'user'">
+  <header>
+    <h1>Create User</h1>
+    <p>Create your first user identity</p>
+  </header>
+  <section>
+    <form [formGroup]="userForm" (ngSubmit)="createUser()">
+      <div class="form-control">
         <label for="name">Name</label>
-        <input type="text" name="name" id="name" placeholder="John Doe" [(ngModel)]="name" (keyup.enter)="user()" tabindex="1" />
+        <input type="text" name="name" id="name" placeholder="John Doe" formControlName="name" tabindex="1" />
       </div>
-      <div class="mb-6">
-        <button type="button" (click)="user()" class="submit">Create</button>
+      <div class="flex justify-end items-center">
+        <div class="form-control">
+          <button variant="cta" size="large" type="submit">Create user</button>
+        </div>
       </div>
-    </div>
-  </ng-container>
-</div>
+    </form>
+  </section>
+</ng-container>

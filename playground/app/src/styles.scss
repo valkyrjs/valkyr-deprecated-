@@ -73,3 +73,41 @@ vlk-modal-container {
   min-height: 60px;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+
+form {
+  .form-control {
+    @apply flex flex-col gap-1 justify-center items-start;
+    @apply mt-6;
+    label {
+      @apply block;
+      @apply text-xs;
+      @apply text-gray-600;
+      &.checkbox {
+        @apply flex gap-3 items-center justify-start;
+      }
+    }
+    input {
+      @apply w-full;
+      @apply px-3;
+      @apply py-2;
+      @apply placeholder-gray-200;
+      @apply border-b;
+      @apply border-gray-300;
+      @apply text-left;
+      @apply focus:ring;
+      @apply focus:outline-none;
+      @apply bg-white;
+      @apply text-black;
+      @apply focus:ring-0;
+      @apply focus:border-cta-default;
+      @apply transition-colors;
+      &[type="checkbox"] {
+        @apply bg-gray-100 border border-gray-300 h-5 w-5 rounded;
+      }
+    }
+  }
+  button {
+    @apply delay-75;
+  }
+}
+

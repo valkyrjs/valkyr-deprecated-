@@ -76,7 +76,7 @@ function addColors() {
       }
     }
   );
-  fs.writeFileSync("./tailwind.colors.md", output.join("\n\n"));
+  fs.writeFileSync(`${__dirname}/tailwind.colors.md`, output.join("\n\n"));
   return builtColors;
 }
 

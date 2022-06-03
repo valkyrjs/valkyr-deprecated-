@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import {
   AuthService,
@@ -16,16 +17,23 @@ import { AccessKey, generateSecretKey } from "@valkyr/security";
 })
 export class RegistrationComponent {
   step: Step = "create";
-
-  provider = "";
-  alias = "";
-  password = "";
-  secret = "";
-
-  name = "";
-
   #access?: AccessKey;
   #identity?: PrivateIdentity;
+
+  registerForm = new FormGroup({
+    alias: new FormControl("", Validators.required),
+    password: new FormControl("", Validators.required)
+  });
+
+  confirmForm = new FormGroup({
+    alias: new FormControl({ value: "", disabled: true }, Validators.required),
+    password: new FormControl({ value: "", disabled: true }, Validators.required),
+    secret: new FormControl({ value: "", disabled: true }, Validators.required)
+  });
+
+  userForm = new FormGroup({
+    name: new FormControl("", Validators.required)
+  });
 
   constructor(
     readonly router: Router,
@@ -56,14 +64,19 @@ export class RegistrationComponent {
   }
 
   async create() {
-    this.secret = generateSecretKey();
+    const secret = generateSecretKey();
 
-    this.#access = AccessKey.resolve(this.password, this.secret);
-    this.#identity = await this.privateIdentity.create(this.alias);
+    this.#access = AccessKey.resolve(this.registerForm.value.password, secret);
+    this.#identity = await this.privateIdentity.create(this.registerForm.value.alias);
 
     this.auth.setIdentity(this.#identity.id);
     this.auth.setAccess(this.#access);
 
+    this.confirmForm.setValue({
+      secret,
+      alias: this.registerForm.value.alias,
+      password: this.registerForm.value.password
+    });
     this.step = "confirm";
   }
 
@@ -71,8 +84,8 @@ export class RegistrationComponent {
     this.step = "user";
   }
 
-  async user() {
-    const user = await this.userIdentity.create(this.identity.id, { name: this.name });
+  async createUser() {
+    const user = await this.userIdentity.create(this.identity.id, { name: this.userForm.value.name });
     await this.storage.export(this.identity.id, this.access);
     this.auth.setUser(user.id);
     this.router.navigate(["/"]);

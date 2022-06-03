@@ -2,10 +2,9 @@
   @apply border-2;
   @apply border-transparent;
   @apply m-0;
-  @apply h-8;
   @apply py-0;
   @apply px-3;
-  @apply rounded-2xl;
+  @apply h-8;
   @apply ring-0 focus:ring-0;
   @apply focus:outline-none;
   @apply text-sm;
@@ -13,6 +12,16 @@
   @apply inline-block;
   @apply flex flex-row gap-2 justify-center items-center;
   @apply transition-colors duration-200;
+  &[size="medium"] {
+    @apply h-9;
+    @apply px-6;
+    @apply rounded-full;
+  }
+  &[size="large"] {
+    @apply h-12;
+    @apply px-10;
+    @apply rounded-full;
+  }
   &:not([outline])[disabled] {
     @apply bg-gray-200;
     @apply border-gray-200;

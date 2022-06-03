@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { QrCodeModule } from "ng-qrcode";
 
@@ -11,7 +11,7 @@ import { routes } from "./Routes";
 import { ShellComponent } from "./Shell/Component";
 
 @NgModule({
-  imports: [CommonModule, ButtonModule, FormsModule, QrCodeModule, RouterModule.forRoot(routes)],
+  imports: [CommonModule, ReactiveFormsModule, ButtonModule, FormsModule, QrCodeModule, RouterModule.forRoot(routes)],
   declarations: [ShellComponent, RegistrationComponent, BasicStrategyComponent],
   exports: [RouterModule]
 })
