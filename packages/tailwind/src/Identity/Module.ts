@@ -12,7 +12,6 @@ import { ShellComponent } from "./Shell/Component";
 
 @NgModule({
   imports: [CommonModule, ReactiveFormsModule, ButtonModule, FormsModule, RouterModule.forRoot(routes)],
-  imports: [CommonModule, ButtonModule, FormsModule, RouterModule.forRoot(routes)],
   declarations: [ShellComponent, RegistrationComponent, BasicStrategyComponent],
   exports: [RouterModule]
 })
