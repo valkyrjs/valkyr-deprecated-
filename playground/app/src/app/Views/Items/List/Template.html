@@ -5,6 +5,7 @@
   <ul role="list" cdkDropList [cdkDropListData]="state" (cdkDropListDropped)="drop($event)">
     <li class="item" cdkDrag [cdkDragData]="item" *ngFor="let item of items | sortitems">
       <list-item [item]="item"></list-item>
+      <div class="item-placeholder" *cdkDragPlaceholder></div>
     </li>
   </ul>
 </ng-scrollbar>

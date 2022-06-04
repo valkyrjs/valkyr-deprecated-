@@ -30,8 +30,26 @@
     @apply w-full h-full p-2 pr-3;
     @apply list-none;
     li {
-      @apply mb-2;
+      @apply my-2;
       @apply list-none;
     }
+    .item-placeholder {
+      @apply w-full h-11;
+      @apply border-0 bg-transparent;
+    }
   }
+}
+
+.cdk-drag-preview {
+  @apply shadow-md;
+}
+
+.cdk-drag-animating {
+  @apply transition-transform;
+  @apply duration-150 ease-out;
+}
+
+.cdk-drop-list-dragging :not(.cdk-drag-placeholder) {
+  @apply transition-transform;
+  @apply duration-150 ease-out;
 }
