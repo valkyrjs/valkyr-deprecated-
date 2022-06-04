@@ -4,7 +4,7 @@ import { ModalService } from "@valkyr/tailwind";
 import { LayoutService } from "../../../Shared/Layout/Services/LayoutService";
 import { CurrentWorkspaceService, Workspace } from "../../../Shared/WorkspaceServices";
 import { CreateItem } from "../CreateItem/Component";
-import { getFooterMenu, getHeaderMenu, getMainMenu, getNav, getSidebar, getSidepane } from "../Menu";
+import { getHeaderMenu, getNav, getSidebar, getSidepane } from "../Menu";
 import { Item } from "../Models";
 import { ItemService } from "../Services/Item";
 
