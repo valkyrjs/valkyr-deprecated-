@@ -1,5 +1,5 @@
-import { getMockedCollection } from "../../../__mocks__/User";
-import { DuplicateDocumentError } from "../../Errors";
+import { getMockedCollection } from "../mocks/User";
+import { DuplicateDocumentError } from "../src";
 
 describe("Storage Insert", () => {
   it("should successfully insert a new document", async () => {
