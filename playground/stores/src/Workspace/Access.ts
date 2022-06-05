@@ -27,7 +27,7 @@ export class WorkspaceRole extends Role<{
     removeInvite: boolean;
     removeMember: boolean;
   };
-  todo: {
+  item: {
     create: boolean;
     remove: boolean;
     addItem: boolean;
@@ -43,7 +43,7 @@ export class WorkspaceRole extends Role<{
 
   public static getPermissions({
     workspace,
-    todo
+    item
   }: Partial<WorkspaceRole["permissions"]>): WorkspaceRole["permissions"] {
     return {
       workspace: {
@@ -53,14 +53,14 @@ export class WorkspaceRole extends Role<{
         removeInvite: workspace?.removeInvite === true,
         removeMember: workspace?.removeMember === true
       },
-      todo: {
-        create: todo?.create === true,
-        remove: todo?.remove === true,
-        addItem: todo?.addItem === true,
-        addItemText: todo?.addItemText === true,
-        setItemDone: todo?.setItemDone === true,
-        setItemUndone: todo?.setItemUndone === true,
-        removeItem: todo?.removeItem === true
+      item: {
+        create: item?.create === true,
+        remove: item?.remove === true,
+        addItem: item?.addItem === true,
+        addItemText: item?.addItemText === true,
+        setItemDone: item?.setItemDone === true,
+        setItemUndone: item?.setItemUndone === true,
+        removeItem: item?.removeItem === true
       }
     };
   }
@@ -80,7 +80,7 @@ export const roles = {
         removeInvite: true,
         removeMember: true
       },
-      todo: {
+      item: {
         create: true,
         remove: true,
         addItem: true,
@@ -105,7 +105,7 @@ export const roles = {
         removeInvite: false,
         removeMember: false
       },
-      todo: {
+      item: {
         create: false,
         remove: false,
         addItem: true,

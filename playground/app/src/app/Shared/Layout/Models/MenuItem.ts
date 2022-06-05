@@ -7,6 +7,7 @@ export type MenuItem = {
   href?: string;
   action?: any;
   match?: RegExp;
+  isActive: boolean;
   variant?: ButtonVariant;
 };
 

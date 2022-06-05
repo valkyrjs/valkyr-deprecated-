@@ -1,0 +1,55 @@
+:host {
+  @apply flex flex-col justify-start items-center;
+  @apply w-96;
+  header {
+    @apply box-content;
+    @apply w-full;
+    @apply bg-gray-300;
+    @apply text-center;
+    @apply border border-gray-300 border-b-0;
+    > div {
+      @apply p-4;
+    }
+  }
+  ng-scrollbar {
+    --scrollbar-border-radius: 7px;
+    --scrollbar-padding: 1px;
+    --scrollbar-viewport-margin: 0;
+    --scrollbar-track-color: transparent;
+    --scrollbar-wrapper-color: transparent;
+    --scrollbar-thumb-color: rgb(var(--gray-300));
+    --scrollbar-thumb-hover-color: var(--scrollbar-thumb-color);
+    --scrollbar-size: 5px;
+    --scrollbar-hover-size: var(--scrollbar-size);
+    --scrollbar-thumb-transition: height ease-out 150ms, width ease-out 150ms;
+    --scrollbar-track-transition: height ease-out 150ms, width ease-out 150ms;
+    @apply border border-gray-300 border-t-0;
+    @apply h-96 w-full;
+  }
+  ul {
+    @apply w-full h-full p-2 pr-3;
+    @apply list-none;
+    li {
+      @apply my-2;
+      @apply list-none;
+    }
+    .item-placeholder {
+      @apply w-full h-11;
+      @apply border-0 bg-transparent;
+    }
+  }
+}
+
+.cdk-drag-preview {
+  @apply shadow-md;
+}
+
+.cdk-drag-animating {
+  @apply transition-transform;
+  @apply duration-150 ease-out;
+}
+
+.cdk-drop-list-dragging :not(.cdk-drag-placeholder) {
+  @apply transition-transform;
+  @apply duration-150 ease-out;
+}

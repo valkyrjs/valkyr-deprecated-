@@ -1,60 +1,39 @@
-.sub-header {
-  @apply text-sm;
-  @apply text-gray-900;
+:host {
+  @apply block relative;
 }
 
-.header {
-  @apply text-2xl;
-  @apply font-bold;
+header {
+  h1 {
+    @apply text-4xl;
+    @apply font-bold;
+    @apply text-gray-700;
+    @apply mb-2;
+  }
+  p {
+    @apply text-base;
+  }
 }
 
-.form-group-first {
-  @apply mt-5;
-}
-
-.form-group {
-  @apply my-3;
-}
-
-.warning {
-  @apply mt-5;
-}
-
-label {
-  @apply block;
-  @apply mb-2;
-  @apply text-sm;
-  @apply text-gray-400;
-}
-
-input {
-  @apply w-full;
-  @apply px-3;
-  @apply py-2;
-  @apply placeholder-gray-300;
-  @apply border;
-  @apply border-gray-300;
-  @apply rounded-md;
-  @apply text-center;
-  @apply focus:ring;
-  @apply focus:outline-none;
-  @apply dark:bg-gray-700;
-  @apply dark:text-white;
-  @apply dark:placeholder-gray-500;
-  @apply dark:border-gray-600;
-  @apply dark:focus:ring-gray-900;
-  @apply dark:focus:border-gray-500;
+footer {
+  @apply flex justify-between items-center mt-8;
+  @apply text-gray-400 text-sm;
+  span {
+    a {
+      @apply pl-1;
+    }
+  }
+  a {
+    @apply text-cta-default;
+    &:hover {
+      @apply text-cta-hover;
+    }
+  }
 }
 
 button {
-  @apply w-full px-3 py-4 mt-4 rounded-md text-white;
-
-  &.submit {
-    @apply bg-indigo-500 focus:outline-none;
-  }
-
   &.print {
-    @apply border-2 border-green-400;
+    @apply border-2;
+    @apply border-green-400;
   }
 }
 

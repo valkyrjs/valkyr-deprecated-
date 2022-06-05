@@ -97,13 +97,13 @@
   .vlk-content {
     box-sizing: border-box;
     min-height: 430px;
-    padding: 24px 56px 40px;    
+    padding: 24px 56px 20px;    
   }
 }
 
 @media screen and (min-width: 1024px) {
   .vlk-content {
-    padding: 40px 56px;
+    padding: 40px 56px 20px;
   }
 }
 

@@ -4,31 +4,31 @@
     <p>Enter your credentials</p>
   </header>
   <section>
-    <div class="mb-6">
-      <label for="alias">Alias</label>
-      <input type="text" name="alias" id="alias" placeholder="John Doe" [(ngModel)]="alias" (keyup.enter)="authenticate()" tabindex="1" />
-    </div>
-    <div class="mb-6">
-      <label for="password">Password</label>
-      <input type="password" name="provider" id="password" placeholder="Your password" [(ngModel)]="password" (keyup.enter)="authenticate()" tabindex="2" />
-    </div>
-    <div class="mb-6">
-      <label for="secret">Secret Key</label>
-      <input type="text" name="secret" id="secret" placeholder="Your secret key" [(ngModel)]="secret" (keyup.enter)="authenticate()" tabindex="3" />
-    </div>
-    <div class="mb-6">
+    <form [formGroup]="signinForm" (ngSubmit)="authenticate()">
+      <div class="form-control">
+        <label for="alias">Alias</label>
+        <input type="text" id="alias" placeholder="John Doe" formControlName="alias" tabindex="1" />
+      </div>
+      <div class="form-control">
+        <label for="password">Password</label>
+        <input type="password" id="assword" placeholder="Your password" formControlName="password" (keyup.enter)="authenticate()" tabindex="2" />
+      </div>
+      <div class="form-control">
+        <label for="secret">Secret Key</label>
+        <input id="secret" type="text" placeholder="Your secret key" formControlName="secret" (keyup.enter)="authenticate()" tabindex="3" />
+      </div>
       <div class="flex justify-between items-center">
-        <div class="flex flex-row items-center">
-          <input id="remember" aria-describedby="remember" type="checkbox" [(ngModel)]="remember" required="">
-          <div class="text-sm ml-3">
-            <label for="remember" class="remember">Remember me</label>
-          </div>
+        <div class="form-control">
+          <label for="remember" class="checkbox">
+            <input id="remember" type="checkbox" formControlName="remember"/>
+            <span>Remember me</span>
+          </label>
         </div>
-        <div>
-          <button variant="cta" type="button" (click)="authenticate()" class="submit">Authorize</button>
+        <div class="form-control">
+          <button variant="cta" size="large" type="submit" [disabled]="!signinForm.valid">Authorize</button>
         </div>
       </div>
-    </div>
+    </form>
   </section>
   <footer>
     <div>

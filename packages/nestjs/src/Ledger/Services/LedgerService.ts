@@ -1,9 +1,10 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { clc } from "@nestjs/common/utils/cli-colors.util";
 import { InjectModel } from "@nestjs/mongoose";
-import { AggregateRootClass, EventRecord, LedgerEventStatus, projector, validator } from "@valkyr/ledger";
+import { AggregateRootClass, EventRecord, LedgerEventStatus, validator } from "@valkyr/ledger";
 import { Model } from "mongoose";
 
+import { projector } from "../../Lib/Projector";
 import { LedgerGateway } from "../Gateway";
 import { Event, EventDocument } from "../Models/Event";
 

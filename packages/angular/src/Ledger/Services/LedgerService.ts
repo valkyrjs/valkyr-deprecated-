@@ -6,13 +6,13 @@ import {
   getLogicalTimestamp,
   LedgerEvent,
   LedgerEventStatus,
-  projector,
   Queue,
   validator
 } from "@valkyr/ledger";
 
 import { RemoteService } from "../../Remote";
 import { SocketService } from "../../Socket";
+import { projector } from "../Lib/Projector";
 import { StreamSubscriber } from "../Lib/StreamSubscriber";
 import { Event, EventDocument, EventModel } from "../Models/Event";
 import { EventTracker, EventTrackerModel } from "../Models/EventTracker";

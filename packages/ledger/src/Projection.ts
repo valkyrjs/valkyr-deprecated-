@@ -1,6 +1,12 @@
 import type { EventRecord } from "./Event";
 import { Queue } from "./Queue";
 
+/*
+ |--------------------------------------------------------------------------------
+ | Constants
+ |--------------------------------------------------------------------------------
+ */
+
 export const FILTER_ONCE = Object.freeze<Filter>({
   allowHydratedEvents: false,
   allowOutdatedEvents: false
@@ -18,118 +24,27 @@ export const FILTER_ALL = Object.freeze<Filter>({
 
 /*
  |--------------------------------------------------------------------------------
- | Projection
- |--------------------------------------------------------------------------------
- */
-
-export class Projection<Event extends EventRecord> {
-  public readonly type: Event["type"];
-  public readonly handle: Handler<Event>;
-  public readonly filter: Filter;
-
-  private listener?: () => void;
-
-  constructor(type: Event["type"], handler: Handler<Event>, options: Options) {
-    this.type = type;
-    this.handle = handler;
-    this.filter = options.filter;
-    this.start();
-  }
-
-  /*
-   |--------------------------------------------------------------------------------
-   | Utilities
-   |--------------------------------------------------------------------------------
-   */
-
-  /**
-   * Check if the incoming event state is compatible with the projection filter.
-   */
-  public isValid({ hydrated, outdated }: State) {
-    if (this.filter.allowHydratedEvents === false && hydrated === true) {
-      return false;
-    }
-    if (this.filter.allowOutdatedEvents === false && outdated === true) {
-      return false;
-    }
-    return true;
-  }
-
-  /*
-   |--------------------------------------------------------------------------------
-   | Controllers
-   |--------------------------------------------------------------------------------
-   */
-
-  /**
-   * Start the projection by registering the projection handler against the
-   * projections event emitter.
-   */
-  public start() {
-    this.listener = projector.on(this.type as string, async (event, state) => {
-      if (this.isValid(state)) {
-        await this.handle(event as Event);
-      }
-    });
-  }
-
-  /**
-   * Stop the projection by removing the projection handler registered with the
-   * projections event emitter.
-   */
-  public stop() {
-    this.listener?.();
-  }
-}
-
-/*
- |--------------------------------------------------------------------------------
  | Projector
  |--------------------------------------------------------------------------------
  */
 
-export const projector = new (class Projector {
-  public listeners: Listeners = {};
-
-  public queue: Queue<Message>;
+export class Projector {
+  #listeners: Listeners = {};
+  #queue: Queue<Message>;
 
   constructor() {
     this.project = this.project.bind(this);
-    this.queue = new Queue(async ({ event, state }) => {
-      return Promise.all(Array.from(this.listeners[event.type as string] || []).map((fn) => fn(event, state)));
+    this.#queue = new Queue(async ({ event, state }) => {
+      return Promise.all(Array.from(this.#listeners[event.type as string] || []).map((fn) => fn(event, state)));
     });
   }
 
-  public async project<Event extends EventRecord>(event: Event, state: State) {
+  async project<Event extends EventRecord>(event: Event, state: State) {
     return new Promise<boolean>((resolve, reject) => {
-      this.queue.push({ event, state }, resolve, reject);
+      this.#queue.push({ event, state }, resolve, reject);
     });
   }
 
-  public on(type: string, fn: ProjectionHandler) {
-    const listeners = this.listeners[type];
-    if (listeners) {
-      listeners.add(fn);
-    } else {
-      this.listeners[type] = new Set([fn]);
-    }
-    return () => {
-      this.off(type, fn);
-    };
-  }
-
-  public off(type: string, fn: ProjectionHandler) {
-    this.listeners[type]?.delete(fn);
-  }
-})();
-
-/*
- |--------------------------------------------------------------------------------
- | Projection Factory
- |--------------------------------------------------------------------------------
- */
-
-export const projection = {
   /**
    * Create a single run projection handler.
    *
@@ -144,8 +59,8 @@ export const projection = {
    * that has already been processed.
    */
   once<Event extends EventRecord>(type: Event["type"], handler: Handler<Event>) {
-    return new Projection<Event>(type, handler, { filter: FILTER_ONCE });
-  },
+    return new Projection<Event>(this, { type, handler, filter: FILTER_ONCE });
+  }
 
   /**
    * Create a continuous projection handler.
@@ -168,8 +83,8 @@ export const projection = {
    * events that has occurred in the event stream.
    */
   on<Event extends EventRecord>(type: Event["type"], handler: Handler<Event>) {
-    return new Projection<Event>(type, handler, { filter: FILTER_CONTINUOUS });
-  },
+    return new Projection<Event>(this, { type, handler, filter: FILTER_CONTINUOUS });
+  }
 
   /**
    * Create a catch all projection handler.
@@ -181,9 +96,99 @@ export const projection = {
    * to deal with data that does not depend on a strict order of events.
    */
   all<Event extends EventRecord>(type: Event["type"], handler: Handler<Event>) {
-    return new Projection<Event>(type, handler, { filter: FILTER_ALL });
+    return new Projection<Event>(this, { type, handler, filter: FILTER_ALL });
   }
+
+  addEventListener(type: string, fn: ProjectionHandler) {
+    const listeners = this.#listeners[type];
+    if (listeners) {
+      listeners.add(fn);
+    } else {
+      this.#listeners[type] = new Set([fn]);
+    }
+    return () => {
+      this.removeEventListener(type, fn);
+    };
+  }
+
+  removeEventListener(type: string, fn: ProjectionHandler) {
+    this.#listeners[type]?.delete(fn);
+  }
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Projection
+ |--------------------------------------------------------------------------------
+ */
+
+type ProjectionOptions<Event extends EventRecord> = {
+  type: Event["type"];
+  handler: Handler<Event>;
+  filter: Filter;
 };
+
+export class Projection<Event extends EventRecord> {
+  #type: Event["type"];
+  #handle: Handler<Event>;
+  #projector: Projector;
+  #filter: Filter;
+
+  #listener?: () => void;
+
+  constructor(projector: Projector, { type, handler, filter }: ProjectionOptions<Event>) {
+    this.#type = type;
+    this.#handle = handler;
+    this.#projector = projector;
+    this.#filter = filter;
+    this.start();
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Utilities
+   |--------------------------------------------------------------------------------
+   */
+
+  /**
+   * Check if the incoming event state is compatible with the projection filter.
+   */
+  public isValid({ hydrated, outdated }: State) {
+    if (this.#filter.allowHydratedEvents === false && hydrated === true) {
+      return false;
+    }
+    if (this.#filter.allowOutdatedEvents === false && outdated === true) {
+      return false;
+    }
+    return true;
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Controllers
+   |--------------------------------------------------------------------------------
+   */
+
+  /**
+   * Start the projection by registering the projection handler against the
+   * projections event emitter.
+   */
+  public start() {
+    this.#listener = this.#projector.addEventListener(this.#type as string, async (event, state) => {
+      if (this.isValid(state)) {
+        await this.#handle(event as Event);
+      }
+    });
+  }
+
+  /**
+   * Stop the projection by removing the projection handler registered with the
+   * projections event emitter.
+   */
+  public stop() {
+    this.#listener?.();
+  }
+}
 
 /*
  |--------------------------------------------------------------------------------

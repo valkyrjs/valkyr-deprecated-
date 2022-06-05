@@ -43,7 +43,15 @@ vlk-modal-container {
   }
 }
 
-.todo-placeholder.cdk-drag-preview {
+.item.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.item.cdk-drop-list-dragging .cdk-drag {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.item-placeholder.cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
@@ -51,21 +59,58 @@ vlk-modal-container {
               0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
-.todo.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.todo:last-child {
+.item:last-child {
   border: none;
 }
 
-.todo-list.cdk-drop-list-dragging .todo:not(.cdk-drag-placeholder) {
+.item-list.cdk-drop-list-dragging .item:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.todo-placeholder {
+.item-placeholder {
   background: #ccc;
   border: dotted 3px #999;
   min-height: 60px;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+form {
+  .form-control {
+    @apply flex flex-col gap-1 justify-center items-start;
+    @apply mt-6;
+    label {
+      @apply block;
+      @apply text-xs;
+      @apply text-gray-600;
+      &.checkbox {
+        @apply flex gap-3 items-center justify-start;
+      }
+    }
+    input {
+      @apply w-full;
+      @apply px-3;
+      @apply py-2;
+      @apply placeholder-gray-200;
+      @apply border-b;
+      @apply border-gray-300;
+      @apply text-left;
+      @apply focus:ring;
+      @apply focus:outline-none;
+      @apply bg-white;
+      @apply text-black;
+      @apply focus:ring-0;
+      @apply focus:border-cta-default;
+      @apply transition-colors;
+      &[type="checkbox"] {
+        @apply bg-gray-100 border border-gray-300 h-5 w-5 rounded;
+      }
+    }
+  }
+  button {
+    @apply delay-75;
+  }
+}
+
+li {
+  @apply list-none;
 }

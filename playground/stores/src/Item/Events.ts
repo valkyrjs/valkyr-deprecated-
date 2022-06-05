@@ -1,7 +1,7 @@
-import { Ledger } from "@valkyr/ledger";
+import { LedgerEvent, LedgerEventToLedgerRecord, makeEventFactory } from "@valkyr/ledger";
 
 import type { Auditor } from "../Workspace";
-import type { State } from "./Aggregate";
+import type { Item, State } from "./Aggregate";
 
 /*
  |--------------------------------------------------------------------------------
@@ -10,10 +10,13 @@ import type { State } from "./Aggregate";
  */
 
 export const events = {
-  created: Ledger.createEvent<Created>("ItemCreated"),
-  nameSet: Ledger.createEvent<NameSet>("ItemNameSet"),
-
-  removed: Ledger.createEvent<Removed>("ItemRemoved")
+  created: makeEventFactory<Created>("ItemCreated"),
+  sortSet: makeEventFactory<SortSet>("ItemSortSet"),
+  stateSet: makeEventFactory<StateSet>("ItemStateSet"),
+  detailsSet: makeEventFactory<DetailsSet>("ItemDetailsSet"),
+  done: makeEventFactory<Done>("ItemDone"),
+  undone: makeEventFactory<Undone>("ItemUndone"),
+  removed: makeEventFactory<Removed>("ItemRemoved")
 };
 
 /*
@@ -22,9 +25,13 @@ export const events = {
  |--------------------------------------------------------------------------------
  */
 
-export type Created = Ledger.Event<"ItemCreated", Pick<State, "workspaceId" | "templateId" | "name">, Auditor>;
-export type NameSet = Ledger.Event<"ItemNameSet", Pick<State, "name">, Auditor>;
-export type Removed = Ledger.Event<"ItemRemoved", never, Auditor>;
+export type Created = LedgerEvent<"ItemCreated", Pick<State, "workspaceId" | "name" | "details" | "state">, Auditor>;
+export type Removed = LedgerEvent<"ItemRemoved", never, Auditor>;
+export type SortSet = LedgerEvent<"ItemSortSet", Pick<Item, "sort">, Auditor>;
+export type StateSet = LedgerEvent<"ItemStateSet", Pick<Item, "state">, Auditor>;
+export type DetailsSet = LedgerEvent<"ItemDetailsSet", Pick<Item, "id" | "details">, Auditor>;
+export type Done = LedgerEvent<"ItemDone", Pick<Item, "id">, Auditor>;
+export type Undone = LedgerEvent<"ItemUndone", Pick<Item, "id">, Auditor>;
 
 /*
  |--------------------------------------------------------------------------------
@@ -32,4 +39,6 @@ export type Removed = Ledger.Event<"ItemRemoved", never, Auditor>;
  |--------------------------------------------------------------------------------
  */
 
-export type Event = Created | NameSet | Removed;
+export type Event = Created | SortSet | StateSet | DetailsSet | Done | Undone | Removed;
+
+export type EventRecord = LedgerEventToLedgerRecord<Event>;

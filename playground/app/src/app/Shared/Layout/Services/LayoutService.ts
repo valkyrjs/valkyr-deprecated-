@@ -19,7 +19,7 @@ export class LayoutService {
 
   constructor(private router: Router) {
     this.router.events.subscribe((event) => {
-      if (event instanceof GuardsCheckEnd && event.shouldActivate === true && event.url.includes("authorize")) {
+      if (event instanceof GuardsCheckEnd && event.shouldActivate === true && event.url.includes("identity")) {
         this.updateLayout({
           header: { isVisible: false },
           sidebar: { isVisible: false },

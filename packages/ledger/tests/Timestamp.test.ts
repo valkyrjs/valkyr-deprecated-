@@ -1,14 +1,36 @@
+import { feature, given, scenario, then, when } from "@valkyr/testing";
+
 import { getDate, getLogicalTimestamp, getTimestamp, Timestamp } from "../src/Time";
 
-describe("Timestamp", () => {
-  it("should create non conflicting timestamps", async () => {
-    const result = await runTimestampTest(10, 0, 0);
-    expect(result.validated).toEqual(true);
+type TimestampEntry = { count: number; id: string; ts: Timestamp; dt: Date };
+
+type ScenarioState = {
+  count: number;
+  min: number;
+  max: number;
+  validated: boolean;
+};
+
+feature("Timestamp", () => {
+  scenario<ScenarioState>("Generating timestamps", function () {
+    given("an count of {int} timestamps with a min delay of 0 and max delay of 100 ms", () => {
+      this.count = 100;
+      this.min = 0;
+      this.max = 10;
+    });
+
+    when("when generating a list of timestamps", async () => {
+      this.validated = await runTimestampTest(this.count, this.min, this.max);
+    });
+
+    then("it should create timestamps without conflicts", () => {
+      expect(this.validated).toEqual(true);
+    });
   });
 });
 
-export async function runTimestampTest(i = 10, minDelay = 0, maxDelay = 1000) {
-  let timestamps: { count: number; id: string; ts: Timestamp; dt: Date }[] = [];
+export async function runTimestampTest(i = 10, minDelay = 0, maxDelay = 1000): Promise<boolean> {
+  let timestamps: TimestampEntry[] = [];
 
   let y = 0;
   while (i--) {
@@ -43,5 +65,5 @@ export async function runTimestampTest(i = 10, minDelay = 0, maxDelay = 1000) {
     x++;
   }
 
-  return { validated, timestamps };
+  return validated;
 }

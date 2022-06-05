@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AuthService, IdentityStorageService, UserIdentity, UserIdentityService } from "@valkyr/angular";
 import { AccessKey } from "@valkyr/security";
@@ -11,9 +12,12 @@ import { AccessKey } from "@valkyr/security";
 export class BasicStrategyComponent {
   step: Step = "authenticate";
 
-  alias = "";
-  password = "";
-  secret = "";
+  signinForm = new FormGroup({
+    alias: new FormControl("", Validators.required),
+    password: new FormControl("", Validators.required),
+    secret: new FormControl("", Validators.required),
+    remember: new FormControl(false)
+  });
 
   users: UserIdentity[] = [];
 
@@ -27,8 +31,17 @@ export class BasicStrategyComponent {
   ) {}
 
   async authenticate() {
-    const access = AccessKey.resolve(this.password, this.secret);
-    const { identity, users } = await this.storage.import(this.alias, access);
+    if (!this.signinForm.value.password) {
+      throw new Error("No password present");
+    }
+    if (!this.signinForm.value.secret) {
+      throw new Error("No secret present");
+    }
+    if (!this.signinForm.value.alias) {
+      throw new Error("No alias present");
+    }
+    const access = AccessKey.resolve(this.signinForm.value.password, this.signinForm.value.secret);
+    const { identity, users } = await this.storage.import(this.signinForm.value.alias, access);
 
     this.auth.setIdentity(identity.id);
     this.auth.setAccess(access);
