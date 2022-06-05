@@ -1,4 +1,4 @@
-import { getMockedCollection } from "../../../__mocks__/User";
+import { getMockedCollection } from "../mocks/User";
 
 describe("Storage Update", () => {
   it("should successfully update existing document", async () => {
