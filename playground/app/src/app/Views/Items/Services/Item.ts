@@ -12,13 +12,13 @@ export class ItemService extends DataSubscriber {
     super();
   }
 
-  public async create(workspaceId: string, name: string, auditor: string) {
+  public async create(workspaceId: string, name: string, sort: string, auditor: string) {
     const state = "not-started";
     const details = "";
-    this.ledger.append(getId(), ItemStore.events.created({ workspaceId, name, details, state }, { auditor }));
+    this.ledger.append(getId(), ItemStore.events.created({ workspaceId, name, details, state, sort }, { auditor }));
   }
 
-  public async setOrder(id: string, sort: number, auditor: string) {
+  public async setOrder(id: string, sort: string, auditor: string) {
     this.ledger.append(id, ItemStore.events.sortSet({ sort }, { auditor }));
   }
 

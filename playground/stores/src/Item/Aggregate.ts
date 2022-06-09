@@ -10,7 +10,7 @@ export type State = {
   workspaceId: Workspace["id"];
   name: string;
   details: string;
-  sort?: number;
+  sort: string;
   state: ItemState;
   assignedTo?: Member["id"];
   createdBy: Member["id"];
@@ -24,7 +24,7 @@ export class Item extends AggregateRoot {
   public workspaceId = "";
   public name = "";
   public details = "";
-  public sort: number | undefined = undefined;
+  public sort = "";
   public state: ItemState = "not-started";
   public assignedTo = "";
   public createdBy = "";
@@ -39,6 +39,7 @@ export class Item extends AggregateRoot {
         this.workspaceId = event.data.workspaceId;
         this.name = event.data.name;
         this.state = "not-started";
+        this.sort = event.data.sort;
         this.createdBy = event.meta.auditor;
         this.createdAt = event.created;
         break;

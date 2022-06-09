@@ -1,6 +1,7 @@
 import { CdkDragDrop } from "@angular/cdk/drag-drop";
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { AuthService } from "@valkyr/angular";
+import { LexoRank } from "lexorank";
 import { ItemState } from "stores/src/Item";
 
 import { CurrentWorkspaceService, Workspace } from "../../../Shared/WorkspaceServices";
@@ -56,10 +57,28 @@ export class ListComponent implements OnInit, OnDestroy {
       throw new Error("Could not resolve workspace member");
     }
 
-    if (event.previousContainer === event.container) {
-      this.itemService.setOrder(event.item.data.id, event.currentIndex, member.id);
-    } else {
+    if (event.previousContainer !== event.container) {
       this.itemService.setState(event.item.data.id, event.container.data, member.id);
     }
+
+    if (event.currentIndex === event.previousIndex) {
+      return;
+    }
+
+    let newOrder: string | undefined;
+    if (event.currentIndex === 0) {
+      const itemAfter = this.items[event.currentIndex];
+      newOrder = LexoRank.parse(itemAfter.sort).genPrev().toString();
+    } else if (event.currentIndex === this.items.length - 1) {
+      const itemBefore = this.items[event.currentIndex];
+      newOrder = LexoRank.parse(itemBefore.sort).genNext().toString();
+    } else {
+      const indexBefore = event.currentIndex < event.previousIndex ? event.currentIndex - 1 : event.currentIndex;
+      const indexAfter = event.currentIndex < event.previousIndex ? event.currentIndex : event.currentIndex + 1;
+      const itemBefore = this.items[indexBefore];
+      const itemAfter = this.items[indexAfter];
+      newOrder = LexoRank.parse(itemBefore.sort).between(LexoRank.parse(itemAfter.sort)).toString();
+    }
+    this.itemService.setOrder(event.item.data.id, newOrder, member.id);
   }
 }
