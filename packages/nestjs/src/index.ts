@@ -1,4 +1,5 @@
 export * from "./Access";
+export * from "./Commands";
 export * from "./Decorators";
 export * from "./Identity";
 export * from "./Interceptors/MessageInterceptor";

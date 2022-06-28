@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { MongooseModule } from "@nestjs/mongoose";
 import { WsAdapter } from "@nestjs/platform-ws";
-import { AccessModule, IdentityModule, LedgerModule, MailModule, SocketModule } from "@valkyr/nestjs";
+import { AccessModule, CommandServer, IdentityModule, LedgerModule, MailModule, SocketModule } from "@valkyr/nestjs";
 
 import { StreamGuard } from "./Guards/StreamGuard";
 import { WorkspaceModule } from "./Workspace/Module";
@@ -44,7 +44,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
   app.useWebSocketAdapter(new WsAdapter(app));
+  app.connectMicroservice(CommandServer.for(app));
 
+  await app.startAllMicroservices();
   await app.listen(PORT);
 }
 

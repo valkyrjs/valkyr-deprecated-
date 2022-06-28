@@ -2,7 +2,7 @@ import "reflect-metadata";
 
 import { Logger } from "@nestjs/common";
 
-import { projector } from "../Lib/Projector";
+import { projector } from "../../Lib/Projector";
 
 const logger = new Logger("Projector", { timestamp: true });
 
