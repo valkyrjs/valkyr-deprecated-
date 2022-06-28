@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthService } from "@valkyr/angular";
 import { ModalService } from "@valkyr/tailwind";
+import { LexoRank } from "lexorank";
 
 import { CurrentWorkspaceService, Workspace } from "../../../Shared/WorkspaceServices";
 import { ItemService } from "../Services/Item";
@@ -36,7 +37,7 @@ export class CreateItem implements OnInit {
     if (!member) {
       throw new Error("Could not resolve workspace member");
     }
-    this.item.create(this.workspace.id, this.name, member.id);
+    this.item.create(this.workspace.id, this.name, LexoRank.max().toString(), member.id);
   }
 
   cancel() {

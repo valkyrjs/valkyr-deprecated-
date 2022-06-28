@@ -8,14 +8,15 @@ export class ItemProjector extends Projector {
   @On("ItemCreated")
   public async handleItemCreated({
     streamId,
-    data: { workspaceId, name, details, state }
+    data: { workspaceId, name, details, state, sort }
   }: LedgerEventRecord<ItemStore.Created>) {
     await Item.insertOne({
       id: streamId,
       workspaceId,
       name,
       details,
-      state
+      state,
+      sort
     });
   }
 

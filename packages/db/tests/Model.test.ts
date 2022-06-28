@@ -1,7 +1,7 @@
 import { feature, given, scenario, then, when } from "@valkyr/testing";
 
 import { data, User } from "../mocks/User";
-import { DocumentNotFoundError, DuplicateDocumentError } from "../src/Storage";
+import { DocumentNotFoundError, DuplicateDocumentError } from "../src";
 
 feature(
   {

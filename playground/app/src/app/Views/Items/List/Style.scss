@@ -26,6 +26,9 @@
     @apply border border-gray-300 border-t-0;
     @apply h-96 w-full;
   }
+  .list-content-wrapper {
+    @apply h-full;
+  }
   ul {
     @apply w-full h-full p-2 pr-3;
     @apply list-none;

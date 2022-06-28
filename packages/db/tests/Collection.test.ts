@@ -1,6 +1,5 @@
-import { data, getMockedCollection, UserDocument } from "../__mocks__/User";
-import { InstanceAdapter } from "../Adapters";
-import { Collection } from "../Collection";
+import { data, getMockedCollection, UserDocument } from "../mocks/User";
+import { Collection, InstanceAdapter } from "../src";
 
 describe("Collection", () => {
   it("should successfully create a new collection", () => {
