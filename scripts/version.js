@@ -1,7 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const pkgsDir = path.resolve(__dirname, "packages");
+const root = path.resolve(__dirname, "..");
+const pkgsDir = path.resolve(root, "packages");
 const version = process.argv[process.argv.indexOf("--version") + 1]
 
 const pkgs = fs.readdirSync(pkgsDir);

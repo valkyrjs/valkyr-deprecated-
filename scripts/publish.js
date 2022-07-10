@@ -2,8 +2,8 @@ const { spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 
-const root = path.resolve(__dirname);
-const pkgs = fs.readdirSync(path.join(__dirname, "packages"));
+const root = path.resolve(__dirname, "..");
+const pkgs = fs.readdirSync(path.join(root, "packages"));
 
 async function main() {
   for (const pkg of pkgs) {

@@ -6,6 +6,9 @@
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
   "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "browser",
     "database",
