@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "@valkyr/access": "*",
-    "@valkyr/identity": "*",
     "@valkyr/ledger": "*"
   },
   "devDependencies": {

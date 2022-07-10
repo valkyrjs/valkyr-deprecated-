@@ -2,10 +2,10 @@ import { Module } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { MongooseModule } from "@nestjs/mongoose";
 import { WsAdapter } from "@nestjs/platform-ws";
-import { AccessModule, IdentityModule, LedgerModule, MailModule, SocketModule } from "@valkyr/nestjs";
+import { AccessModule } from "@valkyr/access-nestjs";
+import { LedgerModule } from "@valkyr/ledger-nestjs";
 
-import { StreamGuard } from "./Guards/StreamGuard";
-import { WorkspaceModule } from "./Workspace/Module";
+import { RealmsModule } from "./Realms";
 
 /*
  |--------------------------------------------------------------------------------
@@ -22,15 +22,7 @@ const PORT = 8370;
  */
 
 @Module({
-  imports: [
-    AccessModule,
-    IdentityModule,
-    MailModule,
-    MongooseModule.forRoot("mongodb://localhost:27027/valkyr"),
-    LedgerModule.register({ StreamGuard }),
-    SocketModule,
-    WorkspaceModule
-  ]
+  imports: [AccessModule, MongooseModule.forRoot("mongodb://localhost:27027/valkyr"), LedgerModule, RealmsModule]
 })
 export class AppModule {}
 

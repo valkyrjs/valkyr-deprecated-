@@ -19,7 +19,6 @@
     "flush": "npm run clean && npx rimraf ./**/node_modules",
     "publish": "node ./scripts/publish.js",
     "api": "npm start --prefix playground/api",
-    "app": "npm start --prefix playground/app",
     "web": "npm start --prefix website",
     "lint": "eslint ./packages --ext .ts --fix",
     "test": "jest --maxWorkers=100% --detectOpenHandles",

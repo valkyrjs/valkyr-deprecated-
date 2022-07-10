@@ -1,4 +1,0 @@
-<ng-container [ngSwitch]="item.type" *ngFor="let item of items">
-  <app-menu-item-action-link *ngSwitchCase="'action'" [name]="item.name" [action]="item.action" [icon]="item.icon"></app-menu-item-action-link>
-  <app-menu-item-link *ngSwitchDefault [name]="item.name" [link]="item.href" [icon]="item.icon" [isActive]="item.isActive"></app-menu-item-link>
-</ng-container>

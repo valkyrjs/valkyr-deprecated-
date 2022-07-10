@@ -1,7 +1,7 @@
 {
-  "name": "@valkyr/ledger",
+  "name": "@valkyr/ledger-sync",
   "version": "0.0.0",
-  "description": "A distributed event sourcing pattern written in TypeScript.",
+  "description": "Client side synchronization module for @valkyr/ledger implementations.",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
@@ -10,12 +10,11 @@
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
-    "@valkyr/security": "*",
-    "@valkyr/utils": "*",
-    "crypto-js": "4.1.1"
+    "@valkyr/ledger": "*",
+    "idb-keyval": "^6.2.0"
   },
   "devDependencies": {
-    "@types/crypto-js": "4.1.1",
+    "@valkyr/ledger": "*",
     "@valkyr/testing": "*"
   }
 }

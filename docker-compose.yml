@@ -7,3 +7,10 @@ services:
       - 27027:27017
     volumes:
       - .docker/mongo:/data/db
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - .docker/redis:/data

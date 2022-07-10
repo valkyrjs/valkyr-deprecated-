@@ -1,21 +1,17 @@
 {
-  "name": "@valkyr/security",
+  "name": "@valkyr/ledger-nestjs",
   "version": "0.0.0",
-  "description": "Collection of cryptographic and hashing utilities for security functions",
+  "description": "@valkyr/ledger module for nestjs.",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
   "main": "src/index.ts",
-  "keywords": [
-    "identity",
-    "idp"
-  ],
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
-    "crypto-js": "^4.1.1",
-    "jose": "^4.8.3",
-    "nanoid": "^3.3.4"
+    "@nestjs/common": "^9.0.1",
+    "@nestjs/mongoose": "^9.2.0",
+    "@valkyr/ledger": "*"
   }
 }
