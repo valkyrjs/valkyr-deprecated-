@@ -1,4 +1,4 @@
-import type { EventRecord } from "./Event";
+import type { EventRecord, LedgerEvent, LedgerEventRecord } from "./Event";
 import { Queue } from "./Queue";
 
 /*
@@ -58,8 +58,8 @@ export class Projector {
    * We disallow `hydrate` and `outdated` as these events represents events
    * that has already been processed.
    */
-  once<Event extends EventRecord>(type: Event["type"], handler: Handler<Event>) {
-    return new Projection<Event>(this, { type, handler, filter: FILTER_ONCE });
+  once<Event extends LedgerEvent>(type: LedgerEventRecord<Event>["type"], handler: Handler<LedgerEventRecord<Event>>) {
+    return new Projection<LedgerEventRecord<Event>>(this, { type, handler, filter: FILTER_ONCE });
   }
 
   /**
@@ -82,8 +82,8 @@ export class Projector {
    * have processing requirements that needs to know about every unknown
    * events that has occurred in the event stream.
    */
-  on<Event extends EventRecord>(type: Event["type"], handler: Handler<Event>) {
-    return new Projection<Event>(this, { type, handler, filter: FILTER_CONTINUOUS });
+  on<Event extends LedgerEvent>(type: LedgerEventRecord<Event>["type"], handler: Handler<LedgerEventRecord<Event>>) {
+    return new Projection<LedgerEventRecord<Event>>(this, { type, handler, filter: FILTER_CONTINUOUS });
   }
 
   /**
@@ -95,8 +95,8 @@ export class Projector {
    * stricter definitions of once and on patterns. This is a good place
    * to deal with data that does not depend on a strict order of events.
    */
-  all<Event extends EventRecord>(type: Event["type"], handler: Handler<Event>) {
-    return new Projection<Event>(this, { type, handler, filter: FILTER_ALL });
+  all<Event extends LedgerEvent>(type: LedgerEventRecord<Event>["type"], handler: Handler<LedgerEventRecord<Event>>) {
+    return new Projection<LedgerEventRecord<Event>>(this, { type, handler, filter: FILTER_ALL });
   }
 
   addEventListener(type: string, fn: ProjectionHandler) {

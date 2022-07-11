@@ -5,12 +5,6 @@ import type { Collection, Options } from "./Collection";
 import { observe, observeOne } from "./Observe";
 import { Document, DocumentNotFoundError, PartialDocument, UpdateActions, UpdateResponse } from "./Storage";
 
-export type ModelDefinition<T = any> = {
-  name?: string;
-  model: ModelClass<T, any>;
-  collection: Collection;
-};
-
 export abstract class Model<D extends Document = any> {
   static _collection: Collection;
 

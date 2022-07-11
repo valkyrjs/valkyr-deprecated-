@@ -8,6 +8,10 @@ export type Adapter<D extends Document = any> = {
   flush(): void;
 };
 
+export type AdapterClass<D extends Document = any> = {
+  new (): Adapter<D>;
+};
+
 export type PartialDocument<D extends Document = any> = Omit<D, "id"> & {
   id?: string;
 };
