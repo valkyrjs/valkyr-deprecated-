@@ -3,7 +3,7 @@ import { getLogicalTimestamp } from "@valkyr/ledger";
 import { InstanceStorage, sync } from "../src";
 
 beforeEach(() => {
-  sync.storage(new InstanceStorage());
+  sync.storage(InstanceStorage);
 });
 
 afterEach(async () => {

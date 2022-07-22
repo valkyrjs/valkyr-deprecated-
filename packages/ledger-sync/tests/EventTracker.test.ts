@@ -3,7 +3,7 @@ import { getLogicalTimestamp } from "@valkyr/ledger";
 import { InstanceStorage, sync } from "../src";
 
 beforeEach(() => {
-  sync.storage(new InstanceStorage());
+  sync.storage(InstanceStorage);
 });
 
 afterEach(async () => {
@@ -19,16 +19,6 @@ describe("EventTracker", () => {
     expect(await sync.getEventTimestamp("xyz", "FooSet")).toEqual(timestamp);
   });
 
-  it("should ignore .track when timestamp is outdated", async () => {
-    const timestampA = getLogicalTimestamp();
-    const timestampB = getLogicalTimestamp();
-
-    await sync.trackEvent("xyz", "FooSet", timestampB);
-    await sync.trackEvent("xyz", "FooSet", timestampA);
-
-    expect(await sync.getEventTimestamp("xyz", "FooSet")).toEqual(timestampB);
-  });
-
   it("should handle .isOutdated", async () => {
     const timestampA = getLogicalTimestamp();
     const timestampB = getLogicalTimestamp();
@@ -37,5 +27,15 @@ describe("EventTracker", () => {
 
     expect(await sync.isEventOutdated("xyz", "FooSet", timestampA)).toEqual(true);
     expect(await sync.isEventOutdated("xyz", "FooSet", timestampB)).toEqual(false);
+  });
+
+  it("should ignore .track when timestamp is outdated", async () => {
+    const timestampA = getLogicalTimestamp();
+    const timestampB = getLogicalTimestamp();
+
+    await sync.trackEvent("xyz", "FooSet", timestampB);
+    await sync.trackEvent("xyz", "FooSet", timestampA);
+
+    expect(await sync.getEventTimestamp("xyz", "FooSet")).toEqual(timestampB);
   });
 });

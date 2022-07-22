@@ -1,21 +1,33 @@
 import { EventStorage } from "./Storage";
 
 export class InstanceStorage<Data = any> implements EventStorage<Data> {
-  readonly #cache = new Map<string, Data>();
+  readonly #map = new Map<string, Data>();
 
-  async set(streamId: string, data: Data) {
-    this.#cache.set(streamId, data);
+  constructor(readonly name: string) {}
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Storage Utilities
+   |--------------------------------------------------------------------------------
+   */
+
+  async has(key: string): Promise<boolean> {
+    return this.#map.has(key);
   }
 
-  async get(streamId: string) {
-    return this.#cache.get(streamId);
+  async set(key: string, data: Data): Promise<void> {
+    this.#map.set(key, data);
   }
 
-  async del(streamId: string) {
-    this.#cache.delete(streamId);
+  async get(key: string): Promise<Data | undefined> {
+    return this.#map.get(key);
   }
 
-  async flush() {
-    this.#cache.clear();
+  async del(key: string): Promise<void> {
+    this.#map.delete(key);
+  }
+
+  async flush(): Promise<void> {
+    this.#map.clear();
   }
 }

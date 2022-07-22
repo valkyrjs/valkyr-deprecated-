@@ -118,7 +118,7 @@ export abstract class Model<D extends Document = any> {
     criteria: RawObject = {},
     options?: Options,
     next?: (value: T[] | T | undefined) => void
-  ) {
+  ): Subscription {
     if (options?.limit === 1) {
       return (this as ModelClass<T, D>).observeOne(criteria).subscribe({ next });
     }

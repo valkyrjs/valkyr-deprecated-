@@ -3,17 +3,78 @@ import { del, get, set } from "idb-keyval";
 import { EventStorage } from "./Storage";
 
 export class IndexedDbStorage<Data = any> implements EventStorage<Data> {
-  async set(streamId: string, data: Data) {
-    await set(streamId, data);
+  #map?: Map<string, Data>;
+
+  #timeout: any;
+
+  constructor(readonly name: string) {}
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Accessors
+   |--------------------------------------------------------------------------------
+   */
+
+  get map() {
+    if (this.#map === undefined) {
+      throw new Error("IndexedDbStorage Violation: Map has not been resolved");
+    }
+    return this.#map;
   }
 
-  async get(streamId: string) {
-    return get(streamId);
+  /*
+   |--------------------------------------------------------------------------------
+   | Storage Utilities
+   |--------------------------------------------------------------------------------
+   */
+
+  async has(key: string): Promise<boolean> {
+    await this.#resolve();
+    return this.map.has(key);
   }
 
-  async del(streamId: string) {
-    await del(streamId);
+  async set(key: string, data: Data) {
+    await this.#resolve();
+    this.map.set(key, data);
+    this.#persist();
   }
 
-  async flush() {}
+  async get(key: string) {
+    await this.#resolve();
+    return this.map.get(key);
+  }
+
+  async del(key: string) {
+    await this.#resolve();
+    this.map.delete(key);
+    this.#persist();
+  }
+
+  async flush() {
+    await del(this.name);
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Persistence Utilities
+   |--------------------------------------------------------------------------------
+   */
+
+  async #persist() {
+    clearTimeout(this.#timeout);
+    this.#timeout = setTimeout(() => {
+      set(this.name, JSON.stringify(Array.from(this.map.entries())));
+    });
+  }
+
+  async #resolve() {
+    if (this.#map === undefined) {
+      const cached = await get(this.name);
+      if (cached) {
+        this.#map = new Map(JSON.parse(cached));
+      } else {
+        this.#map = new Map();
+      }
+    }
+  }
 }

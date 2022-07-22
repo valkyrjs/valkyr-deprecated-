@@ -1,14 +1,24 @@
+export type EventStorageClass<Data = any> = {
+  new (name: string): EventStorage<Data>;
+};
+
 export type EventStorage<Data = any> = {
-  set(streamId: string, data: Data): Promise<void>;
-  get(streamId: string): Promise<Data | undefined>;
-  del(streamId: string): Promise<void>;
+  readonly name: string;
+  has(key: string): Promise<boolean>;
+  set(key: string, data: Data): Promise<void>;
+  get(key: string): Promise<Data | undefined>;
+  del(key: string): Promise<void>;
   flush(): Promise<void>;
 };
 
 export class Storage<Data = any> {
   #storage?: EventStorage<Data>;
 
-  // ### Accessors
+  /*
+   |--------------------------------------------------------------------------------
+   | Accessors
+   |--------------------------------------------------------------------------------
+   */
 
   set storage(storage: EventStorage<Data>) {
     this.#storage = storage;
@@ -21,7 +31,15 @@ export class Storage<Data = any> {
     return this.#storage;
   }
 
-  // ### Utilities
+  /*
+   |--------------------------------------------------------------------------------
+   | Storage Method Passthrough
+   |--------------------------------------------------------------------------------
+   */
+
+  get has() {
+    return this.storage.has.bind(this.storage);
+  }
 
   get set() {
     return this.storage.set.bind(this.storage);
