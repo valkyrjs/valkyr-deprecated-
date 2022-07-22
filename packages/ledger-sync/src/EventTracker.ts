@@ -5,7 +5,7 @@ export const tracker = new (class Tracker extends Storage<string> {
     const id = this.#getPointer(streamId, type);
     const ts = await this.get(this.#getPointer(streamId, type));
     if (ts === undefined || at > ts) {
-      this.set(id, at);
+      await this.set(id, at);
     }
   }
 

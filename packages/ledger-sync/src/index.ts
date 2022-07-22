@@ -1,3 +1,5 @@
+import { EventRecord } from "@valkyr/ledger";
+
 import { cursors } from "./EventCursor";
 import { index } from "./EventIndex";
 import { tracker } from "./EventTracker";
@@ -20,23 +22,19 @@ async function getCursor(streamId: string): Promise<string | undefined> {
   return cursors.get(streamId);
 }
 
-async function hasEvent(eventId: string): Promise<boolean> {
-  return index.has(eventId);
+async function addEvent({ id, streamId, type, created }: EventRecord): Promise<void> {
+  await Promise.all([index.set(id, true), tracker.track(streamId, type, created)]);
 }
 
-async function setEvent(eventId: string): Promise<void> {
-  return index.set(eventId, true);
+async function hasEvent({ id }: EventRecord): Promise<boolean> {
+  return index.has(id);
 }
 
-async function trackEvent(streamId: string, type: string, at: string): Promise<void> {
-  tracker.track(streamId, type, at);
+async function isOutdated({ streamId, type, created }: EventRecord): Promise<boolean> {
+  return tracker.isOutdated(streamId, type, created);
 }
 
-async function isEventOutdated(streamId: string, type: string, at: string): Promise<boolean> {
-  return tracker.isOutdated(streamId, type, at);
-}
-
-async function getEventTimestamp(streamId: string, type: string): Promise<string> {
+async function getTimestamp(streamId: string, type: string): Promise<string> {
   return tracker.getTimestamp(streamId, type);
 }
 
@@ -49,9 +47,8 @@ export const sync = {
   setCursor,
   getCursor,
   hasEvent,
-  setEvent,
-  trackEvent,
-  getEventTimestamp,
-  isEventOutdated,
+  addEvent,
+  getTimestamp,
+  isOutdated,
   flush
 };
