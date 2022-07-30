@@ -5,6 +5,7 @@ import {
   AggregateRootClass,
   createEventRecord,
   EventRecord,
+  getLogicalTimestamp,
   LedgerEvent,
   LedgerEventStatus,
   validator
@@ -20,7 +21,11 @@ const logger = new Logger("Ledger");
 export class LedgerService {
   constructor(@InjectModel(Event.name) readonly model: Model<EventDocument>) {}
 
-  // ### Accessor Proxies
+  /*
+   |--------------------------------------------------------------------------------
+   | Validation & Projection Proxies
+   |--------------------------------------------------------------------------------
+   */
 
   get validate() {
     return validator.validate;
@@ -30,13 +35,58 @@ export class LedgerService {
     return projector.project;
   }
 
-  // ### Write Utilities
+  /*
+   |--------------------------------------------------------------------------------
+   | Write Utilities
+   |--------------------------------------------------------------------------------
+   */
 
+  /**
+   * Push a new event onto the local event store database.
+   *
+   * @remarks Push is meant to take events from the local services and insert them as new event
+   * records as non hydrated events.
+   *
+   * @param streamId - Stream id the event belongs to.
+   * @param event    - Event data to record.
+   */
   async push(streamId: string, event: LedgerEvent): Promise<void> {
-    return this.insert(createEventRecord(streamId, event));
+    return this.insert(createEventRecord(streamId, event), false);
   }
 
-  async insert(event: EventRecord, hydrated = false): Promise<void> {
+  /**
+   * Record an event to the local event store database.
+   *
+   * @remarks Record is meant to take events from a remote resource and insert them as if they were
+   * created by the local server. This means that events going through the append method will go
+   * through possible projections as non hydrated events.
+   *
+   * The events `recorded` timestamp is also updated to represent the time the event was first seen
+   * by the server.
+   *
+   * @param event - Event to append to the event store db.
+   */
+  async record(event: EventRecord): Promise<void> {
+    return this.insert(
+      {
+        ...event,
+        recorded: getLogicalTimestamp()
+      },
+      false
+    );
+  }
+
+  /**
+   * Insert a new event to the local event store database.
+   *
+   * @remarks This method triggers event validation and projection. If validation fails the event will
+   * not be inserted. If the projection fails the projection itself should be handling the error based
+   * on its own business logic.
+   *
+   * @param event    - Event to insert.
+   * @param hydrated - Is this a newly created event?
+   */
+  async insert(event: EventRecord, hydrated = true): Promise<void> {
     const status = await this.status(event);
     if (status.exists === true) {
       return; // event already exists, no further actions required
@@ -96,7 +146,11 @@ export class LedgerService {
     return { exists: false, outdated: count > 0 };
   }
 
-  // ### Stream Utilities
+  /*
+   |--------------------------------------------------------------------------------
+   | Stream Utilities
+   |--------------------------------------------------------------------------------
+   */
 
   /**
    * An event reducer aims to create an aggregate state that is as close
