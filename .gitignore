@@ -1,0 +1,50 @@
+# IDE - VSCode
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IDE - IntelliJ
+
+.idea/*
+!.idea/inspectionProfiles/
+!.idea/dictionaries/
+!.idea/codeStyles/
+!.idea/modules.xml
+!.idea/*.iml
+!.idea/README.md
+
+# Development
+
+.docker
+.parcel-cache
+
+# node_modules
+
+node_modules
+
+# dist & pack
+
+dist
+*.tgz
+
+# Tests
+
+coverage
+
+# OS
+
+.DS_Store
+
+# TypeScript
+
+tsconfig.build.tsbuildinfo
+
+# Logs
+
+logs
+*.log
+npm-debug.log*
+lerna-debug.log*

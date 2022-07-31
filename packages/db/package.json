@@ -1,0 +1,32 @@
+{
+  "name": "@valkyr/db",
+  "version": "0.0.0",
+  "description": "Simple client side storage solution written in TypeScript.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "browser",
+    "database",
+    "mingo",
+    "mongodb"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json"
+  },
+  "dependencies": {
+    "@valkyr/security": "*",
+    "@valkyr/utils": "*",
+    "idb-keyval": "^6.2.0",
+    "mingo": "^6.0.6",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.5.5"
+  },
+  "devDependencies": {
+    "@valkyr/testing": "*"
+  }
+}

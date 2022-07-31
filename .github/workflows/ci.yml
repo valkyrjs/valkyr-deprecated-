@@ -1,0 +1,27 @@
+name: CI
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "packages/**.ts"
+      - .github/workflows/ci.yml
+  pull_request:
+    paths:
+      - "packages/**.ts"
+      - .github/workflows/ci.yml
+jobs:
+  coverage:
+    name: Tests & Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: "16"
+      - run: npm install
+      - run: npm run lint
+      - uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: be11bd542160eb66e90ab4e55f54b3064ecc89375880342b4407885b6af8df39
+        with:
+          coverageCommand: npm run coverage

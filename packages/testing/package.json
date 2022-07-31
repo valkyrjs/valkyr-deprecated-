@@ -1,0 +1,24 @@
+{
+  "name": "@valkyr/testing",
+  "version": "0.0.0",
+  "description": "Testing tools for @valkyr packages.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "unit-testing",
+    "testing"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json"
+  },
+  "devDependencies": {
+    "@valkyr/utils": "*",
+    "mongodb-memory-server": "^8.4.2",
+    "mongodb": "^4.4.1"
+  }
+}

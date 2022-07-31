@@ -1,0 +1,23 @@
+{
+  "name": "@valkyr/ledger-sync",
+  "version": "0.0.0",
+  "description": "Client side synchronization module for @valkyr/ledger implementations.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json"
+  },
+  "dependencies": {
+    "@valkyr/ledger": "*",
+    "idb-keyval": "^6.2.0"
+  },
+  "devDependencies": {
+    "@valkyr/ledger": "*",
+    "@valkyr/testing": "*"
+  }
+}

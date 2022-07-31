@@ -1,0 +1,24 @@
+{
+  "name": "@valkyr/access",
+  "version": "0.0.0",
+  "description": "Simple access control solution written in TypeScript.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "access-control",
+    "security",
+    "acl"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json"
+  },
+  "dependencies": {
+    "@valkyr/testing": "*",
+    "@valkyr/utils": "*"
+  }
+}

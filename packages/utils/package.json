@@ -1,0 +1,26 @@
+{
+  "name": "@valkyr/utils",
+  "version": "0.0.0",
+  "description": "A simple dependency injection service.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "dependency-injection"
+  ],
+  "dependencies": {
+    "nanoid": "^3.3.4",
+    "eventemitter3": "^4.0.7",
+    "rfdc": "^1.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.0.3"
+  },
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json"
+  }
+}
