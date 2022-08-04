@@ -16,12 +16,12 @@ export type RoleDocument = Role & Document;
  */
 
 @Schema()
-export class Role {
+export class Role<Permissions extends Record<string, unknown> = any> {
   @Prop({ required: true, index: true })
   id!: string;
 
   @Prop({ required: true, index: true })
-  tenantId!: string;
+  container!: string;
 
   @Prop({ required: true })
   name!: string;
@@ -30,7 +30,7 @@ export class Role {
   settings!: Record<string, unknown>;
 
   @Prop({ type: Object, default: {} })
-  permissions!: Record<string, unknown>;
+  permissions!: Permissions;
 
   @Prop({ type: Array, default: [] })
   members!: string[];

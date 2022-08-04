@@ -1,4 +1,4 @@
-import type { Store } from "../Types/Store";
+import type { Store } from "./ValueStore";
 
 export class State {
   private store: Store;

@@ -1,13 +1,9 @@
 import { getParameters } from "@valkyr/utils";
 import type { History, Location } from "history";
 
-import { ActionRejectedError } from "../Errors/Action";
-import { RenderActionMissingError, RouteNotFoundError } from "../Errors/Route";
-import type { Action, Redirect, Request } from "../Types/Action";
-import type { Resolved } from "../Types/Routes";
-import { getRoute } from "../Utils/Routes";
-import { response } from "./Action";
+import { Action, ActionRejectedError, Redirect, Render, Request, response } from "./Action";
 import { Query } from "./Query";
+import { RenderActionMissingError, Resolved, RouteNotFoundError } from "./Route";
 import type { Router } from "./Router";
 import { State } from "./State";
 import { ValueStore } from "./ValueStore";
@@ -19,7 +15,7 @@ import { ValueStore } from "./ValueStore";
  */
 
 export async function handleRoutingRequest(router: Router, location: Location, origin?: Location) {
-  const resolved = getRoute(location.pathname);
+  const resolved = router.getRoute(location.pathname);
   if (resolved === undefined) {
     throw new RouteNotFoundError(location.pathname);
   }
@@ -32,23 +28,28 @@ export async function handleRoutingRequest(router: Router, location: Location, o
  |--------------------------------------------------------------------------------
  */
 
-async function getRoutingResponse(resolved: Resolved, router: Router, location: Location, origin?: Location) {
+async function getRoutingResponse(
+  resolved: Resolved,
+  router: Router,
+  location: Location,
+  origin?: Location
+): Promise<Render> {
   const route = resolved.route;
   const request = getRequest(resolved, location, router.history);
   const response = await getResponse(request, route.actions, router.setProgress);
-  if (!response) {
-    throw new RenderActionMissingError(route.path);
-  }
-  switch (response.status) {
-    case "redirect": {
-      redirect(response, origin, router.goTo);
-      break;
+  if (response !== undefined) {
+    switch (response.status) {
+      case "redirect": {
+        redirect(response, origin, router.goTo);
+        break;
+      }
+      case "render": {
+        router.setCurrentRoute(request).setProgress(0);
+        return response;
+      }
     }
-    case "render": {
-      router.setCurrentRoute(request).setProgress(0);
-      return response.components;
-    }
   }
+  throw new RenderActionMissingError(route.path);
 }
 
 function getRequest(resolved: Resolved, location: Location, history: History): Request {

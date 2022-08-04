@@ -1,5 +1,5 @@
-export { response } from "./Lib/Action";
-export { Route } from "./Lib/Route";
-export { Router } from "./Lib/Router";
-export type { Action, ActionResponse, Request, Response } from "./Types/Action";
+export type { Action, ActionResponse, Request, Response } from "./Action";
+export { ActionRejectedError, response } from "./Action";
+export { RenderActionMissingError, Route, RouteNotFoundError } from "./Route";
+export { Router } from "./Router";
 export { createBrowserHistory, createHashHistory, createMemoryHistory } from "history";

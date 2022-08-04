@@ -11,7 +11,7 @@ import { RolePermission, RolePermissions } from "./RolePermission";
 
 export class Role<Permissions extends RolePermissions = RolePermissions> {
   readonly id = this.role.id;
-  readonly tenantId = this.role.tenantId;
+  readonly container = this.role.container;
   readonly name = this.role.name;
   readonly settings = this.role.settings;
   readonly permissions = this.role.permissions;
@@ -47,6 +47,22 @@ export class Role<Permissions extends RolePermissions = RolePermissions> {
     throw new Error("Role Violation: Permissions method has not been implemented.");
   }
 
+  /**
+   * Reduce multiple permission states into a single permission object.
+   *
+   * @remarks This method introduces the ability to deal with complex permission
+   * state logic allowing for the role to determine its own reducer rules which can
+   * be shared in a full stack environment.
+   *
+   * @param state       - Base permission template being folded onto.
+   * @param permissions - Role permissions to fold onto the given state.
+   *
+   * @returns Permissions
+   */
+  static reduce(_: RolePermissions, __: Partial<RolePermissions>): RolePermissions {
+    throw new Error("Role Violation: Reduce method has not been implemented.");
+  }
+
   /*
    |--------------------------------------------------------------------------------
    | Permissions
@@ -69,7 +85,7 @@ export class Role<Permissions extends RolePermissions = RolePermissions> {
 
   toJSON(): {
     id: string;
-    tenantId: string;
+    container: string;
     name: string;
     settings: Record<string, unknown>;
     permissions: Permissions;
@@ -77,7 +93,7 @@ export class Role<Permissions extends RolePermissions = RolePermissions> {
   } {
     return clone({
       id: this.id,
-      tenantId: this.tenantId,
+      container: this.container,
       name: this.name,
       settings: this.settings,
       permissions: this.permissions,
@@ -99,7 +115,7 @@ export type RoleClass<T = unknown, P extends RolePermissions = RolePermissions> 
 
 export type RoleSettings<P extends RolePermissions> = {
   id: RoleData["id"];
-  tenantId: RoleData["tenantId"];
+  container: RoleData["container"];
   name: RoleData["name"];
   settings?: RoleData["settings"];
   permissions?: RoleData<P>["permissions"];

@@ -1,36 +1,35 @@
 import { EventEmitter } from "@valkyr/utils";
 import type { BrowserHistory, HashHistory, Location, MemoryHistory } from "history";
 
-import { ActionRejectedError } from "../Errors/Action";
-import { RenderActionMissingError, RouteNotFoundError } from "../Errors/Route";
-import type { Request } from "../Types/Action";
-import { addRoute } from "../Utils/Routes";
+import type { ActionRejectedError, Render, RenderProps, Request } from "./Action";
 import { Query } from "./Query";
+import type { RenderActionMissingError, Resolved, RouteNotFoundError } from "./Route";
 import { Route } from "./Route";
 import { handleRoutingRequest } from "./RouteHandler";
 import { State } from "./State";
 import { getLocationOrigin, setLocationOrigin } from "./Tracker";
 import { ValueStore } from "./ValueStore";
 
-export class Router extends EventEmitter<{
+export class Router<Component = any> extends EventEmitter<{
   progress: (percent: number) => void;
 }> {
-  public base: string;
-  public history: BrowserHistory | HashHistory | MemoryHistory;
+  base: string;
+  history: BrowserHistory | HashHistory | MemoryHistory;
 
-  public current: {
+  #routes: Set<Route> = new Set();
+  #current: {
     query: Query;
     params: ValueStore;
     state: State;
   };
 
-  public destroy?: () => void;
+  destroy?: () => void;
 
   constructor(history: BrowserHistory | HashHistory | MemoryHistory, base = "") {
     super();
     this.base = base === "" || base === "/" ? "" : base;
     this.history = history;
-    this.current = {
+    this.#current = {
       query: new Query(this.history),
       params: new ValueStore(),
       state: new State()
@@ -41,20 +40,26 @@ export class Router extends EventEmitter<{
     this.setProgress = this.setProgress.bind(this);
   }
 
-  public get location(): Location {
+  /*
+   |--------------------------------------------------------------------------------
+   | Accessors
+   |--------------------------------------------------------------------------------
+   */
+
+  get location(): Location {
     return this.history.location;
   }
 
-  public get params(): ValueStore {
-    return this.current.params;
+  get params(): ValueStore {
+    return this.#current.params;
   }
 
-  public get query(): Query {
-    return this.current.query;
+  get query(): Query {
+    return this.#current.query;
   }
 
-  public get state(): State {
-    return this.current.state;
+  get state(): State {
+    return this.#current.state;
   }
 
   /*
@@ -63,30 +68,35 @@ export class Router extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  public register(routes: Route[]): this {
+  register(routes: Route[]): this {
     for (const route of routes) {
-      addRoute(this.base, route);
+      this.#routes.add(route.base(this.base));
     }
     return this;
   }
 
-  public listen({
+  /**
+   * Starts listening for routing changes which emits results to the provided
+   * render or error method.
+   *
+   * @param render - Render method to execute on render actions.
+   * @param error  - Error method to execute on routing exceptions.
+   */
+  listen({
     render,
     error
   }: {
-    render(components: any[]): any;
-    error(error: ActionRejectedError | RenderActionMissingError | RouteNotFoundError): any;
-  }) {
+    render(components: Component[], props: RenderProps): Component;
+    error(error: ActionRejectedError | RenderActionMissingError | RouteNotFoundError): Component;
+  }): this {
     if (this.destroy) {
       this.destroy();
     }
     this.destroy = this.history.listen(async ({ location }) => {
       setLocationOrigin(location);
       handleRoutingRequest(this, location, getLocationOrigin())
-        .then((components) => {
-          if (components) {
-            render(components);
-          }
+        .then(({ components, props }: Render<RenderProps, Component>) => {
+          render(components, props);
         })
         .catch(error);
     });
@@ -107,7 +117,7 @@ export class Router extends EventEmitter<{
    *
    * @returns Router
    */
-  public goTo(path: string, state: any = {}): this {
+  goTo(path: string, state: any = {}): this {
     const parts = (this.base + path.replace(this.base, "")).replace(/\/$/, "").split("?");
     this.history.push(
       {
@@ -124,7 +134,7 @@ export class Router extends EventEmitter<{
    *
    * @returns Router
    */
-  public reload(): this {
+  reload(): this {
     this.history.replace(
       {
         pathname: this.location.pathname,
@@ -146,13 +156,28 @@ export class Router extends EventEmitter<{
    *
    * @returns Router
    */
-  public setCurrentRoute(request: Request): this {
-    this.current = {
+  setCurrentRoute(request: Request): this {
+    this.#current = {
       params: request.params,
       query: request.query,
       state: request.state
     };
     return this;
+  }
+
+  /**
+   * Get a route from the registered list of routes.
+   *
+   * @param path - Path to match against.
+   */
+  getRoute(path: string): Resolved | undefined {
+    for (const route of Array.from(this.#routes.values())) {
+      const match: boolean = route.match(path);
+      if (match) {
+        return { route, match };
+      }
+    }
+    return undefined;
   }
 
   /**
@@ -168,7 +193,7 @@ export class Router extends EventEmitter<{
    *
    * @returns Router
    */
-  public setProgress(percent: number): this {
+  setProgress(percent: number): this {
     this.emit("progress", percent);
     return this;
   }

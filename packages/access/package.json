@@ -18,7 +18,6 @@
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
-    "@valkyr/testing": "*",
     "@valkyr/utils": "*"
   }
 }

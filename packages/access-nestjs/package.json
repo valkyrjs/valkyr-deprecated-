@@ -13,9 +13,13 @@
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
-    "@nestjs/common": "^9.0.1",
+    "@nestjs/common": "^9.0.8",
     "@nestjs/mongoose": "^9.2.0",
-    "@valkyr/access": "*",
-    "@valkyr/utils": "*"
+    "@valkyr/access": "*"
+  },
+  "devDependencies": {
+    "@nestjs/platform-express": "^9.0.8",
+    "@nestjs/testing": "^9.0.8",
+    "mongodb-memory-server": "^8.8.0"
   }
 }
