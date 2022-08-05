@@ -24,15 +24,15 @@ type Options = {
  */
 
 export class HLC {
-  public time: typeof getTime;
+  time: typeof getTime;
 
-  public maxTime: number;
-  public maxOffset: number;
+  maxTime: number;
+  maxOffset: number;
 
-  public timeUpperBound: number;
-  public toleratedForwardClockJump: number;
+  timeUpperBound: number;
+  toleratedForwardClockJump: number;
 
-  public last: Timestamp;
+  last: Timestamp;
 
   constructor({
     time = getTime,
@@ -52,38 +52,38 @@ export class HLC {
     }
   }
 
-  public now(): Timestamp {
+  now(): Timestamp {
     return this.update(this.last);
   }
 
-  public update(other: Timestamp): Timestamp {
-    this.last = this.getTimestamp(other);
+  update(other: Timestamp): Timestamp {
+    this.last = this.#getTimestamp(other);
     return this.last;
   }
 
-  private getTimestamp(other: Timestamp): Timestamp {
-    const [time, logical] = this.getTimeAndLogicalValue(other);
-    if (!this.validUpperBound(time)) {
+  #getTimestamp(other: Timestamp): Timestamp {
+    const [time, logical] = this.#getTimeAndLogicalValue(other);
+    if (!this.#validUpperBound(time)) {
       throw new HLC.WallTimeOverflowError(time, logical);
     }
     return new Timestamp(time, logical);
   }
 
-  private getTimeAndLogicalValue(other: Timestamp): [number, number] {
+  #getTimeAndLogicalValue(other: Timestamp): [number, number] {
     const last = Timestamp.bigger(other, this.last);
     const time = this.time();
-    if (this.validOffset(last, time)) {
+    if (this.#validOffset(last, time)) {
       return [time, 0];
     }
     return [last.time, last.logical + 1];
   }
 
-  private validOffset(last: Timestamp, time: number): boolean {
+  #validOffset(last: Timestamp, time: number): boolean {
     const offset = last.time - time;
-    if (!this.validForwardClockJump(offset)) {
+    if (!this.#validForwardClockJump(offset)) {
       throw new HLC.ForwardJumpError(-offset, this.toleratedForwardClockJump);
     }
-    if (!this.validMaxOffset(offset)) {
+    if (!this.#validMaxOffset(offset)) {
       throw new HLC.ClockOffsetError(offset, this.maxOffset);
     }
     if (offset < 0) {
@@ -92,53 +92,53 @@ export class HLC {
     return false;
   }
 
-  private validForwardClockJump(offset: number): boolean {
+  #validForwardClockJump(offset: number): boolean {
     if (this.toleratedForwardClockJump > 0 && -offset > this.toleratedForwardClockJump) {
       return false;
     }
     return true;
   }
 
-  private validMaxOffset(offset: number): boolean {
+  #validMaxOffset(offset: number): boolean {
     if (this.maxOffset > 0 && offset > this.maxOffset) {
       return false;
     }
     return true;
   }
 
-  private validUpperBound(time: number): boolean {
+  #validUpperBound(time: number): boolean {
     return time < this.maxTime;
   }
 
-  public static ForwardJumpError = class extends Error {
-    public readonly type = "ForwardJumpError";
+  static ForwardJumpError = class extends Error {
+    readonly type = "ForwardJumpError";
 
-    constructor(public readonly timejump: number, public readonly tolerance: number) {
+    constructor(readonly timejump: number, readonly tolerance: number) {
       super(
         `HLC Violation: Detected a forward time jump of ${timejump}ms, which exceed the allowed tolerance of ${tolerance}ms.`
       );
     }
   };
 
-  public static ClockOffsetError = class extends Error {
-    public readonly type = "ClockOffsetError";
+  static ClockOffsetError = class extends Error {
+    readonly type = "ClockOffsetError";
 
-    constructor(public readonly offset: number, public readonly maxOffset: number) {
+    constructor(readonly offset: number, readonly maxOffset: number) {
       super(
         `HLC Violation: Received time is ${offset}ms ahead of the wall time, exceeding the 'maxOffset' limit of ${maxOffset}ms.`
       );
     }
   };
 
-  public static WallTimeOverflowError = class extends Error {
-    public readonly type = "WallTimeOverflowError";
+  static WallTimeOverflowError = class extends Error {
+    readonly type = "WallTimeOverflowError";
 
-    constructor(public readonly time: number, public readonly maxTime: number) {
+    constructor(readonly time: number, readonly maxTime: number) {
       super(`HLC Violation: Wall time ${time}ms exceeds the max time of ${maxTime}ms.`);
     }
   };
 
-  public toJSON() {
+  toJSON() {
     return Object.freeze({
       maxOffset: this.maxOffset,
       timeUpperBound: this.timeUpperBound,

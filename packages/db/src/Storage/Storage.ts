@@ -25,20 +25,20 @@ export class Storage<D extends Document = any> extends EventEmitter<{
   working: () => void;
   change: (type: ChangeType, document: D) => void;
 }> {
-  public readonly id = getId(6);
+  readonly id = getId(6);
 
-  public readonly documents = new Map<string, D>();
-  public readonly operations: Operation<D>[] = [];
-  public readonly logger = new Logger("Storage");
-  public readonly debounce: {
+  readonly documents = new Map<string, D>();
+  readonly operations: Operation<D>[] = [];
+  readonly logger = new Logger("Storage");
+  readonly debounce: {
     save?: ReturnType<typeof setTimeout>;
   } = {
     save: undefined
   };
 
-  public status: Status = "loading";
+  status: Status = "loading";
 
-  constructor(public readonly name: string, public readonly adapter: Adapter<D> = new InstanceAdapter<D>()) {
+  constructor(readonly name: string, readonly adapter: Adapter<D> = new InstanceAdapter<D>()) {
     super();
   }
 
@@ -48,7 +48,7 @@ export class Storage<D extends Document = any> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  public get data(): D[] {
+  get data(): D[] {
     return Array.from(this.documents.values());
   }
 
@@ -58,7 +58,7 @@ export class Storage<D extends Document = any> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  public has(id: string): boolean {
+  has(id: string): boolean {
     return this.documents.has(id);
   }
 
@@ -68,11 +68,11 @@ export class Storage<D extends Document = any> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  public is(status: Status): boolean {
+  is(status: Status): boolean {
     return this.status === status;
   }
 
-  private setStatus(value: Status): this {
+  #setStatus(value: Status): this {
     this.status = value;
     this.emit(value);
     return this;
@@ -84,7 +84,7 @@ export class Storage<D extends Document = any> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  public onChange(cb: (type: ChangeType, document: D) => void): () => void {
+  onChange(cb: (type: ChangeType, document: D) => void): () => void {
     this.addListener("change", cb);
     return () => {
       this.removeListener("change", cb);
@@ -97,7 +97,7 @@ export class Storage<D extends Document = any> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  public async load(): Promise<this> {
+  async load(): Promise<this> {
     if (!this.is("loading")) {
       return this;
     }
@@ -105,10 +105,10 @@ export class Storage<D extends Document = any> extends EventEmitter<{
     for (const document of documents) {
       this.documents.set(document.id, document);
     }
-    return this.setStatus("ready").process();
+    return this.#setStatus("ready").process();
   }
 
-  public async save(): Promise<this> {
+  async save(): Promise<this> {
     if (this.debounce.save) {
       clearTimeout(this.debounce.save);
     }
@@ -118,7 +118,7 @@ export class Storage<D extends Document = any> extends EventEmitter<{
     return this;
   }
 
-  public flush(): void {
+  flush(): void {
     this.documents.clear();
     this.adapter.flush();
   }
@@ -129,27 +129,27 @@ export class Storage<D extends Document = any> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  public async insert(document: PartialDocument<D>): Promise<string> {
+  async insert(document: PartialDocument<D>): Promise<string> {
     this.logger.debug(`${this.name} [${this.id}] Insert`, document.id);
     return this.run({ type: "insert", document } as Insert<D>);
   }
 
-  public async update(id: string, criteria: RawObject, actions: UpdateActions): Promise<boolean> {
+  async update(id: string, criteria: RawObject, actions: UpdateActions): Promise<boolean> {
     this.logger.debug(`${this.adapter.type} [${this.id}] Update`, id);
     return this.run({ type: "update", id, criteria, actions } as Update);
   }
 
-  public async replace(id: string, document: Document): Promise<boolean> {
+  async replace(id: string, document: Document): Promise<boolean> {
     this.logger.debug(`${this.adapter.type} [${this.id}] Replace`, id);
     return this.run({ type: "replace", id, document } as Replace<D>);
   }
 
-  public async delete(id: string): Promise<boolean> {
+  async delete(id: string): Promise<boolean> {
     this.logger.debug(`${this.adapter.type} [${this.id}] Delete`, id);
     return this.run({ type: "delete", id } as Delete);
   }
 
-  public async run(operation: Omit<Operation<D>, "resolve" | "reject">): Promise<any> {
+  async run(operation: Omit<Operation<D>, "resolve" | "reject">): Promise<any> {
     return new Promise((resolve, reject) => {
       this.load().then(() => {
         this.operations.push({ ...operation, resolve, reject } as Operation<D>);
@@ -164,16 +164,16 @@ export class Storage<D extends Document = any> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  public async process(): Promise<this> {
+  async process(): Promise<this> {
     if (this.is("loading") || this.is("working")) {
       return this;
     }
 
-    this.setStatus("working");
+    this.#setStatus("working");
 
     const operation = this.operations.shift();
     if (!operation) {
-      return this.setStatus("ready");
+      return this.#setStatus("ready");
     }
 
     try {
@@ -183,14 +183,14 @@ export class Storage<D extends Document = any> extends EventEmitter<{
       operation.reject(error);
     }
 
-    this.setStatus("ready").process();
+    this.#setStatus("ready").process();
 
     return this;
   }
 
-  public resolve(operation: Insert<D>): string;
-  public resolve(operation: Operation<D>): boolean;
-  public resolve(operation: Operation<D>): string | boolean {
+  resolve(operation: Insert<D>): string;
+  resolve(operation: Operation<D>): boolean;
+  resolve(operation: Operation<D>): string | boolean {
     return operations[operation.type](this, operation as any);
   }
 }

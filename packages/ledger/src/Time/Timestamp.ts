@@ -3,23 +3,23 @@ import type { TimeLike } from "./Types";
 export const RADIX = 36;
 
 export class Timestamp {
-  public readonly time: number;
-  public readonly logical: number;
+  readonly time: number;
+  readonly logical: number;
 
   constructor(time: TimeLike, logical = 0) {
     this.time = typeof time === "string" ? parseInt(time, RADIX) : time;
     this.logical = logical;
   }
 
-  public static bigger(a: Timestamp, b: Timestamp): Timestamp {
+  static bigger(a: Timestamp, b: Timestamp): Timestamp {
     return a.compare(b) === -1 ? b : a;
   }
 
-  public encode(): string {
+  encode(): string {
     return this.time.toString(RADIX);
   }
 
-  public compare(other: Timestamp): 1 | 0 | -1 {
+  compare(other: Timestamp): 1 | 0 | -1 {
     if (this.time > other.time) {
       return 1;
     }
@@ -35,7 +35,7 @@ export class Timestamp {
     return 0;
   }
 
-  public toJSON() {
+  toJSON() {
     return Object.freeze({
       time: this.encode(),
       logical: this.logical

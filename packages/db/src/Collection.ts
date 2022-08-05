@@ -37,8 +37,8 @@ export type Options = {
  */
 
 export class Collection<D extends Document = any> {
-  public readonly name: string;
-  public readonly storage: Storage<D>;
+  readonly name: string;
+  readonly storage: Storage<D>;
 
   constructor(name: string, adapter?: Adapter<D>) {
     this.name = name;
@@ -51,21 +51,21 @@ export class Collection<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  public async insertOne(document: PartialDocument<D>): Promise<InsertOneResponse> {
+  async insertOne(document: PartialDocument<D>): Promise<InsertOneResponse> {
     return {
       acknowledged: true,
       insertedId: await this.storage.insert(document)
     };
   }
 
-  public async insertMany(documents: PartialDocument<D>[]): Promise<InsertManyResponse> {
+  async insertMany(documents: PartialDocument<D>[]): Promise<InsertManyResponse> {
     return {
       acknowledged: true,
       insertedIds: await Promise.all(documents.map((document) => this.storage.insert(document)))
     };
   }
 
-  public async updateOne(criteria: RawObject, actions: UpdateActions): Promise<UpdateResponse> {
+  async updateOne(criteria: RawObject, actions: UpdateActions): Promise<UpdateResponse> {
     const document = await this.findOne(criteria);
     if (document === undefined) {
       return { acknowledged: true, matchedCount: 0, modifiedCount: 0 };
@@ -77,7 +77,7 @@ export class Collection<D extends Document = any> {
     return { acknowledged: true, matchedCount: 1, modifiedCount: 0 };
   }
 
-  public async updateMany(criteria: RawObject, actions: UpdateActions): Promise<UpdateResponse> {
+  async updateMany(criteria: RawObject, actions: UpdateActions): Promise<UpdateResponse> {
     const documents = await this.find(criteria);
     const matchedCount = documents.length;
     if (matchedCount === 0) {
@@ -91,7 +91,7 @@ export class Collection<D extends Document = any> {
     };
   }
 
-  public async replaceOne(criteria: RawObject, document: Document): Promise<UpdateResponse> {
+  async replaceOne(criteria: RawObject, document: Document): Promise<UpdateResponse> {
     const { id } = (await this.findOne(criteria)) ?? {};
     if (id === undefined) {
       return { acknowledged: true, matchedCount: 0, modifiedCount: 0 };
@@ -103,7 +103,7 @@ export class Collection<D extends Document = any> {
     return { acknowledged: true, matchedCount: 1, modifiedCount: 0 };
   }
 
-  public async delete(id: string): Promise<DeleteResponse> {
+  async delete(id: string): Promise<DeleteResponse> {
     const deleted = await this.storage.delete(id);
     if (deleted) {
       return { acknowledged: true, deletedCount: 1 };
@@ -117,13 +117,13 @@ export class Collection<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  public observe(criteria: RawObject = {}, options?: Options): Observable<Document[]> {
+  observe(criteria: RawObject = {}, options?: Options): Observable<Document[]> {
     return new Observable<Document[]>((subscriber) => {
       return observe(this, criteria, options, subscriber.next);
     });
   }
 
-  public observeOne(criteria: RawObject = {}): Observable<Document | undefined> {
+  observeOne(criteria: RawObject = {}): Observable<Document | undefined> {
     return new Observable<Document | undefined>((subscriber) => {
       return observeOne(this, criteria, subscriber.next);
     });
@@ -143,7 +143,7 @@ export class Collection<D extends Document = any> {
    * This is a optimized operation that skips the Mingo Query step and attempts to
    * retrieve the document directly from the collections document Map.
    */
-  public async findById(id: string): Promise<D | undefined> {
+  async findById(id: string): Promise<D | undefined> {
     return this.storage.load().then((storage) => storage.documents.get(id));
   }
 
@@ -153,7 +153,7 @@ export class Collection<D extends Document = any> {
    *
    * @url https://github.com/kofrasa/mingo
    */
-  public async find(criteria: RawObject = {}, options?: Options) {
+  async find(criteria: RawObject = {}, options?: Options) {
     return this.query(criteria, options).then((cursor) => {
       return cursor.all() as Document[];
     });
@@ -165,7 +165,7 @@ export class Collection<D extends Document = any> {
    *
    * @url https://github.com/kofrasa/mingo
    */
-  public async findOne(criteria: RawObject = {}, options?: Options) {
+  async findOne(criteria: RawObject = {}, options?: Options) {
     return this.query(criteria, options).then((cursor) => {
       const documents = cursor.all() as Document[];
       if (documents.length > 0) {
@@ -181,7 +181,7 @@ export class Collection<D extends Document = any> {
    *
    * @url https://github.com/kofrasa/mingo
    */
-  public async count(criteria: RawObject = {}, options?: Options) {
+  async count(criteria: RawObject = {}, options?: Options) {
     return this.query(criteria, options).then((cursor) => cursor.count());
   }
 
@@ -192,7 +192,7 @@ export class Collection<D extends Document = any> {
    *
    * @url https://github.com/kofrasa/mingo#searching-and-filtering
    */
-  public async query(criteria: RawObject = {}, options?: Options) {
+  async query(criteria: RawObject = {}, options?: Options) {
     await this.storage.load();
     const cursor = new Query(criteria).find(this.storage.data);
     if (options) {
@@ -204,7 +204,7 @@ export class Collection<D extends Document = any> {
   /**
    * Removes all documents from the storage instance.
    */
-  public flush(): void {
+  flush(): void {
     this.storage.flush();
   }
 }

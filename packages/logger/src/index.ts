@@ -5,7 +5,7 @@ type LogLevel = "log" | "debug" | "warn" | "error";
 export { color };
 
 export class Logger {
-  constructor(public readonly context: string) {
+  constructor(readonly context: string) {
     this.log = this.log.bind(this);
     this.debug = this.debug.bind(this);
     this.warn = this.warn.bind(this);

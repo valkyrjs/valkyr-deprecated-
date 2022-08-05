@@ -12,11 +12,11 @@ type Friend = {
 };
 
 export class User extends Model<UserDocument> {
-  public static readonly $collection = new Collection<UserDocument>("users", new MemoryAdapter<UserDocument>());
+  static readonly $collection = new Collection<UserDocument>("users", new MemoryAdapter<UserDocument>());
 
-  public readonly name!: UserDocument["name"];
-  public readonly email!: UserDocument["email"];
-  public readonly friends!: UserDocument["friends"];
+  readonly name!: UserDocument["name"];
+  readonly email!: UserDocument["email"];
+  readonly friends!: UserDocument["friends"];
 }
 
 export const data: UserDocument[] = [

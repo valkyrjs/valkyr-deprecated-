@@ -1,7 +1,7 @@
 import { Role } from "../../src/Role";
 
 export class TestRole extends Role<TestRolePermissions> {
-  public static getPermissions({ test }: Partial<TestRole["permissions"]>): TestRole["permissions"] {
+  static getPermissions({ test }: Partial<TestRole["permissions"]>): TestRole["permissions"] {
     return {
       test: {
         create: test?.create === true,

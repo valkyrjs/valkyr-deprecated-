@@ -30,7 +30,7 @@ export class AppTestingModule extends TestingModule {
    |--------------------------------------------------------------------------------
    */
 
-  public async start(): Promise<void> {
+  async start(): Promise<void> {
     await this.#mongodb.start();
 
     await this.#loadModule();
@@ -39,7 +39,7 @@ export class AppTestingModule extends TestingModule {
     await this.app.init();
   }
 
-  public async stop(): Promise<void> {
+  async stop(): Promise<void> {
     await this.app.close();
     await this.#mongodb.close();
   }

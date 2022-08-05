@@ -197,7 +197,7 @@ export class Projection<Event extends EventRecord> {
  */
 
 export class DuplicateHandlerError extends Error {
-  public readonly type = "DuplicateHandlerError";
+  readonly type = "DuplicateHandlerError";
 
   constructor(type: string) {
     super(
