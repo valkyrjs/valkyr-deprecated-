@@ -1,6 +1,6 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 
-export class MongoDBContainer {
+export class MongoDbContainer {
   #server?: MongoMemoryServer;
 
   get server() {

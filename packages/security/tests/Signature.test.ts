@@ -1,5 +1,11 @@
 import { Signature } from "../src/Signature";
 
+/*
+ |--------------------------------------------------------------------------------
+ | Unit Tests
+ |--------------------------------------------------------------------------------
+ */
+
 describe("Signature", () => {
   it("should accept a valid signature", async () => {
     const signature = await Signature.create();

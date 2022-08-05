@@ -4,6 +4,12 @@ import { Action } from "../src/Action";
 import { Route } from "../src/Route";
 import { Router } from "../src/Router";
 
+/*
+ |--------------------------------------------------------------------------------
+ | Unit Tests
+ |--------------------------------------------------------------------------------
+ */
+
 describe("Router", () => {
   it("should successfully render route with render props", (next) => {
     const router = new Router(createMemoryHistory());

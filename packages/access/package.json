@@ -18,6 +18,6 @@
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
-    "@valkyr/utils": "*"
+    "rfdc": "^1.3.0"
   }
 }

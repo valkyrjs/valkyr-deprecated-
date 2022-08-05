@@ -1,4 +1,4 @@
-import { EventEmitter } from "@valkyr/utils";
+import { EventEmitter } from "@valkyr/event-emitter";
 import type { BrowserHistory, HashHistory, Location, MemoryHistory } from "history";
 
 import type { ActionRejectedError, Render, RenderProps, Request } from "./Action";

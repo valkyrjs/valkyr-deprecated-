@@ -1,4 +1,3 @@
-import { getParsedParameters, Parameter } from "@valkyr/utils";
 import { pathToRegexp } from "path-to-regexp";
 
 import { Action } from "./Action";
@@ -10,11 +9,11 @@ import { Action } from "./Action";
  */
 
 export class Route {
-  public path: string;
-  public actions: Action[];
+  path: string;
+  actions: Action[];
 
-  public regExp: RegExp;
-  public params: Parameter[];
+  regExp: RegExp;
+  params: Parameter[];
 
   constructor(path: string, actions: Action[]) {
     this.path = path.replace(/\/$/, "");
@@ -23,12 +22,12 @@ export class Route {
     this.params = getParsedParameters(path);
   }
 
-  public base(path = ""): this {
+  base(path = ""): this {
     this.regExp = pathToRegexp(path + this.path);
     return this;
   }
 
-  public match(path: string): any {
+  match(path: string): any {
     return this.regExp.exec(path);
   }
 }
@@ -70,9 +69,40 @@ export class RouteNotFoundError extends Error {
 
 /*
  |--------------------------------------------------------------------------------
+ | Utilities
+ |--------------------------------------------------------------------------------
+ */
+
+export function getParsedParameters(path: string): Parameter[] {
+  return path.split("/").reduce((list: Parameter[], next: string) => {
+    if (next.match(/:/)) {
+      list.push({
+        name: next.replace(":", ""),
+        value: undefined
+      });
+    }
+    return list;
+  }, []);
+}
+
+export function getParameters<Response = any>(params: Parameter[], match: any): Response {
+  const result: any = {};
+  params.forEach((param, index) => {
+    result[param.name] = match[index + 1];
+  });
+  return result;
+}
+
+/*
+ |--------------------------------------------------------------------------------
  | Types
  |--------------------------------------------------------------------------------
  */
+
+export type Parameter = {
+  name: string;
+  value?: string;
+};
 
 export type Resolved = {
   route: Route;

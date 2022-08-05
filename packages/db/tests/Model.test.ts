@@ -1,97 +1,56 @@
-import { feature, given, scenario, then, when } from "@valkyr/testing";
-
 import { data, User } from "../mocks/User";
 import { DocumentNotFoundError, DuplicateDocumentError } from "../src";
 
-feature(
-  {
-    name: "Model",
-    desc: `
-      Model provides a layer on top of the collection functionality to simply
-      create entities which can provide its own logic and tooling.
-    `
-  },
-  () => {
-    scenario("Inserting valid document", function ({ after }) {
-      given("valid user data", () => {
-        this.data = data[0];
-      });
+/*
+ |--------------------------------------------------------------------------------
+ | Bootstrap
+ |--------------------------------------------------------------------------------
+ */
 
-      when("inserting the user", async () => {
-        this.user = await User.insertOne(this.data);
-      });
+afterEach(() => {
+  User.$collection.flush();
+});
 
-      then("it should have successfully added the data", () => {
-        expect(User.$collection.storage.documents.get(this.data.id)).toEqual(this.data);
-      });
-
-      after(teardown);
-    });
-
-    scenario("Inserting duplicate document", function ({ after }) {
-      given("valid user data", () => {
-        this.data = data[0];
-      });
-
-      when("inserting the user twice", async () => {
-        try {
-          await User.insertOne(this.data);
-          await User.insertOne(this.data);
-        } catch (err) {
-          this.error = err;
-        }
-      });
-
-      then("it should throw a duplication error", () => {
-        expect(this.error instanceof DuplicateDocumentError).toEqual(true);
-        expect(this.error).toEqual(new DuplicateDocumentError(data[0], User.$collection.storage));
-      });
-
-      after(teardown);
-    });
-
-    scenario("Updating valid document", function ({ after }) {
-      given("user and update data", () => {
-        this.data = data[0];
-        this.payload = { name: "James Doe" };
-      });
-
-      when("inserting and updating document", async () => {
-        await User.insertOne(this.data);
-        await User.updateOne({ id: this.data.id }, { $set: this.payload });
-        this.user = await User.findById(this.data.id);
-      });
-
-      then("user should be defined", () => {
-        expect(this.user).toBeDefined();
-      });
-
-      then("user should have name James Doe", () => {
-        expect(this.user.name).toEqual("James Doe");
-      });
-
-      after(teardown);
-    });
-  }
-);
+/*
+ |--------------------------------------------------------------------------------
+ | Tests
+ |--------------------------------------------------------------------------------
+ |
+ | Model provides a layer on top of the collection functionality to simply create 
+ | entities which can provide its own logic and tooling.
+ |
+ */
 
 describe("Model", () => {
+  describe("when inserting document", () => {
+    it("should insert valid document", async () => {
+      await User.insertOne(data[0]);
+      expect(User.$collection.storage.documents.get(data[0].id)).toEqual(data[0]);
+    });
+
+    it("should throw error on duplicate documents", async () => {
+      await User.insertOne(data[0]);
+      await expect(User.insertOne(data[0])).rejects.toEqual(
+        new DuplicateDocumentError(data[0], User.$collection.storage)
+      );
+    });
+  });
+
   describe("when updating document", () => {
-    afterEach(teardown);
+    it("should update a document", async () => {
+      await User.insertOne(data[0]);
+      await User.updateOne({ id: data[0].id }, { $set: { name: "James Doe" } });
+      expect(User.$collection.storage.documents.get(data[0].id)?.name).toEqual("James Doe");
+    });
 
     it("should throw error if document does not exist", async () => {
-      try {
-        await User.updateOne({ id: "user-4" }, { $set: { name: "James Doe" } });
-      } catch (err) {
-        expect(err instanceof DocumentNotFoundError).toEqual(true);
-        expect(err).toEqual(new DocumentNotFoundError({ id: "user-4" }));
-      }
+      await expect(User.updateOne({ id: "user-4" }, { $set: { name: "James Doe" } })).rejects.toEqual(
+        new DocumentNotFoundError({ id: "user-4" })
+      );
     });
   });
 
   describe("when deleting document", () => {
-    afterEach(teardown);
-
     it("should successfully delete document", async () => {
       await User.insertOne(data[0]);
       expect(User.$collection.storage.documents.get(data[0].id)).toEqual(data[0]);
@@ -101,8 +60,6 @@ describe("Model", () => {
   });
 
   describe("when finding model by id", () => {
-    afterEach(teardown);
-
     it("should return model instance if document exists", async () => {
       await User.insertOne(data[0]);
       const user = await User.findById("user-1");
@@ -117,8 +74,6 @@ describe("Model", () => {
   });
 
   describe("when finding model by filter", () => {
-    afterEach(teardown);
-
     it("should return model instances when matches are found", async () => {
       await User.insertOne(data[1]);
       const users = await User.find({ name: "Jane Doe" });
@@ -132,8 +87,6 @@ describe("Model", () => {
   });
 
   describe("when finding single document by filter", () => {
-    afterEach(teardown);
-
     it("should return model instance if document exists", async () => {
       await User.insertOne(data[1]);
       const user = await User.findOne({ name: "Jane Doe" });
@@ -148,7 +101,6 @@ describe("Model", () => {
 
   describe("should count documents by filter", () => {
     beforeEach(addAllUsers);
-    afterEach(teardown);
 
     it("should return correct filter count", async () => {
       expect(await User.count({ name: "John Wile" })).toEqual(0);
@@ -158,12 +110,14 @@ describe("Model", () => {
   });
 });
 
+/*
+ |--------------------------------------------------------------------------------
+ | Utilities
+ |--------------------------------------------------------------------------------
+ */
+
 async function addAllUsers() {
   for (const document of data) {
     await User.insertOne(document);
   }
-}
-
-function teardown() {
-  User.$collection.flush();
 }

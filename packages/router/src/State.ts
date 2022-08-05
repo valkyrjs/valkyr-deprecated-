@@ -7,13 +7,13 @@ export class State {
     this.store = store;
   }
 
-  public set(key: string, value: any): void {
+  set(key: string, value: any): void {
     this.store[key] = value;
   }
 
-  public get(): Store;
-  public get(key: string): string;
-  public get(key?: string): Store | string {
+  get(): Store;
+  get(key: string): string;
+  get(key?: string): Store | string {
     if (key !== undefined) {
       return this.store[key];
     }

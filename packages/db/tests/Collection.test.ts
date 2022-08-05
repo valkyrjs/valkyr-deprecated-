@@ -1,6 +1,12 @@
 import { data, getMockedCollection, UserDocument } from "../mocks/User";
 import { Collection, InstanceAdapter } from "../src";
 
+/*
+ |--------------------------------------------------------------------------------
+ | Unit Tests
+ |--------------------------------------------------------------------------------
+ */
+
 describe("Collection", () => {
   it("should successfully create a new collection", () => {
     const collection = new Collection<UserDocument>("users", new InstanceAdapter());

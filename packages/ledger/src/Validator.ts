@@ -2,9 +2,9 @@ import { EventRecord } from "./Event";
 import { Queue } from "./Queue";
 
 export const validator = new (class Projector {
-  public listeners: Listeners = {};
+  listeners: Listeners = {};
 
-  public queue: Queue<EventRecord>;
+  queue: Queue<EventRecord>;
 
   constructor() {
     this.validate = this.validate.bind(this);
@@ -13,13 +13,13 @@ export const validator = new (class Projector {
     });
   }
 
-  public async validate<Event extends EventRecord>(event: Event) {
+  async validate<Event extends EventRecord>(event: Event) {
     return new Promise<boolean>((resolve, reject) => {
       this.queue.push(event, resolve, reject);
     });
   }
 
-  public on(type: string, fn: ValidationHandler) {
+  on(type: string, fn: ValidationHandler) {
     const listeners = this.listeners[type];
     if (listeners) {
       listeners.add(fn);
@@ -31,7 +31,7 @@ export const validator = new (class Projector {
     };
   }
 
-  public off(type: string, fn: ValidationHandler) {
+  off(type: string, fn: ValidationHandler) {
     this.listeners[type]?.delete(fn);
   }
 })();

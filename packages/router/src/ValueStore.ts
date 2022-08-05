@@ -5,15 +5,15 @@
  */
 
 export class ValueStore {
-  constructor(private readonly store: Store = {}) {}
+  constructor(readonly store: Store = {}) {}
 
-  public has(key: string): boolean {
+  has(key: string): boolean {
     return this.store[key] !== undefined;
   }
 
-  public get(): Store;
-  public get(key: string): string;
-  public get(key?: string): Store | string {
+  get(): Store;
+  get(key: string): string;
+  get(key?: string): Store | string {
     if (key !== undefined) {
       return this.store[key];
     }

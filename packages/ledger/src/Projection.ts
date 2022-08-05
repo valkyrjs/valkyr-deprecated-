@@ -153,7 +153,7 @@ export class Projection<Event extends EventRecord> {
   /**
    * Check if the incoming event state is compatible with the projection filter.
    */
-  public isValid({ hydrated, outdated }: State) {
+  isValid({ hydrated, outdated }: State) {
     if (this.#filter.allowHydratedEvents === false && hydrated === true) {
       return false;
     }
@@ -173,7 +173,7 @@ export class Projection<Event extends EventRecord> {
    * Start the projection by registering the projection handler against the
    * projections event emitter.
    */
-  public start() {
+  start() {
     this.#listener = this.#projector.addEventListener(this.#type as string, async (event, state) => {
       if (this.isValid(state)) {
         await this.#handle(event as Event);
@@ -185,7 +185,7 @@ export class Projection<Event extends EventRecord> {
    * Stop the projection by removing the projection handler registered with the
    * projections event emitter.
    */
-  public stop() {
+  stop() {
     this.#listener?.();
   }
 }
@@ -207,9 +207,9 @@ export class DuplicateHandlerError extends Error {
 }
 
 export class HydratedEventError<E extends Event = Event> extends Error {
-  public readonly type = "HydratedEventError";
+  readonly type = "HydratedEventError";
 
-  public readonly event: E;
+  readonly event: E;
 
   constructor(event: E) {
     super(`Event Publisher Violation: Publish '${event.type}' failed, subscriber does not support hydrated events.`);
@@ -218,9 +218,9 @@ export class HydratedEventError<E extends Event = Event> extends Error {
 }
 
 export class OutdatedEventError<E extends Event = Event> extends Error {
-  public readonly type = "OutdatedEventError";
+  readonly type = "OutdatedEventError";
 
-  public readonly event: E;
+  readonly event: E;
 
   constructor(event: E) {
     super(`Event Publisher Violation: Publish '${event.type}' failed, subscriber does not support outdated events.`);
@@ -229,7 +229,7 @@ export class OutdatedEventError<E extends Event = Event> extends Error {
 }
 
 export class RequiredHandlerError extends Error {
-  public readonly type = "RequiredHandlerError";
+  readonly type = "RequiredHandlerError";
 
   constructor(type: string) {
     super(

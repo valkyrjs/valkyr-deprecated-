@@ -1,4 +1,6 @@
-import { EventEmitter, Logger, nanoid } from "@valkyr/utils";
+import { EventEmitter } from "@valkyr/event-emitter";
+import { Logger } from "@valkyr/logger";
+import { getId } from "@valkyr/security";
 import { RawObject } from "mingo/types";
 
 import { InstanceAdapter } from "../Adapters";
@@ -23,7 +25,7 @@ export class Storage<D extends Document = any> extends EventEmitter<{
   working: () => void;
   change: (type: ChangeType, document: D) => void;
 }> {
-  public readonly id = nanoid(6);
+  public readonly id = getId(6);
 
   public readonly documents = new Map<string, D>();
   public readonly operations: Operation<D>[] = [];

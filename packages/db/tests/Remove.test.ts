@@ -1,5 +1,11 @@
 import { getMockedCollection } from "../mocks/User";
 
+/*
+ |--------------------------------------------------------------------------------
+ | Unit Tests
+ |--------------------------------------------------------------------------------
+ */
+
 describe("Storage Remove", () => {
   it("should successfully delete document", async () => {
     const { collection } = await getMockedCollection();

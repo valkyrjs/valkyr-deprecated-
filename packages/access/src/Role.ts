@@ -1,6 +1,5 @@
-import { clone } from "@valkyr/utils";
-
 import { Attributes } from "./Attributes";
+import { clone } from "./Clone";
 import { RolePermission, RolePermissions } from "./RolePermission";
 
 /*
@@ -83,14 +82,7 @@ export class Role<Permissions extends RolePermissions = RolePermissions> {
    |--------------------------------------------------------------------------------
    */
 
-  toJSON(): {
-    id: string;
-    container: string;
-    name: string;
-    settings: Record<string, unknown>;
-    permissions: Permissions;
-    members: string[];
-  } {
+  toJSON(): RoleJSON<Permissions> {
     return clone({
       id: this.id,
       container: this.container,
@@ -122,4 +114,13 @@ export type RoleSettings<P extends RolePermissions> = {
   members?: RoleData["members"];
 };
 
-export type RoleData<Permissions extends RolePermissions = RolePermissions> = ReturnType<Role<Permissions>["toJSON"]>;
+export type RoleData<Permissions extends RolePermissions = RolePermissions> = RoleJSON<Permissions>;
+
+export type RoleJSON<Permissions> = {
+  id: string;
+  container: string;
+  name: string;
+  settings: Record<string, unknown>;
+  permissions: Permissions;
+  members: string[];
+};

@@ -1,9 +1,9 @@
 import { getId } from "@valkyr/security";
-import { clone } from "@valkyr/utils";
 
 import { DuplicateDocumentError } from "../Errors";
 import { Storage } from "../Storage";
 import { Insert } from "../Types";
+import { clone } from "./Clone";
 
 /**
  * Insert document within the given operation to the provided storage instance.

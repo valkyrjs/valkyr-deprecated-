@@ -1,8 +1,8 @@
 import { MongooseModule } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
+import { MongoDbContainer } from "@valkyr/testing";
 
 import { AccessTestingModule, TestAccessService } from "./AccessTestingModule";
-import { MongoDBContainer } from "./MongoDbContainer";
 import { TestingModule } from "./TestingModule";
 
 /*
@@ -12,7 +12,7 @@ import { TestingModule } from "./TestingModule";
  */
 
 export class AppTestingModule extends TestingModule {
-  #mongodb = new MongoDBContainer();
+  #mongodb = new MongoDbContainer();
 
   /*
    |--------------------------------------------------------------------------------

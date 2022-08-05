@@ -1,4 +1,4 @@
-import { EventEmitter } from "@valkyr/utils";
+import { EventEmitter } from "@valkyr/event-emitter";
 
 /*
  |--------------------------------------------------------------------------------
@@ -11,17 +11,17 @@ export class Queue<T> extends EventEmitter<{
   working: () => void;
   drained: () => void;
 }> {
-  public status: Status;
+  status: Status;
 
-  private queue: Message<T>[];
-  private handle: Handler<T>;
+  #queue: Message<T>[];
+  #handle: Handler<T>;
 
   constructor(handler: Handler<T>) {
     super();
 
     this.status = "idle";
-    this.queue = [];
-    this.handle = handler;
+    this.#queue = [];
+    this.#handle = handler;
   }
 
   /*
@@ -30,21 +30,21 @@ export class Queue<T> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  public is(status: Status): boolean {
+  is(status: Status): boolean {
     return this.status === status;
   }
 
-  public push(message: T, resolve: MessagePromise["resolve"], reject: MessagePromise["reject"]): this {
-    this.queue.push({ message, resolve, reject });
-    this.process();
+  push(message: T, resolve: MessagePromise["resolve"], reject: MessagePromise["reject"]): this {
+    this.#queue.push({ message, resolve, reject });
+    this.#process();
     return this;
   }
 
-  public flush(filter?: Filter<Message<T>>): this {
+  flush(filter?: Filter<Message<T>>): this {
     if (filter) {
-      this.queue = this.queue.filter(filter);
+      this.#queue = this.#queue.filter(filter);
     } else {
-      this.queue = [];
+      this.#queue = [];
     }
     return this;
   }
@@ -55,29 +55,29 @@ export class Queue<T> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  private async process(): Promise<this> {
+  async #process(): Promise<this> {
     if (this.is("working")) {
       return this;
     }
 
-    this.setStatus("working");
+    this.#setStatus("working");
 
-    const job = this.queue.shift();
+    const job = this.#queue.shift();
     if (!job) {
-      return this.setStatus("drained");
+      return this.#setStatus("drained");
     }
 
-    this.handle(job.message)
+    this.#handle(job.message)
       .then(job.resolve)
       .catch(job.reject)
       .finally(() => {
-        this.setStatus("idle").process();
+        this.#setStatus("idle").#process();
       });
 
     return this;
   }
 
-  private setStatus(value: Status): this {
+  #setStatus(value: Status): this {
     this.status = value;
     this.emit(value);
     return this;

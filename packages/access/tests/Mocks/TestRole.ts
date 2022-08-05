@@ -1,12 +1,6 @@
 import { Role } from "../../src/Role";
 
-export class TestRole extends Role<{
-  test: {
-    create: boolean;
-    edit: boolean;
-    delete: boolean;
-  };
-}> {
+export class TestRole extends Role<TestRolePermissions> {
   public static getPermissions({ test }: Partial<TestRole["permissions"]>): TestRole["permissions"] {
     return {
       test: {
@@ -17,3 +11,11 @@ export class TestRole extends Role<{
     };
   }
 }
+
+export type TestRolePermissions = {
+  test: {
+    create: boolean;
+    edit: boolean;
+    delete: boolean;
+  };
+};
