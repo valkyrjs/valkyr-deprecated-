@@ -3,6 +3,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 
 import { Role, RoleSchema } from "./Models/Role";
 import { AccessService } from "./Services/AccessService";
+import { RoleService } from "./Services/RoleService";
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { AccessService } from "./Services/AccessService";
       }
     ])
   ],
-  providers: [AccessService],
-  exports: [AccessService]
+  providers: [AccessService, RoleService],
+  exports: [AccessService, RoleService]
 })
 export class AccessModule {}

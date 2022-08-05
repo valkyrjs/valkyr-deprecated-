@@ -1,8 +1,7 @@
 import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
 import { Role as AccessRole } from "@valkyr/access";
 
-import { AccessModule, AccessService, Role, RoleSchema } from "../src";
+import { AccessModule, AccessService, Role } from "../src";
 
 /*
  |--------------------------------------------------------------------------------
@@ -48,15 +47,7 @@ export class TestAccessService extends AccessService<TestPermissions> {
  */
 
 @Module({
-  imports: [
-    AccessModule,
-    MongooseModule.forFeature([
-      {
-        name: Role.name,
-        schema: RoleSchema
-      }
-    ])
-  ],
+  imports: [AccessModule],
   providers: [TestAccessService]
 })
 export class AccessTestingModule {}

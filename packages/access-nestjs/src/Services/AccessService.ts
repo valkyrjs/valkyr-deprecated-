@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
 import {
   Operation,
   permissionDenied,
@@ -13,13 +12,18 @@ import {
 import { Model } from "mongoose";
 
 import { Role, RoleDocument } from "../Models/Role";
+import { RoleService } from "./RoleService";
 
 @Injectable()
 export class AccessService<
   Permissions extends AccessRole["permissions"] = AccessRole["permissions"],
   Resource extends keyof Permissions = keyof Permissions
 > {
-  constructor(@InjectModel(Role.name) readonly roles: Model<RoleDocument>) {}
+  readonly roles: Model<RoleDocument>;
+
+  constructor(roles: RoleService) {
+    this.roles = roles.model;
+  }
 
   /*
    |--------------------------------------------------------------------------------
