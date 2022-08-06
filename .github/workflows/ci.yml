@@ -1,14 +1,11 @@
 name: CI
+
 on:
-  workflow_dispatch:
-  push:
-    paths:
-      - "packages/**.ts"
-      - .github/workflows/ci.yml
   pull_request:
-    paths:
-      - "packages/**.ts"
-      - .github/workflows/ci.yml
+    branches: [main]
+  push:
+    branches: [main]
+
 jobs:
   coverage:
     name: Tests & Code Coverage

@@ -16,6 +16,6 @@
     "build": "tsc -b ./tsconfig.build.json"
   },
   "devDependencies": {
-    "mongodb-memory-server": "^8.4.2"
+    "mongodb-memory-server": "^8.8.0"
   }
 }
