@@ -20,6 +20,6 @@
   "devDependencies": {
     "@nestjs/platform-express": "^9.0.8",
     "@nestjs/testing": "^9.0.8",
-    "mongodb-memory-server": "^8.8.0"
+    "@valkyr/testing": "*"
   }
 }

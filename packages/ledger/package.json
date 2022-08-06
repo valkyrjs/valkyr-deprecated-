@@ -13,12 +13,11 @@
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
+    "@valkyr/event-emitter": "*",
     "@valkyr/security": "*",
-    "@valkyr/utils": "*",
     "crypto-js": "4.1.1"
   },
   "devDependencies": {
-    "@types/crypto-js": "4.1.1",
-    "@valkyr/testing": "*"
+    "@types/crypto-js": "4.1.1"
   }
 }

@@ -1,10 +1,11 @@
-import { clone, dot } from "@valkyr/utils";
 import { Query } from "mingo";
 import { RawObject } from "mingo/types";
 
 import { Storage } from "../Storage";
 import type { Document, UpdateActions } from "../Types";
 import { Update } from "../Types";
+import { clone } from "./Clone";
+import * as dot from "./Dot";
 
 /*
  |--------------------------------------------------------------------------------

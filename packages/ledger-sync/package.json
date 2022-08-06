@@ -17,7 +17,6 @@
     "idb-keyval": "^6.2.0"
   },
   "devDependencies": {
-    "@valkyr/ledger": "*",
-    "@valkyr/testing": "*"
+    "@valkyr/ledger": "*"
   }
 }

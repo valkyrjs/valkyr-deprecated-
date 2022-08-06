@@ -1,5 +1,11 @@
 import { Vault } from "../src/Vault";
 
+/*
+ |--------------------------------------------------------------------------------
+ | Unit Tests
+ |--------------------------------------------------------------------------------
+ */
+
 describe("Vault", () => {
   it("should encrypt and decrypt a payload", async () => {
     const vault = await Vault.create();

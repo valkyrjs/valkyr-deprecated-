@@ -1,9 +1,8 @@
-import { getParameters } from "@valkyr/utils";
 import type { History, Location } from "history";
 
 import { Action, ActionRejectedError, Redirect, Render, Request, response } from "./Action";
 import { Query } from "./Query";
-import { RenderActionMissingError, Resolved, RouteNotFoundError } from "./Route";
+import { getParameters, RenderActionMissingError, Resolved, RouteNotFoundError } from "./Route";
 import type { Router } from "./Router";
 import { State } from "./State";
 import { ValueStore } from "./ValueStore";

@@ -1,6 +1,12 @@
 import { getMockedCollection } from "../mocks/User";
 import { DuplicateDocumentError } from "../src";
 
+/*
+ |--------------------------------------------------------------------------------
+ | Unit Tests
+ |--------------------------------------------------------------------------------
+ */
+
 describe("Storage Insert", () => {
   it("should successfully insert a new document", async () => {
     const { collection, documents } = await getMockedCollection();

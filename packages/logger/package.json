@@ -1,7 +1,7 @@
 {
-  "name": "@valkyr/ledger-nestjs",
+  "name": "@valkyr/logger",
   "version": "0.0.0",
-  "description": "@valkyr/ledger module for nestjs.",
+  "description": "A simple non optimized solution for logging in nodejs and browsers.",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
@@ -9,12 +9,14 @@
   "files": [
     "dist"
   ],
+  "keywords": [
+    "logging",
+    "log"
+  ],
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json"
   },
-  "dependencies": {
-    "@nestjs/common": "^9.0.8",
-    "@nestjs/mongoose": "^9.2.0",
-    "@valkyr/ledger": "*"
+  "devDependencies": {
+    "@types/node": "16.10.3"
   }
 }

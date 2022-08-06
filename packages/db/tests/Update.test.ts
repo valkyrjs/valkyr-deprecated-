@@ -1,5 +1,11 @@
 import { getMockedCollection } from "../mocks/User";
 
+/*
+ |--------------------------------------------------------------------------------
+ | Unit Tests
+ |--------------------------------------------------------------------------------
+ */
+
 describe("Storage Update", () => {
   it("should successfully update existing document", async () => {
     const { collection } = await getMockedCollection();

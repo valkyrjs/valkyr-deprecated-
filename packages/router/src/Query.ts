@@ -1,10 +1,9 @@
-import { Query as JSONQuery, toQueryObject, toQueryString } from "@valkyr/utils";
 import type { History } from "history";
 
 import { ValueStore } from "./ValueStore";
 
 export class Query extends ValueStore {
-  public readonly history: History;
+  readonly history: History;
 
   /**
    * Create a new `Query` instance.
@@ -24,7 +23,7 @@ export class Query extends ValueStore {
    * @param key   - Key to update the value for.
    * @param value - Value to add to the key.
    */
-  public set(key: string | JSONQuery, value?: string | number): void {
+  set(key: string | JSONQuery, value?: string | number): void {
     if (typeof key === "string") {
       this.replace({
         ...this.get(),
@@ -44,7 +43,7 @@ export class Query extends ValueStore {
    *
    * @param key - Key to remove from the query.
    */
-  public unset(key?: string | string[]): void {
+  unset(key?: string | string[]): void {
     if (key !== undefined) {
       this.replace(getSanitizedQuery(key, this.get()));
     } else {
@@ -57,7 +56,7 @@ export class Query extends ValueStore {
    *
    * @param store - Object to replace the current store with.
    */
-  public replace(store: any): void {
+  replace(store: any): void {
     this.history.push({ search: toQueryString(store) });
   }
 
@@ -66,7 +65,7 @@ export class Query extends ValueStore {
    *
    * @returns query as a string, eg. ?foo=x&bar=y
    */
-  public toString(): string {
+  toString(): string {
     return toQueryString(this.get());
   }
 }
@@ -76,6 +75,37 @@ export class Query extends ValueStore {
  | Utilities
  |--------------------------------------------------------------------------------
  */
+
+/**
+ * Takes a key/value pair object and generates a browser query string.
+ */
+export function toQueryString(query: JSONQuery): string {
+  const search: string[] = [];
+  for (const key in query) {
+    search.push(`${key}=${query[key]}`);
+  }
+  if (search.length) {
+    return `?${search.join("&")}`;
+  }
+  return "";
+}
+
+/**
+ * Converts a search string to a object key/value pair.
+ */
+export function toQueryObject(search: string): Query {
+  const result: any = {};
+  if (search) {
+    search
+      .replace("?", "")
+      .split("&")
+      .forEach((filter: string): void => {
+        const [key, val] = filter.split(/=(.+)/);
+        result[key] = val;
+      });
+  }
+  return result;
+}
 
 function getSanitizedQuery(key: string | string[], query: JSONQuery): JSONQuery {
   if (Array.isArray(key)) {
@@ -97,3 +127,11 @@ function removeKeyFromQuery(key: string, query: JSONQuery): JSONQuery {
   }
   return query;
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type JSONQuery = Record<string, string>;

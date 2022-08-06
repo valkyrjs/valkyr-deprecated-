@@ -47,6 +47,6 @@ export abstract class TestingModule {
    |--------------------------------------------------------------------------------
    */
 
-  public abstract start(): Promise<void>;
-  public abstract stop(): Promise<void>;
+  abstract start(): Promise<void>;
+  abstract stop(): Promise<void>;
 }

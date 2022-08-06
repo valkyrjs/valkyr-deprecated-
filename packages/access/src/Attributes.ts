@@ -1,4 +1,4 @@
-import { clone } from "@valkyr/utils";
+import { clone } from "./Clone";
 
 type BitFlags = Record<string, number>;
 
