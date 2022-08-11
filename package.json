@@ -7,9 +7,7 @@
   "license": "MIT",
   "files": [],
   "workspaces": [
-    "./packages/*",
-    "./docs",
-    "./"
+    "./packages/*"
   ],
   "scripts": {
     "prepare": "husky install",
@@ -17,7 +15,7 @@
     "clean": "rm -rf ./packages/**/dist && rm -rf ./playground/**/dist && rm -rf ./packages/**/tsconfig.build.tsbuildinfo && rm -rf ./playground/app/.angular",
     "flush": "npm run clean && npx rimraf ./**/node_modules",
     "publish": "node ./scripts/publish.js",
-    "docs": "npm start --prefix docs",
+    "docs": "npm run generate --prefix docs",
     "lint": "eslint ./packages --ext .ts --fix",
     "test": "jest --maxWorkers=100% --detectOpenHandles",
     "coverage": "jest --ci --coverage --forceExit --maxWorkers=4"
