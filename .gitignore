@@ -27,6 +27,7 @@ node_modules
 
 # dist & pack
 
+.contented
 dist
 *.tgz
 
