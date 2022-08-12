@@ -4,6 +4,8 @@ import { Observable, Subscription } from "rxjs";
 import type { Collection, Options } from "./Collection";
 import { observe, observeOne } from "./Observe";
 import { Document, DocumentNotFoundError, PartialDocument, UpdateActions } from "./Storage";
+import { RemoveResult } from "./Storage/Operations/Remove";
+import { UpdateResult } from "./Storage/Operations/Update";
 
 export abstract class Model<D extends Document = any> {
   static _collection: Collection;
@@ -65,40 +67,47 @@ export abstract class Model<D extends Document = any> {
     this: ModelContext<T, D>,
     criteria: RawObject,
     actions: UpdateActions
-  ): Promise<void> {
+  ): Promise<UpdateResult> {
     const result = await this.$collection.updateOne(criteria, actions);
     if (result.acknowledged === false) {
       throw result.exceptions[0];
     }
+    return result;
   }
 
   static async updateMany<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
     actions: UpdateActions
-  ): Promise<void> {
+  ): Promise<UpdateResult> {
     const result = await this.$collection.updateMany(criteria, actions);
     if (result.acknowledged === false) {
       throw result.exceptions;
     }
+    return result;
   }
 
   static async replaceOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
     document: D
-  ): Promise<void> {
+  ): Promise<UpdateResult> {
     const result = await this.$collection.replaceOne(criteria, document);
     if (result.acknowledged === false) {
       throw result.exceptions[0];
     }
+    return result;
   }
 
-  static async delete<D extends Document, T extends Model<D>>(this: ModelContext<T, D>, id: string): Promise<void> {
+  static async delete<D extends Document, T extends Model<D>>(
+    this: ModelContext<T, D>,
+    id: string
+  ): Promise<RemoveResult> {
     const result = await this.$collection.delete(id);
     if (result.acknowledged === false) {
       throw result.exceptions[0];
     }
+    return result;
   }
 
   /*

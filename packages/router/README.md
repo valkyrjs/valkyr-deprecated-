@@ -1,6 +1,6 @@
 ---
 title: Router
-sections: ["App"]
+sections: ["Browsers"]
 ---
 
 Coming soon
