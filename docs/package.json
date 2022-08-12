@@ -1,9 +1,6 @@
 {
   "name": "@valkyr/docs",
-  "files": [
-    "dist"
-  ],
-  "main": "dist/index.js",
+  "private": true,
   "scripts": {
     "write": "contented write",
     "generate": "contented generate",

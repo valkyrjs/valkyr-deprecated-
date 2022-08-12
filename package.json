@@ -7,16 +7,14 @@
   "license": "MIT",
   "files": [],
   "workspaces": [
-    "./docs",
     "./packages/*"
   ],
   "scripts": {
-    "prepare": "husky install",
     "build": "node ./scripts/build.js",
     "clean": "rm -rf ./packages/**/dist && rm -rf ./playground/**/dist && rm -rf ./packages/**/tsconfig.build.tsbuildinfo && rm -rf ./playground/app/.angular",
     "flush": "npm run clean && npx rimraf ./**/node_modules",
     "publish": "node ./scripts/publish.js",
-    "docs": "npm run generate --prefix docs",
+    "docs": "npm i --prefix docs && npm run generate --prefix docs",
     "lint": "eslint ./packages --ext .ts --fix",
     "test": "jest --maxWorkers=100% --detectOpenHandles",
     "coverage": "jest --ci --coverage --forceExit --maxWorkers=4"

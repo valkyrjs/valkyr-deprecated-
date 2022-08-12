@@ -1,3 +1,5 @@
+import type { Get } from "type-fest";
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 // Ported from https://github.com/sindresorhus/dot-prop
@@ -55,21 +57,21 @@ export function getProperty<ObjectType, PathType extends string, DefaultValue = 
     : Get<ObjectType, PathType>
   : undefined {
   if (!isObject(object) || typeof path !== "string") {
-    return value === undefined ? object : value;
+    return value === undefined ? object : (value as any);
   }
 
   const pathArray = getPathSegments(path);
   if (pathArray.length === 0) {
-    return value;
+    return value as any;
   }
 
   for (let index = 0; index < pathArray.length; index++) {
     const key = pathArray[index];
 
     if (isStringIndex(object, key)) {
-      object = index === pathArray.length - 1 ? undefined : null;
+      object = index === pathArray.length - 1 ? undefined : (null as any);
     } else {
-      object = object[key];
+      object = (object as any)[key];
     }
 
     if (object === undefined || object === null) {
@@ -79,14 +81,14 @@ export function getProperty<ObjectType, PathType extends string, DefaultValue = 
       // it would return `null` if `object` is `null`
       // but we want `get({foo: null}, 'foo.bar')` to equal `undefined`, or the supplied value, not `null`
       if (index !== pathArray.length - 1) {
-        return value;
+        return value as any;
       }
 
       break;
     }
   }
 
-  return object === undefined ? value : object;
+  return object === undefined ? value : (object as any);
 }
 
 /**
@@ -139,9 +141,9 @@ export function setProperty<ObjectType extends Record<string, any>>(
     assertNotStringIndex(object, key);
 
     if (index === pathArray.length - 1) {
-      object[key] = value;
+      (object as any)[key] = value;
     } else if (!isObject(object[key])) {
-      object[key] = typeof pathArray[index + 1] === "number" ? [] : {};
+      (object as any)[key] = typeof pathArray[index + 1] === "number" ? [] : {};
     }
 
     object = object[key];
@@ -195,6 +197,8 @@ export function deleteProperty(object: Record<string, any>, path: string): boole
       return false;
     }
   }
+
+  return false;
 }
 
 /**
@@ -222,11 +226,11 @@ export function hasProperty(object: Record<string, any> | undefined, path: strin
   }
 
   for (const key of pathArray) {
-    if (!isObject(object) || !(key in object) || isStringIndex(object, key)) {
+    if (!isObject(object) || !(key in (object as any)) || isStringIndex(object, key)) {
       return false;
     }
 
-    object = object[key];
+    object = (object as any)[key];
   }
 
   return true;
@@ -443,7 +447,7 @@ function getPathSegments(path: string) {
 function isStringIndex(object: unknown, key: string | number) {
   if (typeof key !== "number" && Array.isArray(object)) {
     const index = Number.parseInt(key, 10);
-    return Number.isInteger(index) && object[index] === object[key];
+    return Number.isInteger(index) && object[index] === object[key as unknown as number];
   }
   return false;
 }
@@ -471,15 +475,14 @@ function stringifyPath(pathSegments: unknown) {
 }
 
 // The keys returned by Object.entries() for arrays are strings
-function entries(value: unknown) {
+function entries(value: any): any {
   if (Array.isArray(value)) {
     return value.map((value, index) => [index, value]);
   }
-
   return Object.entries(value);
 }
 
-function* deepKeysIterator(object: unknown, currentPath = []) {
+function* deepKeysIterator(object: unknown, currentPath: any[] = []): any {
   if (!isObject(object)) {
     if (currentPath.length > 0) {
       yield stringifyPath(currentPath);
