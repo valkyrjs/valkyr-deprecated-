@@ -31,7 +31,7 @@ export type Insert<D extends Document = any> = {
   document: D & {
     id?: string;
   };
-} & OperationPromise<string>;
+} & OperationPromise;
 
 export type Update = {
   type: "update";
@@ -54,27 +54,6 @@ export type Delete = {
 export type OperationPromise<T = any> = {
   resolve: (value: T) => void;
   reject: (reason?: any) => void;
-};
-
-export type InsertOneResponse = {
-  acknowledged: boolean;
-  insertedId: string;
-};
-
-export type InsertManyResponse = {
-  acknowledged: boolean;
-  insertedIds: string[];
-};
-
-export type UpdateResponse = {
-  acknowledged: boolean;
-  matchedCount: number;
-  modifiedCount: number;
-};
-
-export type DeleteResponse = {
-  acknowledged: boolean;
-  deletedCount: number;
 };
 
 export type UpdateActions = {

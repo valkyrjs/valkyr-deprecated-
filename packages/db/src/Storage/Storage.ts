@@ -5,6 +5,9 @@ import { RawObject } from "mingo/types";
 
 import { InstanceAdapter } from "../Adapters";
 import { operations } from "./Operations";
+import { InsertException, InsertResult } from "./Operations/Insert";
+import { RemoveOneException, RemoveOneResult } from "./Operations/Remove";
+import { UpdateOneException, UpdateOneResult } from "./Operations/Update";
 import type {
   Adapter,
   ChangeType,
@@ -129,22 +132,22 @@ export class Storage<D extends Document = any> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  async insert(document: PartialDocument<D>): Promise<string> {
+  async insert(document: PartialDocument<D>): Promise<InsertResult | InsertException> {
     this.logger.debug(`${this.name} [${this.id}] Insert`, document.id);
     return this.run({ type: "insert", document } as Insert<D>);
   }
 
-  async update(id: string, criteria: RawObject, actions: UpdateActions): Promise<boolean> {
+  async update(id: string, criteria: RawObject, actions: UpdateActions): Promise<UpdateOneResult | UpdateOneException> {
     this.logger.debug(`${this.adapter.type} [${this.id}] Update`, id);
     return this.run({ type: "update", id, criteria, actions } as Update);
   }
 
-  async replace(id: string, document: Document): Promise<boolean> {
+  async replace(id: string, document: Document): Promise<UpdateOneResult | UpdateOneException> {
     this.logger.debug(`${this.adapter.type} [${this.id}] Replace`, id);
     return this.run({ type: "replace", id, document } as Replace<D>);
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(id: string): Promise<RemoveOneResult | RemoveOneException> {
     this.logger.debug(`${this.adapter.type} [${this.id}] Delete`, id);
     return this.run({ type: "delete", id } as Delete);
   }
@@ -180,6 +183,7 @@ export class Storage<D extends Document = any> extends EventEmitter<{
       operation.resolve(this.resolve(operation as any));
       this.save();
     } catch (error: any) {
+      console.log("FAILED", error);
       operation.reject(error);
     }
 
@@ -188,9 +192,13 @@ export class Storage<D extends Document = any> extends EventEmitter<{
     return this;
   }
 
-  resolve(operation: Insert<D>): string;
-  resolve(operation: Operation<D>): boolean;
-  resolve(operation: Operation<D>): string | boolean {
+  resolve(operation: Insert<D>): InsertResult | InsertException;
+  resolve(
+    operation: Operation<D>
+  ): InsertResult | InsertException | UpdateOneResult | UpdateOneException | RemoveOneResult | RemoveOneException;
+  resolve(
+    operation: Operation<D>
+  ): InsertResult | InsertException | UpdateOneResult | UpdateOneException | RemoveOneResult | RemoveOneException {
     return operations[operation.type](this, operation as any);
   }
 }
