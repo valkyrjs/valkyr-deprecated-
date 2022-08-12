@@ -300,74 +300,11 @@ products.updateOne(
 
 For react `@valkyr/db` acts as a globally observed persistent state store. Whenever you update a model, any query subscriber which has a matching query filter against the data changed will be informed and update the component state.
 
-## Query Hook
-
-```ts
-import type { ModelClass, RawObject, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
-import { useEffect, useState } from "react";
-
-export function useQuery<M extends ModelClass>(
-  model: M,
-  query: QuerySingle
-): [InstanceType<M> | undefined, boolean, Error | undefined];
-export function useQuery<M extends ModelClass>(model: M): [InstanceType<M>[], boolean, Error | undefined];
-export function useQuery<M extends ModelClass>(
-  model: M,
-  query: QueryMany
-): [InstanceType<M>[], boolean, Error | undefined];
-export function useQuery<M extends ModelClass>(model: M, query: Query = {}) {
-  const [data, setData] = useState<any>();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | undefined>();
-
-  useEffect(() => {
-    const { where, observe = true, ...options } = query;
-    if (observe === true) {
-      const subscription = (model as any).subscribe(where, options, (data) => {
-        setData(data);
-        setLoading(false);
-      });
-      return () => {
-        subscription.unsubscribe();
-      };
-    }
-    if (options.limit === 1) {
-      model
-        .findOne(where)
-        .then((data) => {
-          setData(data);
-          setLoading(false);
-        })
-        .catch(setError);
-    } else {
-      model
-        .find(where)
-        .then((data) => {
-          setData(data);
-          setLoading(false);
-        })
-        .catch(setError);
-    }
-  }, [model, JSON.stringify(query)]);
-
-  return [data ? data : query.limit === 1 ? undefined : [], loading, error];
-}
-
-type Query = Where & SubscriptionOptions;
-
-type QuerySingle = Where & SubscribeToSingle;
-
-type QueryMany = Where & SubscribeToMany;
-
-type Where = {
-  where?: RawObject;
-  observe?: boolean;
-};
-```
-
 ## Example
 
 ```ts
+import { userQuery } from "@valkyr/db/react";
+
 function User({ id }: { id: string }) {
   const [user, loading, error] = useUser(id);
 

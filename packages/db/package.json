@@ -7,6 +7,7 @@
   "license": "MIT",
   "main": "src/index.ts",
   "files": [
+    "react",
     "dist"
   ],
   "keywords": [
@@ -16,7 +17,7 @@
     "mongodb"
   ],
   "scripts": {
-    "build": "tsc -b ./tsconfig.build.json"
+    "build": "tsc -b ./tsconfig.build.json && tsc -b ./tsconfig.react.json"
   },
   "dependencies": {
     "@valkyr/event-emitter": "*",
@@ -28,6 +29,7 @@
     "rxjs": "^7.5.6"
   },
   "devDependencies": {
+    "@types/react": "^18.0.17",
     "type-fest": "^2.18.0"
   }
 }
