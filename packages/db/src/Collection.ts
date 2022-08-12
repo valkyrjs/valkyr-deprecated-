@@ -4,31 +4,10 @@ import type { RawObject } from "mingo/types";
 import { Observable } from "rxjs";
 
 import { observe, observeOne } from "./Observe";
-import {
-  Adapter,
-  DeleteResponse,
-  Document,
-  InsertManyResponse,
-  InsertOneResponse,
-  PartialDocument,
-  Storage,
-  UpdateActions,
-  UpdateResponse
-} from "./Storage";
-
-/*
- |--------------------------------------------------------------------------------
- | Types
- |--------------------------------------------------------------------------------
- */
-
-export type Options = {
-  sort?: {
-    [key: string]: 1 | -1;
-  };
-  skip?: number;
-  limit?: number;
-};
+import { Adapter, Document, DocumentNotFoundError, PartialDocument, Storage, UpdateActions } from "./Storage";
+import { InsertException, InsertManyResult, InsertResult } from "./Storage/Operations/Insert";
+import { RemoveResult } from "./Storage/Operations/Remove";
+import { UpdateOneException, UpdateResult } from "./Storage/Operations/Update";
 
 /*
  |--------------------------------------------------------------------------------
@@ -51,64 +30,53 @@ export class Collection<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  async insertOne(document: PartialDocument<D>): Promise<InsertOneResponse> {
-    return {
-      acknowledged: true,
-      insertedId: await this.storage.insert(document)
-    };
+  async insertOne(document: PartialDocument<D>): Promise<InsertResult | InsertException> {
+    return this.storage.insert(document);
   }
 
-  async insertMany(documents: PartialDocument<D>[]): Promise<InsertManyResponse> {
-    return {
-      acknowledged: true,
-      insertedIds: await Promise.all(documents.map((document) => this.storage.insert(document)))
-    };
+  async insertMany(documents: PartialDocument<D>[]): Promise<InsertManyResult> {
+    return new InsertManyResult(
+      await Promise.all(
+        documents.map((document) => {
+          return this.storage.insert(document);
+        })
+      )
+    );
   }
 
-  async updateOne(criteria: RawObject, actions: UpdateActions): Promise<UpdateResponse> {
+  async updateOne(criteria: RawObject, actions: UpdateActions): Promise<UpdateResult> {
     const document = await this.findOne(criteria);
     if (document === undefined) {
-      return { acknowledged: true, matchedCount: 0, modifiedCount: 0 };
+      return new UpdateResult([new UpdateOneException(false, new DocumentNotFoundError(criteria))]);
     }
-    const updated = await this.storage.update(document.id, criteria, actions);
-    if (updated) {
-      return { acknowledged: true, matchedCount: 1, modifiedCount: 1 };
-    }
-    return { acknowledged: true, matchedCount: 1, modifiedCount: 0 };
+    return new UpdateResult([await this.storage.update(document.id, criteria, actions)]);
   }
 
-  async updateMany(criteria: RawObject, actions: UpdateActions): Promise<UpdateResponse> {
+  async updateMany(criteria: RawObject, actions: UpdateActions): Promise<UpdateResult> {
     const documents = await this.find(criteria);
     const matchedCount = documents.length;
     if (matchedCount === 0) {
-      return { acknowledged: true, matchedCount, modifiedCount: 0 };
+      return new UpdateResult();
     }
-    const updated = await Promise.all(documents.map((document) => this.storage.update(document.id, criteria, actions)));
-    return {
-      acknowledged: true,
-      matchedCount,
-      modifiedCount: updated.filter((result) => result === true).length
-    };
+    return new UpdateResult(
+      await Promise.all(
+        documents.map((document) => {
+          return this.storage.update(document.id, criteria, actions);
+        })
+      )
+    );
   }
 
-  async replaceOne(criteria: RawObject, document: Document): Promise<UpdateResponse> {
+  async replaceOne(criteria: RawObject, document: Document): Promise<UpdateResult> {
     const { id } = (await this.findOne(criteria)) ?? {};
     if (id === undefined) {
-      return { acknowledged: true, matchedCount: 0, modifiedCount: 0 };
+      return new UpdateResult();
     }
-    const replaced = await this.storage.replace(id, document);
-    if (replaced) {
-      return { acknowledged: true, matchedCount: 1, modifiedCount: 1 };
-    }
-    return { acknowledged: true, matchedCount: 1, modifiedCount: 0 };
+    return new UpdateResult([await this.storage.replace(id, document)]);
   }
 
-  async delete(id: string): Promise<DeleteResponse> {
-    const deleted = await this.storage.delete(id);
-    if (deleted) {
-      return { acknowledged: true, deletedCount: 1 };
-    }
-    return { acknowledged: true, deletedCount: 0 };
+  async delete(id: string): Promise<RemoveResult> {
+    return new RemoveResult([await this.storage.delete(id)]);
   }
 
   /*
@@ -227,3 +195,17 @@ export function addOptions(cursor: Cursor, options: Options): Cursor {
   }
   return cursor;
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type Options = {
+  sort?: {
+    [key: string]: 1 | -1;
+  };
+  skip?: number;
+  limit?: number;
+};

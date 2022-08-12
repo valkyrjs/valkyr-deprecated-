@@ -1,4 +1,5 @@
-import { getMockedCollection } from "../mocks/User";
+import { getUserCollection, users } from "../mocks";
+import { RemoveOneResult, RemoveResult } from "../src/Storage/Operations/Remove";
 
 /*
  |--------------------------------------------------------------------------------
@@ -8,12 +9,8 @@ import { getMockedCollection } from "../mocks/User";
 
 describe("Storage Remove", () => {
   it("should successfully delete document", async () => {
-    const { collection } = await getMockedCollection();
-    const response = await collection.delete("user-1");
-    expect(response).toEqual({
-      acknowledged: true,
-      deletedCount: 1
-    });
-    expect(collection.storage.documents.get("user-1")).toBeUndefined();
+    const collection = getUserCollection();
+    await collection.insertMany(users);
+    expect(await collection.delete("user-1")).toEqual(new RemoveResult([new RemoveOneResult()]));
   });
 });

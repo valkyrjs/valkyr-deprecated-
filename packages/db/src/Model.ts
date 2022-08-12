@@ -3,7 +3,7 @@ import { Observable, Subscription } from "rxjs";
 
 import type { Collection, Options } from "./Collection";
 import { observe, observeOne } from "./Observe";
-import { Document, DocumentNotFoundError, PartialDocument, UpdateActions, UpdateResponse } from "./Storage";
+import { Document, DocumentNotFoundError, PartialDocument, UpdateActions } from "./Storage";
 
 export abstract class Model<D extends Document = any> {
   static _collection: Collection;
@@ -39,18 +39,24 @@ export abstract class Model<D extends Document = any> {
     this: ModelContext<T, D>,
     document: PartialDocument<D>
   ): Promise<T> {
-    const { insertedId } = await this.$collection.insertOne(document);
-    return (this as any).findById(insertedId);
+    const result = await this.$collection.insertOne(document);
+    if (result.acknowledged === false) {
+      throw result.exception;
+    }
+    return (this as any).findById(result.insertedId);
   }
 
   static async insertMany<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     documents: PartialDocument<D>[]
   ): Promise<T[]> {
-    const { insertedIds } = await this.$collection.insertMany(documents);
+    const result = await this.$collection.insertMany(documents);
+    if (result.acknowledged === false) {
+      throw result.exceptions;
+    }
     return (this as any).find({
       id: {
-        $in: insertedIds
+        $in: result.insertedIds
       }
     });
   }
@@ -61,8 +67,8 @@ export abstract class Model<D extends Document = any> {
     actions: UpdateActions
   ): Promise<void> {
     const result = await this.$collection.updateOne(criteria, actions);
-    if (result.matchedCount === 0) {
-      throw new DocumentNotFoundError(criteria);
+    if (result.acknowledged === false) {
+      throw result.exceptions[0];
     }
   }
 
@@ -72,8 +78,8 @@ export abstract class Model<D extends Document = any> {
     actions: UpdateActions
   ): Promise<void> {
     const result = await this.$collection.updateMany(criteria, actions);
-    if (result.matchedCount === 0) {
-      throw new DocumentNotFoundError(criteria);
+    if (result.acknowledged === false) {
+      throw result.exceptions;
     }
   }
 
@@ -83,15 +89,15 @@ export abstract class Model<D extends Document = any> {
     document: D
   ): Promise<void> {
     const result = await this.$collection.replaceOne(criteria, document);
-    if (result.matchedCount === 0) {
-      throw new DocumentNotFoundError(criteria);
+    if (result.acknowledged === false) {
+      throw result.exceptions[0];
     }
   }
 
   static async delete<D extends Document, T extends Model<D>>(this: ModelContext<T, D>, id: string): Promise<void> {
     const result = await this.$collection.delete(id);
-    if (result.deletedCount === 0) {
-      throw new DocumentNotFoundError({ id });
+    if (result.acknowledged === false) {
+      throw result.exceptions[0];
     }
   }
 
@@ -206,8 +212,16 @@ export abstract class Model<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  async update(actions: UpdateActions): Promise<UpdateResponse> {
-    return this.$collection.updateOne({ id: this.id }, actions);
+  async update(actions: UpdateActions): Promise<this> {
+    const result = await this.$collection.updateOne({ id: this.id }, actions);
+    if (result.acknowledged === false) {
+      throw result.exceptions[0];
+    }
+    const document = await this.$collection.findById(this.id);
+    if (!document) {
+      throw new DocumentNotFoundError({ id: this.id });
+    }
+    return new (this as any).constructor(document).onInit();
   }
 }
 
