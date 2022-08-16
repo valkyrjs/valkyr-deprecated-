@@ -41,7 +41,7 @@ coverage
 
 # TypeScript
 
-tsconfig.build.tsbuildinfo
+tsconfig.*.tsbuildinfo
 
 # Logs
 
