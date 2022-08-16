@@ -26,21 +26,3 @@ We use jest for testing, just run the following command from root:
 ```ts
 $ npm test
 ```
-
-## Documentation
-
-Go to our [documentation website](https://docs.kodemon.net) for valkyr documentation.
-
-> This is however currently not ready, and this section will be updated once its ready for prime time.
-
-Running documentation locally you need to do a separate install:
-
-```sh
-$ npm install
-```
-
-Then you can run docs in development mode:
-
-```sh
-$ npm run docs
-```

@@ -21,7 +21,6 @@ module.exports = {
         },
         transform: (file) => {
           if (file.path === '/readme') {
-            file.fields.title = 'Valkyr';
             file.path = '/';
             file.sections = [];
           } else {
@@ -36,7 +35,7 @@ module.exports = {
       },
       {
         type: 'Packages',
-        pattern: 'packages/**/*.md',
+        pattern: ['packages/**/docs/**/*.md'],
         processor: 'md',
         fields: {
           title: {

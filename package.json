@@ -15,6 +15,7 @@
     "flush": "npm run clean && npx rimraf ./**/node_modules",
     "publish": "node ./scripts/publish.js",
     "docs": "npm i --prefix docs && npm run generate --prefix docs",
+    "docs:write": "npm i --prefix docs && npm run write --prefix docs",
     "lint": "eslint ./packages --ext .ts --fix",
     "test": "jest --maxWorkers=100% --detectOpenHandles",
     "coverage": "jest --ci --coverage --forceExit --maxWorkers=4"

@@ -67,7 +67,7 @@ export class Collection<D extends Document = any> {
     );
   }
 
-  async replaceOne(criteria: RawObject, document: Document): Promise<UpdateResult> {
+  async replaceOne(criteria: RawObject, document: D): Promise<UpdateResult> {
     const { id } = (await this.findOne(criteria)) ?? {};
     if (id === undefined) {
       return new UpdateResult();
@@ -85,15 +85,15 @@ export class Collection<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  observe(criteria: RawObject = {}, options?: Options): Observable<Document[]> {
-    return new Observable<Document[]>((subscriber) => {
-      return observe(this, criteria, options, subscriber.next);
+  observe(criteria: RawObject = {}, options?: Options): Observable<D[]> {
+    return new Observable<D[]>((subscriber) => {
+      return observe(this, criteria, options, subscriber.next as any);
     });
   }
 
-  observeOne(criteria: RawObject = {}): Observable<Document | undefined> {
-    return new Observable<Document | undefined>((subscriber) => {
-      return observeOne(this, criteria, subscriber.next);
+  observeOne(criteria: RawObject = {}): Observable<D | undefined> {
+    return new Observable<D | undefined>((subscriber) => {
+      return observeOne(this, criteria, subscriber.next as any);
     });
   }
 
@@ -121,9 +121,9 @@ export class Collection<D extends Document = any> {
    *
    * @url https://github.com/kofrasa/mingo
    */
-  async find(criteria: RawObject = {}, options?: Options) {
-    return this.query(criteria, options).then((cursor) => {
-      return cursor.all() as Document[];
+  async find(criteria: RawObject = {}, options?: Options): Promise<D[]> {
+    return this.#query(criteria, options).then((cursor) => {
+      return cursor.all() as D[];
     });
   }
 
@@ -133,9 +133,9 @@ export class Collection<D extends Document = any> {
    *
    * @url https://github.com/kofrasa/mingo
    */
-  async findOne(criteria: RawObject = {}, options?: Options) {
-    return this.query(criteria, options).then((cursor) => {
-      const documents = cursor.all() as Document[];
+  async findOne(criteria: RawObject = {}, options?: Options): Promise<D | undefined> {
+    return this.#query(criteria, options).then((cursor) => {
+      const documents = cursor.all() as D[];
       if (documents.length > 0) {
         return documents[0];
       }
@@ -149,8 +149,8 @@ export class Collection<D extends Document = any> {
    *
    * @url https://github.com/kofrasa/mingo
    */
-  async count(criteria: RawObject = {}, options?: Options) {
-    return this.query(criteria, options).then((cursor) => cursor.count());
+  async count(criteria: RawObject = {}): Promise<number> {
+    return this.#query(criteria).then((cursor) => cursor.count());
   }
 
   /**
@@ -160,13 +160,9 @@ export class Collection<D extends Document = any> {
    *
    * @url https://github.com/kofrasa/mingo#searching-and-filtering
    */
-  async query(criteria: RawObject = {}, options?: Options) {
+  async query(criteria: RawObject = {}): Promise<Cursor> {
     await this.storage.load();
-    const cursor = new Query(criteria).find(this.storage.data);
-    if (options) {
-      return addOptions(cursor, options);
-    }
-    return cursor;
+    return new Query(criteria).find(this.storage.data);
   }
 
   /**
@@ -174,6 +170,20 @@ export class Collection<D extends Document = any> {
    */
   flush(): void {
     this.storage.flush();
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Helpers
+   |--------------------------------------------------------------------------------
+   */
+
+  async #query(criteria: RawObject = {}, options?: Options): Promise<Cursor> {
+    const cursor = await this.query(criteria);
+    if (options) {
+      return addOptions(cursor, options);
+    }
+    return cursor;
   }
 }
 
