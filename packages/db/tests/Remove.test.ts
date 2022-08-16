@@ -11,6 +11,6 @@ describe("Storage Remove", () => {
   it("should successfully delete document", async () => {
     const collection = getUserCollection();
     await collection.insertMany(users);
-    expect(await collection.delete("user-1")).toEqual(new RemoveResult([new RemoveOneResult()]));
+    expect(await collection.remove({ id: "user-1" })).toEqual(new RemoveResult([new RemoveOneResult()]));
   });
 });

@@ -4,7 +4,15 @@ import type { RawObject } from "mingo/types";
 import { Observable } from "rxjs";
 
 import { observe, observeOne } from "./Observe";
-import { Adapter, Document, DocumentNotFoundError, PartialDocument, Storage, UpdateActions } from "./Storage";
+import {
+  Adapter,
+  Document,
+  DocumentNotFoundError,
+  PartialDocument,
+  RemoveOptions,
+  Storage,
+  UpdateOperations
+} from "./Storage";
 import { InsertException, InsertManyResult, InsertResult } from "./Storage/Operations/Insert";
 import { RemoveResult } from "./Storage/Operations/Remove";
 import { UpdateOneException, UpdateResult } from "./Storage/Operations/Update";
@@ -44,15 +52,15 @@ export class Collection<D extends Document = any> {
     );
   }
 
-  async updateOne(criteria: RawObject, actions: UpdateActions): Promise<UpdateResult> {
+  async updateOne(criteria: RawObject, update: UpdateOperations): Promise<UpdateResult> {
     const document = await this.findOne(criteria);
     if (document === undefined) {
       return new UpdateResult([new UpdateOneException(false, new DocumentNotFoundError(criteria))]);
     }
-    return new UpdateResult([await this.storage.update(document.id, criteria, actions)]);
+    return new UpdateResult([await this.storage.update(document.id, criteria, update)]);
   }
 
-  async updateMany(criteria: RawObject, actions: UpdateActions): Promise<UpdateResult> {
+  async updateMany(criteria: RawObject, update: UpdateOperations): Promise<UpdateResult> {
     const documents = await this.find(criteria);
     const matchedCount = documents.length;
     if (matchedCount === 0) {
@@ -61,7 +69,7 @@ export class Collection<D extends Document = any> {
     return new UpdateResult(
       await Promise.all(
         documents.map((document) => {
-          return this.storage.update(document.id, criteria, actions);
+          return this.storage.update(document.id, criteria, update);
         })
       )
     );
@@ -75,8 +83,12 @@ export class Collection<D extends Document = any> {
     return new UpdateResult([await this.storage.replace(id, document)]);
   }
 
-  async delete(id: string): Promise<RemoveResult> {
-    return new RemoveResult([await this.storage.delete(id)]);
+  async remove(criteria: RawObject, options?: RemoveOptions): Promise<RemoveResult> {
+    const documents = await this.find(criteria);
+    if (documents.length > 0 && options?.justOne === true) {
+      return new RemoveResult([await this.storage.delete(documents[0].id)]);
+    }
+    return new RemoveResult(await Promise.all(documents.map((document) => this.storage.delete(document.id))));
   }
 
   /*

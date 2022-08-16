@@ -19,7 +19,7 @@ import type {
   Replace,
   Status,
   Update,
-  UpdateActions
+  UpdateOperations
 } from "./Types";
 
 export class Storage<D extends Document = any> extends EventEmitter<{
@@ -137,7 +137,11 @@ export class Storage<D extends Document = any> extends EventEmitter<{
     return this.run({ type: "insert", document } as Insert<D>);
   }
 
-  async update(id: string, criteria: RawObject, actions: UpdateActions): Promise<UpdateOneResult | UpdateOneException> {
+  async update(
+    id: string,
+    criteria: RawObject,
+    actions: UpdateOperations
+  ): Promise<UpdateOneResult | UpdateOneException> {
     this.logger.debug(`${this.adapter.type} [${this.id}] Update`, id);
     return this.run({ type: "update", id, criteria, actions } as Update);
   }

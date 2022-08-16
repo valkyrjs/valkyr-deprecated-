@@ -3,7 +3,7 @@ import { Observable, Subscription } from "rxjs";
 
 import type { Collection, Options } from "./Collection";
 import { observe, observeOne } from "./Observe";
-import { Document, DocumentNotFoundError, PartialDocument, UpdateActions } from "./Storage";
+import { Document, DocumentNotFoundError, PartialDocument, RemoveOptions, UpdateOperations } from "./Storage";
 import { RemoveResult } from "./Storage/Operations/Remove";
 import { UpdateResult } from "./Storage/Operations/Update";
 
@@ -66,9 +66,9 @@ export abstract class Model<D extends Document = any> {
   static async updateOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
-    actions: UpdateActions
+    update: UpdateOperations
   ): Promise<UpdateResult> {
-    const result = await this.$collection.updateOne(criteria, actions);
+    const result = await this.$collection.updateOne(criteria, update);
     if (result.acknowledged === false) {
       throw result.exceptions[0];
     }
@@ -78,9 +78,9 @@ export abstract class Model<D extends Document = any> {
   static async updateMany<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
-    actions: UpdateActions
+    update: UpdateOperations
   ): Promise<UpdateResult> {
-    const result = await this.$collection.updateMany(criteria, actions);
+    const result = await this.$collection.updateMany(criteria, update);
     if (result.acknowledged === false) {
       throw result.exceptions;
     }
@@ -99,11 +99,12 @@ export abstract class Model<D extends Document = any> {
     return result;
   }
 
-  static async delete<D extends Document, T extends Model<D>>(
+  static async remove<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
-    id: string
+    criteria: RawObject,
+    options?: RemoveOptions
   ): Promise<RemoveResult> {
-    const result = await this.$collection.delete(id);
+    const result = await this.$collection.remove(criteria, options);
     if (result.acknowledged === false) {
       throw result.exceptions[0];
     }
@@ -221,8 +222,8 @@ export abstract class Model<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  async update(actions: UpdateActions): Promise<this> {
-    const result = await this.$collection.updateOne({ id: this.id }, actions);
+  async update(update: UpdateOperations): Promise<this> {
+    const result = await this.$collection.updateOne({ id: this.id }, update);
     if (result.acknowledged === false) {
       throw result.exceptions[0];
     }
@@ -250,10 +251,10 @@ type ModelContext<T = unknown, D = unknown> = {
 type ModelMethods<T = unknown, D = unknown> = {
   insertOne(document: D): Promise<T>;
   insertMany(documents: D[]): Promise<T[]>;
-  updateOne(criteria: RawObject, actions: UpdateActions): Promise<void>;
-  updateMany(criteria: RawObject, actions: UpdateActions): Promise<void>;
+  updateOne(criteria: RawObject, update: UpdateOperations): Promise<void>;
+  updateMany(criteria: RawObject, update: UpdateOperations): Promise<void>;
   replaceOne(criteria: RawObject, document: D): Promise<void>;
-  delete(id: string): Promise<void>;
+  remove(criteria: RawObject, options?: RemoveOptions): Promise<void>;
 
   subscribe<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,

@@ -37,7 +37,7 @@ export type Update = {
   type: "update";
   id: string;
   criteria: RawObject;
-  actions: UpdateActions;
+  actions: UpdateOperations;
 } & OperationPromise;
 
 export type Replace<D extends Document = any> = {
@@ -56,9 +56,13 @@ export type OperationPromise<T = any> = {
   reject: (reason?: any) => void;
 };
 
-export type UpdateActions = {
+export type UpdateOperations = {
   $set?: Record<string, unknown>;
   $unset?: Record<string, unknown>;
   $push?: Record<string, unknown>;
   $pull?: Record<string, unknown>;
+};
+
+export type RemoveOptions = {
+  justOne: boolean;
 };
