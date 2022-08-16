@@ -1,11 +1,10 @@
 {
   "extends": "../../tsconfig.build.json",
   "include": [
-    "./src/**/*"
+    "./react/**/*"
   ],
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./react",
     "skipLibCheck": true
   }
 }

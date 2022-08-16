@@ -3,7 +3,7 @@ import { RawObject } from "mingo/types";
 
 import { DocumentNotFoundError, PullUpdateArrayError } from "../Errors";
 import { Storage } from "../Storage";
-import type { Document, UpdateActions } from "../Types";
+import type { Document, UpdateOperations } from "../Types";
 import { Update } from "../Types";
 import { clone } from "./Utils/Clone";
 import * as dot from "./Utils/Dot";
@@ -40,7 +40,7 @@ export function update(storage: Storage, operation: Update): UpdateOneResult | U
  |--------------------------------------------------------------------------------
  */
 
-function runActions(criteria: RawObject, { $set, $unset, $push, $pull }: UpdateActions, document: Document) {
+function runActions(criteria: RawObject, { $set, $unset, $push, $pull }: UpdateOperations, document: Document) {
   const updatedDocument = clone(document);
 
   const setModified = runSet(updatedDocument, criteria, $set);
@@ -71,7 +71,7 @@ function runActions(criteria: RawObject, { $set, $unset, $push, $pull }: UpdateA
  * @param criteria - Search criteria provided with the operation. Eg. updateOne({ id: "1" })
  * @param $set     - $set action being executed.
  */
-function runSet(document: Document, criteria: RawObject, $set: UpdateActions["$set"] = {}): boolean {
+function runSet(document: Document, criteria: RawObject, $set: UpdateOperations["$set"] = {}): boolean {
   let modified = false;
   for (const key in $set) {
     if (key.includes("$")) {
@@ -212,7 +212,7 @@ function getPositionalUpdateQuery(items: any[], $set: any, key: string, filter: 
  |--------------------------------------------------------------------------------
  */
 
-function runUnset(document: Document, $unset: UpdateActions["$unset"] = {}): boolean {
+function runUnset(document: Document, $unset: UpdateOperations["$unset"] = {}): boolean {
   let modified = false;
   for (const key in $unset) {
     if (dot.deleteProperty(document, key)) {
@@ -228,7 +228,7 @@ function runUnset(document: Document, $unset: UpdateActions["$unset"] = {}): boo
  |--------------------------------------------------------------------------------
  */
 
-function runPush(document: Document, $push: UpdateActions["$push"] = {}): boolean {
+function runPush(document: Document, $push: UpdateOperations["$push"] = {}): boolean {
   let modified = false;
   for (const key in $push) {
     const values = getPushValues(document, key);
@@ -297,7 +297,7 @@ function getPushFromModifiers(obj: any, values: any[]): any[] {
  |--------------------------------------------------------------------------------
  */
 
-function runPull(document: any, $pull: UpdateActions["$pull"] = {}): boolean {
+function runPull(document: any, $pull: UpdateOperations["$pull"] = {}): boolean {
   let modified = false;
   for (const key in $pull) {
     const values = getPullValues(document, key);

@@ -54,7 +54,7 @@ describe("Model", () => {
     it("should successfully delete document", async () => {
       await User.insertOne(users[0]);
       expect(User.$collection.storage.documents.get(users[0].id)).toEqual(users[0]);
-      await User.delete("user-1");
+      await User.remove({ id: "user-1" });
       expect(User.$collection.storage.documents.get("user-1")).toBeUndefined();
     });
   });

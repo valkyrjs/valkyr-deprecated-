@@ -3,7 +3,9 @@ import { Observable, Subscription } from "rxjs";
 
 import type { Collection, Options } from "./Collection";
 import { observe, observeOne } from "./Observe";
-import { Document, DocumentNotFoundError, PartialDocument, UpdateActions } from "./Storage";
+import { Document, DocumentNotFoundError, PartialDocument, RemoveOptions, UpdateOperations } from "./Storage";
+import { RemoveResult } from "./Storage/Operations/Remove";
+import { UpdateResult } from "./Storage/Operations/Update";
 
 export abstract class Model<D extends Document = any> {
   static _collection: Collection;
@@ -64,41 +66,49 @@ export abstract class Model<D extends Document = any> {
   static async updateOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
-    actions: UpdateActions
-  ): Promise<void> {
-    const result = await this.$collection.updateOne(criteria, actions);
+    update: UpdateOperations
+  ): Promise<UpdateResult> {
+    const result = await this.$collection.updateOne(criteria, update);
     if (result.acknowledged === false) {
       throw result.exceptions[0];
     }
+    return result;
   }
 
   static async updateMany<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
-    actions: UpdateActions
-  ): Promise<void> {
-    const result = await this.$collection.updateMany(criteria, actions);
+    update: UpdateOperations
+  ): Promise<UpdateResult> {
+    const result = await this.$collection.updateMany(criteria, update);
     if (result.acknowledged === false) {
       throw result.exceptions;
     }
+    return result;
   }
 
   static async replaceOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
     document: D
-  ): Promise<void> {
+  ): Promise<UpdateResult> {
     const result = await this.$collection.replaceOne(criteria, document);
     if (result.acknowledged === false) {
       throw result.exceptions[0];
     }
+    return result;
   }
 
-  static async delete<D extends Document, T extends Model<D>>(this: ModelContext<T, D>, id: string): Promise<void> {
-    const result = await this.$collection.delete(id);
+  static async remove<D extends Document, T extends Model<D>>(
+    this: ModelContext<T, D>,
+    criteria: RawObject,
+    options?: RemoveOptions
+  ): Promise<RemoveResult> {
+    const result = await this.$collection.remove(criteria, options);
     if (result.acknowledged === false) {
       throw result.exceptions[0];
     }
+    return result;
   }
 
   /*
@@ -192,8 +202,8 @@ export abstract class Model<D extends Document = any> {
     return new this(document as D).onInit();
   }
 
-  static async count(criteria: RawObject = {}, options?: Options): Promise<number> {
-    return this.$collection.count(criteria, options);
+  static async count(criteria: RawObject = {}): Promise<number> {
+    return this.$collection.count(criteria);
   }
 
   /*
@@ -212,8 +222,8 @@ export abstract class Model<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  async update(actions: UpdateActions): Promise<this> {
-    const result = await this.$collection.updateOne({ id: this.id }, actions);
+  async update(update: UpdateOperations): Promise<this> {
+    const result = await this.$collection.updateOne({ id: this.id }, update);
     if (result.acknowledged === false) {
       throw result.exceptions[0];
     }
@@ -241,10 +251,10 @@ type ModelContext<T = unknown, D = unknown> = {
 type ModelMethods<T = unknown, D = unknown> = {
   insertOne(document: D): Promise<T>;
   insertMany(documents: D[]): Promise<T[]>;
-  updateOne(criteria: RawObject, actions: UpdateActions): Promise<void>;
-  updateMany(criteria: RawObject, actions: UpdateActions): Promise<void>;
+  updateOne(criteria: RawObject, update: UpdateOperations): Promise<void>;
+  updateMany(criteria: RawObject, update: UpdateOperations): Promise<void>;
   replaceOne(criteria: RawObject, document: D): Promise<void>;
-  delete(id: string): Promise<void>;
+  remove(criteria: RawObject, options?: RemoveOptions): Promise<void>;
 
   subscribe<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
