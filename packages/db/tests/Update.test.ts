@@ -253,6 +253,64 @@ describe("Field Update Operators", () => {
  */
 describe("Array Update Operators", () => {
   describe("$(update)", () => {
+    it("should replace a object in an array", async () => {
+      const collection = new Collection<Document & { grades: { id: string; value: number }[] }>(
+        "students",
+        new InstanceAdapter()
+      );
+
+      await collection.insertOne({
+        id: "1",
+        grades: [
+          {
+            id: "1",
+            value: 10
+          },
+          {
+            id: "2",
+            value: 10
+          }
+        ]
+      });
+
+      expect(
+        await collection.updateOne(
+          {
+            id: "1",
+            "grades.id": "1"
+          },
+          {
+            $set: {
+              "grades.$": {
+                id: "1",
+                value: 15
+              }
+            }
+          }
+        )
+      ).toEqual({
+        matchedCount: 1,
+        modifiedCount: 1,
+        exceptions: []
+      });
+
+      expect(await collection.find()).toEqual([
+        {
+          id: "1",
+          grades: [
+            {
+              id: "1",
+              value: 15
+            },
+            {
+              id: "2",
+              value: 10
+            }
+          ]
+        }
+      ]);
+    });
+
     /**
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/positional/#update-values-in-an-array
      */

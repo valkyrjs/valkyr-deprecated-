@@ -197,11 +197,17 @@ function getPositionalUpdate(items: any[], $set: any, key: string, filter: strin
 }
 
 function getPositionalUpdateQuery(items: any[], $set: any, key: string, filter: RawObject, target: string): any[] {
+  let index = 0;
   for (const item of items) {
     if (new Query(filter).test(item) === true) {
-      dot.setProperty(item, target, $set[key]);
+      if (target === "") {
+        items[index] = $set[key];
+      } else {
+        dot.setProperty(item, target, $set[key]);
+      }
       break;
     }
+    index += 1;
   }
   return items;
 }
