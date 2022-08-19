@@ -9,22 +9,17 @@ jobs:
     name: NPM
     runs-on: ubuntu-latest
     environment: NPM Release Publishing
-    strategy:
-      matrix:
-        node-version: [15]
-
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
 
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@10693b3829bf86eb2572aef5f3571dcf5ca9287d
         with:
           version: 7
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "pnpm"
+          node-version: 16
+          cache: pnpm
 
       - uses: actions/github-script@e3cbab99d3a9b271e1b79fc96d103a4a5534998c
         id: version
@@ -37,9 +32,8 @@ jobs:
             throw new Error('not semver')
           result-encoding: string
 
-      - name: Install & Build
-        run: pnpm install
-        run: pnpm build
+      - run: pnpm install
+      - run: pnpm build
 
       - name: Version
         run: |
