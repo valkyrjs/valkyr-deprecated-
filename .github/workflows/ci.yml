@@ -29,9 +29,8 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-
-      - run: pnpm install
-      - run: pnpm lint
+        run: pnpm install
+        run: pnpm lint
 
       - uses: paambaati/codeclimate-action@v3.0.0
         env:

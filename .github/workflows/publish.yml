@@ -37,8 +37,9 @@ jobs:
             throw new Error('not semver')
           result-encoding: string
 
-      - run: pnpm install
-      - run: pnpm build
+      - name: Install & Build
+        run: pnpm install
+        run: pnpm build
 
       - name: Version
         run: |
