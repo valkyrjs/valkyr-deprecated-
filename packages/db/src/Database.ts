@@ -21,8 +21,12 @@ import { Adapter } from "./Storage";
  * @param models  - List of models.
  * @param adapter - Adapter to create collections under.
  */
-export function register(models: ModelClass[], adapter: Adapter): void {
+function register(models: ModelClass[], adapter: Adapter): void {
   for (const model of models) {
     model.$collection = new Collection(model.name, adapter);
   }
 }
+
+export const database = {
+  register
+};

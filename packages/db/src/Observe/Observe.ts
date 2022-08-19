@@ -5,6 +5,8 @@ import { Document } from "../Storage";
 import { Store } from "./Store";
 import { Criteria } from "./Utils";
 
+let debounce: NodeJS.Timeout;
+
 export function observe(
   collection: Collection,
   criteria: Criteria,
@@ -22,15 +24,18 @@ export function observe(
   return {
     unsubscribe: collection.storage.onChange(async (type, document) => {
       const hasChanged = await store[type](document, criteria);
-      if (hasChanged) {
-        onChange(toQueriedData(store.data, options));
+      if (hasChanged === true) {
+        clearTimeout(debounce);
+        debounce = setTimeout(() => {
+          onChange(toQueriedData(store.data, options));
+        }, 0);
       }
     })
   };
 }
 
 function toQueriedData(documents: Document[], options?: Options): Document[] {
-  if (options) {
+  if (options !== undefined) {
     return addOptions(new Query({}).find(documents), options).all() as Document[];
   }
   return documents;
