@@ -33,8 +33,6 @@ jobs:
       - run: pnpm install
       - run: pnpm lint
 
-      - name: Run Tests
-
       - uses: paambaati/codeclimate-action@v3.0.0
         env:
           CC_TEST_REPORTER_ID: be11bd542160eb66e90ab4e55f54b3064ecc89375880342b4407885b6af8df39
