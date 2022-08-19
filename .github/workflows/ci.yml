@@ -9,16 +9,32 @@ on:
 jobs:
   coverage:
     name: Tests & Code Coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        node-version: [15]
+
     steps:
-      - uses: actions/checkout@master
-      - uses: actions/setup-node@master
+      - uses: actions/checkout@v2
+
+      - uses: pnpm/action-setup@v2.2.2
         with:
-          node-version: "16"
-      - run: npm install
-      - run: npm run lint
+          version: 7
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+
+      - run: pnpm install
+      - run: pnpm lint
+
       - uses: paambaati/codeclimate-action@v3.0.0
         env:
           CC_TEST_REPORTER_ID: be11bd542160eb66e90ab4e55f54b3064ecc89375880342b4407885b6af8df39
         with:
-          coverageCommand: npm run coverage
+          coverageCommand: pnpm coverage

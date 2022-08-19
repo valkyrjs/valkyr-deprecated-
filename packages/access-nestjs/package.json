@@ -13,13 +13,17 @@
     "build": "tsc -b ./tsconfig.build.json"
   },
   "dependencies": {
+    "@nestjs/core": "^9.0.11",
     "@nestjs/common": "^9.0.8",
     "@nestjs/mongoose": "^9.2.0",
-    "@valkyr/access": "*"
+    "@valkyr/access": "workspace:*",
+    "mongoose": "^6.5.2",
+    "rxjs": "^7.5.6"
   },
   "devDependencies": {
     "@nestjs/platform-express": "^9.0.8",
     "@nestjs/testing": "^9.0.8",
-    "@valkyr/testing": "*"
+    "@valkyr/testing": "workspace:*",
+    "reflect-metadata": "^0.1.13"
   }
 }

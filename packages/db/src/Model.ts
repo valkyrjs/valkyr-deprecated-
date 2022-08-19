@@ -251,10 +251,10 @@ type ModelContext<T = unknown, D = unknown> = {
 type ModelMethods<T = unknown, D = unknown> = {
   insertOne(document: D): Promise<T>;
   insertMany(documents: D[]): Promise<T[]>;
-  updateOne(criteria: RawObject, update: UpdateOperations): Promise<void>;
-  updateMany(criteria: RawObject, update: UpdateOperations): Promise<void>;
-  replaceOne(criteria: RawObject, document: D): Promise<void>;
-  remove(criteria: RawObject, options?: RemoveOptions): Promise<void>;
+  updateOne(criteria: RawObject, update: UpdateOperations): Promise<UpdateResult>;
+  updateMany(criteria: RawObject, update: UpdateOperations): Promise<UpdateResult>;
+  replaceOne(criteria: RawObject, document: D): Promise<UpdateResult>;
+  remove(criteria: RawObject, options?: RemoveOptions): Promise<RemoveResult>;
 
   subscribe<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,

@@ -12,13 +12,13 @@ export function observeOne(
     switch (type) {
       case "insert":
       case "update": {
-        if (isMatch(document, criteria)) {
+        if (isMatch(document, criteria) === true) {
           onChange(document);
         }
         break;
       }
       case "delete": {
-        if (isMatch(document, criteria)) {
+        if (isMatch(document, criteria) === true) {
           onChange(undefined);
         }
         break;
