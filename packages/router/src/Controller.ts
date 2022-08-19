@@ -39,7 +39,6 @@ export abstract class Controller<State extends RawState = RawState> {
    */
 
   async init(): Promise<this> {
-    console.log("Init", this.constructor.name);
     await this.resolve();
     return this;
   }
@@ -48,7 +47,6 @@ export abstract class Controller<State extends RawState = RawState> {
    * Loop through all registered subscriptions and unsubscribe.
    */
   async destroy(): Promise<this> {
-    console.log("Destroy", this.constructor.name);
     for (const subscription of this.#subscriptions) {
       subscription.unsubscribe();
     }
