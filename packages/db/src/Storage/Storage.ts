@@ -187,7 +187,6 @@ export class Storage<D extends Document = any> extends EventEmitter<{
       operation.resolve(this.resolve(operation as any));
       this.save();
     } catch (error: any) {
-      console.log("FAILED", error);
       operation.reject(error);
     }
 

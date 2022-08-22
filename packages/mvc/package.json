@@ -1,7 +1,7 @@
 {
-  "name": "@valkyr/security",
+  "name": "@valkyr/mvc",
   "version": "0.0.0",
-  "description": "Collection of cryptographic and hashing utilities for security functions",
+  "description": "A small model view controller implementation for web frameworks.",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
@@ -10,18 +10,16 @@
     "dist"
   ],
   "keywords": [
-    "identity",
-    "idp"
+    "mvc",
+    "model-view-controller",
+    "react"
   ],
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json"
   },
-  "dependencies": {
-    "crypto-js": "^4.1.1",
-    "jose": "^4.8.3",
-    "nanoid": "^3.3.4"
-  },
   "devDependencies": {
-    "@types/crypto-js": "^4.1.1"
+    "@types/react": "^18.0.17",
+    "react": "^18.2.0",
+    "rxjs": "^7.5.6"
   }
 }

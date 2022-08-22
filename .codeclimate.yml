@@ -11,7 +11,7 @@ checks:
 
 exclude_patterns:
   - "dist/"
-  - "playground/"
+  - "sandbox/"
   - "**/node_modules/"
   - "**/tests/"
   - "**/*.test.ts"

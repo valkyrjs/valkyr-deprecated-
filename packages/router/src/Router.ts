@@ -12,6 +12,7 @@ import { ValueStore } from "./ValueStore";
 
 export class Router<Component = any> extends EventEmitter<{
   progress: (percent: number) => void;
+  routed: (next: { params: ValueStore; query: Query; state: State }) => void;
 }> {
   base: string;
   history: BrowserHistory | HashHistory | MemoryHistory;
@@ -162,6 +163,7 @@ export class Router<Component = any> extends EventEmitter<{
       query: request.query,
       state: request.state
     };
+    this.emit("routed", this.#current);
     return this;
   }
 
