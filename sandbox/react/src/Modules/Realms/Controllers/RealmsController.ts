@@ -5,12 +5,10 @@ import { Realm } from "../Models/Realm";
 
 type State = {
   realms: Realm[];
-  foo: {
-    bar: {
-      value: string;
-    };
-    test: number;
-  };
+};
+
+type Props = {
+  name: string;
 };
 
 type Filter = {
@@ -21,17 +19,12 @@ type Filter = {
       };
 };
 
-export class RealmsController extends Controller<State> {
+export class RealmsController extends Controller<State, Props> {
   static readonly state: State = {
-    realms: [],
-    foo: {
-      bar: {
-        value: "foobar"
-      },
-      test: 1
-    }
+    realms: []
   };
 
+  #name: string;
   #filter: Filter = {};
   #sort: -1 | 1 = 1;
 
@@ -65,7 +58,12 @@ export class RealmsController extends Controller<State> {
    |--------------------------------------------------------------------------------
    */
 
-  async resolve() {
+  async resolve({ name }: Props = { name: this.#name }) {
+    this.#name = name; // set name provided through external properties
+
+    // ### Subscribe
+    // Subscribe to realms through the @valkyr/db subscription method.
+
     this.subscriptions.realms?.unsubscribe();
     this.subscriptions.realms = Realm.subscribe(
       this.#filter,

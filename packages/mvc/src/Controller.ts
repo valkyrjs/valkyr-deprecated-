@@ -2,8 +2,8 @@ import type { Subscription } from "rxjs";
 
 import { Debounce } from "./Debounce";
 
-export abstract class Controller<State extends RawState = RawState> {
-  static readonly state: RawState = {};
+export abstract class Controller<State extends {} = {}, Props extends {} = {}> {
+  static readonly state = {};
 
   /**
    * Records of rxjs subscriptions. They are keyed to a subscription name for
@@ -54,7 +54,7 @@ export abstract class Controller<State extends RawState = RawState> {
    * Triggered by the view controller instance when the view is mounted. This allows
    * the controller to perform data assignment tasks before rendering the view.
    */
-  abstract resolve(): Promise<void>;
+  abstract resolve(props: Props): Promise<void>;
 
   /**
    * Loop through all registered subscriptions and executes the unsubscribe
@@ -124,5 +124,3 @@ export abstract class Controller<State extends RawState = RawState> {
     return actions;
   }
 }
-
-type RawState = Record<string, unknown>;
