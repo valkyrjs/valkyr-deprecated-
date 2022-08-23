@@ -3,13 +3,7 @@ import { Fragment } from "react";
 
 import { view } from "../Controllers/RealmsController";
 
-export const RealmsView = view.component(({ controller, realms, loading, error }) => {
-  if (loading === true) {
-    return <div>Loading bro</div>;
-  }
-  if (error !== undefined) {
-    return <div>{error.message}</div>;
-  }
+export const RealmsView = view.component(({ controller, realms }) => {
   return (
     <div>
       <button

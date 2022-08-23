@@ -15,7 +15,7 @@ import { setup } from "./Setup";
 export function App(): ReactElement {
   const view = useRouter(setup, handleError);
   if (view === undefined) {
-    return <Fragment>Loading</Fragment>;
+    return <Fragment>Resolving Application</Fragment>;
   }
   return <Fragment>{view}</Fragment>;
 }

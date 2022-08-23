@@ -7,13 +7,36 @@ import { ControllerClass, ViewController } from "./ViewController";
  * components and provides managed state from the applied controller.
  */
 export class ReactViewController<Controller extends ControllerClass> extends ViewController<Controller> {
+  static #render: RenderComponents<any> = {
+    loading() {
+      return <div>Loading</div>;
+    },
+    error({ error }) {
+      return <div>{error.message}</div>;
+    }
+  };
+
+  static set loading(component: React.FC) {
+    this.#render.loading = component;
+  }
+
+  static set error(component: React.FC) {
+    this.#render.error = component;
+  }
+
   /**
    * Register a function react component to be controller by the controller
    * registered on the instance.
    *
    * @param component - Functional react component.
    */
-  component<Props extends {}>(component: ReactComponent<Props, Controller>) {
+  component<Props extends {}>(
+    component: ReactComponent<Props, Controller>,
+    render: Partial<RenderComponents<Props>> = {
+      loading: ReactViewController.#render.loading,
+      error: ReactViewController.#render.error
+    }
+  ) {
     const wrapper: React.FC<Props> = (props) => {
       const [controller, setController] = useState<InstanceType<Controller>>();
       const [state, setState] = useState(this.controller.state);
@@ -46,6 +69,14 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
         };
       }, []);
 
+      if (loading === true && render.loading !== undefined) {
+        return render.loading(props);
+      }
+
+      if (error !== undefined && render.error !== undefined) {
+        return render.error({ ...props, error });
+      }
+
       return component({ ...props, ...state, controller, loading, error });
     };
     return wrapper;
@@ -66,3 +97,8 @@ type ReactComponent<Props extends {}, Controller extends ControllerClass> = Reac
       error: Error | undefined;
     }
 >;
+
+type RenderComponents<Props> = {
+  loading: React.FC<Props>;
+  error: React.FC<Props & { error: Error }>;
+};
