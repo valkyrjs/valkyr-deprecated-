@@ -30,15 +30,15 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
    *
    * @param component - Functional react component.
    */
-  component<Props extends {}>(
+  view<Props extends {}>(
     component: ReactComponent<Props, Controller>,
-    render: Partial<RenderComponents<Props>> = {
+    render: RenderComponents<Props> = {
       loading: ReactViewController.#render.loading,
       error: ReactViewController.#render.error
     }
   ) {
     const wrapper: React.FC<Props> = (props) => {
-      const [controller, setController] = useState<InstanceType<Controller>>();
+      const [actions, setActions] = useState<any | undefined>();
       const [state, setState] = useState(this.controller.state);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState<Error | undefined>();
@@ -48,10 +48,8 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
 
         const controller = this.controller.make(setState);
 
-        setController(controller);
-
         controller
-          .init()
+          .resolve()
           .catch((error: Error) => {
             if (isMounted === true) {
               setError(error);
@@ -59,6 +57,7 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
           })
           .finally(() => {
             if (isMounted === true) {
+              setActions(controller.toActions());
               setLoading(false);
             }
           });
@@ -69,15 +68,15 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
         };
       }, []);
 
-      if (loading === true && render.loading !== undefined) {
+      if (actions === undefined || loading === true) {
         return render.loading(props);
       }
 
-      if (error !== undefined && render.error !== undefined) {
+      if (error !== undefined) {
         return render.error({ ...props, error });
       }
 
-      return component({ ...props, ...state, controller, loading, error });
+      return component({ props, state, actions });
     };
     return wrapper;
   }
@@ -89,16 +88,15 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
  |--------------------------------------------------------------------------------
  */
 
-type ReactComponent<Props extends {}, Controller extends ControllerClass> = React.FC<
-  Props &
-    InstanceType<Controller>["state"] & {
-      controller: InstanceType<Controller>;
-      loading: boolean;
-      error: Error | undefined;
-    }
->;
+type ReactComponent<Props extends {}, Controller extends ControllerClass> = React.FC<{
+  props: Props;
+  state: InstanceType<Controller>["state"];
+  actions: Omit<InstanceType<Controller>, ReservedPropertyMembers>;
+}>;
 
 type RenderComponents<Props> = {
   loading: React.FC<Props>;
   error: React.FC<Props & { error: Error }>;
 };
+
+type ReservedPropertyMembers = "state" | "pushState" | "init" | "destroy" | "setNext" | "setState" | "toActions";

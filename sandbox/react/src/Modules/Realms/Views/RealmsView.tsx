@@ -1,73 +1,56 @@
 import { router } from "@App/Services/Router";
 import { Fragment } from "react";
 
-import { view } from "../Controllers/RealmsController";
+import { controller } from "../Controllers/RealmsController";
 
-export const RealmsView = view.component(({ controller, realms }) => {
-  return (
-    <div>
-      <button
-        onClick={() => {
-          controller.addRealm();
-        }}
-      >
-        Add Realm
-      </button>
-      {[10, 50, 100].map((amount) => {
-        return (
-          <button
-            onClick={() => {
-              controller.addRealm(amount);
-            }}
-          >
-            Add {amount} Realms
-          </button>
-        );
-      })}
-      <button
-        onClick={() => {
-          controller.toggle();
-        }}
-      >
-        Toggle Sort Direction
-      </button>
-      <button
-        onClick={() => {
-          controller.clearRealms();
-        }}
-      >
-        Clear
-      </button>
+export const RealmsView = controller.view(
+  ({ actions: { addRealm, toggle, clearRealms, filter, deleteRealm }, state: { realms } }) => {
+    return (
       <div>
-        <input
-          placeholder="Filter by name"
-          onChange={({ target }) => {
-            controller.filter(target.value);
-          }}
-        />
-      </div>
-      {realms.map((realm) => {
-        return (
-          <Fragment key={realm.id}>
-            <pre>{JSON.stringify(realm, null, 2)}</pre>
+        {[1, 10, 50, 100].map((amount) => {
+          return (
+            <button
+              onClick={() => {
+                addRealm(amount);
+              }}
+            >
+              Add {amount} Realm{amount > 1 ? "s" : ""}
+            </button>
+          );
+        })}
+        <button onClick={toggle}>Toggle Sort Direction</button>
+        <button onClick={clearRealms}>Clear</button>
+        <div>
+          <input
+            placeholder="Filter by name"
+            onChange={({ target }) => {
+              filter(target.value);
+            }}
+          />
+        </div>
+        {realms.map((realm) => {
+          return (
+            <Fragment key={realm.id}>
+              <pre>{JSON.stringify(realm, null, 2)}</pre>
 
-            <button
-              onClick={() => {
-                controller.deleteRealm(realm.id);
-              }}
-            >
-              Delete
-            </button>
-            <button
-              onClick={() => {
-                router.goTo(realm.id);
-              }}
-            >
-              Go
-            </button>
-          </Fragment>
-        );
-      })}
-    </div>
-  );
-});
+              <button
+                onClick={() => {
+                  deleteRealm(realm.id);
+                }}
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => {
+                  router.goTo(realm.id);
+                }}
+              >
+                Go
+              </button>
+            </Fragment>
+          );
+        })}
+      </div>
+    );
+  }
+);

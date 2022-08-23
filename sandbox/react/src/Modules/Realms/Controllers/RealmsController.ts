@@ -5,6 +5,12 @@ import { Realm } from "../Models/Realm";
 
 type State = {
   realms: Realm[];
+  foo: {
+    bar: {
+      value: string;
+    };
+    test: number;
+  };
 };
 
 type Filter = {
@@ -16,8 +22,14 @@ type Filter = {
 };
 
 export class RealmsController extends Controller<State> {
-  static state: State = {
-    realms: []
+  static readonly state: State = {
+    realms: [],
+    foo: {
+      bar: {
+        value: "foobar"
+      },
+      test: 1
+    }
   };
 
   #filter: Filter = {};
@@ -106,4 +118,4 @@ export class RealmsController extends Controller<State> {
   }
 }
 
-export const view = new ReactViewController(RealmsController);
+export const controller = new ReactViewController(RealmsController);

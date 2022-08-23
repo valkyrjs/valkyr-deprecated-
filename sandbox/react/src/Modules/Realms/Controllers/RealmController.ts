@@ -11,4 +11,4 @@ export class RealmController extends Controller<{
   }
 }
 
-export const view = new ReactViewController(RealmController);
+export const controller = new ReactViewController(RealmController);
