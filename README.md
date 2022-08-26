@@ -11,12 +11,20 @@
 
 Valkyr SDK. A collection of TypeScript + JavaScript tools and libraries to build full stack software applications.
 
+### Pre-Requisites
+
+This project uses PNPM to manage dependencies.
+
+```shell
+$ npm i -g pnpm
+```
+
 ### Setup
 
 Install and build dependencies across all project folders:
 
 ```sh
-$ npm install
+$ pnpm install
 ```
 
 ### Testing
@@ -24,5 +32,5 @@ $ npm install
 We use jest for testing, just run the following command from root:
 
 ```ts
-$ npm test
+$ pnpm test
 ```

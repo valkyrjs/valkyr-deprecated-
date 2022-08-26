@@ -1,5 +1,5 @@
 import { getUserCollection, users } from "../mocks";
-import { RemoveOneResult, RemoveResult } from "../src/Storage/Operations/Remove";
+import { RemoveOneResult, RemoveResult } from "../src/Storage/Operators/Remove";
 
 /*
  |--------------------------------------------------------------------------------

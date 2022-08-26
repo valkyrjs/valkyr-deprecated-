@@ -1,6 +1,6 @@
 import { Collection } from "../Collection";
 import type { Document } from "../Storage";
-import { Criteria, isMatch } from "./Utils";
+import { Criteria, isMatch } from "./IsMatch";
 
 export function observeOne(
   collection: Collection,
@@ -17,7 +17,7 @@ export function observeOne(
         }
         break;
       }
-      case "delete": {
+      case "remove": {
         if (isMatch(document, criteria) === true) {
           onChange(undefined);
         }

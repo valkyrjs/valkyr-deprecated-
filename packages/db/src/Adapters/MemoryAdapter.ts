@@ -1,4 +1,5 @@
-import type { Adapter, Document } from "../Storage/Types";
+import type { Document } from "../Storage";
+import type { Adapter } from "./Adapter";
 
 const cache = new Map<string, any[]>();
 

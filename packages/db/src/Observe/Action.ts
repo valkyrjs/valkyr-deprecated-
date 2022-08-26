@@ -8,6 +8,6 @@ export type Action<T = unknown> =
       instance: T;
     }
   | {
-      type: "delete";
+      type: "remove";
       instance: T;
     };

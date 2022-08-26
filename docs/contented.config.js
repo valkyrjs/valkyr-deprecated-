@@ -11,29 +11,6 @@ module.exports = {
     rootDir: '../',
     pipelines: [
       {
-        type: 'Docs',
-        pattern: ['./README.md', './docs/**/*.md'],
-        processor: 'md',
-        fields: {
-          title: {
-            type: 'string',
-          },
-        },
-        transform: (file) => {
-          if (file.path === '/readme') {
-            file.path = '/';
-            file.sections = [];
-          } else {
-            file.path = file.path.replaceAll(/^\/docs\/?/g, '/');
-            file.sections = file.sections.slice(1);
-          }
-          return file;
-        },
-        sort: (a) => {
-          return a.path === '/' ? -1 : 0;
-        },
-      },
-      {
         type: 'Packages',
         pattern: ['packages/**/docs/**/*.md'],
         processor: 'md',

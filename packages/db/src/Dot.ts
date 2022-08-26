@@ -493,3 +493,16 @@ function* deepKeysIterator(object: unknown, currentPath: any[] = []): any {
     yield* deepKeysIterator(value, [...currentPath, key]);
   }
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Exports
+ |--------------------------------------------------------------------------------
+ */
+
+export const dot = {
+  hasProperty,
+  getProperty,
+  setProperty,
+  deleteProperty
+};

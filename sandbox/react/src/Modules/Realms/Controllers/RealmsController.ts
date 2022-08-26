@@ -3,22 +3,6 @@ import { Controller, ReactViewController } from "@valkyr/mvc";
 
 import { Realm } from "../Models/Realm";
 
-type State = {
-  realms: Realm[];
-};
-
-type Props = {
-  name: string;
-};
-
-type Filter = {
-  name?:
-    | string
-    | {
-        $regex: RegExp;
-      };
-};
-
 export class RealmsController extends Controller<State, Props> {
   static readonly state: State = {
     realms: []
@@ -44,12 +28,12 @@ export class RealmsController extends Controller<State, Props> {
         }
       };
     }
-    this.resolve();
+    this.subscribeToRealms();
   }
 
   async toggle() {
     this.#sort = this.#sort === 1 ? -1 : 1;
-    this.resolve();
+    this.subscribeToRealms();
   }
 
   /*
@@ -60,10 +44,10 @@ export class RealmsController extends Controller<State, Props> {
 
   async resolve({ name }: Props = { name: this.#name }) {
     this.#name = name; // set name provided through external properties
+    await this.subscribeToRealms();
+  }
 
-    // ### Subscribe
-    // Subscribe to realms through the @valkyr/db subscription method.
-
+  async subscribeToRealms() {
     this.subscriptions.realms?.unsubscribe();
     this.subscriptions.realms = Realm.subscribe(
       this.#filter,
@@ -117,3 +101,19 @@ export class RealmsController extends Controller<State, Props> {
 }
 
 export const controller = new ReactViewController(RealmsController);
+
+type State = {
+  realms: Realm[];
+};
+
+type Props = {
+  name: string;
+};
+
+type Filter = {
+  name?:
+    | string
+    | {
+        $regex: RegExp;
+      };
+};

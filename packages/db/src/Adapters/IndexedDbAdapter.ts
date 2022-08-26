@@ -1,8 +1,9 @@
 import { del, get, set } from "idb-keyval";
 
-import type { Adapter, Document } from "../Storage/Types";
+import type { Document } from "../Storage";
+import type { Adapter } from "./Adapter";
 
-export class IndexedDbAdapter<D extends Document = any> implements Adapter<D> {
+export class IndexedDbAdapter<D extends Document = Document> implements Adapter<D> {
   readonly type = "IndexedDbAdapter";
 
   async set(name: string, documents: D[]) {

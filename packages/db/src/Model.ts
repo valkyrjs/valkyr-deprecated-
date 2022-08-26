@@ -3,9 +3,9 @@ import { Observable, Subscription } from "rxjs";
 
 import type { Collection, Options } from "./Collection";
 import { observe, observeOne } from "./Observe";
-import { Document, DocumentNotFoundError, PartialDocument, RemoveOptions, UpdateOperations } from "./Storage";
-import { RemoveResult } from "./Storage/Operations/Remove";
-import { UpdateResult } from "./Storage/Operations/Update";
+import { Document, DocumentNotFoundError, PartialDocument, Update } from "./Storage";
+import { RemoveResult } from "./Storage/Operators/Remove";
+import { UpdateResult } from "./Storage/Operators/Update";
 
 export abstract class Model<D extends Document = any> {
   static _collection: Collection;
@@ -66,7 +66,7 @@ export abstract class Model<D extends Document = any> {
   static async updateOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
-    update: UpdateOperations
+    update: Update["operators"]
   ): Promise<UpdateResult> {
     const result = await this.$collection.updateOne(criteria, update);
     if (result.acknowledged === false) {
@@ -78,7 +78,7 @@ export abstract class Model<D extends Document = any> {
   static async updateMany<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
-    update: UpdateOperations
+    update: Update["operators"]
   ): Promise<UpdateResult> {
     const result = await this.$collection.updateMany(criteria, update);
     if (result.acknowledged === false) {
@@ -102,7 +102,7 @@ export abstract class Model<D extends Document = any> {
   static async remove<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
-    options?: RemoveOptions
+    options?: { justOne: boolean }
   ): Promise<RemoveResult> {
     const result = await this.$collection.remove(criteria, options);
     if (result.acknowledged === false) {
@@ -222,7 +222,7 @@ export abstract class Model<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  async update(update: UpdateOperations): Promise<this> {
+  async update(update: Update["operators"]): Promise<this> {
     const result = await this.$collection.updateOne({ id: this.id }, update);
     if (result.acknowledged === false) {
       throw result.exceptions[0];
@@ -251,10 +251,10 @@ type ModelContext<T = unknown, D = unknown> = {
 type ModelMethods<T = unknown, D = unknown> = {
   insertOne(document: D): Promise<T>;
   insertMany(documents: D[]): Promise<T[]>;
-  updateOne(criteria: RawObject, update: UpdateOperations): Promise<UpdateResult>;
-  updateMany(criteria: RawObject, update: UpdateOperations): Promise<UpdateResult>;
+  updateOne(criteria: RawObject, update: Update["operators"]): Promise<UpdateResult>;
+  updateMany(criteria: RawObject, update: Update["operators"]): Promise<UpdateResult>;
   replaceOne(criteria: RawObject, document: D): Promise<UpdateResult>;
-  remove(criteria: RawObject, options?: RemoveOptions): Promise<RemoveResult>;
+  remove(criteria: RawObject, options?: { justOne: boolean }): Promise<RemoveResult>;
 
   subscribe<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,

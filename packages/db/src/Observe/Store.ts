@@ -1,6 +1,6 @@
 import { InstanceAdapter } from "../Adapters";
 import { Document, Storage } from "../Storage";
-import { Criteria, isMatch } from "./Utils";
+import { Criteria, isMatch } from "./IsMatch";
 
 export type OnChangeFn = (documents: Document[]) => void;
 
@@ -43,9 +43,9 @@ export class Store {
     return false;
   }
 
-  async delete(document: Document, criteria: Criteria): Promise<boolean> {
-    if (isMatch(document, criteria)) {
-      await this.storage.delete(document.id);
+  async remove(document: Document): Promise<boolean> {
+    if (isMatch(document, { id: document.id })) {
+      await this.storage.remove(document.id);
       return true;
     }
     return false;
@@ -55,7 +55,7 @@ export class Store {
     if (isMatch(document, criteria)) {
       await this.storage.replace(document.id, document);
     } else {
-      await this.storage.delete(document.id);
+      await this.storage.remove(document.id);
     }
   }
 }

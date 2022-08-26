@@ -2,10 +2,8 @@ import { Query } from "mingo";
 
 import { addOptions, Collection, Options } from "../Collection";
 import { Document } from "../Storage";
+import { Criteria } from "./IsMatch";
 import { Store } from "./Store";
-import { Criteria } from "./Utils";
-
-let debounce: NodeJS.Timeout;
 
 export function observe(
   collection: Collection,
@@ -16,6 +14,8 @@ export function observe(
   unsubscribe: () => void;
 } {
   const store = Store.create("CollectionObserver");
+
+  let debounce: NodeJS.Timeout;
 
   collection.find(criteria, options).then(async (documents) => {
     onChange(await store.resolve(documents));

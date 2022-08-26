@@ -1,6 +1,6 @@
+import { Adapter } from "./Adapters";
 import { Collection } from "./Collection";
 import { ModelClass } from "./Model";
-import { Adapter } from "./Storage";
 
 /**
  * Assigns collections using the provided adapter to each model in

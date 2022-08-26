@@ -3,26 +3,13 @@ import { Logger } from "@valkyr/logger";
 import { getId } from "@valkyr/security";
 import { RawObject } from "mingo/types";
 
-import { InstanceAdapter } from "../Adapters";
-import { operations } from "./Operations";
-import { InsertException, InsertResult } from "./Operations/Insert";
-import { RemoveOneException, RemoveOneResult } from "./Operations/Remove";
-import { UpdateOneException, UpdateOneResult } from "./Operations/Update";
-import type {
-  Adapter,
-  ChangeType,
-  Delete,
-  Document,
-  Insert,
-  Operation,
-  PartialDocument,
-  Replace,
-  Status,
-  Update,
-  UpdateOperations
-} from "./Types";
+import { Adapter, InstanceAdapter } from "../Adapters";
+import { Insert, Operator, operators, Remove, Replace, Update } from "./Operators";
+import { InsertException, InsertResult } from "./Operators/Insert";
+import { RemoveOneException, RemoveOneResult } from "./Operators/Remove";
+import { UpdateOneException, UpdateOneResult } from "./Operators/Update";
 
-export class Storage<D extends Document = any> extends EventEmitter<{
+export class Storage<D extends Document = Document> extends EventEmitter<{
   loading: () => void;
   ready: () => void;
   working: () => void;
@@ -31,7 +18,7 @@ export class Storage<D extends Document = any> extends EventEmitter<{
   readonly id = getId(6);
 
   readonly documents = new Map<string, D>();
-  readonly operations: Operation<D>[] = [];
+  readonly operators: Operator<D>[] = [];
   readonly logger = new Logger("Storage");
   readonly debounce: {
     save?: ReturnType<typeof setTimeout>;
@@ -88,10 +75,7 @@ export class Storage<D extends Document = any> extends EventEmitter<{
    */
 
   onChange(cb: (type: ChangeType, document: D) => void): () => void {
-    this.addListener("change", cb);
-    return () => {
-      this.removeListener("change", cb);
-    };
+    return this.subscribe("change", cb);
   }
 
   /*
@@ -140,10 +124,10 @@ export class Storage<D extends Document = any> extends EventEmitter<{
   async update(
     id: string,
     criteria: RawObject,
-    actions: UpdateOperations
+    operators: Update["operators"]
   ): Promise<UpdateOneResult | UpdateOneException> {
     this.logger.debug(`${this.adapter.type} [${this.id}] Update`, id);
-    return this.run({ type: "update", id, criteria, actions } as Update);
+    return this.run({ type: "update", id, criteria, operators } as Update);
   }
 
   async replace(id: string, document: Document): Promise<UpdateOneResult | UpdateOneException> {
@@ -151,15 +135,15 @@ export class Storage<D extends Document = any> extends EventEmitter<{
     return this.run({ type: "replace", id, document } as Replace<D>);
   }
 
-  async delete(id: string): Promise<RemoveOneResult | RemoveOneException> {
-    this.logger.debug(`${this.adapter.type} [${this.id}] Delete`, id);
-    return this.run({ type: "delete", id } as Delete);
+  async remove(id: string): Promise<RemoveOneResult | RemoveOneException> {
+    this.logger.debug(`${this.adapter.type} [${this.id}] Remove`, id);
+    return this.run({ type: "remove", id } as Remove);
   }
 
-  async run(operation: Omit<Operation<D>, "resolve" | "reject">): Promise<any> {
+  async run(operation: Omit<Operator<D>, "resolve" | "reject">): Promise<any> {
     return new Promise((resolve, reject) => {
       this.load().then(() => {
-        this.operations.push({ ...operation, resolve, reject } as Operation<D>);
+        this.operators.push({ ...operation, resolve, reject } as Operator<D>);
         this.process();
       });
     });
@@ -178,7 +162,7 @@ export class Storage<D extends Document = any> extends EventEmitter<{
 
     this.#setStatus("working");
 
-    const operation = this.operations.shift();
+    const operation = this.operators.shift();
     if (!operation) {
       return this.#setStatus("ready");
     }
@@ -195,13 +179,31 @@ export class Storage<D extends Document = any> extends EventEmitter<{
     return this;
   }
 
-  resolve(operation: Insert<D>): InsertResult | InsertException;
+  resolve(operator: Insert<D>): InsertResult | InsertException;
   resolve(
-    operation: Operation<D>
+    operator: Operator<D>
   ): InsertResult | InsertException | UpdateOneResult | UpdateOneException | RemoveOneResult | RemoveOneException;
   resolve(
-    operation: Operation<D>
+    operator: Operator<D>
   ): InsertResult | InsertException | UpdateOneResult | UpdateOneException | RemoveOneResult | RemoveOneException {
-    return operations[operation.type](this, operation as any);
+    return operators[operator.type](this, operator as any);
   }
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type Document<Properties extends RawObject = RawObject> = {
+  id: string;
+} & Properties;
+
+export type PartialDocument<D extends Document> = Omit<D, "id"> & {
+  id?: string;
+};
+
+type Status = "loading" | "ready" | "working";
+
+type ChangeType = "insert" | "update" | "remove";

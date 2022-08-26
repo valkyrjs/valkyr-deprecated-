@@ -3,9 +3,11 @@ import { remove } from "./Remove";
 import { replace } from "./Replace";
 import { update } from "./Update";
 
-export const operations = {
+export type { Insert, Operator, Remove, Replace, Update } from "./Operators";
+
+export const operators = {
   insert,
   update,
   replace,
-  delete: remove
+  remove
 };

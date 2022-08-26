@@ -14,7 +14,7 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
     error({ error }) {
       return <div>{error.message}</div>;
     },
-    memoize: true
+    memoize: defaultMemoizeHandler
   };
 
   static set loading(component: React.FC) {
@@ -25,8 +25,14 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
     this.#options.error = component;
   }
 
-  static set memo(enable: boolean) {
-    this.#options.memoize = enable;
+  static set memo(value: boolean | Memoize<any>) {
+    if (typeof value === "function") {
+      this.#options.memoize = value;
+    } else if (value === false) {
+      this.#options.memoize = false;
+    } else {
+      this.#options.memoize = defaultMemoizeHandler;
+    }
   }
 
   /**
@@ -35,14 +41,11 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
    *
    * @param component - Functional react component.
    */
-  view<Props extends {}>(
-    component: ReactComponent<Props, Controller>,
-    options: ViewOptions<Props> = {
-      loading: ReactViewController.#options.loading,
-      error: ReactViewController.#options.error,
-      memoize: ReactViewController.#options.memoize
-    }
-  ) {
+  view<Props extends {}>(component: ReactComponent<Props, Controller>, options?: Partial<ViewOptions<Props>>) {
+    const renderLoading = options?.loading ?? ReactViewController.#options.loading;
+    const renderError = options?.error ?? ReactViewController.#options.error;
+    const memoize = this.#getMemoize(options?.memoize);
+
     const wrapper: React.FC<Props> = (props) => {
       const [controller, setController] = useState<InstanceType<Controller> | undefined>(undefined);
       const [actions, setActions] = useState<any | undefined>();
@@ -87,11 +90,11 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
       }, [controller, props]);
 
       if (actions === undefined || loading === true) {
-        return options.loading(props);
+        return renderLoading(props);
       }
 
       if (error !== undefined) {
-        return options.error({ ...props, error });
+        return renderError({ ...props, error });
       }
 
       return component({ props, state, actions });
@@ -101,14 +104,32 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
     // By default run component through react memoization using stringify
     // matching to determine changes to props.
 
-    if (options.memoize === true) {
-      return memo(wrapper, (prev, next) => {
-        return JSON.stringify(prev) === JSON.stringify(next);
-      });
+    if (memoize !== false) {
+      return memo(wrapper, memoize);
     }
 
     return wrapper;
   }
+
+  #getMemoize(memoize?: ViewOptions<any>["memoize"]): false | Memoize<any> {
+    if (typeof memoize === "function") {
+      return memoize;
+    }
+    if (memoize !== false) {
+      return ReactViewController.#options.memoize;
+    }
+    return false;
+  }
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Defaults
+ |--------------------------------------------------------------------------------
+ */
+
+function defaultMemoizeHandler(prev: unknown, next: unknown): boolean {
+  return JSON.stringify(prev) === JSON.stringify(next);
 }
 
 /*
@@ -126,7 +147,13 @@ type ReactComponent<Props extends {}, Controller extends ControllerClass> = Reac
 type ViewOptions<Props> = {
   loading: React.FC<Props>;
   error: React.FC<Props & { error: Error }>;
-  memoize: boolean;
+  memoize: false | Memoize<Props>;
 };
 
 type ReservedPropertyMembers = "state" | "pushState" | "init" | "destroy" | "setNext" | "setState" | "toActions";
+
+type Memoize<Props> = (prevProps: Readonly<Props>, nextProps: Readonly<Props>) => boolean;
+
+type Readonly<T> = {
+  readonly [P in keyof T]: T[P];
+};
