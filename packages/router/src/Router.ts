@@ -1,4 +1,5 @@
 import type { BrowserHistory, HashHistory, Location, MemoryHistory } from "history";
+import { match } from "path-to-regexp";
 import { Subject, Subscription } from "rxjs";
 
 import { ActionRejectedError, Redirect, RenderProps, response } from "./Action";
@@ -95,31 +96,27 @@ export class Router<Component = unknown> {
     this.#destroy = this.#history.listen(async ({ location }) => {
       const resolved = this.getRoute(location.pathname);
       if (resolved === undefined) {
-        throw new RouteNotFoundError(location.pathname);
+        return error(new RouteNotFoundError(location.pathname));
       }
-
       const matched = new MatchedRoute(this.#history, resolved);
-
       for (const action of resolved.route.actions) {
         const res = await action.call(response, matched);
         switch (res.status) {
           case "redirect": {
-            this.redirect(res);
-            break;
+            return this.redirect(res);
           }
           case "render": {
             if ((location as any).state.render === true) {
               render(res.components, {});
             }
-            this.setRoute(matched);
-            break;
+            return this.setRoute(matched);
           }
           case "reject": {
-            error(new ActionRejectedError(res.message, res.details));
-            break;
+            return error(new ActionRejectedError(res.message, res.details));
           }
         }
       }
+      error(new RenderActionMissingError(resolved.route.path));
     });
     return this;
   }
@@ -138,6 +135,10 @@ export class Router<Component = unknown> {
         }
       }
     });
+  }
+
+  routed(callback: (matched: MatchedRoute) => void): Subscription {
+    return this.#routed.subscribe(callback);
   }
 
   /**
@@ -196,6 +197,15 @@ export class Router<Component = unknown> {
       this.location.state
     );
     return this;
+  }
+
+  /**
+   * Check if the provided path matches the current route location.
+   *
+   * @param path - RegEx path to match against location.
+   */
+  match(path: string): boolean {
+    return match(path)(this.location.pathname) !== false;
   }
 
   /**
