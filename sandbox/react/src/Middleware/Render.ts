@@ -1,12 +1,12 @@
 import { Action } from "@valkyr/router";
 
-export function render(components: any[], title: string): Action {
-  return async function () {
-    setPageTitle(title);
+export function render(components: any[]): Action {
+  return async function ({ route }) {
+    setPageTitle(route.name);
     return this.render(components);
   };
 }
 
-function setPageTitle(title: string): void {
+function setPageTitle(title = "Untitled"): void {
   document.title = `Valkyr | ${title}`;
 }

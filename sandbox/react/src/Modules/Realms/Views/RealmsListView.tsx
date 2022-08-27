@@ -44,7 +44,7 @@ export const RealmsList = controller.view<{ name: string }>(
               </button>
               <button
                 onClick={() => {
-                  router.goTo(realm.id);
+                  router.goTo(`/realms/${realm.id}`);
                 }}
               >
                 Go

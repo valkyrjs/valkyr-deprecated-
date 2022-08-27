@@ -29,7 +29,6 @@ export const RealmsView = () => {
       </button>
       <pre>The realms list name change should cause a re-render to be triggered in the RealmsList component.</pre>
       <RealmsList name={innerName} />
-      <RealmsList name={innerName} />
     </div>
   );
 };

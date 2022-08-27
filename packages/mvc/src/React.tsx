@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, PropsWithChildren, useEffect, useState } from "react";
 
 import { ControllerClass, ViewController } from "./ViewController";
 
@@ -8,6 +8,7 @@ import { ControllerClass, ViewController } from "./ViewController";
  */
 export class ReactViewController<Controller extends ControllerClass> extends ViewController<Controller> {
   static #options: ViewOptions<any> = {
+    name: undefined,
     loading() {
       return <div>Loading</div>;
     },
@@ -46,7 +47,7 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
     const renderError = options?.error ?? ReactViewController.#options.error;
     const memoize = this.#getMemoize(options?.memoize);
 
-    const wrapper: React.FC<Props> = (props) => {
+    const wrapper: React.FC<PropsWithChildren<Props>> = (props) => {
       const [controller, setController] = useState<InstanceType<Controller> | undefined>(undefined);
       const [actions, setActions] = useState<any | undefined>();
       const [state, setState] = useState(this.controller.state);
@@ -100,6 +101,8 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
       return component({ props, state, actions });
     };
 
+    wrapper.displayName = options?.name ?? component.name;
+
     // ### Memoize
     // By default run component through react memoization using stringify
     // matching to determine changes to props.
@@ -128,7 +131,12 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
  |--------------------------------------------------------------------------------
  */
 
-function defaultMemoizeHandler(prev: unknown, next: unknown): boolean {
+function defaultMemoizeHandler(prev: any, next: any): boolean {
+  if (prev.children !== undefined && next.children !== undefined) {
+    if (prev.children.type.type.displayName !== next.children.type.type.displayName) {
+      return false;
+    }
+  }
   return JSON.stringify(prev) === JSON.stringify(next);
 }
 
@@ -145,6 +153,7 @@ type ReactComponent<Props extends {}, Controller extends ControllerClass> = Reac
 }>;
 
 type ViewOptions<Props> = {
+  name?: string;
   loading: React.FC<Props>;
   error: React.FC<Props & { error: Error }>;
   memoize: false | Memoize<Props>;

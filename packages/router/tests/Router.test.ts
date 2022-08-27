@@ -1,7 +1,7 @@
 import { createMemoryHistory } from "history";
 
-import { Action } from "../src/Action";
 import { Route } from "../src/Route";
+import { RouteGroup } from "../src/RouteGroup";
 import { Router } from "../src/Router";
 
 /*
@@ -10,47 +10,40 @@ import { Router } from "../src/Router";
  |--------------------------------------------------------------------------------
  */
 
-describe("Router", () => {
-  it("should successfully render route with render props", (next) => {
+describe.only("Router", () => {
+  it(".getRoute should determine the correct route to resolve from complex paths", async () => {
     const router = new Router(createMemoryHistory());
 
-    function render(): Action<{ foo: string }> {
-      return async function () {
-        return this.render({ fake: "component" }, { foo: "bar" });
-      };
-    }
+    router.register([
+      new Route({ name: "Test-1", path: "/test-1", actions: [] }),
+      new Route({ name: "Test-2", path: "/test-1/:bar/baz", actions: [] }),
+      new RouteGroup(
+        "/:slug",
+        [
+          {
+            name: "Test-3"
+          },
+          {
+            name: "Test-4",
+            path: "/foo"
+          },
+          new RouteGroup(
+            "/bar",
+            [
+              {
+                name: "Test-5",
+                path: "/baz"
+              }
+            ],
+            []
+          )
+        ],
+        []
+      )
+    ]);
 
-    router.register([new Route("/", [render()])]);
-    router.listen({
-      render(components, props) {
-        expect(components).toEqual([{ fake: "component" }]);
-        expect(props).toEqual({ foo: "bar" });
-        next();
-      },
-      error(err) {
-        console.log(err);
-      }
-    });
-
-    router.goTo("/");
-  });
-
-  it("should successfully error on failed rendering", async () => {
-    const router = new Router(createMemoryHistory());
-
-    function render(): Action {
-      return async function () {
-        return this.reject("foo");
-      };
-    }
-
-    router.register([new Route("/", [render()])]);
-
-    await expect(
-      new Promise((render, error) => {
-        router.listen({ render, error });
-        router.goTo("/");
-      })
-    ).rejects.toEqual(new Error("foo"));
+    expect(router.getRoute("/test-1")?.route.name).toStrictEqual("Test-1");
+    expect(router.getRoute("/test-1/bar/baz")?.route.name).toStrictEqual("Test-2");
+    expect(router.getRoute("/my-slug/bar/baz")?.route.name).toStrictEqual("Test-5");
   });
 });

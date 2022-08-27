@@ -1,8 +1,4 @@
-import type { Location } from "history";
-
-import type { Query } from "./Query";
-import type { State } from "./State";
-import type { ValueStore } from "./ValueStore";
+import type { MatchedRoute } from "./MatchedRoute";
 
 /*
  |--------------------------------------------------------------------------------
@@ -69,16 +65,12 @@ export class ActionRejectedError extends Error {
  |--------------------------------------------------------------------------------
  */
 
-export type Action<Props extends RenderProps = RenderProps> = (this: ActionResponse, req: Request) => Response<Props>;
+export type Action<Props extends RenderProps = RenderProps> = (
+  this: ActionResponse,
+  matched: MatchedRoute
+) => Response<Props>;
 
 export type Response<Props extends RenderProps = RenderProps> = Promise<Render<Props> | Accept | Redirect | Reject>;
-
-export type Request = {
-  location: Location;
-  query: Query;
-  params: ValueStore;
-  state: State;
-};
 
 export type RenderProps = Record<string, unknown>;
 

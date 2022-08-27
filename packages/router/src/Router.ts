@@ -1,44 +1,28 @@
-import { EventEmitter } from "@valkyr/event-emitter";
 import type { BrowserHistory, HashHistory, Location, MemoryHistory } from "history";
+import { Subject, Subscription } from "rxjs";
 
-import type { ActionRejectedError, Render, RenderProps, Request } from "./Action";
-import { Query } from "./Query";
-import type { RenderActionMissingError, Resolved, RouteNotFoundError } from "./Route";
+import { ActionRejectedError, Redirect, RenderProps, response } from "./Action";
+import { MatchedRoute } from "./MatchedRoute";
+import { RenderActionMissingError, Resolved, RouteNotFoundError } from "./Route";
 import { Route } from "./Route";
-import { handleRoutingRequest } from "./RouteHandler";
-import { State } from "./State";
-import { getLocationOrigin, setLocationOrigin } from "./Tracker";
-import { ValueStore } from "./ValueStore";
+import { RouteGroup } from "./RouteGroup";
 
-export class Router<Component = any> extends EventEmitter<{
-  progress: (percent: number) => void;
-  routed: (next: { params: ValueStore; query: Query; state: State }) => void;
-}> {
-  base: string;
-  history: BrowserHistory | HashHistory | MemoryHistory;
+export class Router<Component = unknown> {
+  #base: string;
+
+  #history: BrowserHistory | HashHistory | MemoryHistory;
 
   #routes: Set<Route> = new Set();
-  #current: {
-    query: Query;
-    params: ValueStore;
-    state: State;
-  };
 
-  destroy?: () => void;
+  #matched?: MatchedRoute;
+
+  #routed = new Subject<MatchedRoute>();
+
+  #destroy?: () => void;
 
   constructor(history: BrowserHistory | HashHistory | MemoryHistory, base = "") {
-    super();
-    this.base = base === "" || base === "/" ? "" : base;
-    this.history = history;
-    this.#current = {
-      query: new Query(this.history),
-      params: new ValueStore(),
-      state: new State()
-    };
-    this.goTo = this.goTo.bind(this);
-    this.reload = this.reload.bind(this);
-    this.setCurrentRoute = this.setCurrentRoute.bind(this);
-    this.setProgress = this.setProgress.bind(this);
+    this.#base = base === "" || base === "/" ? "" : base;
+    this.#history = history;
   }
 
   /*
@@ -48,19 +32,30 @@ export class Router<Component = any> extends EventEmitter<{
    */
 
   get location(): Location {
-    return this.history.location;
+    return this.#history.location;
   }
 
-  get params(): ValueStore {
-    return this.#current.params;
+  get params(): MatchedRoute["params"] {
+    return this.matched.params;
   }
 
-  get query(): Query {
-    return this.#current.query;
+  get query(): MatchedRoute["query"] {
+    return this.matched.query;
   }
 
-  get state(): State {
-    return this.#current.state;
+  get state(): MatchedRoute["state"] {
+    return this.matched.state;
+  }
+
+  get route(): MatchedRoute["route"] {
+    return this.matched.route;
+  }
+
+  get matched(): MatchedRoute {
+    if (this.#matched === undefined) {
+      throw new Error("No route has been resolved yet");
+    }
+    return this.#matched;
   }
 
   /*
@@ -69,9 +64,13 @@ export class Router<Component = any> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
-  register(routes: Route[]): this {
+  register(routes: (Route | RouteGroup)[]): this {
     for (const route of routes) {
-      this.#routes.add(route.base(this.base));
+      if (route instanceof RouteGroup) {
+        this.register(route.routes);
+      } else {
+        this.#routes.add(route.base(this.#base));
+      }
     }
     return this;
   }
@@ -90,16 +89,37 @@ export class Router<Component = any> extends EventEmitter<{
     render(components: Component[], props: RenderProps): Component;
     error(error: ActionRejectedError | RenderActionMissingError | RouteNotFoundError): Component;
   }): this {
-    if (this.destroy) {
-      this.destroy();
+    if (this.#destroy !== undefined) {
+      this.#destroy();
     }
-    this.destroy = this.history.listen(async ({ location }) => {
-      setLocationOrigin(location);
-      handleRoutingRequest(this, location, getLocationOrigin())
-        .then(({ components, props }: Render<RenderProps, Component>) => {
-          render(components, props);
-        })
-        .catch(error);
+    this.#destroy = this.#history.listen(async ({ location }) => {
+      const resolved = this.getRoute(location.pathname);
+      if (resolved === undefined) {
+        throw new RouteNotFoundError(location.pathname);
+      }
+
+      const matched = new MatchedRoute(this.#history, resolved);
+
+      for (const action of resolved.route.actions) {
+        const res = await action.call(response, matched);
+        switch (res.status) {
+          case "redirect": {
+            this.redirect(res);
+            break;
+          }
+          case "render": {
+            if ((location as any).state.render === true) {
+              render(res.components, {});
+            }
+            this.setRoute(matched);
+            break;
+          }
+          case "reject": {
+            error(new ActionRejectedError(res.message, res.details));
+            break;
+          }
+        }
+      }
     });
     return this;
   }
@@ -110,6 +130,35 @@ export class Router<Component = any> extends EventEmitter<{
    |--------------------------------------------------------------------------------
    */
 
+  subscribe(paths: string[], callback: (matched: MatchedRoute) => void): Subscription {
+    return this.#routed.subscribe((matched) => {
+      for (const path of paths) {
+        if (matched.route.match(path)) {
+          callback(matched);
+        }
+      }
+    });
+  }
+
+  /**
+   * Redirect response.
+   *
+   * @remarks
+   * When redirecting internally the origin is passed to the new route in case
+   * we want to reference it.
+   *
+   * @param response - Redirect response.
+   * @param origin   - Origin to assign with the redirect.
+   * @param onGoTo   - Callback to execute on internal routing.
+   */
+  redirect(response: Redirect): void {
+    if (response.isExternal) {
+      window.location.replace(response.path);
+    } else {
+      this.goTo(response.path, { origin: this.location });
+    }
+  }
+
   /**
    * Execute a new route request.
    *
@@ -118,14 +167,17 @@ export class Router<Component = any> extends EventEmitter<{
    *
    * @returns Router
    */
-  goTo(path: string, state: any = {}): this {
-    const parts = (this.base + path.replace(this.base, "")).replace(/\/$/, "").split("?");
-    this.history.push(
+  goTo(path: string, state: { render?: boolean } & Record<string, unknown> = { render: true }): this {
+    const parts = (this.#base + path.replace(this.#base, "")).replace(/\/$/, "").split("?");
+    this.#history.push(
       {
         pathname: parts[0] || "/",
         search: parts[1] ? `?${parts[1]}` : ""
       },
-      state
+      {
+        ...state,
+        render: state.render !== false
+      }
     );
     return this;
   }
@@ -136,12 +188,12 @@ export class Router<Component = any> extends EventEmitter<{
    * @returns Router
    */
   reload(): this {
-    this.history.replace(
+    this.#history.replace(
       {
         pathname: this.location.pathname,
         search: this.location.search
       },
-      this.state
+      this.location.state
     );
     return this;
   }
@@ -149,21 +201,14 @@ export class Router<Component = any> extends EventEmitter<{
   /**
    * Attach the provided request to the current route assignment.
    *
-   * @remarks
-   * This provides shortcut access to the currently resolved routes state, query
-   * and parameter values.
+   * @remarks This provides shortcut access to the currently resolved routes state,
+   * query and parameter values.
    *
-   * @param request - Resolved request.
-   *
-   * @returns Router
+   * @param matched - Matched route.
    */
-  setCurrentRoute(request: Request): this {
-    this.#current = {
-      params: request.params,
-      query: request.query,
-      state: request.state
-    };
-    this.emit("routed", this.#current);
+  setRoute(matched: MatchedRoute): this {
+    this.#matched = matched;
+    this.#routed.next(matched);
     return this;
   }
 
@@ -174,29 +219,11 @@ export class Router<Component = any> extends EventEmitter<{
    */
   getRoute(path: string): Resolved | undefined {
     for (const route of Array.from(this.#routes.values())) {
-      const match: boolean = route.match(path);
-      if (match) {
-        return { route, match };
+      const params = route.match(path);
+      if (params !== false) {
+        return { route, params };
       }
     }
     return undefined;
-  }
-
-  /**
-   * Set percent of total actions completed.
-   *
-   * @remarks
-   * Router progress events which shows the amount of progress of a routes loading
-   * path. Some routes may have actions that can take longer to resolve in which
-   * case being able to provide a load progress state to the client can be
-   * beneficial.
-   *
-   * @param percent - Current percent of total actions completed.
-   *
-   * @returns Router
-   */
-  setProgress(percent: number): this {
-    this.emit("progress", percent);
-    return this;
   }
 }

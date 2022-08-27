@@ -1,11 +1,11 @@
 import { render } from "@App/Middleware/Render";
 import { router } from "@App/Services/Router";
 import { database, IndexedDbAdapter } from "@valkyr/db";
-import { Route } from "@valkyr/router";
+import { Route, RouteGroup } from "@valkyr/router";
 
 import { Realm } from "./Models/Realm";
+import { RealmLayout } from "./Views/RealmLayout";
 import { RealmsView } from "./Views/RealmsView";
-import { RealmView } from "./Views/RealmView";
 
 /*
  |--------------------------------------------------------------------------------
@@ -22,6 +22,30 @@ database.register([Realm], new IndexedDbAdapter());
  */
 
 router.register([
-  new Route("/", [render([RealmsView], "Realms")]),
-  new Route("/:realm", [render([RealmView], "Realm")])
+  new Route({
+    name: "Realms",
+    path: "/",
+    actions: [render([RealmsView])]
+  }),
+  new RouteGroup(
+    "/realms/:realm",
+    [
+      {
+        name: "Realm"
+      },
+      {
+        name: "Members",
+        path: "/members"
+      },
+      {
+        name: "Pages",
+        path: "/pages"
+      },
+      {
+        name: "Invites",
+        path: "/invites"
+      }
+    ],
+    [render([RealmLayout])]
+  )
 ]);

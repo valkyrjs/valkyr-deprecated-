@@ -156,12 +156,11 @@ importers:
       '@valkyr/event-emitter': workspace:*
       history: 5.3.0
       path-to-regexp: 6.2.1
-      rxjs: ^7.5.6
+      rxjs: 7.5.6
     dependencies:
       '@valkyr/event-emitter': link:../event-emitter
       history: 5.3.0
       path-to-regexp: 6.2.1
-    devDependencies:
       rxjs: 7.5.6
 
   packages/security:

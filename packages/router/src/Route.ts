@@ -1,4 +1,4 @@
-import { pathToRegexp } from "path-to-regexp";
+import { match, pathToRegexp } from "path-to-regexp";
 
 import { Action } from "./Action";
 
@@ -9,26 +9,38 @@ import { Action } from "./Action";
  */
 
 export class Route {
-  path: string;
-  actions: Action[];
+  readonly name?: string;
+  readonly actions: Action[];
 
-  regExp: RegExp;
-  params: Parameter[];
+  path!: string;
+  parser!: RegExp;
 
-  constructor(path: string, actions: Action[]) {
-    this.path = path.replace(/\/$/, "");
+  constructor({ name, path, actions }: RouteOptions) {
+    this.name = name;
     this.actions = actions;
-    this.regExp = pathToRegexp(path);
-    this.params = getParsedParameters(path);
+    this.#setPath(path);
   }
 
   base(path = ""): this {
-    this.regExp = pathToRegexp(path + this.path);
+    this.#setPath(`${path}${this.path}`);
     return this;
   }
 
-  match(path: string): any {
-    return this.regExp.exec(path);
+  match(path: string): false | Object {
+    const matched = this.parser.exec(path);
+    if (matched !== null) {
+      const res = match(this.path)(path);
+      if (res === false) {
+        return {};
+      }
+      return res.params;
+    }
+    return false;
+  }
+
+  #setPath(path: string) {
+    this.path = path.replace(/\/$/, "");
+    this.parser = pathToRegexp(path);
   }
 }
 
@@ -99,6 +111,12 @@ export function getParameters<Response = any>(params: Parameter[], match: any): 
  |--------------------------------------------------------------------------------
  */
 
+type RouteOptions = {
+  name?: string;
+  path: string;
+  actions: Action[];
+};
+
 export type Parameter = {
   name: string;
   value?: string;
@@ -106,5 +124,5 @@ export type Parameter = {
 
 export type Resolved = {
   route: Route;
-  match: any;
+  params: Object;
 };
