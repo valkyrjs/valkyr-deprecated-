@@ -2,7 +2,7 @@ import type { Subscription } from "rxjs";
 
 import { Debounce } from "./Debounce";
 
-export abstract class Controller<State extends {} = {}, Props extends {} = {}> {
+export abstract class Controller<State extends JsonLike = {}, Props extends JsonLike = {}> {
   static readonly state = {};
 
   /**
@@ -74,6 +74,19 @@ export abstract class Controller<State extends {} = {}, Props extends {} = {}> {
    |--------------------------------------------------------------------------------
    */
 
+  subscribe<K extends keyof State>(
+    name: K,
+    subscriber: (next: (value: State[K]) => void) => Subscription
+  ): Promise<State[K]> {
+    this.subscriptions[name as string]?.unsubscribe();
+    return new Promise<State[K]>((resolve) => {
+      this.subscriptions[name as string] = subscriber((value) => {
+        this.setState(name, value);
+        resolve(value);
+      });
+    });
+  }
+
   /**
    * Wrapper method for controller setState. Enables the ability to predefine a
    * state update function with a static supported key. Handy for creating lean
@@ -124,3 +137,5 @@ export abstract class Controller<State extends {} = {}, Props extends {} = {}> {
     return actions;
   }
 }
+
+type JsonLike = Record<string, any>;

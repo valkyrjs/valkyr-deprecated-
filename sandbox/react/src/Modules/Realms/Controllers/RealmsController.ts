@@ -14,6 +14,31 @@ export class RealmsController extends Controller<State, Props> {
 
   /*
    |--------------------------------------------------------------------------------
+   | Resolvers
+   |--------------------------------------------------------------------------------
+   */
+
+  async resolve({ name }: Props = { name: this.#name }) {
+    this.#name = name; // set name provided through external properties
+    await this.#subscribeToRealms();
+  }
+
+  async #subscribeToRealms() {
+    await this.subscribe("realms", (resolve) =>
+      Realm.subscribe(
+        this.#filter,
+        {
+          sort: {
+            name: this.#sort
+          }
+        },
+        resolve
+      )
+    );
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
    | Options
    |--------------------------------------------------------------------------------
    */
@@ -28,36 +53,12 @@ export class RealmsController extends Controller<State, Props> {
         }
       };
     }
-    this.subscribeToRealms();
+    this.#subscribeToRealms();
   }
 
   async toggle() {
     this.#sort = this.#sort === 1 ? -1 : 1;
-    this.subscribeToRealms();
-  }
-
-  /*
-   |--------------------------------------------------------------------------------
-   | Resolvers
-   |--------------------------------------------------------------------------------
-   */
-
-  async resolve({ name }: Props = { name: this.#name }) {
-    this.#name = name; // set name provided through external properties
-    await this.subscribeToRealms();
-  }
-
-  async subscribeToRealms() {
-    this.subscriptions.realms?.unsubscribe();
-    this.subscriptions.realms = Realm.subscribe(
-      this.#filter,
-      {
-        sort: {
-          name: this.#sort
-        }
-      },
-      this.setNext("realms")
-    );
+    this.#subscribeToRealms();
   }
 
   /*
