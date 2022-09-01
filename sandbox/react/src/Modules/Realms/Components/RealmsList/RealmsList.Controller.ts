@@ -37,6 +37,7 @@ export class RealmsListController extends Controller<State, Props> {
         name: this.#sort
       }
     });
+    this.setState("realms");
   }
 
   /*

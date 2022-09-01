@@ -135,8 +135,14 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
         });
       });
     }
-    this.subscriptions[name as string] = rxjs.subscribe(this.setSubscriberState(name));
+    this.subscriptions[name as string] = rxjs.subscribe(this.setState(name));
   }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | State Methods
+   |--------------------------------------------------------------------------------
+   */
 
   /**
    * Wrapper method for controller setState. Enables the ability to predefine a
@@ -145,11 +151,7 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    *
    * @param key - State key to assign data to.
    */
-  setSubscriberState<K extends keyof State>(key: K): (state: State[K]) => void {
-    return (state: State[K]): void => {
-      this.setState(key, state);
-    };
-  }
+  setState<K extends keyof State>(key: K): (state: State[K]) => void;
 
   /**
    * Updates the state of the controller and triggers a state update via the push
@@ -159,7 +161,14 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    * @param key   - State key to assign data to.
    * @param value - State value to assign.
    */
-  setState<K extends keyof State>(key: K, value: State[K]): void {
+  setState<K extends keyof State>(key: K, value: State[K]): void;
+
+  setState<K extends keyof State>(key: K, value?: State[K]) {
+    if (value === undefined) {
+      return (state: State[K]): void => {
+        this.setState(key, state);
+      };
+    }
     this.state[key] = value;
     this.#debounce.run(() => {
       this.pushState({ ...this.state });
