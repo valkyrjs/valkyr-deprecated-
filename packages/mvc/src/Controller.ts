@@ -75,14 +75,26 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    |--------------------------------------------------------------------------------
    */
 
-  query<K extends keyof State, M extends QueryModel>(name: K, query: QuerySingle<M>): Promise<State[K] | undefined>;
-  query<K extends keyof State, M extends QueryModel>(name: K, query: QueryMany<M>): Promise<State[K][]>;
-  query<K extends keyof State, M extends QueryModel>(name: K, query: Query<M> = {} as Query<M>) {
+  query<K extends keyof State, M extends QueryModel>(
+    name: K,
+    query: QuerySingle<M>,
+    next?: (value: InstanceType<M> | undefined) => void
+  ): Promise<M | undefined>;
+  query<K extends keyof State, M extends QueryModel>(
+    name: K,
+    query: QueryMany<M>,
+    next?: (value: InstanceType<M>[]) => void
+  ): Promise<InstanceType<M>[]>;
+  query<K extends keyof State, M extends QueryModel>(
+    name: K,
+    query: Query<M> = {} as Query<M>,
+    next?: (value: InstanceType<M>[] | InstanceType<M> | undefined) => State[K]
+  ) {
     this.subscriptions[name as string]?.unsubscribe();
     return new Promise<State[K]>((resolve) => {
       const { model, where, ...options } = query;
-      this.subscriptions[name as string] = (model as any).subscribe(where, options, (value: State[K]) => {
-        this.setState(name, value);
+      this.subscriptions[name as string] = (model as any).subscribe(where, options, (value: any) => {
+        this.setState(name, next !== undefined ? next(value) : value);
         resolve(value);
       });
     });
@@ -102,40 +114,19 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    * @remarks If the subscription does not immediately resolve a value then set
    * the suspend argument to false.
    *
-   * @param name    - Name of the state key we are pushing the subscription
-   *                  values to.
-   * @param rxjs    - RXJS Subject or Observable instance that can be subscribed
-   *                  to.
-   * @param suspend - Whether or not to suspend the promise until the subscription
-   *                  provides an initial value.
-   *
-   * @returns the initial result of the rxjs subscription or void if not suspended.
+   * @param name - Name of the state key we are pushing the subscription values to.
+   * @param rxjs - RXJS Subject or Observable instance that can be subscribed to.
+   * @param next - Custom handler to execute instead of direct assignment to state.
    */
   subscribe<K extends keyof State, RXJS extends Subject<any> | Observable<any>>(
     name: K,
     rxjs: RXJS,
-    suspend?: false
-  ): void;
-  subscribe<K extends keyof State, RXJS extends Subject<any> | Observable<any>>(
-    name: K,
-    rxjs: RXJS,
-    suspend?: true
-  ): Promise<State[K]>;
-  subscribe<K extends keyof State, RXJS extends Subject<any> | Observable<any>>(
-    name: K,
-    rxjs: RXJS,
-    suspend = false
-  ): Promise<State[K]> | void {
+    next?: (value: SubscriptionType<RXJS>) => State[K]
+  ): void {
     this.subscriptions[name as string]?.unsubscribe();
-    if (suspend === true) {
-      return new Promise<State[K]>((resolve) => {
-        this.subscriptions[name as string] = rxjs.subscribe((value) => {
-          this.setState(name, value);
-          resolve(value);
-        });
-      });
-    }
-    this.subscriptions[name as string] = rxjs.subscribe(this.setState(name));
+    this.subscriptions[name as string] = rxjs.subscribe((value) => {
+      this.setState(name, next !== undefined ? next(value) : value);
+    });
   }
 
   /*
@@ -219,3 +210,5 @@ type QueryModel = {
 type Where = {
   where?: Record<string, unknown>;
 };
+
+type SubscriptionType<Type> = Type extends Subject<infer X> | Observable<infer X> ? X : never;
