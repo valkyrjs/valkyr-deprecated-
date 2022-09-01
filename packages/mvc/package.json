@@ -17,11 +17,9 @@
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json"
   },
-  "peerDependencies": {
-    "@valkyr/db": "workspace:*"
-  },
   "devDependencies": {
     "@types/react": "^18.0.17",
+    "@valkyr/db": "workspace:*",
     "react": "^18.2.0",
     "rxjs": "^7.5.6"
   }

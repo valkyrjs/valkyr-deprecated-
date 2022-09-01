@@ -144,10 +144,12 @@ importers:
   packages/mvc:
     specifiers:
       '@types/react': ^18.0.17
+      '@valkyr/db': workspace:*
       react: ^18.2.0
       rxjs: ^7.5.6
     devDependencies:
       '@types/react': 18.0.17
+      '@valkyr/db': link:../db
       react: 18.2.0
       rxjs: 7.5.6
 

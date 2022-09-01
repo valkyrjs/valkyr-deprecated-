@@ -1,4 +1,4 @@
-import { ModelClass, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
+import type { ModelClass, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
 import type { Observable, Subject, Subscription } from "rxjs";
 
 import { Debounce } from "./Debounce";
