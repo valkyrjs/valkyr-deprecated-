@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { useState } from "react";
 
-import { RealmsList } from "./RealmsListView";
+import { RealmsList } from "../Components/RealmsList";
 
 export const RealmsView = () => {
   const [outerName, setOuterName] = useState(faker.name.fullName());

@@ -1,6 +1,6 @@
 import { router } from "@App/Services/Router";
 
-import { controller } from "../Controllers/RealmController";
+import { controller } from "./Realm.Controller";
 
 export const RealmView = controller.view(({ state: { realm } }) => {
   if (realm === undefined) {

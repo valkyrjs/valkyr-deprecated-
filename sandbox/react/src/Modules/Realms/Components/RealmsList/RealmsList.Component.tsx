@@ -1,9 +1,9 @@
 import { router } from "@App/Services/Router";
 import { Fragment } from "react";
 
-import { controller } from "../Controllers/RealmsController";
+import { controller, Props } from "./RealmsList.Controller";
 
-export const RealmsList = controller.view<{ name: string }>(
+export const RealmsList = controller.view<Props>(
   ({ props: { name }, state: { realms }, actions: { addRealm, toggle, clearRealms, filter, deleteRealm } }) => {
     return (
       <div>
@@ -31,27 +31,31 @@ export const RealmsList = controller.view<{ name: string }>(
             }}
           />
         </div>
-        {realms.map((realm) => {
-          return (
-            <Fragment key={realm.id}>
-              <pre>{JSON.stringify(realm, null, 2)}</pre>
-              <button
-                onClick={() => {
-                  deleteRealm(realm.id);
-                }}
-              >
-                Delete
-              </button>
-              <button
-                onClick={() => {
-                  router.goTo(`/realms/${realm.id}`);
-                }}
-              >
-                Go
-              </button>
-            </Fragment>
-          );
-        })}
+        {realms.length === 0 ? (
+          <div>No realms found, create a new realm to get started</div>
+        ) : (
+          realms.map((realm) => {
+            return (
+              <Fragment key={realm.id}>
+                <pre>{JSON.stringify(realm, null, 2)}</pre>
+                <button
+                  onClick={() => {
+                    deleteRealm(realm.id);
+                  }}
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={() => {
+                    router.goTo(`/realms/${realm.id}`);
+                  }}
+                >
+                  Go
+                </button>
+              </Fragment>
+            );
+          })
+        )}
       </div>
     );
   }

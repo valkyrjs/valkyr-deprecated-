@@ -3,9 +3,9 @@ import { router } from "@App/Services/Router";
 import { database, IndexedDbAdapter } from "@valkyr/db";
 import { Route, RouteGroup } from "@valkyr/router";
 
+import { RealmLayout } from "./Layouts";
 import { Realm } from "./Models/Realm";
-import { RealmLayout } from "./Views/RealmLayout";
-import { RealmsView } from "./Views/RealmsView";
+import { RealmsView } from "./Views/Realms.View";
 
 /*
  |--------------------------------------------------------------------------------

@@ -1,9 +1,15 @@
 import { faker } from "@faker-js/faker";
 import { Controller, ReactViewController } from "@valkyr/mvc";
 
-import { Realm } from "../Models/Realm";
+import { Realm } from "../../Models/Realm";
 
-export class RealmsController extends Controller<State, Props> {
+/*
+ |--------------------------------------------------------------------------------
+ | Controller
+ |--------------------------------------------------------------------------------
+ */
+
+export class RealmsListController extends Controller<State, Props> {
   static readonly state: State = {
     realms: []
   };
@@ -24,17 +30,13 @@ export class RealmsController extends Controller<State, Props> {
   }
 
   async #subscribeToRealms() {
-    await this.subscribe("realms", (resolve) =>
-      Realm.subscribe(
-        this.#filter,
-        {
-          sort: {
-            name: this.#sort
-          }
-        },
-        resolve
-      )
-    );
+    await this.query("realms", {
+      model: Realm,
+      where: this.#filter,
+      sort: {
+        name: this.#sort
+      }
+    });
   }
 
   /*
@@ -101,13 +103,17 @@ export class RealmsController extends Controller<State, Props> {
   }
 }
 
-export const controller = new ReactViewController(RealmsController);
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
 
 type State = {
   realms: Realm[];
 };
 
-type Props = {
+export type Props = {
   name: string;
 };
 
@@ -118,3 +124,11 @@ type Filter = {
         $regex: RegExp;
       };
 };
+
+/*
+ |--------------------------------------------------------------------------------
+ | Exports
+ |--------------------------------------------------------------------------------
+ */
+
+export const controller = new ReactViewController(RealmsListController);

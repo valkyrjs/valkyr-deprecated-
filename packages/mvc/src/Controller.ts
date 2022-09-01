@@ -1,4 +1,5 @@
-import type { Subscription } from "rxjs";
+import { ModelClass, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
+import type { Observable, Subject, Subscription } from "rxjs";
 
 import { Debounce } from "./Debounce";
 
@@ -70,21 +71,71 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
 
   /*
    |--------------------------------------------------------------------------------
-   | State Methods
+   | Query Methods
    |--------------------------------------------------------------------------------
    */
 
-  subscribe<K extends keyof State>(
-    name: K,
-    subscriber: (next: (value: State[K]) => void) => Subscription
-  ): Promise<State[K]> {
+  query<K extends keyof State, M extends QueryModel>(name: K, query: QuerySingle<M>): Promise<State[K] | undefined>;
+  query<K extends keyof State, M extends QueryModel>(name: K, query: QueryMany<M>): Promise<State[K][]>;
+  query<K extends keyof State, M extends QueryModel>(name: K, query: Query<M> = {} as Query<M>) {
     this.subscriptions[name as string]?.unsubscribe();
     return new Promise<State[K]>((resolve) => {
-      this.subscriptions[name as string] = subscriber((value) => {
+      const { model, where, ...options } = query;
+      this.subscriptions[name as string] = (model as any).subscribe(where, options, (value: State[K]) => {
         this.setState(name, value);
         resolve(value);
       });
     });
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | RXJS Methods
+   |--------------------------------------------------------------------------------
+   */
+
+  /**
+   * Subscribe to a resource which provides a rxjs observable subscription. This
+   * subscription is automatically managed and will unsubscribe when the subscribe
+   * method is executed and when the controller is destroyed.
+   *
+   * @remarks If the subscription does not immediately resolve a value then set
+   * the suspend argument to false.
+   *
+   * @param name    - Name of the state key we are pushing the subscription
+   *                  values to.
+   * @param rxjs    - RXJS Subject or Observable instance that can be subscribed
+   *                  to.
+   * @param suspend - Whether or not to suspend the promise until the subscription
+   *                  provides an initial value.
+   *
+   * @returns the initial result of the rxjs subscription or void if not suspended.
+   */
+  subscribe<K extends keyof State, RXJS extends Subject<any> | Observable<any>>(
+    name: K,
+    rxjs: RXJS,
+    suspend?: false
+  ): void;
+  subscribe<K extends keyof State, RXJS extends Subject<any> | Observable<any>>(
+    name: K,
+    rxjs: RXJS,
+    suspend?: true
+  ): Promise<State[K]>;
+  subscribe<K extends keyof State, RXJS extends Subject<any> | Observable<any>>(
+    name: K,
+    rxjs: RXJS,
+    suspend = false
+  ): Promise<State[K]> | void {
+    this.subscriptions[name as string]?.unsubscribe();
+    if (suspend === true) {
+      return new Promise<State[K]>((resolve) => {
+        this.subscriptions[name as string] = rxjs.subscribe((value) => {
+          this.setState(name, value);
+          resolve(value);
+        });
+      });
+    }
+    this.subscriptions[name as string] = rxjs.subscribe(this.setSubscriberState(name));
   }
 
   /**
@@ -94,7 +145,7 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    *
    * @param key - State key to assign data to.
    */
-  setNext<K extends keyof State>(key: K): (state: State[K]) => void {
+  setSubscriberState<K extends keyof State>(key: K): (state: State[K]) => void {
     return (state: State[K]): void => {
       this.setState(key, state);
     };
@@ -139,3 +190,23 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
 }
 
 type JsonLike = Record<string, any>;
+
+type Query<M extends QueryModel> = Model<M> & Where & SubscriptionOptions;
+
+type QuerySingle<M extends QueryModel> = Model<M> & Where & SubscribeToSingle;
+
+type QueryMany<M extends QueryModel> = Model<M> & Where & SubscribeToMany;
+
+type Model<M extends QueryModel> = {
+  model: M;
+};
+
+type QueryModel = {
+  new (...args: any[]): any;
+  findOne: ModelClass["findOne"];
+  find: ModelClass["find"];
+};
+
+type Where = {
+  where?: Record<string, unknown>;
+};

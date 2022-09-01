@@ -1,1 +1,1 @@
-export * from "./AuthModule";
+export * from "./Auth.Module";

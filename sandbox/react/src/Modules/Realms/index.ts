@@ -1,1 +1,1 @@
-export * from "./RealmsModule";
+export * from "./Realms.Module";
