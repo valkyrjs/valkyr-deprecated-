@@ -1,6 +1,6 @@
 import { Action } from "@valkyr/router";
 
-export function render(components: any[]): Action {
+export function render(components: unknown): Action {
   return async function ({ route }) {
     setPageTitle(route.name);
     return this.render(components);

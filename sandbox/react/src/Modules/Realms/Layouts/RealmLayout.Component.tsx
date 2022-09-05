@@ -1,16 +1,8 @@
 import { createElement } from "react";
 
-import { InvitesView, MembersView, PagesView, RealmView } from "../Views/Realm";
 import { controller } from "./RealmLayout.Controller";
 
-const views = {
-  Realm: RealmView,
-  Members: MembersView,
-  Pages: PagesView,
-  Invites: InvitesView
-};
-
-export const RealmLayout = controller.view(({ state: { component }, actions: { goTo } }) => {
+export const RealmLayout = controller.view(({ state: { routed }, actions: { goTo } }) => {
   return (
     <div>
       <div>
@@ -19,7 +11,7 @@ export const RealmLayout = controller.view(({ state: { component }, actions: { g
         <button onClick={goTo("pages")}>Pages</button>
         <button onClick={goTo("invites")}>Invites</button>
       </div>
-      <div>{views[component] ? createElement(views[component]) : null}</div>
+      <div>{routed ? createElement(routed.component, routed.props) : null}</div>
     </div>
   );
 });

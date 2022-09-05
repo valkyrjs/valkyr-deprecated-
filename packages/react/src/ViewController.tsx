@@ -1,12 +1,8 @@
 import React, { memo, PropsWithChildren, useEffect, useState } from "react";
 
-import { ControllerClass, ViewController } from "./ViewController";
+import { Refs } from "./Refs";
 
-/**
- * Creates a model view controller layer that can wrap around functional react
- * components and provides managed state from the applied controller.
- */
-export class ReactViewController<Controller extends ControllerClass> extends ViewController<Controller> {
+export class ViewController<Controller extends ControllerClass> {
   static #options: ViewOptions<any> = {
     name: undefined,
     loading() {
@@ -17,6 +13,8 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
     },
     memoize: defaultMemoizeHandler
   };
+
+  constructor(readonly controller: Controller) {}
 
   static set loading(component: React.FC) {
     this.#options.loading = component;
@@ -43,8 +41,8 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
    * @param component - Functional react component.
    */
   view<Props extends {}>(component: ReactComponent<Props, Controller>, options?: Partial<ViewOptions<Props>>) {
-    const renderLoading = options?.loading ?? ReactViewController.#options.loading;
-    const renderError = options?.error ?? ReactViewController.#options.error;
+    const renderLoading = options?.loading ?? ViewController.#options.loading;
+    const renderError = options?.error ?? ViewController.#options.error;
     const memoize = this.#getMemoize(options?.memoize);
 
     const wrapper: React.FC<PropsWithChildren<Props>> = (props) => {
@@ -72,6 +70,8 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
           };
         }
 
+        controller.init?.();
+
         controller
           .resolve(props)
           .catch((error: Error) => {
@@ -98,7 +98,7 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
         return renderError({ ...props, error });
       }
 
-      return component({ props, state, actions });
+      return component({ props, state, actions, refs: controller!.refs });
     };
 
     wrapper.displayName = options?.name ?? component.name;
@@ -119,7 +119,7 @@ export class ReactViewController<Controller extends ControllerClass> extends Vie
       return memoize;
     }
     if (memoize !== false) {
-      return ReactViewController.#options.memoize;
+      return ViewController.#options.memoize;
     }
     return false;
   }
@@ -150,6 +150,8 @@ type ReactComponent<Props extends {}, Controller extends ControllerClass> = Reac
   props: Props;
   state: InstanceType<Controller>["state"];
   actions: Omit<InstanceType<Controller>, ReservedPropertyMembers>;
+  refs: Refs;
+  component?: React.FC;
 }>;
 
 type ViewOptions<Props> = {
@@ -165,4 +167,10 @@ type Memoize<Props> = (prevProps: Readonly<Props>, nextProps: Readonly<Props>) =
 
 type Readonly<T> = {
   readonly [P in keyof T]: T[P];
+};
+
+type ControllerClass = {
+  state: any;
+  new (state: any, pushState: Function): any;
+  make(pushState: Function): any;
 };

@@ -10,23 +10,31 @@ import { Action } from "./Action";
 
 export class Route {
   readonly name?: string;
+  readonly children?: Route[];
   readonly actions: Action[];
 
   path!: string;
   parser!: RegExp;
 
-  constructor({ name, path, actions }: RouteOptions) {
+  parent?: Route;
+
+  constructor({ name, path = "", children, actions }: RouteOptions) {
     this.name = name;
+    this.children = children;
     this.actions = actions;
     this.#setPath(path);
   }
 
-  base(path = ""): this {
-    this.#setPath(`${path}${this.path}`);
+  register(options: RegisterOptions): this {
+    this.#setBase(options.base);
+    this.#setParent(options.parent);
     return this;
   }
 
   match(path: string): false | Object {
+    if (this.children !== undefined) {
+      return false;
+    }
     const matched = this.parser.exec(path);
     if (matched !== null) {
       const res = match(this.path)(path);
@@ -36,6 +44,16 @@ export class Route {
       return res.params;
     }
     return false;
+  }
+
+  #setBase(path = ""): this {
+    this.#setPath(`${path}${this.path}`);
+    return this;
+  }
+
+  #setParent(route?: Route): this {
+    this.parent = route;
+    return this;
   }
 
   #setPath(path: string) {
@@ -114,7 +132,13 @@ export function getParameters<Response = any>(params: Parameter[], match: any): 
 type RouteOptions = {
   name?: string;
   path: string;
+  children?: Route[];
   actions: Action[];
+};
+
+export type RegisterOptions = {
+  base: string;
+  parent?: Route;
 };
 
 export type Parameter = {

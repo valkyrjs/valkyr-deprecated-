@@ -15,20 +15,17 @@ const app = createRoot(document.getElementById("app"));
  |--------------------------------------------------------------------------------
  */
 
-const { pathname, search } = router.location;
 router
-  .listen({
-    render: async (components: React.ComponentType[]) => {
-      app.render(createReactElement(components));
-    },
-    error: (err: any) => {
-      const component = handleError(err);
-      if (component) {
-        app.render(component);
-      }
+  .render((component, props = {}) => {
+    app.render(createElement(component, props));
+  })
+  .error((error) => {
+    const component = handleError(error);
+    if (component) {
+      app.render(component);
     }
   })
-  .goTo(`${pathname}${search}`);
+  .listen();
 
 /*
  |--------------------------------------------------------------------------------
@@ -53,11 +50,4 @@ function handleError(err: any): ReactElement {
       </div>
     </div>
   );
-}
-
-function createReactElement(list: React.ComponentType[]): any {
-  if (list.length === 1) {
-    return createElement(list[0], {});
-  }
-  return createElement(list[0], {}, createReactElement(list.slice(1, list.length)));
 }

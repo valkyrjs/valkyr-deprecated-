@@ -1,7 +1,7 @@
 {
-  "name": "@valkyr/mvc",
+  "name": "@valkyr/react",
   "version": "0.0.0",
-  "description": "A small model view controller implementation for web frameworks.",
+  "description": "Toolkit for building @valkyr web based applications in react.",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
@@ -10,9 +10,9 @@
     "dist"
   ],
   "keywords": [
+    "react",
     "mvc",
-    "model-view-controller",
-    "react"
+    "model-view-controller"
   ],
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json"
@@ -20,6 +20,7 @@
   "devDependencies": {
     "@types/react": "^18.0.17",
     "@valkyr/db": "workspace:*",
+    "@valkyr/router": "workspace:*",
     "react": "^18.2.0",
     "rxjs": "^7.5.6"
   }

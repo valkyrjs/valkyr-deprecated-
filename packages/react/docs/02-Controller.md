@@ -1,29 +1,24 @@
 ---
-title: React
-sections: ["MVC"]
+title: Controller
+sections: ["React"]
 ---
 
 ## Introduction
 
-With our experimental `ReactViewController` we create a view controller that uses React to render its state and actions.
+With our experimental `ViewController` we create a view controller that uses React to render its state and actions.
 
 In our example we use the following example project structure:
 
 ```
 modules/
 └─ home/
-   ├─ controllers/
-   │  └─ HomeViewController.ts
    ├─ views/
-   │  └─ HomeView.tsx
+   |  ├─ Home.Controller.ts
+   │  └─ Home.View.tsx
    └─ HomeModule.ts
 ```
 
----
-
-## Controller
-
-A controller is meant to facilitate a part of the applications logic. It is responsible for handling application state, user input and updating the view accordingly.
+A controller is meant to facilitate a part of the applications logic. It is responsible for handling application state, user input and updating the view its been assigned accordingly.
 
 ---
 
@@ -62,28 +57,28 @@ The controller is expected to be provided a `resolve` method which is responsibl
 The `resolve` is also provided with a list of properties that may or may not be assigned to the view. The `resolver` will also trigger when the view properties has changed.
 
 ```ts
-type State = {
-  foo: string;
-};
+class FooController extends Controller<State> {
+  static readonly state: State = {
+    foo: "bar"
+  };
+
+  async resolve({ bar }: Props) {
+    await this.#resolveFoo(bar);
+  }
+
+  async #resolveFoo(bar: string) {
+    const foo = await fetch(`/foo?bar=${bar}`);
+    this.setState("foo", foo);
+  }
+}
 
 type Props = {
   bar: string;
 };
 
-class FooController extends Controller<State> {
-  static readonly state = {
-    foo: "bar"
-  };
-
-  async resolve({ bar }: Props) {
-    await this.resolveFoo(bar);
-  }
-
-  async resolveFoo(bar: string) {
-    const foo = await fetch(`/foo?bar=${bar}`);
-    this.setState("foo", foo);
-  }
-}
+type State = {
+  foo: string;
+};
 ```
 
 The preceding code defines a example controller that performs a asynchronous request to fetch the value of `foo` based on the value of `bar`. The `resolve` method is called when the view is mounted and subsequently when the `bar` property is updated.
@@ -96,34 +91,54 @@ By default it is expected that resolve is only executed once during view mountin
 
 ---
 
+### Queries
+
+The controller comes with a query handler using models from the `@valkyr/db` package. The query handler is used to fetch data from the local database and update the state of the controller.
+
+```ts
+class FooController extends Controller<State> {
+  async resolve() {
+    await this.query(Foo, { limit: 1 }, "foo");
+  }
+}
+
+type State = {
+  foo?: Foo;
+};
+```
+
 ### Subscriptions
 
 The controller comes with a subscription handler using `Subscription` from the `rxjs` Observer library. When assigning a subscription it will be automatically unsubscribed from when the view is unmounted. We also provide a quality of life `setNext` method which you can apply directly to the the subscriptions `next` handler.
 
 ```ts
-type State = {
-  foo: string;
-};
-
-const observable = new Observable();
+const foo = new Subject<string>();
 
 class FooController extends Controller<State> {
-  static readonly state = {
-    foo: "bar"
+  static readonly state: State = {
+    foo: ""
   };
 
   async resolve() {
-    await this.subscribeToFoo(bar);
+    this.#subscribeWithSetNext();
+    this.#subscribeWithCallback();
   }
 
-  async subscribeToFoo(bar: string) {
-    this.subscriptions.foo?.unsubscribe();
-    this.subscriptions.foo = observable.subscribe(this.setNext("foo"));
+  #subscribeWithSetNext() {
+    this.subscribe(foo, this.setNext("foo"));
+  }
+
+  #subscribeWithCallback() {
+    this.subscribe(foo, (foo) => this.setState("foo", foo));
   }
 }
+
+type State = {
+  foo: string;
+};
 ```
 
-The preceding code defines a example controller that subscribes to an observable and updates the `foo` state when the observable emits a new value.
+The preceding code defines a example controller that subscribes to rxjs subject and updates the `foo` state when the subject is given a new value.
 
 ---
 
@@ -132,7 +147,7 @@ The preceding code defines a example controller that subscribes to an observable
 To make use of your controller you have to wrap it in a `ViewController` factory class and export it.
 
 ```ts
-export const controller = new ReactViewController(FooController);
+export const controller = new ViewController(FooController);
 ```
 
 ---

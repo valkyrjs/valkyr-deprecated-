@@ -7,10 +7,10 @@ import type { MatchedRoute } from "./MatchedRoute";
  */
 
 export const response: ActionResponse = {
-  render<Props extends RenderProps = RenderProps>(components: any | any[], props: Props = {} as Props): Render<Props> {
+  render<Props extends RenderProps = RenderProps>(component: unknown, props: Props = {} as Props): Render<Props> {
     return {
       status: "render",
-      components: Array.isArray(components) ? components : [components],
+      component,
       props
     };
   },
@@ -75,7 +75,7 @@ export type Response<Props extends RenderProps = RenderProps> = Promise<Render<P
 export type RenderProps = Record<string, unknown>;
 
 export type ActionResponse = {
-  render<Props extends RenderProps = RenderProps>(components: any | any[], props?: Props): Render<Props>;
+  render<Props extends RenderProps = RenderProps>(component: any, props?: Props): Render<Props>;
   accept(): Accept;
   redirect(path: string, isExternal?: boolean): Redirect;
   reject(message: string, details?: any): Reject;
@@ -83,7 +83,7 @@ export type ActionResponse = {
 
 export type Render<Props extends RenderProps = RenderProps, Component = any> = {
   status: "render";
-  components: Component[];
+  component: Component;
   props: Props;
 };
 

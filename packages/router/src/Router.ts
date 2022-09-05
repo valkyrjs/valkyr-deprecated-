@@ -4,9 +4,8 @@ import { Subject, Subscription } from "rxjs";
 
 import { ActionRejectedError, Redirect, RenderProps, response } from "./Action";
 import { MatchedRoute } from "./MatchedRoute";
-import { RenderActionMissingError, Resolved, RouteNotFoundError } from "./Route";
+import { RegisterOptions, RenderActionMissingError, Resolved, RouteNotFoundError } from "./Route";
 import { Route } from "./Route";
-import { RouteGroup } from "./RouteGroup";
 
 export class Router<Component = unknown> {
   #base: string;
@@ -17,8 +16,14 @@ export class Router<Component = unknown> {
 
   #matched?: MatchedRoute;
 
-  #routed = new Subject<MatchedRoute>();
+  #routed = new Subject<{
+    route: Route;
+    component: Component;
+    props: RenderProps;
+  }>();
 
+  #render?: (component: Component, props?: RenderProps) => void;
+  #error?: (error: ActionRejectedError | RenderActionMissingError | RouteNotFoundError) => void;
   #destroy?: () => void;
 
   constructor(history: BrowserHistory | HashHistory | MemoryHistory, base = "") {
@@ -31,6 +36,10 @@ export class Router<Component = unknown> {
    | Accessors
    |--------------------------------------------------------------------------------
    */
+
+  get routes(): Route[] {
+    return Array.from(this.#routes);
+  }
 
   get location(): Location {
     return this.#history.location;
@@ -65,14 +74,31 @@ export class Router<Component = unknown> {
    |--------------------------------------------------------------------------------
    */
 
-  register(routes: (Route | RouteGroup)[]): this {
+  register(routes: Route[], options?: Partial<RegisterOptions>): this {
     for (const route of routes) {
-      if (route instanceof RouteGroup) {
-        this.register(route.routes);
-      } else {
-        this.#routes.add(route.base(this.#base));
+      this.#routes.add(
+        route.register({
+          base: options?.base ?? this.#base,
+          parent: options?.parent
+        })
+      );
+      if (route.children !== undefined) {
+        this.register(route.children, {
+          base: route.path,
+          parent: route
+        });
       }
     }
+    return this;
+  }
+
+  render(handler: (component: Component, props?: RenderProps) => void): this {
+    this.#render = handler;
+    return this;
+  }
+
+  error(handler: (error: ActionRejectedError | RenderActionMissingError | RouteNotFoundError) => void): this {
+    this.#error = handler;
     return this;
   }
 
@@ -83,42 +109,59 @@ export class Router<Component = unknown> {
    * @param render - Render method to execute on render actions.
    * @param error  - Error method to execute on routing exceptions.
    */
-  listen({
-    render,
-    error
-  }: {
-    render(components: Component[], props: RenderProps): Component;
-    error(error: ActionRejectedError | RenderActionMissingError | RouteNotFoundError): Component;
-  }): this {
+  listen(): this {
     if (this.#destroy !== undefined) {
       this.#destroy();
     }
+
     this.#destroy = this.#history.listen(async ({ location }) => {
       const resolved = this.getRoute(location.pathname);
       if (resolved === undefined) {
-        return error(new RouteNotFoundError(location.pathname));
+        return this.#error?.(new RouteNotFoundError(location.pathname));
       }
-      const matched = new MatchedRoute(this.#history, resolved);
-      for (const action of resolved.route.actions) {
-        const res = await action.call(response, matched);
-        switch (res.status) {
-          case "redirect": {
-            return this.redirect(res);
-          }
-          case "render": {
-            if ((location as any).state.render === true) {
-              render(res.components, {});
-            }
-            return this.setRoute(matched);
-          }
-          case "reject": {
-            return error(new ActionRejectedError(res.message, res.details));
+      const matched = new MatchedRoute(resolved, this.#history);
+      try {
+        await this.#resolve(matched.route, matched);
+      } catch (err) {
+        this.#error?.(err);
+      }
+      this.setRoute(matched);
+    });
+
+    this.goTo(`${this.location.pathname}${this.location.search}`);
+
+    return this;
+  }
+
+  async #resolve(route: Route, matched: MatchedRoute): Promise<void> {
+    for (const action of route.actions) {
+      const res = await action.call(response, matched);
+      switch (res.status) {
+        case "redirect": {
+          return this.redirect(res);
+        }
+        case "reject": {
+          throw new ActionRejectedError(res.message, res.details);
+        }
+        case "render": {
+          if (route.parent !== undefined) {
+            await this.#resolve(route.parent, matched);
+            // push this to the end of the stack to allow parent to render first
+            setTimeout(() => {
+              this.#routed.next({
+                route: matched.route,
+                component: res.component,
+                props: res.props
+              });
+            }, 0);
+            return;
+          } else {
+            return this.#render?.(res.component, res.props);
           }
         }
       }
-      error(new RenderActionMissingError(resolved.route.path));
-    });
-    return this;
+    }
+    throw new RenderActionMissingError(route.path);
   }
 
   /*
@@ -127,18 +170,18 @@ export class Router<Component = unknown> {
    |--------------------------------------------------------------------------------
    */
 
-  subscribe(paths: string[], callback: (matched: MatchedRoute) => void): Subscription {
-    return this.#routed.subscribe((matched) => {
+  subscribe(paths: string[], next: RoutedHandler): Subscription {
+    return this.#routed.subscribe(({ route, component, props }) => {
       for (const path of paths) {
-        if (matched.route.match(path)) {
-          callback(matched);
+        if (route.match(path)) {
+          next({ component, props });
         }
       }
     });
   }
 
-  routed(callback: (matched: MatchedRoute) => void): Subscription {
-    return this.#routed.subscribe(callback);
+  routed(next: RoutedHandler): Subscription {
+    return this.#routed.subscribe(next);
   }
 
   /**
@@ -168,17 +211,14 @@ export class Router<Component = unknown> {
    *
    * @returns Router
    */
-  goTo(path: string, state: { render?: boolean } & Record<string, unknown> = { render: true }): this {
+  goTo(path: string, state: Record<string, unknown> = {}): this {
     const parts = (this.#base + path.replace(this.#base, "")).replace(/\/$/, "").split("?");
     this.#history.push(
       {
         pathname: parts[0] || "/",
         search: parts[1] ? `?${parts[1]}` : ""
       },
-      {
-        ...state,
-        render: state.render !== false
-      }
+      state
     );
     return this;
   }
@@ -218,7 +258,6 @@ export class Router<Component = unknown> {
    */
   setRoute(matched: MatchedRoute): this {
     this.#matched = matched;
-    this.#routed.next(matched);
     return this;
   }
 
@@ -237,3 +276,12 @@ export class Router<Component = unknown> {
     return undefined;
   }
 }
+
+type RoutedHandler = (result: RoutedResult<Router>) => void;
+
+export type RoutedResult<Router> = {
+  component: RouterComponent<Router>;
+  props: RenderProps;
+};
+
+export type RouterComponent<Type> = Type extends Router<infer X> ? X : never;

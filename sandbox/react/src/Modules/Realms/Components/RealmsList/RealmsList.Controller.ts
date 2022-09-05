@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Controller, ReactViewController } from "@valkyr/mvc";
+import { Controller, ViewController } from "@valkyr/react";
 
 import { Realm } from "../../Models/Realm";
 
@@ -30,13 +30,16 @@ export class RealmsListController extends Controller<State, Props> {
   }
 
   async #subscribeToRealms() {
-    await this.query("realms", {
-      model: Realm,
-      where: this.#filter,
-      sort: {
-        name: this.#sort
-      }
-    });
+    await this.query(
+      Realm,
+      {
+        where: this.#filter,
+        sort: {
+          name: this.#sort
+        }
+      },
+      "realms"
+    );
   }
 
   /*
@@ -131,4 +134,4 @@ type Filter = {
  |--------------------------------------------------------------------------------
  */
 
-export const controller = new ReactViewController(RealmsListController);
+export const controller = new ViewController(RealmsListController);

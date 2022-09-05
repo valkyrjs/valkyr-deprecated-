@@ -1,8 +1,8 @@
 import { router } from "@App/Services/Router";
-import { Controller, ReactViewController } from "@valkyr/mvc";
-import { Subject } from "rxjs";
+import { Controller, ViewController } from "@valkyr/react";
+import { RoutedResult } from "@valkyr/router";
 
-const routed = new Subject<string>();
+const routes = ["/realms/:realms", "/realms/:realm/members", "/realms/:realm/pages", "/realms/:realm/invites"];
 
 /*
  |--------------------------------------------------------------------------------
@@ -11,34 +11,18 @@ const routed = new Subject<string>();
  */
 
 export class RealmLayoutController extends Controller<State> {
-  async resolve(): Promise<void> {
-    this.#subscribeToRoutes();
-    this.setState("component", router.route.name);
+  init() {
+    this.routes(router, routes, "routed");
   }
 
-  #subscribeToRoutes() {
-    this.subscribe("component", routed);
-  }
+  async resolve(): Promise<void> {}
 
   goTo(path: "" | "members" | "pages" | "invites"): () => void {
     return () => {
-      router.goTo(`/realms/${router.params.get("realm")}/${path}`, { render: false });
+      router.goTo(`/realms/${router.params.get("realm")}/${path}`);
     };
   }
 }
-
-/*
- |--------------------------------------------------------------------------------
- | Router
- |--------------------------------------------------------------------------------
- */
-
-router.subscribe(
-  ["/realms/:realms", "/realms/:realm/members", "/realms/:realm/pages", "/realms/:realm/invites"],
-  ({ route }) => {
-    routed.next(route.name);
-  }
-);
 
 /*
  |--------------------------------------------------------------------------------
@@ -47,7 +31,7 @@ router.subscribe(
  */
 
 type State = {
-  component?: string;
+  routed: RoutedResult<typeof router>;
 };
 
 /*
@@ -56,4 +40,4 @@ type State = {
  |--------------------------------------------------------------------------------
  */
 
-export const controller = new ReactViewController(RealmLayoutController);
+export const controller = new ViewController(RealmLayoutController);

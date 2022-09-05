@@ -141,15 +141,17 @@ importers:
     devDependencies:
       '@types/node': 16.10.3
 
-  packages/mvc:
+  packages/react:
     specifiers:
       '@types/react': ^18.0.17
       '@valkyr/db': workspace:*
+      '@valkyr/router': workspace:*
       react: ^18.2.0
       rxjs: ^7.5.6
     devDependencies:
       '@types/react': 18.0.17
       '@valkyr/db': link:../db
+      '@valkyr/router': link:../router
       react: 18.2.0
       rxjs: 7.5.6
 
@@ -195,7 +197,7 @@ importers:
       '@valkyr/access': workspace:*
       '@valkyr/db': workspace:*
       '@valkyr/ledger': workspace:*
-      '@valkyr/mvc': workspace:*
+      '@valkyr/react': workspace:*
       '@valkyr/router': workspace:*
       autoprefixer: ^10.4.8
       css-loader: 6.7.1
@@ -220,7 +222,7 @@ importers:
       '@valkyr/access': link:../../packages/access
       '@valkyr/db': link:../../packages/db
       '@valkyr/ledger': link:../../packages/ledger
-      '@valkyr/mvc': link:../../packages/mvc
+      '@valkyr/react': link:../../packages/react
       '@valkyr/router': link:../../packages/router
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0

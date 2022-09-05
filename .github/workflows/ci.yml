@@ -22,6 +22,7 @@ jobs:
           cache: pnpm
 
       - run: pnpm install
+      - run: pnpm build
 
       - uses: paambaati/codeclimate-action@v3.0.0
         env:
