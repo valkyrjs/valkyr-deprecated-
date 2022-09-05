@@ -70,8 +70,6 @@ export class ViewController<Controller extends ControllerClass> {
           };
         }
 
-        controller.init?.();
-
         controller
           .resolve(props)
           .catch((error: Error) => {

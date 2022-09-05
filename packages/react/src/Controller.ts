@@ -1,5 +1,5 @@
 import type { ModelClass, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
-import { Router } from "@valkyr/router";
+import { MatchedRoute, Router } from "@valkyr/router";
 import type { Observable, Subject, Subscription } from "rxjs";
 
 import { Debounce } from "./Debounce";
@@ -72,12 +72,6 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    */
 
   /**
-   * Runs when a new instance is created. This is only run once per instance. If
-   * you want to refresh during property changes then use the resolve method.
-   */
-  init(): void {}
-
-  /**
    * Triggered by the view controller instance when the view is mounted. This allows
    * the controller to perform data assignment tasks before rendering the view.
    */
@@ -101,14 +95,32 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    |--------------------------------------------------------------------------------
    */
 
-  routes<K extends keyof State>(router: Router, paths: string[], state: K): void {
+  async routes<K extends keyof State>(router: Router, paths: string[], state: K): Promise<void> {
+    await this.#setRouteComponent(router, paths, state);
     this.subscriptions.get("routes")?.unsubscribe();
     this.subscriptions.set(
       "routes",
-      router.subscribe(paths, (result) => {
-        this.setState(state, result as State[K]);
-      })
+      router.subscribe(paths, (matched) => this.#setMatchedComponent(router, matched, state))
     );
+  }
+
+  async #setRouteComponent<K extends keyof State>(router: Router, paths: string[], state: K) {
+    for (const path of paths) {
+      const isCurrentPath = router.match(path);
+      if (isCurrentPath === true) {
+        const matched = router.getMatchedRoute(path);
+        if (matched !== undefined) {
+          await this.#setMatchedComponent(router, matched, state);
+        }
+      }
+    }
+  }
+
+  async #setMatchedComponent<K extends keyof State>(router: Router, matched: MatchedRoute, state: K) {
+    const result = await router.getComponent(matched);
+    if (result?.component !== this.state[state]?.component) {
+      this.setState(state, result as State[K]);
+    }
   }
 
   /*

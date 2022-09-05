@@ -16,11 +16,7 @@ export class Router<Component = unknown> {
 
   #matched?: MatchedRoute;
 
-  #routed = new Subject<{
-    route: Route;
-    component: Component;
-    props: RenderProps;
-  }>();
+  #routed = new Subject<MatchedRoute>();
 
   #render?: (component: Component, props?: RenderProps) => void;
   #error?: (error: ActionRejectedError | RenderActionMissingError | RouteNotFoundError) => void;
@@ -92,11 +88,21 @@ export class Router<Component = unknown> {
     return this;
   }
 
+  /**
+   * Register render handler receiving the component and props to render.
+   *
+   * @param handler - Handler method for incoming components and props.
+   */
   render(handler: (component: Component, props?: RenderProps) => void): this {
     this.#render = handler;
     return this;
   }
 
+  /**
+   * Register error handler receiving the error to render.
+   *
+   * @param handler - Handler method for incoming errors.
+   */
   error(handler: (error: ActionRejectedError | RenderActionMissingError | RouteNotFoundError) => void): this {
     this.#error = handler;
     return this;
@@ -115,11 +121,10 @@ export class Router<Component = unknown> {
     }
 
     this.#destroy = this.#history.listen(async ({ location }) => {
-      const resolved = this.getRoute(location.pathname);
-      if (resolved === undefined) {
+      const matched = this.getMatchedRoute(location.pathname);
+      if (matched === undefined) {
         return this.#error?.(new RouteNotFoundError(location.pathname));
       }
-      const matched = new MatchedRoute(resolved, this.#history);
       try {
         await this.#resolve(matched.route, matched);
       } catch (err) {
@@ -145,19 +150,10 @@ export class Router<Component = unknown> {
         }
         case "render": {
           if (route.parent !== undefined) {
-            await this.#resolve(route.parent, matched);
-            // push this to the end of the stack to allow parent to render first
-            setTimeout(() => {
-              this.#routed.next({
-                route: matched.route,
-                component: res.component,
-                props: res.props
-              });
-            }, 0);
-            return;
-          } else {
-            return this.#render?.(res.component, res.props);
+            this.#routed.next(matched);
+            return this.#resolve(route.parent, matched);
           }
+          return this.#render?.(res.component, res.props);
         }
       }
     }
@@ -171,10 +167,10 @@ export class Router<Component = unknown> {
    */
 
   subscribe(paths: string[], next: RoutedHandler): Subscription {
-    return this.#routed.subscribe(({ route, component, props }) => {
+    return this.#routed.subscribe((matched) => {
       for (const path of paths) {
-        if (route.match(path)) {
-          next({ component, props });
+        if (matched.route.match(path)) {
+          next(matched);
         }
       }
     });
@@ -262,6 +258,20 @@ export class Router<Component = unknown> {
   }
 
   /**
+   * Get the matched route for the provided path or return undefined if provided
+   * path does not match any registered routes.
+   *
+   * @param path - Path to retrieve a route for.
+   */
+  getMatchedRoute(path: string): MatchedRoute | undefined {
+    const resolved = this.getRoute(path);
+    if (resolved === undefined) {
+      return undefined;
+    }
+    return new MatchedRoute(resolved, this.#history);
+  }
+
+  /**
    * Get a route from the registered list of routes.
    *
    * @param path - Path to match against.
@@ -275,9 +285,31 @@ export class Router<Component = unknown> {
     }
     return undefined;
   }
+
+  /**
+   * Return a routing result that should render for the provided matched component
+   * or return undefined if the matched route does not result in a component being
+   * rendered.
+   *
+   * @param matched - Matched route result.
+   */
+  async getComponent(matched: MatchedRoute): Promise<RoutedResult<Router> | undefined> {
+    for (const action of matched.route.actions) {
+      const res = await action.call(response, matched);
+      switch (res.status) {
+        case "render": {
+          return {
+            component: res.component,
+            props: res.props
+          };
+        }
+      }
+    }
+    return undefined;
+  }
 }
 
-type RoutedHandler = (result: RoutedResult<Router>) => void;
+type RoutedHandler = (result: MatchedRoute) => void;
 
 export type RoutedResult<Router> = {
   component: RouterComponent<Router>;

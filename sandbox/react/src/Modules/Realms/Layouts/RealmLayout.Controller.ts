@@ -11,11 +11,9 @@ const routes = ["/realms/:realms", "/realms/:realm/members", "/realms/:realm/pag
  */
 
 export class RealmLayoutController extends Controller<State> {
-  init() {
-    this.routes(router, routes, "routed");
+  async resolve(): Promise<void> {
+    await this.routes(router, routes, "routed");
   }
-
-  async resolve(): Promise<void> {}
 
   goTo(path: "" | "members" | "pages" | "invites"): () => void {
     return () => {
