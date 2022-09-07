@@ -99,6 +99,7 @@ export class ViewController<Controller extends ControllerClass> {
       return component({ props, state, actions, refs: controller!.refs });
     };
 
+    component.displayName = options?.name ?? component.name;
     wrapper.displayName = options?.name ?? component.name;
 
     // ### Memoize

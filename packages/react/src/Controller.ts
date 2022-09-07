@@ -1,5 +1,4 @@
 import type { ModelClass, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
-import { MatchedRoute, Router } from "@valkyr/router";
 import type { Observable, Subject, Subscription } from "rxjs";
 
 import { Debounce } from "./Debounce";
@@ -87,40 +86,6 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
       subscription.unsubscribe();
     }
     this.refs.destroy();
-  }
-
-  /*
-   |--------------------------------------------------------------------------------
-   | Routing Handlers
-   |--------------------------------------------------------------------------------
-   */
-
-  async routes<K extends keyof State>(router: Router, paths: string[], state: K): Promise<void> {
-    await this.#setRouteComponent(router, paths, state);
-    this.subscriptions.get("routes")?.unsubscribe();
-    this.subscriptions.set(
-      "routes",
-      router.subscribe(paths, (matched) => this.#setMatchedComponent(router, matched, state))
-    );
-  }
-
-  async #setRouteComponent<K extends keyof State>(router: Router, paths: string[], state: K) {
-    for (const path of paths) {
-      const isCurrentPath = router.match(path);
-      if (isCurrentPath === true) {
-        const matched = router.getMatchedRoute(path);
-        if (matched !== undefined) {
-          await this.#setMatchedComponent(router, matched, state);
-        }
-      }
-    }
-  }
-
-  async #setMatchedComponent<K extends keyof State>(router: Router, matched: MatchedRoute, state: K) {
-    const result = await router.getComponent(matched);
-    if (result?.component !== this.state[state]?.component) {
-      this.setState(state, result as State[K]);
-    }
   }
 
   /*
@@ -218,12 +183,23 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
   setState(state: Partial<State>): void;
   setState<K extends keyof State>(key: K, value: State[K]): void;
   setState<K extends keyof State>(target: K | State, value?: State[K]): void {
+    let hasChanges = false;
     if (this.#isStateKey(target)) {
-      this.state[target] = value!;
+      if (this.state[target] !== value) {
+        this.state[target] = value!;
+        hasChanges = true;
+      }
     } else {
       for (const key in target) {
+        if (this.state[key] !== target[key]) {
+          this.state[key] = target[key];
+          hasChanges = true;
+        }
         this.state[key] = target[key];
       }
+    }
+    if (hasChanges === false) {
+      return;
     }
     this.#debounce.run(() => {
       this.pushState({ ...this.state });
@@ -245,7 +221,7 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
   toActions(): unknown {
     const actions: any = {};
     for (const name of Object.getOwnPropertyNames(this.constructor.prototype)) {
-      if (name !== "constructor") {
+      if (name !== "constructor" && name !== "resolve") {
         actions[name] = (this as any)[name].bind(this);
       }
     }
@@ -279,6 +255,6 @@ type Where = {
   where?: Record<string, unknown>;
 };
 
-type JsonLike = Record<string, any>;
+export type JsonLike = Record<string, any>;
 
 type SubscriptionType<Type> = Type extends Subject<infer X> | Observable<infer X> ? X : never;

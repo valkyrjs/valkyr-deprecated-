@@ -1,8 +1,6 @@
 import { router } from "@App/Services/Router";
-import { Controller, ViewController } from "@valkyr/react";
+import { Controller, ControllerRoutes, ViewController } from "@valkyr/react";
 import { RoutedResult } from "@valkyr/router";
-
-const routes = ["/realms/:realms", "/realms/:realm/members", "/realms/:realm/pages", "/realms/:realm/invites"];
 
 /*
  |--------------------------------------------------------------------------------
@@ -11,8 +9,15 @@ const routes = ["/realms/:realms", "/realms/:realm/members", "/realms/:realm/pag
  */
 
 export class RealmLayoutController extends Controller<State> {
+  #routes = new ControllerRoutes(this, router, [
+    { path: "/realms/:realm" },
+    { path: "/realms/:realm/members" },
+    { path: "/realms/:realm/pages" },
+    { path: "/realms/:realm/invites" }
+  ]);
+
   async resolve(): Promise<void> {
-    await this.routes(router, routes, "routed");
+    await this.#routes.init();
   }
 
   goTo(path: "" | "members" | "pages" | "invites"): () => void {
@@ -29,7 +34,7 @@ export class RealmLayoutController extends Controller<State> {
  */
 
 type State = {
-  routed: RoutedResult<typeof router>;
+  routed?: RoutedResult<typeof router>;
 };
 
 /*

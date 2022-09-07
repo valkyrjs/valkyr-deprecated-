@@ -2,24 +2,21 @@ import type { BrowserHistory, HashHistory, Location, MemoryHistory } from "histo
 import { match } from "path-to-regexp";
 import { Subject, Subscription } from "rxjs";
 
-import { ActionRejectedError, Redirect, RenderProps, response } from "./Action";
-import { MatchedRoute } from "./MatchedRoute";
-import { RegisterOptions, RenderActionMissingError, Resolved, RouteNotFoundError } from "./Route";
+import { Redirect, RenderProps, response } from "./Action";
+import { ActionRejectedException, RenderActionMissingException, RouteNotFoundException } from "./Exceptions";
+import { Resolved } from "./Resolved";
+import { RegisterOptions } from "./Route";
 import { Route } from "./Route";
 
 export class Router<Component = unknown> {
   #base: string;
-
   #history: BrowserHistory | HashHistory | MemoryHistory;
-
   #routes: Set<Route> = new Set();
-
-  #matched?: MatchedRoute;
-
-  #routed = new Subject<MatchedRoute>();
+  #resolved?: Resolved;
+  #subscriber = new Subject<Resolved>();
 
   #render?: (component: Component, props?: RenderProps) => void;
-  #error?: (error: ActionRejectedError | RenderActionMissingError | RouteNotFoundError) => void;
+  #error?: (error: ActionRejectedException | RenderActionMissingException | RouteNotFoundException) => void;
   #destroy?: () => void;
 
   constructor(history: BrowserHistory | HashHistory | MemoryHistory, base = "") {
@@ -41,27 +38,27 @@ export class Router<Component = unknown> {
     return this.#history.location;
   }
 
-  get params(): MatchedRoute["params"] {
-    return this.matched.params;
+  get state(): Location["state"] {
+    return this.#history.location["state"];
   }
 
-  get query(): MatchedRoute["query"] {
-    return this.matched.query;
+  get params(): Resolved["params"] {
+    return this.resolved.params;
   }
 
-  get state(): MatchedRoute["state"] {
-    return this.matched.state;
+  get query(): Resolved["query"] {
+    return this.resolved.query;
   }
 
-  get route(): MatchedRoute["route"] {
-    return this.matched.route;
+  get route(): Resolved["route"] {
+    return this.resolved.route;
   }
 
-  get matched(): MatchedRoute {
-    if (this.#matched === undefined) {
+  get resolved(): Resolved {
+    if (this.#resolved === undefined) {
       throw new Error("No route has been resolved yet");
     }
-    return this.#matched;
+    return this.#resolved;
   }
 
   /*
@@ -103,7 +100,9 @@ export class Router<Component = unknown> {
    *
    * @param handler - Handler method for incoming errors.
    */
-  error(handler: (error: ActionRejectedError | RenderActionMissingError | RouteNotFoundError) => void): this {
+  error(
+    handler: (error: ActionRejectedException | RenderActionMissingException | RouteNotFoundException) => void
+  ): this {
     this.#error = handler;
     return this;
   }
@@ -121,16 +120,16 @@ export class Router<Component = unknown> {
     }
 
     this.#destroy = this.#history.listen(async ({ location }) => {
-      const matched = this.getMatchedRoute(location.pathname);
-      if (matched === undefined) {
-        return this.#error?.(new RouteNotFoundError(location.pathname));
+      const resolved = this.getResolvedRoute(location.pathname);
+      if (resolved === undefined) {
+        return this.#error?.(new RouteNotFoundException(location.pathname));
       }
+      this.setRoute(resolved);
       try {
-        await this.#resolve(matched.route, matched);
+        await this.#execute(resolved.route, resolved);
       } catch (err) {
         this.#error?.(err);
       }
-      this.setRoute(matched);
     });
 
     this.goTo(`${this.location.pathname}${this.location.search}`);
@@ -138,26 +137,26 @@ export class Router<Component = unknown> {
     return this;
   }
 
-  async #resolve(route: Route, matched: MatchedRoute): Promise<void> {
+  async #execute(route: Route, resolved: Resolved): Promise<void> {
     for (const action of route.actions) {
-      const res = await action.call(response, matched);
+      const res = await action.call(response, resolved);
       switch (res.status) {
         case "redirect": {
           return this.redirect(res);
         }
         case "reject": {
-          throw new ActionRejectedError(res.message, res.details);
+          throw new ActionRejectedException(res.message, res.details);
         }
         case "render": {
           if (route.parent !== undefined) {
-            this.#routed.next(matched);
-            return this.#resolve(route.parent, matched);
+            this.#subscriber.next(resolved);
+            return this.#execute(route.parent, resolved);
           }
           return this.#render?.(res.component, res.props);
         }
       }
     }
-    throw new RenderActionMissingError(route.path);
+    throw new RenderActionMissingException(route.path);
   }
 
   /*
@@ -167,7 +166,7 @@ export class Router<Component = unknown> {
    */
 
   subscribe(paths: string[], next: RoutedHandler): Subscription {
-    return this.#routed.subscribe((matched) => {
+    return this.#subscriber.subscribe((matched) => {
       for (const path of paths) {
         if (matched.route.match(path)) {
           next(matched);
@@ -177,7 +176,7 @@ export class Router<Component = unknown> {
   }
 
   routed(next: RoutedHandler): Subscription {
-    return this.#routed.subscribe(next);
+    return this.#subscriber.subscribe(next);
   }
 
   /**
@@ -220,7 +219,7 @@ export class Router<Component = unknown> {
   }
 
   /**
-   * Reload the current route by re-executing the request.
+   * Reload the current route by re-executing the request.#matched
    *
    * @returns Router
    */
@@ -250,25 +249,25 @@ export class Router<Component = unknown> {
    * @remarks This provides shortcut access to the currently resolved routes state,
    * query and parameter values.
    *
-   * @param matched - Matched route.
+   * @param resolved - Resolved route.
    */
-  setRoute(matched: MatchedRoute): this {
-    this.#matched = matched;
+  setRoute(resolved: Resolved): this {
+    this.#resolved = resolved;
     return this;
   }
 
   /**
-   * Get the matched route for the provided path or return undefined if provided
+   * Get the resolved route for the provided path or return undefined if provided
    * path does not match any registered routes.
    *
    * @param path - Path to retrieve a route for.
    */
-  getMatchedRoute(path: string): MatchedRoute | undefined {
+  getResolvedRoute(path: string): Resolved | undefined {
     const resolved = this.getRoute(path);
     if (resolved === undefined) {
       return undefined;
     }
-    return new MatchedRoute(resolved, this.#history);
+    return new Resolved(resolved.route, resolved.params, this.#history);
   }
 
   /**
@@ -276,7 +275,7 @@ export class Router<Component = unknown> {
    *
    * @param path - Path to match against.
    */
-  getRoute(path: string): Resolved | undefined {
+  getRoute(path: string): { route: Route; params: Object } | undefined {
     for (const route of Array.from(this.#routes.values())) {
       const params = route.match(path);
       if (params !== false) {
@@ -293,7 +292,7 @@ export class Router<Component = unknown> {
    *
    * @param matched - Matched route result.
    */
-  async getComponent(matched: MatchedRoute): Promise<RoutedResult<Router> | undefined> {
+  async getComponent(matched: Resolved): Promise<RoutedResult<Router> | undefined> {
     for (const action of matched.route.actions) {
       const res = await action.call(response, matched);
       switch (res.status) {
@@ -309,7 +308,7 @@ export class Router<Component = unknown> {
   }
 }
 
-type RoutedHandler = (result: MatchedRoute) => void;
+type RoutedHandler = (result: Resolved) => void;
 
 export type RoutedResult<Router> = {
   component: RouterComponent<Router>;

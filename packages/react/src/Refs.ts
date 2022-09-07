@@ -8,7 +8,6 @@ export class Refs {
   set(name: string) {
     return (element: HTMLElement | null) => {
       if (element !== null) {
-        console.log("Set ref", name);
         refs.set(name, element);
       }
     };

@@ -1,4 +1,4 @@
-import type { MatchedRoute } from "./MatchedRoute";
+import type { Resolved } from "./Resolved";
 
 /*
  |--------------------------------------------------------------------------------
@@ -40,34 +40,13 @@ export const response: ActionResponse = {
 
 /*
  |--------------------------------------------------------------------------------
- | Errors
- |--------------------------------------------------------------------------------
- */
-
-/**
- * @classdesc
- * Inform the client that an action encountered a failure event.
- */
-export class ActionRejectedError extends Error {
-  readonly type = "ActionRejectedError" as const;
-
-  readonly details: any;
-
-  constructor(message: string, details: any = {}) {
-    super(message);
-    this.details = details;
-  }
-}
-
-/*
- |--------------------------------------------------------------------------------
  | Types
  |--------------------------------------------------------------------------------
  */
 
 export type Action<Props extends RenderProps = RenderProps> = (
   this: ActionResponse,
-  matched: MatchedRoute
+  resolved: Resolved
 ) => Response<Props>;
 
 export type Response<Props extends RenderProps = RenderProps> = Promise<Render<Props> | Accept | Redirect | Reject>;

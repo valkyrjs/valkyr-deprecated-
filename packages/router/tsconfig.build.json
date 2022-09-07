@@ -1,11 +1,9 @@
 {
-  "extends": "../../tsconfig.build.json",
-  "include": [
-    "./src/**/*"
-  ],
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "skipLibCheck": true
-  }
+    "module": "commonjs",
+    "outDir": "./dist"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"],
 }
