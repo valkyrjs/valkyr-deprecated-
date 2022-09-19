@@ -218,6 +218,14 @@ export class Router<Component = unknown> {
     return this;
   }
 
+  forward = () => {
+    this.#history.forward();
+  };
+
+  back = () => {
+    this.#history.back();
+  };
+
   /**
    * Reload the current route by re-executing the request.#matched
    *

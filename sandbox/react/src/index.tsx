@@ -27,6 +27,10 @@ router
   })
   .listen();
 
+router.routed(() => {
+  console.log("routed", router.location.pathname);
+});
+
 /*
  |--------------------------------------------------------------------------------
  | Utilities

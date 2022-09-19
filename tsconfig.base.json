@@ -5,7 +5,7 @@
       "dom",
       "dom.iterable"
     ],
-    "jsx": "react-jsxdev",
+    "jsx": "react-jsx",
     "target": "es2020",
     "module": "commonjs",
     "moduleResolution": "node",
