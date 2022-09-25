@@ -1,4 +1,6 @@
-import Joi from "joi";
+import JoiRoot from "joi";
+
+export const Joi = JoiRoot;
 
 export abstract class Form<Inputs extends Record<string, any> = {}> {
   /**
@@ -17,19 +19,18 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
    */
   #elements: Record<string, HTMLInputElement | HTMLSelectElement> = {};
 
+  #onChange: OnChangeCallback<Inputs>;
+  #onError: OnErrorCallback<Inputs>;
+  #onResponse: OnResponseCallback;
+
   /*
    |--------------------------------------------------------------------------------
    | Constructor
    |--------------------------------------------------------------------------------
    */
 
-  constructor(
-    readonly inputs: Inputs,
-    readonly setFormState: FormStateHandler<Form>,
-    readonly submitResponse?: (response: any) => void
-  ) {
+  constructor(readonly inputs: Inputs) {
     this.#bindMethods();
-    this.setState();
   }
 
   #bindMethods() {
@@ -57,6 +58,21 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
    |--------------------------------------------------------------------------------
    */
 
+  onChange(callback: OnChangeCallback<Inputs>): this {
+    this.#onChange = callback;
+    return this;
+  }
+
+  onError(callback: OnErrorCallback<Inputs>): this {
+    this.#onError = callback;
+    return this;
+  }
+
+  onResponse(callback: OnResponseCallback): this {
+    this.#onResponse = callback;
+    return this;
+  }
+
   /**
    * Register a input element with the form. This registers form related methods and a
    * reference to the element itself that can be utilized by the form.
@@ -72,7 +88,6 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
       defaultValue: this.get(name),
       onChange: ({ target: { value } }: any) => {
         this.set(name, value);
-        this.setState();
       }
     };
   }
@@ -91,7 +106,7 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
    */
   set<Key extends keyof Inputs>(name: Key, value: Inputs[Key]): void {
     this.inputs[name] = value;
-    this.setState();
+    this.#onChange?.(name, value);
   }
 
   /**
@@ -116,40 +131,20 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
 
   /*
    |--------------------------------------------------------------------------------
-   | State
-   |--------------------------------------------------------------------------------
-   */
-
-  setState() {
-    this.setFormState(this.getState());
-  }
-
-  getState<F extends Form>(): FormState<F>["form"] {
-    return {
-      inputs: this.inputs,
-      errors: this.errors,
-      register: this.register,
-      submit: this.handleSubmit
-    };
-  }
-
-  /*
-   |--------------------------------------------------------------------------------
    | Submission
    |--------------------------------------------------------------------------------
    */
 
-  async handleSubmit(event: any) {
+  async submit(event: any) {
     event.preventDefault?.();
     const errors = this.validate();
     if (errors !== false) {
       this.errors = errors;
-      this.setState();
+      this.#onError?.(errors);
     } else {
       this.errors = undefined;
-      const response = await this.submit();
-      this.setState();
-      this.submitResponse?.(response);
+      const response = await this.handleSubmit();
+      this.#onResponse?.(response);
     }
   }
 
@@ -173,7 +168,7 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
   /**
    * Form submission handler defined by the parent class.
    */
-  protected abstract submit(): Promise<any>;
+  abstract handleSubmit(): Promise<any>;
 }
 
 /*
@@ -182,13 +177,11 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
  |--------------------------------------------------------------------------------
  */
 
-type FormStateHandler<F extends Form> = (state: FormState<F>["form"]) => void;
+type OnChangeCallback<Inputs extends {}, Key extends keyof Inputs = keyof Inputs> = (
+  name: Key,
+  value: Inputs[Key]
+) => void;
 
-export type FormState<F extends Form> = {
-  form: {
-    inputs: F["inputs"];
-    errors?: Partial<F["inputs"]>;
-    register: F["register"];
-    submit: F["handleSubmit"];
-  };
-};
+type OnErrorCallback<Inputs extends {}> = (errors: Partial<Inputs>) => void;
+
+type OnResponseCallback = (response: any) => void;

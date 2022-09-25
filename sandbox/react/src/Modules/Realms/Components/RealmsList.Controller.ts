@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { Controller, ViewController } from "@valkyr/react";
 
-import { Realm } from "../../Models/Realm";
+import { Realm } from "../Models/Realm";
 
 /*
  |--------------------------------------------------------------------------------

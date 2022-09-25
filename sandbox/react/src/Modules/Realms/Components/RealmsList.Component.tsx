@@ -1,12 +1,14 @@
 import { router } from "@App/Services/Router";
 import { Fragment } from "react";
 
+import { CreateRealm } from "./CreateRealm.Component";
 import { controller, Props } from "./RealmsList.Controller";
 
 export const RealmsList = controller.view<Props>(
   ({ props: { name }, state: { realms }, actions: { addRealm, toggle, clearRealms, filter, deleteRealm } }) => {
     return (
       <div>
+        <CreateRealm />
         <div>Realms List Name: {name}</div>
         <div style={{ margin: "10px 0" }}>---</div>
         {[1, 10, 50, 100].map((amount) => {

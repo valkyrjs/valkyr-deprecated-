@@ -16,7 +16,22 @@
   "[html,svg]": {
     "editor.formatOnSaveMode": "file",
     "editor.defaultFormatter": "HookyQR.beautify"
-  },  
+  },
+  "material-icon-theme.files.associations": {
+    "index.ts": "tree",
+    "*.access.ts": "key",
+    "*.controller.ts": "makefile",
+    "*.entity.ts": "database",
+    "*.form.ts": "log",
+    "*.gateway.ts": "parcel",
+    "*.module.ts": "robot",
+    "*.projector.ts": "apiblueprint",
+    "*.service.ts": "console",
+    "*.validator.ts": "key",
+    "*.component.tsx": "virtual",
+    "*.modal.tsx": "opam",
+    "*.view.tsx": "virtual"
+  },
   "cSpell.words": [
     "birthdayresearch",
     "bitflag",
