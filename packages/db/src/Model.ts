@@ -8,7 +8,7 @@ import { RemoveResult } from "./Storage/Operators/Remove";
 import { UpdateResult } from "./Storage/Operators/Update";
 
 export abstract class Model<D extends Document = any> {
-  static _collection: Collection;
+  private static _collection: Collection;
 
   readonly id!: string;
 
@@ -21,7 +21,7 @@ export abstract class Model<D extends Document = any> {
   }
 
   static get $collection() {
-    if (!this._collection) {
+    if (this._collection === undefined) {
       throw new Error(`Model Violation: Collection for '${this.name}' has not been resolved`);
     }
     return this._collection;
@@ -241,14 +241,14 @@ export abstract class Model<D extends Document = any> {
  |--------------------------------------------------------------------------------
  */
 
-export type ModelClass<T = unknown, D = unknown> = ModelContext<T, D> & ModelMethods<T, D>;
+export type ModelClass<T = any, D = any> = ModelContext<T, D> & ModelMethods<T, D>;
 
-type ModelContext<T = unknown, D = unknown> = {
+type ModelContext<T = any, D = any> = {
   new (document: D): T;
   $collection: Collection;
 };
 
-type ModelMethods<T = unknown, D = unknown> = {
+type ModelMethods<T = any, D = any> = {
   insertOne(document: D): Promise<T>;
   insertMany(documents: D[]): Promise<T[]>;
   updateOne(criteria: RawObject, update: Update["operators"]): Promise<UpdateResult>;

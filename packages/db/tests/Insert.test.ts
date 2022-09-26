@@ -1,5 +1,5 @@
-import { getUserCollection, users } from "../mocks";
-import { DuplicateDocumentError } from "../src";
+import { users } from "../mocks";
+import { Collection, DuplicateDocumentError, InstanceAdapter } from "../src";
 
 /*
  |--------------------------------------------------------------------------------
@@ -9,14 +9,14 @@ import { DuplicateDocumentError } from "../src";
 
 describe("Storage Insert", () => {
   it("should successfully insert a new document", async () => {
-    const collection = getUserCollection();
+    const collection = new Collection("users", new InstanceAdapter());
     await collection.insertMany(users);
     expect(collection.storage.documents.get(users[0].id)).toEqual(users[0]);
     expect(collection.storage.documents.get(users[1].id)).toEqual(users[1]);
   });
 
   it("should throw an error if the document already exists", async () => {
-    const collection = getUserCollection();
+    const collection = new Collection("users", new InstanceAdapter());
     try {
       await collection.insertOne(users[0]);
     } catch (err) {

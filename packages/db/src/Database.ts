@@ -15,17 +15,28 @@ import { ModelClass } from "./Model";
  * import { Account } from "./Account";
  * import { User } from "./User";
  *
- * register([Account, User], new IndexedDbAdapter());
+ * register(
+ *   [
+ *    { name: "accounts", model: Account },
+ *    { name: "users", model: User }
+ *   ],
+ *   new IndexedDbAdapter()
+ * );
  * ```
  *
- * @param models  - List of models.
- * @param adapter - Adapter to create collections under.
+ * @param registrars - List of models to register.
+ * @param adapter    - Adapter to create collections under.
  */
-function register(models: ModelClass[], adapter: Adapter): void {
-  for (const model of models) {
-    model.$collection = new Collection(model.name, adapter);
+function register<Model extends ModelClass>(registrars: ModelRegistrars<Model>[], adapter: Adapter): void {
+  for (const { name, model } of registrars) {
+    model.$collection = new Collection(name, adapter);
   }
 }
+
+type ModelRegistrars<Model extends ModelClass> = {
+  name: string;
+  model: Model;
+};
 
 export const database = {
   register
