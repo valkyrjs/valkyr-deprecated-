@@ -27,15 +27,15 @@ import { ModelClass } from "./Model";
  * @param registrars - List of models to register.
  * @param adapter    - Adapter to create collections under.
  */
-function register<Model extends ModelClass>(registrars: ModelRegistrars<Model>[], adapter: Adapter): void {
+function register(registrars: ModelRegistrars[], adapter: Adapter): void {
   for (const { name, model } of registrars) {
     model.$collection = new Collection(name, adapter);
   }
 }
 
-type ModelRegistrars<Model extends ModelClass> = {
+type ModelRegistrars = {
   name: string;
-  model: Model;
+  model: ModelClass;
 };
 
 export const database = {

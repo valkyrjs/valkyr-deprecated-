@@ -1,0 +1,24 @@
+{
+  "name": "@valkyr/nestjs",
+  "version": "0.0.0",
+  "description": "Toolkit for building @valkyr nestjs based apis.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "api",
+    "nestjs"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json"
+  },
+  "dependencies": {
+    "@nestjs/common": "^9.1.2",
+    "class-validator": "^0.13.2",
+    "express": "^4.18.1"
+  }
+}
