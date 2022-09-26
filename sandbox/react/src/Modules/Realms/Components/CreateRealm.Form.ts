@@ -7,19 +7,19 @@ export class CreateRealmForm extends Form<{
   color: string;
 }> {
   readonly schema = Joi.object({
-    name: Joi.string().required(),
+    name: Joi.string().min(3).max(10).required(),
     color: Joi.string().required()
   });
 
-  async handleSubmit() {
+  static async submit(form: CreateRealmForm): Promise<void> {
     Realm.insertOne({
-      name: this.get("name"),
-      color: this.get("color"),
+      name: form.get("name"),
+      color: form.get("color"),
       icon: "",
       members: [],
       invites: [],
       owner: ""
     });
-    this.clear();
+    form.clear();
   }
 }
