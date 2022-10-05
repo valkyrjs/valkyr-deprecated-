@@ -300,7 +300,7 @@ export class Router<Component = unknown> {
    *
    * @param matched - Matched route result.
    */
-  async getComponent(matched: Resolved): Promise<RoutedResult<Router> | undefined> {
+  async getComponent<R extends Router>(matched: Resolved): Promise<RoutedResult<R> | undefined> {
     for (const action of matched.route.actions) {
       const res = await action.call(response, matched);
       switch (res.status) {

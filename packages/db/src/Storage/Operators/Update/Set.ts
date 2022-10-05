@@ -1,3 +1,4 @@
+import { deepEqual } from "fast-equals";
 import { Query } from "mingo";
 import type { RawObject } from "mingo/types";
 
@@ -40,6 +41,8 @@ export function $set(document: Document, criteria: RawObject, $set: Update["oper
  * @param criteria - Search criteria provided with the operation. Eg. updateOne({ id: "1" })
  * @param $set     - $set action being executed.
  * @param key      - Key containing the '$' identifier.
+ *
+ * @returns True if the document was modified.
  */
 function setPositionalData(document: Document, criteria: RawObject, $set: RawObject, key: string): boolean {
   const { filter, path, target } = getPositionalFilter(criteria, key);
@@ -48,8 +51,6 @@ function setPositionalData(document: Document, criteria: RawObject, $set: RawObj
   if (values === undefined) {
     throw new Error("NOT ARRAY");
   }
-
-  let modified = false;
 
   let items: any[];
   if (typeof filter === "object") {
@@ -60,11 +61,7 @@ function setPositionalData(document: Document, criteria: RawObject, $set: RawObj
 
   dot.setProperty(document, path, items);
 
-  if (JSON.stringify(values) !== JSON.stringify(items)) {
-    modified = true;
-  }
-
-  return modified;
+  return deepEqual(values, items) === false;
 }
 
 function getPositionalFilter(

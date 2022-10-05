@@ -13,9 +13,9 @@ In our example we use the following example project structure:
 modules/
 └─ home/
    ├─ views/
-   |  ├─ Home.Controller.ts
-   │  └─ Home.View.tsx
-   └─ HomeModule.ts
+   |  ├─ home.controller.ts
+   │  └─ home.view.tsx
+   └─ home.module.ts
 ```
 
 A controller is meant to facilitate a part of the applications logic. It is responsible for handling application state, user input and updating the view its been assigned accordingly.
@@ -29,19 +29,21 @@ The state of a controller is represented by a plain object. It is meant to be se
 The state is defined and initialized by the constructor of the base controller and is further manipulated through the `setState` method.
 
 ```ts
-type State = {
-  foo: string;
-};
-
 class FooController extends Controller<State> {
-  static readonly state = {
-    foo: "bar"
-  };
+  async onInit() {
+    return {
+      foo: "bar"
+    };
+  }
 
   setFoo(value: State["foo"]) {
     this.setState("foo", value);
   }
 }
+
+type State = {
+  foo: string;
+};
 ```
 
 The preceding code defines a example controller with a `state` that has a single property `foo` of type `string`. On the controller we provide a static `state` property which is used to initialize the default `state` of the controller. This ensures that the `state` is always available in the correct format for the view.
@@ -50,25 +52,36 @@ The example controller also provides a `action` method `setFoo` which is used to
 
 ---
 
-### Resolver
+### On Init
 
-The controller is expected to be provided a `resolve` method which is responsible for updating state based on external events that modifies application state that we care about. The `resolve` method is called when a view is mounted and subsequently can be called by the controller itself when its external monitors records a change.
-
-The `resolve` is also provided with a list of properties that may or may not be assigned to the view. The `resolver` will also trigger when the view properties has changed.
+The controller can be provided with a `onInit` event handler method which is responsible for returning initial state and initiate subscriptions on first instantiation of a view instance. The `onInit` is called only once during a views lifecycle, if you have state that depends on `props` use the `onResolve` lifecycle method which executes every time the view properties changes.
 
 ```ts
 class FooController extends Controller<State> {
-  static readonly state: State = {
-    foo: "bar"
-  };
-
-  async resolve({ bar }: Props) {
-    await this.#resolveFoo(bar);
+  async onInit() {
+    return {
+      foos: await fetch("/foos")
+    };
   }
+}
 
-  async #resolveFoo(bar: string) {
-    const foo = await fetch(`/foo?bar=${bar}`);
-    this.setState("foo", foo);
+type State = {
+  foos: string[];
+};
+```
+
+---
+
+### On Resolve
+
+The controller can be provided with a `onResolve` event handler method which is responsible for returning state and initiate subscriptions based on changes to the components props. The `onResolve` is called anytime the component is influenced by external changes so we are expected to re-initialize all subscriptions and return the new state when the method is triggered.
+
+```ts
+class FooController extends Controller<State, Props> {
+  async onResolve() {
+    return {
+      foo: await fetch(`/foo?bar=${this.props.bar}`)
+    };
   }
 }
 
@@ -81,7 +94,7 @@ type State = {
 };
 ```
 
-The preceding code defines a example controller that performs a asynchronous request to fetch the value of `foo` based on the value of `bar`. The `resolve` method is called when the view is mounted and subsequently when the `bar` property is updated.
+The preceding code defines a example controller that performs a asynchronous request to fetch the value of `foo` based on the value of `bar`. The `onResolve` method is called when the view is mounted and subsequently when the `bar` property is updated.
 
 :::div{class="admonitions"}
 
@@ -97,8 +110,10 @@ The controller comes with a query handler using models from the `@valkyr/db` pac
 
 ```ts
 class FooController extends Controller<State> {
-  async resolve() {
-    await this.query(Foo, { limit: 1 }, "foo");
+  async onInit() {
+    return {
+      foo: await this.query(Foo, { limit: 1 }, "foo")
+    };
   }
 }
 
@@ -115,21 +130,11 @@ The controller comes with a subscription handler using `Subscription` from the `
 const foo = new Subject<string>();
 
 class FooController extends Controller<State> {
-  static readonly state: State = {
-    foo: ""
-  };
-
-  async resolve() {
-    this.#subscribeWithSetNext();
-    this.#subscribeWithCallback();
-  }
-
-  #subscribeWithSetNext() {
+  async onInit() {
     this.subscribe(foo, this.setNext("foo"));
-  }
-
-  #subscribeWithCallback() {
-    this.subscribe(foo, (foo) => this.setState("foo", foo));
+    return {
+      foo: this.state.foo ?? ""
+    };
   }
 }
 

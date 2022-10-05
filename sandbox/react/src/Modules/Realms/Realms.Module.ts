@@ -14,7 +14,7 @@ import { RealmsView } from "./Views/Realms.View";
  |--------------------------------------------------------------------------------
  */
 
-database.register([Realm], new IndexedDbAdapter());
+database.register([{ name: "realms", model: Realm }], new IndexedDbAdapter());
 
 /*
  |--------------------------------------------------------------------------------

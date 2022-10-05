@@ -1,4 +1,5 @@
 import type { RoutedResult, Router } from "@valkyr/router";
+import { deepEqual } from "fast-equals";
 
 import type { Controller, JsonLike } from "./Controller";
 
@@ -12,8 +13,7 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
     return this;
   }
 
-  async init() {
-    await this.#preload();
+  async subscribe() {
     this.controller.subscriptions.get("$controller.routes")?.unsubscribe();
     this.controller.subscriptions.set(
       "$controller.routes",
@@ -28,6 +28,7 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
         }
       )
     );
+    return this.#preload();
   }
 
   async #preload() {
@@ -36,12 +37,7 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
       if (isCurrentPath === true) {
         const resolved = this.router.getResolvedRoute(this.router.location.pathname);
         if (resolved !== undefined) {
-          if (this.#resolved !== undefined) {
-            const result = await this.router.getComponent(resolved);
-            this.#resolved(resolved, result);
-          } else {
-            this.#setComponent(resolved);
-          }
+          return this.router.getComponent<R>(resolved);
         }
       }
     }
@@ -60,10 +56,7 @@ function hasChanged(prev: RoutedResult<any>, next: RoutedResult<any>): boolean {
   if (prev.component !== next.component) {
     return true;
   }
-  if (JSON.stringify(prev.props) !== JSON.stringify(next.props)) {
-    return true;
-  }
-  return false;
+  return deepEqual(prev.props, next.props) === false;
 }
 
 type Route = {

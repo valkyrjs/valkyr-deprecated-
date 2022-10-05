@@ -14,32 +14,19 @@ export class RealmsListController extends Controller<State, Props> {
     realms: []
   };
 
-  #name: string;
   #filter: Filter = {};
   #sort: -1 | 1 = 1;
 
   /*
    |--------------------------------------------------------------------------------
-   | Resolvers
+   | Lifecycle
    |--------------------------------------------------------------------------------
    */
 
-  async resolve({ name }: Props = { name: this.#name }) {
-    this.#name = name; // set name provided through external properties
-    await this.#subscribeToRealms();
-  }
-
-  async #subscribeToRealms() {
-    await this.query(
-      Realm,
-      {
-        where: this.#filter,
-        sort: {
-          name: this.#sort
-        }
-      },
-      "realms"
-    );
+  async onInit() {
+    return {
+      realms: await this.#queryRealms()
+    };
   }
 
   /*
@@ -58,12 +45,12 @@ export class RealmsListController extends Controller<State, Props> {
         }
       };
     }
-    this.#subscribeToRealms();
+    this.#queryRealms();
   }
 
   async toggle() {
     this.#sort = this.#sort === 1 ? -1 : 1;
-    this.#subscribeToRealms();
+    this.#queryRealms();
   }
 
   /*
@@ -103,6 +90,25 @@ export class RealmsListController extends Controller<State, Props> {
    */
   async clearRealms() {
     await Realm.remove({});
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Subscriptions
+   |--------------------------------------------------------------------------------
+   */
+
+  async #queryRealms() {
+    return this.query(
+      Realm,
+      {
+        where: this.#filter,
+        sort: {
+          name: this.#sort
+        }
+      },
+      "realms"
+    );
   }
 }
 

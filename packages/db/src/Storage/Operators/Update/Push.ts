@@ -1,3 +1,4 @@
+import { deepEqual } from "fast-equals";
 import { Query } from "mingo";
 import type { RawObject } from "mingo/types";
 
@@ -11,7 +12,7 @@ export function $push(document: Document, operator: Update["operators"]["$push"]
     const values = getPushValues(document, key);
     const result = getPushResult(operator, key, values);
     dot.setProperty(document, key, result);
-    if (JSON.stringify(values) !== JSON.stringify(result)) {
+    if (deepEqual(values, result) === false) {
       modified = true;
     }
   }

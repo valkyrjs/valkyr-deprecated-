@@ -17,13 +17,14 @@
     "build": "tsc -b ./tsconfig.json"
   },
   "dependencies": {
-    "joi": "^17.6.1",
-    "rxjs": "^7.5.6"
+    "fast-equals": "4.0.3",
+    "joi": "17.6.2",
+    "rxjs": "7.5.7"
   },
   "devDependencies": {
-    "@types/react": "^18.0.20",
+    "@types/react": "18.0.20",
     "@valkyr/db": "workspace:*",
     "@valkyr/router": "workspace:*",
-    "react": "^18.2.0"
+    "react": "18.2.0"
   }
 }

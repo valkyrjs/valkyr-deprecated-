@@ -149,7 +149,10 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
     return this.inputs[name];
   }
 
-  clear() {
+  /**
+   * Reset form back to its default values.
+   */
+  reset() {
     for (const key in this.inputs) {
       const value = this.#defaults[key];
       this.inputs[key] = value;

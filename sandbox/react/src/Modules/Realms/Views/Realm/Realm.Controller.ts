@@ -9,22 +9,32 @@ import { Realm } from "../../Models/Realm";
  |--------------------------------------------------------------------------------
  */
 
-export class RealmController extends Controller<{
-  realm?: Realm;
-}> {
-  async resolve(): Promise<void> {
-    await this.query(
-      Realm,
-      {
-        where: {
-          id: router.params.get("realm")
+export class RealmController extends Controller<State> {
+  async onResolve(): Promise<State> {
+    return {
+      realm: await this.query(
+        Realm,
+        {
+          where: {
+            id: router.params.get("realm")
+          },
+          limit: 1
         },
-        limit: 1
-      },
-      "realm"
-    );
+        "realm"
+      )
+    };
   }
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+type State = {
+  realm?: Realm;
+};
 
 /*
  |--------------------------------------------------------------------------------

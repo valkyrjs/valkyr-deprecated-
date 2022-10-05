@@ -20,6 +20,6 @@ export class CreateRealmForm extends Form<{
       invites: [],
       owner: ""
     });
-    form.clear();
+    form.reset();
   }
 }

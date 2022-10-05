@@ -1,11 +1,17 @@
 import type { ModelClass, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
+import { deepEqual } from "fast-equals";
 import type { Observable, Subject, Subscription } from "rxjs";
 
+import { Refs } from "./ControllerRefs";
 import { Debounce } from "./Debounce";
-import { Refs } from "./Refs";
 
-export abstract class Controller<State extends JsonLike = {}, Props extends JsonLike = {}> {
-  static readonly state: JsonLike = {};
+export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}> {
+  props: Props = {} as Props;
+
+  #state: any = {
+    current: {},
+    pushed: {}
+  };
 
   /**
    * Stores a list of referenced elements identifies by a unique key.
@@ -17,6 +23,11 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    * easier identification when unsubscribing.
    */
   readonly subscriptions = new Map<any, Subscription>();
+
+  /**
+   * Has the controller fully resolved the .onInit lifecycle method?
+   */
+  $resolved = false;
 
   /**
    * Internal debounce instance used to ensure that we aren't triggering state
@@ -31,7 +42,7 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    * @param state     - Default state to assign to controller.
    * @param pushState - Push state handler method.
    */
-  constructor(readonly state: State = {} as State, readonly pushState: Function) {
+  constructor(readonly pushState: Function) {
     this.query = this.query.bind(this);
     this.subscribe = this.subscribe.bind(this);
     this.setNext = this.setNext.bind(this);
@@ -53,15 +64,48 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    * @param pushState - Push state handler method.
    */
   static make(pushState: Function) {
-    const state: JsonLike = {};
-    for (const key in this.state) {
-      if (typeof this.state[key] === "function") {
-        state[key] = this.state[key]();
-      } else {
-        state[key] = this.state[key];
-      }
+    return new (this as any)(pushState);
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Accessors
+   |--------------------------------------------------------------------------------
+   */
+
+  get state(): State {
+    return this.#state.current as State;
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Bootstrap & Teardown
+   |--------------------------------------------------------------------------------
+   */
+
+  async $resolve(props: Props): Promise<void> {
+    this.props = props;
+    let state: Partial<State> = this.state;
+    if (this.$resolved === false) {
+      state = {
+        ...state,
+        ...(await this.onInit())
+      };
     }
-    return new (this as any)(state, pushState);
+    state = {
+      ...state,
+      ...((await this.onResolve()) ?? {})
+    };
+    this.$resolved = true;
+    this.setState(state);
+  }
+
+  async $destroy(): Promise<void> {
+    for (const subscription of this.subscriptions.values()) {
+      subscription.unsubscribe();
+    }
+    await this.onDestroy();
+    this.refs.destroy();
   }
 
   /*
@@ -71,22 +115,34 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    */
 
   /**
-   * Triggered by the view controller instance when the view is mounted. This allows
-   * the controller to perform data assignment tasks before rendering the view.
+   * Method runs once per controller view lifecycle. This is where you should
+   * subscribe to and return initial controller state. A component is kept in
+   * loading state until the initial resolve is completed.
+   *
+   * Once the initial resolve is completed the controller will not run the onInit
+   * method again unless the controller is destroyed and re-created.
+   *
+   * @returns Partial state or undefined.
    */
-  abstract resolve(props: Props): Promise<void>;
+  async onInit(): Promise<Partial<State> | undefined> {
+    return {};
+  }
 
   /**
-   * Loop through all registered subscriptions and executes the unsubscribe
-   * handler for each subscription. This should be triggered when the view is
-   * unmounted.
+   * Method runs every time the controller is resolved. This is where you should
+   * subscribe to and return state that is reflecting changes to the parent views
+   * properties.
+   *
+   * @returns Partial state or undefined.
    */
-  async destroy(): Promise<void> {
-    for (const subscription of this.subscriptions.values()) {
-      subscription.unsubscribe();
-    }
-    this.refs.destroy();
+  async onResolve(): Promise<Partial<State> | undefined> {
+    return {};
   }
+
+  /**
+   * Method runs when the controller parent view is destroyed.
+   */
+  async onDestroy(): Promise<void> {}
 
   /*
    |--------------------------------------------------------------------------------
@@ -120,9 +176,7 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
           } else {
             (next as Function)(value);
           }
-          setTimeout(() => {
-            resolve(value); // Allow setState to queue on the stack before resolving the promise.
-          }, 0);
+          setTimeout(() => resolve(value), 0);
         })
       );
     });
@@ -183,27 +237,16 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
   setState(state: Partial<State>): void;
   setState<K extends keyof State>(key: K, value: State[K]): void;
   setState<K extends keyof State>(target: K | State, value?: State[K]): void {
-    let hasChanges = false;
-    if (this.#isStateKey(target)) {
-      if (this.state[target] !== value) {
-        this.state[target] = value!;
-        hasChanges = true;
-      }
-    } else {
-      for (const key in target) {
-        if (this.state[key] !== target[key]) {
-          this.state[key] = target[key];
-          hasChanges = true;
+    this.#state.current = this.#isStateKey(target)
+      ? {
+          ...this.state,
+          [target]: value
         }
-        this.state[key] = target[key];
-      }
-    }
-    if (hasChanges === false) {
-      return;
-    }
-    this.#debounce.run(() => {
-      this.pushState({ ...this.state });
-    }, 0);
+      : {
+          ...this.state,
+          ...(target as Partial<State>)
+        };
+    this.#pushState();
   }
 
   /*
@@ -236,6 +279,15 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
 
   #isStateKey(key: unknown): key is keyof State {
     return typeof key === "string";
+  }
+
+  #pushState() {
+    if (this.$resolved === true && deepEqual(this.state, this.#state.pushed) === false) {
+      this.#debounce.run(() => {
+        this.pushState(this.state);
+        this.#state.pushed = this.state;
+      }, 0);
+    }
   }
 }
 

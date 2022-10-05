@@ -1,16 +1,10 @@
-import React, { memo, PropsWithChildren, useEffect, useState } from "react";
+import { deepEqual } from "fast-equals";
+import React, { createElement, memo, PropsWithChildren, useEffect, useMemo, useState } from "react";
 
-import { Refs } from "./Refs";
+import { Refs } from "./ControllerRefs";
 
 export class ViewController<Controller extends ControllerClass> {
-  static #options: ViewOptions<any> = {
-    name: undefined,
-    loading() {
-      return <div>Loading</div>;
-    },
-    error({ error }) {
-      return <div>{error.message}</div>;
-    },
+  static #options: Partial<ViewOptions<any>> = {
     memoize: defaultMemoizeHandler
   };
 
@@ -41,54 +35,42 @@ export class ViewController<Controller extends ControllerClass> {
    * @param component - Functional react component.
    */
   view<Props extends {}>(component: ReactComponent<Props, Controller>, options?: Partial<ViewOptions<Props>>) {
-    const renderLoading = options?.loading ?? ViewController.#options.loading;
-    const renderError = options?.error ?? ViewController.#options.error;
     const memoize = this.#getMemoize(options?.memoize);
 
     const wrapper: React.FC<PropsWithChildren<Props>> = (props) => {
       const [controller, setController] = useState<InstanceType<Controller> | undefined>(undefined);
       const [actions, setActions] = useState<any | undefined>();
-      const [state, setState] = useState(this.controller.state);
-      const [loading, setLoading] = useState(true);
+      const [state, setState] = useState();
       const [error, setError] = useState<Error | undefined>();
+
+      const renderLoading = useMemo(() => this.#getLoadingComponent(this.controller.name, options), []);
+      const renderError = useMemo(() => this.#getErrorComponent(this.controller.name, options), []);
 
       useEffect(() => {
         const controller = this.controller.make(setState);
         setController(controller);
         setActions(controller.toActions());
         return () => {
-          controller.destroy();
+          controller.$destroy();
         };
       }, []);
 
       useEffect(() => {
-        let isMounted = true;
-
         if (controller === undefined) {
-          return () => {
-            isMounted = false;
-          };
+          return;
         }
-
-        controller
-          .resolve(props)
-          .catch((error: Error) => {
-            if (isMounted === true) {
-              setError(error);
-            }
-          })
-          .finally(() => {
-            if (isMounted === true) {
-              setLoading(false);
-            }
-          });
-
+        let isMounted = true;
+        controller.$resolve(props).catch((error: Error) => {
+          if (isMounted === true) {
+            setError(error);
+          }
+        });
         return () => {
           isMounted = false;
         };
       }, [controller, props]);
 
-      if (actions === undefined || loading === true) {
+      if (state === undefined) {
         return renderLoading(props);
       }
 
@@ -111,6 +93,22 @@ export class ViewController<Controller extends ControllerClass> {
     }
 
     return wrapper;
+  }
+
+  #getLoadingComponent(name: string, options?: Partial<ViewOptions<any>>) {
+    const component = options?.loading ?? ViewController.#options.loading;
+    if (component === undefined) {
+      return () => null;
+    }
+    return (props) => createElement(component, props);
+  }
+
+  #getErrorComponent(name: string, options?: Partial<ViewOptions<any>>) {
+    const component = options?.error ?? ViewController.#options.loading;
+    if (component === undefined) {
+      return () => null;
+    }
+    return (props) => createElement(component, props);
   }
 
   #getMemoize(memoize?: ViewOptions<any>["memoize"]): false | Memoize<any> {
@@ -136,7 +134,7 @@ function defaultMemoizeHandler(prev: any, next: any): boolean {
       return false;
     }
   }
-  return JSON.stringify(prev) === JSON.stringify(next);
+  return deepEqual(prev, next);
 }
 
 /*
@@ -169,7 +167,6 @@ type Readonly<T> = {
 };
 
 type ControllerClass = {
-  state: any;
   new (state: any, pushState: Function): any;
   make(pushState: Function): any;
 };

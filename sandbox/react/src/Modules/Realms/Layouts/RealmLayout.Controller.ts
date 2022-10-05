@@ -16,8 +16,10 @@ export class RealmLayoutController extends Controller<State> {
     { path: "/realms/:realm/invites" }
   ]);
 
-  async resolve(): Promise<void> {
-    await this.#routes.init();
+  async onResolve(): Promise<State> {
+    return {
+      routed: await this.#routes.subscribe()
+    };
   }
 
   goTo(path: "" | "members" | "pages" | "invites"): () => void {
