@@ -3,9 +3,9 @@ import { Controller, ViewController } from "@valkyr/react";
 import { CreateRealmForm } from "./CreateRealm.Form";
 
 class CreateRealmController extends Controller<State> {
-  async onResolve() {
+  async onInit() {
     return {
-      form: new CreateRealmForm({ name: "", color: "" }).onError(this.setNext("errors")),
+      form: new CreateRealmForm({ name: "", color: "" }).onError(this.setState("errors")),
       errors: {}
     };
   }

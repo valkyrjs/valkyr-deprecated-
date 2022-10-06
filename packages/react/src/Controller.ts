@@ -1,17 +1,12 @@
 import type { ModelClass, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
-import { deepEqual } from "fast-equals";
 import type { Observable, Subject, Subscription } from "rxjs";
 
 import { Refs } from "./ControllerRefs";
 import { Debounce } from "./Debounce";
 
 export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}> {
+  state: State = {} as State;
   props: Props = {} as Props;
-
-  #state: any = {
-    current: {},
-    pushed: {}
-  };
 
   /**
    * Stores a list of referenced elements identifies by a unique key.
@@ -45,7 +40,6 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
   constructor(readonly pushState: Function) {
     this.query = this.query.bind(this);
     this.subscribe = this.subscribe.bind(this);
-    this.setNext = this.setNext.bind(this);
     this.setState = this.setState.bind(this);
   }
 
@@ -65,16 +59,6 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    */
   static make(pushState: Function) {
     return new (this as any)(pushState);
-  }
-
-  /*
-   |--------------------------------------------------------------------------------
-   | Accessors
-   |--------------------------------------------------------------------------------
-   */
-
-  get state(): State {
-    return this.#state.current as State;
   }
 
   /*
@@ -149,17 +133,17 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
   query<M extends QueryModel, K extends keyof State>(
     model: M,
     query: QuerySingle,
-    next: K | ((value: InstanceType<M> | undefined) => void)
+    next: K | ((value: InstanceType<M> | undefined) => Promise<Partial<State>>)
   ): Promise<InstanceType<M> | undefined>;
   query<M extends QueryModel, K extends keyof State>(
     model: M,
     query: QueryMany,
-    next: K | ((value: InstanceType<M>[]) => void)
+    next: K | ((value: InstanceType<M>[]) => Promise<Partial<State>>)
   ): Promise<InstanceType<M>[]>;
   query<M extends QueryModel, K extends keyof State>(
     model: M,
     query: Query = {} as Query,
-    next: K | ((value: InstanceType<M>[] | InstanceType<M> | undefined) => void)
+    next: K | ((value: InstanceType<M>[] | InstanceType<M> | undefined) => Promise<Partial<State>>)
   ) {
     this.subscriptions.get(model)?.unsubscribe();
     return new Promise<InstanceType<M>[] | InstanceType<M> | undefined>((resolve) => {
@@ -170,9 +154,9 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
           if (this.#isStateKey(next)) {
             this.setState(next, value);
           } else {
-            (next as Function)(value);
+            (next as any)(value).then(this.setState);
           }
-          setTimeout(() => resolve(value), 0);
+          setTimeout(resolve, 0, value);
         })
       );
     });
@@ -195,12 +179,25 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    * @param rxjs - RXJS Subject or Observable instance that can be subscribed to.
    * @param next - Handler method executed when a new value is provided.
    */
-  subscribe<RXJS extends Subject<any> | Observable<any>>(
-    rxjs: RXJS,
-    next?: (value: SubscriptionType<RXJS>) => void
+  subscribe<RxJs extends Subject<any> | Observable<any>, K extends keyof State>(
+    rxjs: RxJs,
+    next: K | ((value: SubscriptionType<RxJs>) => Promise<Partial<State> | void>)
   ): void {
     this.subscriptions.get(rxjs)?.unsubscribe();
-    this.subscriptions.set(rxjs, rxjs.subscribe(next));
+    this.subscriptions.set(
+      rxjs,
+      rxjs.subscribe((value) => {
+        if (this.#isStateKey(next)) {
+          this.setState(next, value);
+        } else {
+          (next as any)(value).then((state) => {
+            if (state !== undefined) {
+              this.setState(state);
+            }
+          });
+        }
+      })
+    );
   }
 
   /*
@@ -208,19 +205,6 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    | State Methods
    |--------------------------------------------------------------------------------
    */
-
-  /**
-   * Wrapper method for controller setState. Enables the ability to predefine a
-   * state update function with a static supported key. Handy for creating lean
-   * rxjs observer subscription updaters.
-   *
-   * @param key - State key to assign data to.
-   */
-  setNext<K extends keyof State>(key: K): (state: State[K]) => void {
-    return (state: State[K]): void => {
-      this.setState(key, state);
-    };
-  }
 
   /**
    * Updates the state of the controller and triggers a state update via the push
@@ -231,9 +215,18 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    * @param value - State value to assign.
    */
   setState(state: Partial<State>): void;
+  setState<K extends keyof State>(key: K): (state: State[K]) => void;
   setState<K extends keyof State>(key: K, value: State[K]): void;
-  setState<K extends keyof State>(target: K | State, value?: State[K]): void {
-    this.#state.current = this.#isStateKey(target)
+  setState<K extends keyof State>(...args: [K | State, State[K]?]): void | ((state: State[K]) => void) {
+    const [target, value] = args;
+
+    if (this.#isStateKey(target) && args.length === 1) {
+      return (value: State[K]) => {
+        this.setState(target, value);
+      };
+    }
+
+    this.state = this.#isStateKey(target)
       ? {
           ...this.state,
           [target]: value
@@ -242,7 +235,12 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
           ...this.state,
           ...(target as Partial<State>)
         };
-    this.#pushState();
+
+    if (this.$resolved === true) {
+      this.#debounce.run(() => {
+        this.pushState(this.state);
+      }, 0);
+    }
   }
 
   /*
@@ -276,15 +274,6 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
   #isStateKey(key: unknown): key is keyof State {
     return typeof key === "string";
   }
-
-  #pushState() {
-    if (this.$resolved === true && deepEqual(this.state, this.#state.pushed) === false) {
-      this.#debounce.run(() => {
-        this.pushState(this.state);
-        this.#state.pushed = this.state;
-      }, 0);
-    }
-  }
 }
 
 type Query = Where & SubscriptionOptions;
@@ -303,6 +292,8 @@ type Where = {
   where?: Record<string, unknown>;
 };
 
-export type JsonLike = Record<string, any>;
+export type JsonLike = {
+  [key: string]: any;
+};
 
 type SubscriptionType<Type> = Type extends Subject<infer X> | Observable<infer X> ? X : never;

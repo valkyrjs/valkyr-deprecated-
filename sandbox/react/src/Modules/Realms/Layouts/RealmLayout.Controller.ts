@@ -20,7 +20,7 @@ export class RealmLayoutController extends Controller<State> {
   ]);
 
   async onInit() {
-    this.subscribe(sample, this.setNext("sample"));
+    this.subscribe(sample, "sample");
   }
 
   async onResolve() {
