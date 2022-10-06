@@ -15,7 +15,8 @@
     "spa"
   ],
   "scripts": {
-    "build": "tsc -b ./tsconfig.build.json"
+    "build": "tsc -b ./tsconfig.build.json",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
   },
   "dependencies": {
     "@valkyr/event-emitter": "workspace:*",

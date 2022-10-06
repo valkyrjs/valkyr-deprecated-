@@ -7,11 +7,11 @@ import type { EventRecord } from "./Event";
  */
 
 export function createReducer<State, Event extends EventRecord>(
-  state: State = {} as State,
+  initialState: State = {} as State,
   reducer: Reducer<State, Event>
-) {
+): ReduceHandler<State, Event> {
   return function (events: Event[]): State {
-    return events.reduce(reducer, { ...state });
+    return events.reduce(reducer, { ...initialState });
   };
 }
 

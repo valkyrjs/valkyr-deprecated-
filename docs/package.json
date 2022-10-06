@@ -4,7 +4,8 @@
   "scripts": {
     "write": "contented write",
     "generate": "contented generate",
-    "build": "contented build"
+    "build": "contented build",
+    "clean": "rm -rf dist && rm -rf .contented"
   },
   "devDependencies": {
     "@birthdayresearch/contented": "1.7.0"

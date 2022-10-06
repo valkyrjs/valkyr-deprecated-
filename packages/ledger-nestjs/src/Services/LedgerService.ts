@@ -2,12 +2,12 @@ import { Injectable, Logger } from "@nestjs/common";
 import { clc } from "@nestjs/common/utils/cli-colors.util";
 import { InjectModel } from "@nestjs/mongoose";
 import {
-  AggregateRootClass,
   createEventRecord,
   EventRecord,
   getLogicalTimestamp,
   LedgerEvent,
   LedgerEventStatus,
+  ReduceHandler,
   validator
 } from "@valkyr/ledger";
 import { Model } from "mongoose";
@@ -167,19 +167,15 @@ export class LedgerService {
    * stream and reduces them into a single current state representing of
    * the event stream.
    */
-  async reduce<AggregateRoot extends AggregateRootClass>(
+  async reduce<Reduce extends ReduceHandler>(
     streamId: string,
-    aggregate: AggregateRoot
-  ): Promise<InstanceType<AggregateRoot> | undefined> {
+    reduce: Reduce
+  ): Promise<ReturnType<Reduce> | undefined> {
     const events = await this.stream(streamId);
     if (events.length === 0) {
       return undefined;
     }
-    const instance = new aggregate();
-    for (const event of events) {
-      instance.apply(event);
-    }
-    return instance as InstanceType<AggregateRoot>;
+    return reduce(events);
   }
 
   /**

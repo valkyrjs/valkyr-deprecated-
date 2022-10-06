@@ -13,7 +13,8 @@
     "testing"
   ],
   "scripts": {
-    "build": "tsc -b ./tsconfig.build.json"
+    "build": "tsc -b ./tsconfig.build.json",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
   },
   "devDependencies": {
     "mongodb-memory-server": "^8.8.0"

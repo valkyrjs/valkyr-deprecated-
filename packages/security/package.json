@@ -14,7 +14,8 @@
     "idp"
   ],
   "scripts": {
-    "build": "tsc -b ./tsconfig.build.json"
+    "build": "tsc -b ./tsconfig.build.json",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
   },
   "dependencies": {
     "crypto-js": "^4.1.1",
