@@ -89,7 +89,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
     if (this.$resolved === false) {
       state = {
         ...state,
-        ...(await this.onInit())
+        ...((await this.onInit()) ?? {})
       };
     }
     state = {
@@ -122,22 +122,18 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    * Once the initial resolve is completed the controller will not run the onInit
    * method again unless the controller is destroyed and re-created.
    *
-   * @returns Partial state or undefined.
+   * @returns Partial state or void.
    */
-  async onInit(): Promise<Partial<State> | undefined> {
-    return {};
-  }
+  async onInit(): Promise<Partial<State> | void> {}
 
   /**
    * Method runs every time the controller is resolved. This is where you should
    * subscribe to and return state that is reflecting changes to the parent views
    * properties.
    *
-   * @returns Partial state or undefined.
+   * @returns Partial state or void.
    */
-  async onResolve(): Promise<Partial<State> | undefined> {
-    return {};
-  }
+  async onResolve(): Promise<Partial<State> | void> {}
 
   /**
    * Method runs when the controller parent view is destroyed.

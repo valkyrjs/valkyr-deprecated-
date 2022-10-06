@@ -1,6 +1,9 @@
 import { router } from "@App/Services/Router";
 import { Controller, ControllerRoutes, ViewController } from "@valkyr/react";
 import { RoutedResult } from "@valkyr/router";
+import { Subject } from "rxjs";
+
+const sample = new Subject<string>();
 
 /*
  |--------------------------------------------------------------------------------
@@ -16,7 +19,11 @@ export class RealmLayoutController extends Controller<State> {
     { path: "/realms/:realm/invites" }
   ]);
 
-  async onResolve(): Promise<State> {
+  async onInit() {
+    this.subscribe(sample, this.setNext("sample"));
+  }
+
+  async onResolve() {
     return {
       routed: await this.#routes.subscribe()
     };
@@ -36,6 +43,7 @@ export class RealmLayoutController extends Controller<State> {
  */
 
 type State = {
+  sample: string;
   routed?: RoutedResult<typeof router>;
 };
 
