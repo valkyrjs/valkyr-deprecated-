@@ -1,0 +1,27 @@
+{
+  "name": "@valkyr/router",
+  "version": "0.0.0",
+  "description": "Framework agnostic routing solution for single page web applications written in TypeScript.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "router",
+    "web",
+    "spa"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
+  },
+  "dependencies": {
+    "@valkyr/event-emitter": "workspace:*",
+    "history": "5.3.0",
+    "path-to-regexp": "6.2.1",
+    "rxjs": "7.5.7"
+  }
+}

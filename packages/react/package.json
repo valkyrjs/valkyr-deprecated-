@@ -1,0 +1,31 @@
+{
+  "name": "@valkyr/react",
+  "version": "0.0.0",
+  "description": "Toolkit for building @valkyr web based applications in react.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "state-controller"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.json",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
+  },
+  "dependencies": {
+    "fast-equals": "4.0.3",
+    "joi": "17.6.2",
+    "rxjs": "7.5.7"
+  },
+  "devDependencies": {
+    "@types/react": "18.0.20",
+    "@valkyr/db": "workspace:*",
+    "@valkyr/router": "workspace:*",
+    "react": "18.2.0"
+  }
+}

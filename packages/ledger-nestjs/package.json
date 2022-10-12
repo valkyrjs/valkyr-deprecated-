@@ -1,0 +1,27 @@
+{
+  "name": "@valkyr/ledger-nestjs",
+  "version": "0.0.0",
+  "description": "@valkyr/ledger module for nestjs.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
+  },
+  "dependencies": {
+    "@nestjs/core": "^9.0.11",
+    "@nestjs/common": "^9.0.8",
+    "@nestjs/mongoose": "^9.2.0",
+    "@valkyr/ledger": "workspace:*",
+    "mongoose": "^6.5.2",
+    "rxjs": "7.5.7"
+  },
+  "devDependencies": {
+    "reflect-metadata": "^0.1.13"
+  }
+}

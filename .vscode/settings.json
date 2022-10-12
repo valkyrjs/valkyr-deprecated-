@@ -1,0 +1,74 @@
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "scss.lint.unknownAtRules": "ignore",
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "[html,svg]": {
+    "editor.formatOnSaveMode": "file",
+    "editor.defaultFormatter": "HookyQR.beautify"
+  },
+  "material-icon-theme.files.associations": {
+    "index.ts": "tree",
+    "*.access.ts": "key",
+    "*.controller.ts": "makefile",
+    "*.entity.ts": "database",
+    "*.form.ts": "log",
+    "*.gateway.ts": "parcel",
+    "*.module.ts": "robot",
+    "*.projector.ts": "apiblueprint",
+    "*.service.ts": "console",
+    "*.validator.ts": "key",
+    "*.component.tsx": "virtual",
+    "*.modal.tsx": "opam",
+    "*.view.tsx": "virtual"
+  },
+  "cSpell.words": [
+    "birthdayresearch",
+    "bitflag",
+    "Bitflags",
+    "BITSTRING",
+    "camelcase",
+    "cbor",
+    "COSEECDH",
+    "ECDHA",
+    "Instantiator",
+    "Instantiators",
+    "jsxdev",
+    "keyval",
+    "kodemon",
+    "Legder",
+    "Merkle",
+    "mingo",
+    "myapp",
+    "nestjs",
+    "nocheck",
+    "OBJECTIDENTIFIER",
+    "paramtypes",
+    "peerjs",
+    "pids",
+    "qrcode",
+    "rfdc",
+    "semibold",
+    "sidepane",
+    "signin",
+    "tiptap",
+    "todos",
+    "tsbuildinfo",
+    "tstr",
+    "upsert",
+    "valkyr",
+    "vlkr",
+    "websockets",
+    "Wksp"
+  ]
+}

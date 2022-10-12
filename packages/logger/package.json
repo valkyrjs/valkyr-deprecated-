@@ -1,0 +1,23 @@
+{
+  "name": "@valkyr/logger",
+  "version": "0.0.0",
+  "description": "A simple non optimized solution for logging in nodejs and browsers.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "logging",
+    "log"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
+  },
+  "devDependencies": {
+    "@types/node": "16.10.3"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@valkyr/testing",
+  "version": "0.0.0",
+  "description": "A small suite of testing tools for @valkyr packages.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "testing"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^8.8.0"
+  }
+}
