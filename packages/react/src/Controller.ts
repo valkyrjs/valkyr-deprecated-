@@ -22,7 +22,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
   /**
    * Has the controller fully resolved the .onInit lifecycle method?
    */
-  $resolved = false;
+  #resolved = false;
 
   /**
    * Internal debounce instance used to ensure that we aren't triggering state
@@ -70,7 +70,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
   async $resolve(props: Props): Promise<void> {
     this.props = props;
     let state: Partial<State> = this.state;
-    if (this.$resolved === false) {
+    if (this.#resolved === false) {
       state = {
         ...state,
         ...((await this.onInit()) ?? {})
@@ -80,7 +80,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
       ...state,
       ...((await this.onResolve()) ?? {})
     };
-    this.$resolved = true;
+    this.#resolved = true;
     this.setState(state);
   }
 
@@ -236,7 +236,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
           ...(target as Partial<State>)
         };
 
-    if (this.$resolved === true) {
+    if (this.#resolved === true) {
       this.#debounce.run(() => {
         this.pushState(this.state);
       }, 0);
