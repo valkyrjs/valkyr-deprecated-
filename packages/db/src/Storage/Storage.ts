@@ -4,6 +4,7 @@ import { getId } from "@valkyr/security";
 import { RawObject } from "mingo/types";
 
 import { Adapter, InstanceAdapter } from "../Adapters";
+import { browser } from "../Browser";
 import { Insert, Operator, operators, Remove, Replace, Update } from "./Operators";
 import { InsertException, InsertResult } from "./Operators/Insert";
 import { RemoveOneException, RemoveOneResult } from "./Operators/Remove";
@@ -30,6 +31,15 @@ export class Storage<D extends Document = Document> extends EventEmitter<{
 
   constructor(readonly name: string, readonly adapter: Adapter<D> = new InstanceAdapter<D>()) {
     super();
+    this.#startBrowserListener();
+  }
+
+  #startBrowserListener() {
+    browser.addEventListener("message", ({ name, type, document }) => {
+      if (name === this.name) {
+        this.#commit(type, document);
+      }
+    });
   }
 
   /*
@@ -70,12 +80,43 @@ export class Storage<D extends Document = Document> extends EventEmitter<{
 
   /*
    |--------------------------------------------------------------------------------
+   | Committer
+   |--------------------------------------------------------------------------------
+   |
+   | To support multiple tabs and windows we need to broadcast in memory updates
+   | across all instances to keep changes in sync.
+   |
+   */
+
+  commit(type: ChangeType, document: D): void {
+    this.#commit(type, document);
+    browser.send({ name: this.name, type, document });
+  }
+
+  #commit(type: ChangeType, document: D) {
+    switch (type) {
+      case "insert":
+      case "update": {
+        this.documents.set(document.id, document);
+        this.emit("change", type, document);
+        break;
+      }
+      case "remove": {
+        this.documents.delete(document.id);
+        this.emit("change", "remove", { id: document.id } as D);
+        break;
+      }
+    }
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
    | Event Handler
    |--------------------------------------------------------------------------------
    */
 
-  onChange(cb: (type: ChangeType, document: D) => void): () => void {
-    return this.subscribe("change", cb);
+  onChange(callback: (type: ChangeType, document: D) => void): () => void {
+    return this.subscribe("change", callback);
   }
 
   /*

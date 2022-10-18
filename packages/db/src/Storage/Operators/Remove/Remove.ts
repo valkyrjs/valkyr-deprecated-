@@ -8,7 +8,6 @@ export function remove(storage: Storage, operator: Remove): RemoveOneResult | Re
   if (storage.documents.has(operator.id) === false) {
     return new RemoveOneException(new DocumentNotFoundError({ id: operator.id }));
   }
-  storage.documents.delete(operator.id);
-  storage.emit("change", "remove", { id: operator.id });
+  storage.commit("remove", { id: operator.id });
   return new RemoveOneResult();
 }

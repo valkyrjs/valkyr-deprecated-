@@ -22,8 +22,7 @@ export function update(storage: Storage, operator: Update): UpdateOneResult | Up
 
     const { modified, document } = execute(criteria, operators, clone(currentDocument));
 
-    storage.documents.set(id, document);
-    storage.emit("change", "update", document);
+    storage.commit("update", document);
 
     return new UpdateOneResult(true, modified);
   } catch (error) {

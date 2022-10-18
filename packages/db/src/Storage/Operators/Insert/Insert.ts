@@ -24,7 +24,6 @@ export function insert(storage: Storage, operator: Insert): InsertResult | Inser
   if (storage.documents.has(document.id)) {
     return new InsertException(new DuplicateDocumentError(document, storage));
   }
-  storage.documents.set(document.id, document);
-  storage.emit("change", "insert", document);
+  storage.commit("insert", document);
   return new InsertResult(document.id);
 }
