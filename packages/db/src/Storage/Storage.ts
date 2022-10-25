@@ -4,7 +4,7 @@ import { getId } from "@valkyr/security";
 import { RawObject } from "mingo/types";
 
 import { Adapter, InstanceAdapter } from "../Adapters";
-import { browser } from "../Browser";
+import { BroadcastChannel } from "../BroadcastChannel";
 import { Insert, Operator, operators, Remove, Replace, Update } from "./Operators";
 import { InsertException, InsertResult } from "./Operators/Insert";
 import { RemoveOneException, RemoveOneResult } from "./Operators/Remove";
@@ -29,17 +29,16 @@ export class Storage<D extends Document = Document> extends EventEmitter<{
 
   status: Status = "loading";
 
+  readonly #channel = new BroadcastChannel(`valkyr:db:${this.name}`);
+
   constructor(readonly name: string, readonly adapter: Adapter<D> = new InstanceAdapter<D>()) {
     super();
     this.#startBrowserListener();
   }
 
   #startBrowserListener() {
-    browser.addEventListener("message", ({ name, type, document }) => {
-      if (name === this.name) {
-        this.#commit(type, document);
-      }
-    });
+    this.#channel.onmessage = ({ data: { type, document } }: MessageEvent<StorageBroadcast>) =>
+      this.#commit(type, document);
   }
 
   /*
@@ -90,7 +89,7 @@ export class Storage<D extends Document = Document> extends EventEmitter<{
 
   commit(type: ChangeType, document: D): void {
     this.#commit(type, document);
-    browser.send({ name: this.name, type, document });
+    this.#channel.postMessage({ type, document });
   }
 
   #commit(type: ChangeType, document: D) {
@@ -248,3 +247,8 @@ export type PartialDocument<D extends Document> = Omit<D, "id"> & {
 type Status = "loading" | "ready" | "working";
 
 type ChangeType = "insert" | "update" | "remove";
+
+type StorageBroadcast = {
+  type: "insert" | "update" | "remove";
+  document: Document<any>;
+};

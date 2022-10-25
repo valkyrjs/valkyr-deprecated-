@@ -23,7 +23,6 @@
     "@valkyr/event-emitter": "workspace:*",
     "@valkyr/logger": "workspace:*",
     "@valkyr/security": "workspace:*",
-    "broadcast-channel": "^4.18.0",
     "fast-equals": "4.0.3",
     "idb-keyval": "6.2.0",
     "mingo": "6.1.2",
