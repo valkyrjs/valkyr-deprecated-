@@ -26,6 +26,13 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
   constructor(readonly name: string) {
     super();
     this.#startBrowserListener();
+    this.#load();
+  }
+
+  #load() {
+    this.init().then(() => {
+      this.#setStatus("ready").process();
+    });
   }
 
   #startBrowserListener() {
@@ -35,16 +42,15 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
 
   /*
    |--------------------------------------------------------------------------------
-   | Loaders
+   | Bootstrap
    |--------------------------------------------------------------------------------
    */
 
-  async load() {
+  async waitForReady(): Promise<void> {
     if (this.is("loading") === false) {
-      return this;
+      return;
     }
-    await this.init();
-    return this.#setStatus("ready").process();
+    return new Promise((resolve) => this.once("ready", resolve));
   }
 
   /**
@@ -65,7 +71,7 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
 
   abstract getDocuments(): Promise<D[]>;
 
-  abstract setDocument(id: string, document: D): Promise<void>;
+  abstract setDocument(document: D): Promise<void>;
 
   abstract delDocument(id: string): Promise<void>;
 
@@ -103,7 +109,7 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
     switch (type) {
       case "insert":
       case "update": {
-        this.setDocument(document.id, document);
+        this.setDocument(document);
         this.emit("change", type, document);
         break;
       }
@@ -158,10 +164,8 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
 
   async run(operation: Omit<Operator<D>, "resolve" | "reject">): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.load().then(() => {
-        this.#operators.push({ ...operation, resolve, reject } as Operator<D>);
-        this.process();
-      });
+      this.#operators.push({ ...operation, resolve, reject } as Operator<D>);
+      this.process();
     });
   }
 
@@ -171,7 +175,7 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
    |--------------------------------------------------------------------------------
    */
 
-  async process(): Promise<this> {
+  process(): this {
     if (this.is("loading") || this.is("working")) {
       return this;
     }
@@ -179,7 +183,7 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
     this.#setStatus("working");
 
     const operation = this.#operators.shift();
-    if (!operation) {
+    if (operation === undefined) {
       return this.#setStatus("ready");
     }
 
@@ -187,9 +191,7 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
       .then(operation.resolve)
       .catch(operation.reject);
 
-    this.#setStatus("ready").process();
-
-    return this;
+    return this.#setStatus("ready").process();
   }
 
   resolve(operator: Insert<D>): Promise<InsertResult | InsertException>;

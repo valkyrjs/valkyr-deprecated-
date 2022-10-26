@@ -13,7 +13,7 @@ export const RealmsList = controller.view<Props>(
           Realms List Name: {name} | Realms: {realms.length}
         </div>
         <div style={{ margin: "10px 0" }}>---</div>
-        {[1, 10, 50, 100].map((amount) => {
+        {[1, 10, 50, 100, 1000].map((amount) => {
           return (
             <button
               key={amount}

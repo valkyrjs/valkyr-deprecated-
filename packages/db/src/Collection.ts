@@ -118,7 +118,7 @@ export class Collection<D extends Document = any> {
    * retrieve the document directly from the collections document Map.
    */
   async findById(id: string): Promise<D | undefined> {
-    return this.storage.load().then(() => this.storage.getDocument(id));
+    return this.storage.waitForReady().then(() => this.storage.getDocument(id));
   }
 
   /**
@@ -167,7 +167,7 @@ export class Collection<D extends Document = any> {
    * @url https://github.com/kofrasa/mingo#searching-and-filtering
    */
   async query(criteria: RawObject = {}): Promise<Cursor> {
-    await this.storage.load();
+    await this.storage.waitForReady();
     return new Query(criteria).find(await this.storage.getDocuments());
   }
 

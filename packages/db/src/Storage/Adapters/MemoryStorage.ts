@@ -15,8 +15,8 @@ export class MemoryStorage<D extends Document = Document> extends Storage<D> {
     return Array.from(this.#documents.values());
   }
 
-  async setDocument(id: string, document: D): Promise<void> {
-    this.#documents.set(id, document);
+  async setDocument(document: D): Promise<void> {
+    this.#documents.set(document.id, document);
   }
 
   async delDocument(id: string): Promise<void> {
