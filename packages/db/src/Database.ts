@@ -1,6 +1,6 @@
-import { Adapter } from "./Adapters";
 import { Collection } from "./Collection";
 import { ModelClass } from "./Model";
+import { IndexedDbStorage, MemoryStorage } from "./Storage";
 
 /**
  * Assigns collections using the provided adapter to each model in
@@ -25,11 +25,11 @@ import { ModelClass } from "./Model";
  * ```
  *
  * @param registrars - List of models to register.
- * @param adapter    - Adapter to create collections under.
+ * @param storage    - Storage adapter to persist collection data to.
  */
-function register(registrars: ModelRegistrars[], adapter: Adapter): void {
+function register(registrars: ModelRegistrars[], storage: typeof IndexedDbStorage | typeof MemoryStorage): void {
   for (const { name, model } of registrars) {
-    model.$collection = new Collection(name, adapter);
+    model.$collection = new Collection(name, storage);
   }
 }
 

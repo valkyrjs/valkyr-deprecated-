@@ -27,7 +27,9 @@ export function observe(
       if (hasChanged === true) {
         clearTimeout(debounce);
         debounce = setTimeout(() => {
-          onChange(toQueriedData(store.data, options));
+          store.getDocuments().then((documents) => {
+            onChange(toQueriedData(documents, options));
+          });
         }, 0);
       }
     })

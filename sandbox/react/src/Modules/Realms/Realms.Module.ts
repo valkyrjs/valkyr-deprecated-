@@ -1,6 +1,6 @@
 import { render } from "@App/Middleware/Render";
 import { router } from "@App/Services/Router";
-import { database, IndexedDbAdapter } from "@valkyr/db";
+import { database, IndexedDbStorage } from "@valkyr/db";
 import { Route } from "@valkyr/router";
 
 import { RealmLayout } from "./Layouts";
@@ -14,7 +14,7 @@ import { RealmsView } from "./Views/Realms.View";
  |--------------------------------------------------------------------------------
  */
 
-database.register([{ name: "realms", model: Realm }], new IndexedDbAdapter());
+database.register([{ name: "realms", model: Realm }], IndexedDbStorage);
 
 /*
  |--------------------------------------------------------------------------------

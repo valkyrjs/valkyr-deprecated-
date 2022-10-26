@@ -1,6 +1,5 @@
-import { InstanceAdapter } from "../src/Adapters";
 import { Collection } from "../src/Collection";
-import { Document } from "../src/Storage";
+import { Document, MemoryStorage } from "../src/Storage";
 
 /**
  * @see https://www.mongodb.com/docs/manual/reference/operator/update-field/#field-update-operators
@@ -26,7 +25,7 @@ describe("Field Update Operators", () => {
             rating: number;
           }[];
         }
-      >("tests", new InstanceAdapter());
+      >("tests", MemoryStorage);
 
       await collection.insertOne({
         id: "100",
@@ -87,7 +86,7 @@ describe("Field Update Operators", () => {
             rating: number;
           }[];
         }
-      >("tests", new InstanceAdapter());
+      >("tests", MemoryStorage);
 
       await collection.insertOne({
         id: "100",
@@ -146,7 +145,7 @@ describe("Field Update Operators", () => {
             rating: number;
           }[];
         }
-      >("tests", new InstanceAdapter());
+      >("tests", MemoryStorage);
 
       await collection.insertOne({
         id: "100",
@@ -197,7 +196,7 @@ describe("Field Update Operators", () => {
           quantity: number;
           instock: boolean;
         }
-      >("tests", new InstanceAdapter());
+      >("tests", MemoryStorage);
 
       await collection.insertMany([
         { id: "1", item: "chisel", sku: "C001", quantity: 4, instock: true },
@@ -256,7 +255,7 @@ describe("Array Update Operators", () => {
     it("should replace a object in an array", async () => {
       const collection = new Collection<Document & { grades: { id: string; value: number }[] }>(
         "students",
-        new InstanceAdapter()
+        MemoryStorage
       );
 
       await collection.insertOne({
@@ -315,7 +314,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/positional/#update-values-in-an-array
      */
     it("should update values in an array", async () => {
-      const collection = new Collection<Document & { grades: number[] }>("students", new InstanceAdapter());
+      const collection = new Collection<Document & { grades: number[] }>("students", MemoryStorage);
 
       await collection.insertMany([
         { id: "1", grades: [85, 80, 80] },
@@ -354,7 +353,7 @@ describe("Array Update Operators", () => {
     it("should update documents in an array", async () => {
       const collection = new Collection<Document & { grades: { grade: number; mean: number; std: number }[] }>(
         "students",
-        new InstanceAdapter()
+        MemoryStorage
       );
 
       await collection.insertOne({
@@ -400,7 +399,7 @@ describe("Array Update Operators", () => {
     it("should update embedded documents using multiple field matches", async () => {
       const collection = new Collection<Document & { grades: { grade: number; mean: number; std: number }[] }>(
         "students",
-        new InstanceAdapter()
+        MemoryStorage
       );
 
       await collection.insertOne({
@@ -455,10 +454,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/pull/#remove-all-items-that-equal-a-specified-value
      */
     it("should remove all items that equal a specified value", async () => {
-      const collection = new Collection<Document & { fruits: string[]; vegetables: string[] }>(
-        "stores",
-        new InstanceAdapter()
-      );
+      const collection = new Collection<Document & { fruits: string[]; vegetables: string[] }>("stores", MemoryStorage);
 
       await collection.insertMany([
         {
@@ -509,7 +505,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/pull/#remove-all-items-that-match-a-specified--pull-condition
      */
     it("should remove all items that match a specific $pull condition", async () => {
-      const collection = new Collection<Document & { votes: number[] }>("profiles", new InstanceAdapter());
+      const collection = new Collection<Document & { votes: number[] }>("profiles", MemoryStorage);
 
       await collection.insertOne({ id: "1", votes: [3, 5, 6, 7, 7, 8] });
 
@@ -539,7 +535,7 @@ describe("Array Update Operators", () => {
     it("should remove items from an array of documents", async () => {
       const collection = new Collection<Document & { results: { item: string; score: number }[] }>(
         "surveys",
-        new InstanceAdapter()
+        MemoryStorage
       );
 
       await collection.insertMany([
@@ -583,7 +579,7 @@ describe("Array Update Operators", () => {
     it("should not remove any elements when using $elemMatch", async () => {
       const collection = new Collection<Document & { results: { item: string; score: number }[] }>(
         "surveys",
-        new InstanceAdapter()
+        MemoryStorage
       );
 
       await collection.insertMany([
@@ -633,7 +629,7 @@ describe("Array Update Operators", () => {
     it("should remove documents from nested arrays", async () => {
       const collection = new Collection<
         Document & { results: { item: string; score: number; answers: { q: number; a: number }[] }[] }
-      >("surveys", new InstanceAdapter());
+      >("surveys", MemoryStorage);
 
       await collection.insertMany([
         {
@@ -733,7 +729,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/push/#append-a-value-to-an-array
      */
     it("should append a value to an array", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new InstanceAdapter());
+      const collection = new Collection<Document & { scores: number[] }>("students", MemoryStorage);
 
       await collection.insertOne({ id: "1", scores: [44, 78, 38, 80] });
 
@@ -759,7 +755,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/push/#append-a-value-to-arrays-in-multiple-documents
      */
     it("should append a value to arrays in multiple documents", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new InstanceAdapter());
+      const collection = new Collection<Document & { scores: number[] }>("students", MemoryStorage);
 
       await collection.insertMany([
         { id: "1", scores: [44, 78, 38, 80, 89] },
@@ -795,10 +791,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/push/#append-multiple-values-to-an-array
      */
     it("should append multiple values to an array", async () => {
-      const collection = new Collection<Document & { name: string; scores: number[] }>(
-        "students",
-        new InstanceAdapter()
-      );
+      const collection = new Collection<Document & { name: string; scores: number[] }>("students", MemoryStorage);
 
       await collection.insertOne({ id: "1", name: "Joe", scores: [44, 78] });
 
@@ -828,7 +821,7 @@ describe("Array Update Operators", () => {
     it("should use $push operator with multiple modifiers", async () => {
       const collection = new Collection<Document & { quizzes: { wk: number; score: number }[] }>(
         "students",
-        new InstanceAdapter()
+        MemoryStorage
       );
 
       await collection.insertOne({
@@ -878,7 +871,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/slice/#slice-from-the-end-of-the-array
      */
     it("should slice from the end of the array", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new InstanceAdapter());
+      const collection = new Collection<Document & { scores: number[] }>("students", MemoryStorage);
 
       await collection.insertOne({ id: "1", scores: [40, 50, 60] });
 
@@ -907,7 +900,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/slice/#slice-from-the-front-of-the-array
      */
     it("should slice from the front of the array", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new InstanceAdapter());
+      const collection = new Collection<Document & { scores: number[] }>("students", MemoryStorage);
 
       await collection.insertOne({ id: "2", scores: [89, 90] });
 
@@ -936,7 +929,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/slice/#update-array-using-slice-only
      */
     it("should update array using slice only", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new InstanceAdapter());
+      const collection = new Collection<Document & { scores: number[] }>("students", MemoryStorage);
 
       await collection.insertOne({ id: "3", scores: [89, 70, 100, 20] });
 
@@ -965,7 +958,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/position/#add-elements-at-the-start-of-the-array
      */
     it("should add elements to the start of the array", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new InstanceAdapter());
+      const collection = new Collection<Document & { scores: number[] }>("students", MemoryStorage);
 
       await collection.insertOne({ id: "1", scores: [100] });
 
@@ -994,7 +987,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/position/#add-elements-to-the-middle-of-the-array
      */
     it("should add elements to the middle of the array", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new InstanceAdapter());
+      const collection = new Collection<Document & { scores: number[] }>("students", MemoryStorage);
 
       await collection.insertOne({ id: "2", scores: [50, 60, 70, 100] });
 
@@ -1020,7 +1013,7 @@ describe("Array Update Operators", () => {
     });
 
     it("should use a negative index to add elements to the array", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new InstanceAdapter());
+      const collection = new Collection<Document & { scores: number[] }>("students", MemoryStorage);
 
       await collection.insertOne({ id: "3", scores: [50, 60, 20, 30, 70, 100] });
 
@@ -1051,7 +1044,7 @@ describe("Array Update Operators", () => {
     it("should sort array of documents by a field in the documents", async () => {
       const collection = new Collection<Document & { quizzes: { id: number; score: number }[] }>(
         "students",
-        new InstanceAdapter()
+        MemoryStorage
       );
 
       await collection.insertOne({
@@ -1100,7 +1093,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/sort/#sort-array-elements-that-are-not-documents
      */
     it("should sort array elements that are not documents", async () => {
-      const collection = new Collection<Document & { tests: number[] }>("students", new InstanceAdapter());
+      const collection = new Collection<Document & { tests: number[] }>("students", MemoryStorage);
 
       await collection.insertOne({ id: "2", tests: [89, 70, 89, 50] });
 
@@ -1131,7 +1124,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/sort/#update-array-using-sort-only
      */
     it("should update array using sort only", async () => {
-      const collection = new Collection<Document & { tests: number[] }>("students", new InstanceAdapter());
+      const collection = new Collection<Document & { tests: number[] }>("students", MemoryStorage);
 
       await collection.insertOne({ id: "3", tests: [89, 70, 100, 20] });
 

@@ -25,7 +25,7 @@ describe("Model", () => {
   describe("when inserting document", () => {
     it("should insert valid document", async () => {
       await User.insertOne(users[0]);
-      expect(User.$collection.storage.documents.get(users[0].id)).toEqual(users[0]);
+      expect(await User.$collection.storage.getDocument(users[0].id)).toEqual(users[0]);
     });
 
     it("should throw error on duplicate documents", async () => {
@@ -40,7 +40,7 @@ describe("Model", () => {
     it("should update a document", async () => {
       await User.insertOne(users[0]);
       await User.updateOne({ id: users[0].id }, { $set: { name: "James Doe" } });
-      expect(User.$collection.storage.documents.get(users[0].id)?.name).toEqual("James Doe");
+      expect((await User.$collection.storage.getDocument(users[0].id))?.name).toEqual("James Doe");
     });
 
     it("should throw error if document does not exist", async () => {
@@ -53,9 +53,9 @@ describe("Model", () => {
   describe("when deleting document", () => {
     it("should successfully delete document", async () => {
       await User.insertOne(users[0]);
-      expect(User.$collection.storage.documents.get(users[0].id)).toEqual(users[0]);
+      expect(await User.$collection.storage.getDocument(users[0].id)).toEqual(users[0]);
       await User.remove({ id: "user-1" });
-      expect(User.$collection.storage.documents.get("user-1")).toBeUndefined();
+      expect(await User.$collection.storage.getDocument("user-1")).toBeUndefined();
     });
   });
 

@@ -16,12 +16,12 @@ import { InsertResult } from "./Result";
  *
  * @returns Created document.
  */
-export function insert(storage: Storage, operator: Insert): InsertResult | InsertException {
+export async function insert(storage: Storage, operator: Insert): Promise<InsertResult | InsertException> {
   const document = clone(operator.document);
   if (document.id === undefined) {
     document.id = getId();
   }
-  if (storage.documents.has(document.id)) {
+  if ((await storage.hasDocument(document.id)) === true) {
     return new InsertException(new DuplicateDocumentError(document, storage));
   }
   storage.commit("insert", document);

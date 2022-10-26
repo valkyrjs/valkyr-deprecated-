@@ -3,14 +3,13 @@ import { Logger } from "@valkyr/logger";
 import { getId } from "@valkyr/security";
 import { RawObject } from "mingo/types";
 
-import { Adapter, InstanceAdapter } from "../Adapters";
 import { BroadcastChannel } from "../BroadcastChannel";
 import { Insert, Operator, operators, Remove, Replace, Update } from "./Operators";
 import { InsertException, InsertResult } from "./Operators/Insert";
 import { RemoveOneException, RemoveOneResult } from "./Operators/Remove";
 import { UpdateOneException, UpdateOneResult } from "./Operators/Update";
 
-export class Storage<D extends Document = Document> extends EventEmitter<{
+export abstract class Storage<D extends Document = Document> extends EventEmitter<{
   loading: () => void;
   ready: () => void;
   working: () => void;
@@ -18,48 +17,61 @@ export class Storage<D extends Document = Document> extends EventEmitter<{
 }> {
   readonly id = getId(6);
 
-  readonly documents = new Map<string, D>();
-  readonly operators: Operator<D>[] = [];
-  readonly logger = new Logger("Storage");
-  readonly debounce: {
-    save?: ReturnType<typeof setTimeout>;
-  } = {
-    save: undefined
-  };
-
   status: Status = "loading";
 
+  readonly #operators: Operator<D>[] = [];
+  readonly #logger = new Logger("Storage");
   readonly #channel = new BroadcastChannel(`valkyr:db:${this.name}`);
 
-  constructor(readonly name: string, readonly adapter: Adapter<D> = new InstanceAdapter<D>()) {
+  constructor(readonly name: string) {
     super();
     this.#startBrowserListener();
   }
 
   #startBrowserListener() {
     this.#channel.onmessage = ({ data: { type, document } }: MessageEvent<StorageBroadcast>) =>
-      this.#commit(type, document);
+      this.emit("change", type, document);
   }
 
   /*
    |--------------------------------------------------------------------------------
-   | Accessors
+   | Loaders
    |--------------------------------------------------------------------------------
    */
 
-  get data(): D[] {
-    return Array.from(this.documents.values());
+  async load() {
+    if (this.is("loading") === false) {
+      return this;
+    }
+    await this.init();
+    return this.#setStatus("ready").process();
   }
+
+  /**
+   * Initialize the local storage instance and ensure that it is ready to process
+   * document operations.
+   */
+  async init(): Promise<void> {}
 
   /*
    |--------------------------------------------------------------------------------
-   | Lookup
+   | Abstracted
    |--------------------------------------------------------------------------------
    */
 
-  has(id: string): boolean {
-    return this.documents.has(id);
-  }
+  abstract hasDocument(id: string): Promise<boolean>;
+
+  abstract getDocument(id: string): Promise<D | undefined>;
+
+  abstract getDocuments(): Promise<D[]>;
+
+  abstract setDocument(id: string, document: D): Promise<void>;
+
+  abstract delDocument(id: string): Promise<void>;
+
+  abstract count(): Promise<number>;
+
+  abstract flush(): Promise<void>;
 
   /*
    |--------------------------------------------------------------------------------
@@ -88,24 +100,20 @@ export class Storage<D extends Document = Document> extends EventEmitter<{
    */
 
   commit(type: ChangeType, document: D): void {
-    this.#commit(type, document);
-    this.#channel.postMessage({ type, document });
-  }
-
-  #commit(type: ChangeType, document: D) {
     switch (type) {
       case "insert":
       case "update": {
-        this.documents.set(document.id, document);
+        this.setDocument(document.id, document);
         this.emit("change", type, document);
         break;
       }
       case "remove": {
-        this.documents.delete(document.id);
+        this.delDocument(document.id);
         this.emit("change", "remove", { id: document.id } as D);
         break;
       }
     }
+    this.#channel.postMessage({ type, document });
   }
 
   /*
@@ -120,44 +128,12 @@ export class Storage<D extends Document = Document> extends EventEmitter<{
 
   /*
    |--------------------------------------------------------------------------------
-   | Persisters
-   |--------------------------------------------------------------------------------
-   */
-
-  async load(): Promise<this> {
-    if (!this.is("loading")) {
-      return this;
-    }
-    const documents = await this.adapter.get(this.name);
-    for (const document of documents) {
-      this.documents.set(document.id, document);
-    }
-    return this.#setStatus("ready").process();
-  }
-
-  async save(): Promise<this> {
-    if (this.debounce.save) {
-      clearTimeout(this.debounce.save);
-    }
-    this.debounce.save = setTimeout(() => {
-      this.adapter.set(this.name, this.data);
-    }, 500);
-    return this;
-  }
-
-  flush(): void {
-    this.documents.clear();
-    this.adapter.flush();
-  }
-
-  /*
-   |--------------------------------------------------------------------------------
    | Mutations
    |--------------------------------------------------------------------------------
    */
 
   async insert(document: PartialDocument<D>): Promise<InsertResult | InsertException> {
-    this.logger.debug(`${this.name} [${this.id}] Insert`, document.id);
+    this.#logger.debug(`${this.name} [${this.id}] Insert`, document.id);
     return this.run({ type: "insert", document } as Insert<D>);
   }
 
@@ -166,24 +142,24 @@ export class Storage<D extends Document = Document> extends EventEmitter<{
     criteria: RawObject,
     operators: Update["operators"]
   ): Promise<UpdateOneResult | UpdateOneException> {
-    this.logger.debug(`${this.adapter.type} [${this.id}] Update`, id);
+    this.#logger.debug(`${this.name} [${this.id}] Update`, id);
     return this.run({ type: "update", id, criteria, operators } as Update);
   }
 
   async replace(id: string, document: Document): Promise<UpdateOneResult | UpdateOneException> {
-    this.logger.debug(`${this.adapter.type} [${this.id}] Replace`, id);
+    this.#logger.debug(`${this.name} [${this.id}] Replace`, id);
     return this.run({ type: "replace", id, document } as Replace<D>);
   }
 
   async remove(id: string): Promise<RemoveOneResult | RemoveOneException> {
-    this.logger.debug(`${this.adapter.type} [${this.id}] Remove`, id);
+    this.#logger.debug(`${this.name} [${this.id}] Remove`, id);
     return this.run({ type: "remove", id } as Remove);
   }
 
   async run(operation: Omit<Operator<D>, "resolve" | "reject">): Promise<any> {
     return new Promise((resolve, reject) => {
       this.load().then(() => {
-        this.operators.push({ ...operation, resolve, reject } as Operator<D>);
+        this.#operators.push({ ...operation, resolve, reject } as Operator<D>);
         this.process();
       });
     });
@@ -202,30 +178,31 @@ export class Storage<D extends Document = Document> extends EventEmitter<{
 
     this.#setStatus("working");
 
-    const operation = this.operators.shift();
+    const operation = this.#operators.shift();
     if (!operation) {
       return this.#setStatus("ready");
     }
 
-    try {
-      operation.resolve(this.resolve(operation as any));
-      this.save();
-    } catch (error: any) {
-      operation.reject(error);
-    }
+    this.resolve(operation as any)
+      .then(operation.resolve)
+      .catch(operation.reject);
 
     this.#setStatus("ready").process();
 
     return this;
   }
 
-  resolve(operator: Insert<D>): InsertResult | InsertException;
+  resolve(operator: Insert<D>): Promise<InsertResult | InsertException>;
   resolve(
     operator: Operator<D>
-  ): InsertResult | InsertException | UpdateOneResult | UpdateOneException | RemoveOneResult | RemoveOneException;
+  ): Promise<
+    InsertResult | InsertException | UpdateOneResult | UpdateOneException | RemoveOneResult | RemoveOneException
+  >;
   resolve(
     operator: Operator<D>
-  ): InsertResult | InsertException | UpdateOneResult | UpdateOneException | RemoveOneResult | RemoveOneException {
+  ): Promise<
+    InsertResult | InsertException | UpdateOneResult | UpdateOneException | RemoveOneResult | RemoveOneException
+  > {
     return operators[operator.type](this, operator as any);
   }
 }

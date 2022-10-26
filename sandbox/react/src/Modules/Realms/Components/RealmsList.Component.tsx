@@ -9,7 +9,9 @@ export const RealmsList = controller.view<Props>(
     return (
       <div>
         <CreateRealm />
-        <div>Realms List Name: {name}</div>
+        <div>
+          Realms List Name: {name} | Realms: {realms.length}
+        </div>
         <div style={{ margin: "10px 0" }}>---</div>
         {[1, 10, 50, 100].map((amount) => {
           return (

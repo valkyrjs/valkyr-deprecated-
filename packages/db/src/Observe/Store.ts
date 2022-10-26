@@ -1,5 +1,4 @@
-import { InstanceAdapter } from "../Adapters";
-import { Document, Storage } from "../Storage";
+import { Document, MemoryStorage, Storage } from "../Storage";
 import { Criteria, isMatch } from "./IsMatch";
 
 export type OnChangeFn = (documents: Document[]) => void;
@@ -7,21 +6,21 @@ export type OnChangeFn = (documents: Document[]) => void;
 export class Store {
   private constructor(private storage: Storage) {}
 
-  get data(): Document[] {
-    return this.storage.data;
-  }
-
   static create(name = "observer") {
-    return new Store(new Storage(name, new InstanceAdapter()));
+    return new Store(new MemoryStorage(name));
   }
 
   async resolve(documents: Document[]): Promise<Document[]> {
     for (const document of documents) {
-      if (this.storage.has(document.id) === false) {
+      if ((await this.storage.hasDocument(document.id)) === false) {
         await this.storage.insert(document);
       }
     }
-    return this.data;
+    return this.getDocuments();
+  }
+
+  async getDocuments(): Promise<Document[]> {
+    return this.storage.getDocuments();
   }
 
   async insert(document: Document, criteria: Criteria): Promise<boolean> {
@@ -33,7 +32,7 @@ export class Store {
   }
 
   async update(document: Document, criteria: Criteria): Promise<boolean> {
-    if (this.storage.has(document.id)) {
+    if (await this.storage.hasDocument(document.id)) {
       await this.#updateOrRemove(document, criteria);
       return true;
     } else if (isMatch(document, criteria)) {

@@ -1,6 +1,6 @@
 import { users } from "../mocks";
-import { InstanceAdapter } from "../src/Adapters";
 import { Collection } from "../src/Collection";
+import { MemoryStorage } from "../src/Storage";
 import { RemoveOneResult, RemoveResult } from "../src/Storage/Operators/Remove";
 
 /*
@@ -11,7 +11,7 @@ import { RemoveOneResult, RemoveResult } from "../src/Storage/Operators/Remove";
 
 describe("Storage Remove", () => {
   it("should successfully delete document", async () => {
-    const collection = new Collection("users", new InstanceAdapter());
+    const collection = new Collection("users", MemoryStorage);
     await collection.insertMany(users);
     expect(await collection.remove({ id: "user-1" })).toEqual(new RemoveResult([new RemoveOneResult()]));
   });

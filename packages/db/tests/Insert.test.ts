@@ -1,5 +1,5 @@
 import { users } from "../mocks";
-import { Collection, DuplicateDocumentError, InstanceAdapter } from "../src";
+import { Collection, DuplicateDocumentError, MemoryStorage } from "../src";
 
 /*
  |--------------------------------------------------------------------------------
@@ -9,14 +9,14 @@ import { Collection, DuplicateDocumentError, InstanceAdapter } from "../src";
 
 describe("Storage Insert", () => {
   it("should successfully insert a new document", async () => {
-    const collection = new Collection("users", new InstanceAdapter());
+    const collection = new Collection("users", MemoryStorage);
     await collection.insertMany(users);
-    expect(collection.storage.documents.get(users[0].id)).toEqual(users[0]);
-    expect(collection.storage.documents.get(users[1].id)).toEqual(users[1]);
+    expect(await collection.storage.getDocument(users[0].id)).toEqual(users[0]);
+    expect(await collection.storage.getDocument(users[1].id)).toEqual(users[1]);
   });
 
   it("should throw an error if the document already exists", async () => {
-    const collection = new Collection("users", new InstanceAdapter());
+    const collection = new Collection("users", MemoryStorage);
     try {
       await collection.insertOne(users[0]);
     } catch (err) {

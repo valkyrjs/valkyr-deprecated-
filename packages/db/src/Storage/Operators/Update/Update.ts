@@ -11,11 +11,11 @@ import { UpdateOneResult } from "./Result";
 import { $set } from "./Set";
 import { $unset } from "./Unset";
 
-export function update(storage: Storage, operator: Update): UpdateOneResult | UpdateOneException {
+export async function update(storage: Storage, operator: Update): Promise<UpdateOneResult | UpdateOneException> {
   try {
     const { id, criteria, operators } = operator;
 
-    const currentDocument = storage.documents.get(id);
+    const currentDocument = await storage.getDocument(id);
     if (currentDocument === undefined) {
       return new UpdateOneException(false, new DocumentNotFoundError(criteria));
     }

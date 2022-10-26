@@ -24,6 +24,7 @@
     "@valkyr/logger": "workspace:*",
     "@valkyr/security": "workspace:*",
     "fast-equals": "4.0.3",
+    "idb": "^7.1.0",
     "idb-keyval": "6.2.0",
     "mingo": "6.1.2",
     "rfdc": "1.3.0",

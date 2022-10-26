@@ -3,9 +3,10 @@ import type { Cursor } from "mingo/cursor";
 import type { RawObject } from "mingo/types";
 import { Observable } from "rxjs";
 
-import { Adapter } from "./Adapters";
 import { observe, observeOne } from "./Observe";
 import { Document, DocumentNotFoundError, PartialDocument, Storage, Update } from "./Storage";
+import { IndexedDbStorage } from "./Storage/Adapters/IndexedDbStorage";
+import { MemoryStorage } from "./Storage/Adapters/MemoryStorage";
 import { InsertException, InsertManyResult, InsertResult } from "./Storage/Operators/Insert";
 import { RemoveResult } from "./Storage/Operators/Remove";
 import { UpdateOneException, UpdateResult } from "./Storage/Operators/Update";
@@ -20,9 +21,9 @@ export class Collection<D extends Document = any> {
   readonly name: string;
   readonly storage: Storage<D>;
 
-  constructor(name: string, adapter?: Adapter<D>) {
+  constructor(name: string, storage: typeof IndexedDbStorage | typeof MemoryStorage) {
     this.name = name;
-    this.storage = new Storage<D>(this.name, adapter);
+    this.storage = new storage<D>(name);
   }
 
   /*
@@ -117,7 +118,7 @@ export class Collection<D extends Document = any> {
    * retrieve the document directly from the collections document Map.
    */
   async findById(id: string): Promise<D | undefined> {
-    return this.storage.load().then((storage) => storage.documents.get(id));
+    return this.storage.load().then(() => this.storage.getDocument(id));
   }
 
   /**
@@ -167,7 +168,7 @@ export class Collection<D extends Document = any> {
    */
   async query(criteria: RawObject = {}): Promise<Cursor> {
     await this.storage.load();
-    return new Query(criteria).find(this.storage.data);
+    return new Query(criteria).find(await this.storage.getDocuments());
   }
 
   /**
