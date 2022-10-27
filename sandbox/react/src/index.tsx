@@ -1,3 +1,5 @@
+import "./styles.scss";
+
 import { createElement, ReactElement } from "react";
 import { createRoot } from "react-dom/client";
 

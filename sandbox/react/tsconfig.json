@@ -9,6 +9,7 @@
     "lib": ["es2020", "dom", "dom.iterable"],
     "jsx": "react-jsx",
     "paths": {
+      "~components/*": ["./src/components/*"],
       "~middleware/*": ["./src/middleware/*"],
       "~services/*": ["./src/services/*"]
     },

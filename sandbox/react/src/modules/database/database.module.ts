@@ -5,7 +5,10 @@ import { db } from "~services/database";
 import { router } from "~services/router";
 
 import { User } from "./models/user.entity";
-import { DatabaseTemplateView } from "./views/database-template.view";
+import { DashboardView } from "./views/dashboard.view";
+import { RouterView } from "./views/router.view";
+import { SampleFormView } from "./views/sample-form.view";
+import { DatabaseTemplateView } from "./views/template.view";
 
 /*
  |--------------------------------------------------------------------------------
@@ -23,8 +26,29 @@ db.register([{ name: "users", model: User }]);
 
 router.register([
   new Route({
-    name: "Database",
     path: "/",
-    actions: [render(DatabaseTemplateView)]
+    actions: [render(DatabaseTemplateView)],
+    children: [
+      new Route({
+        name: "Dashboard",
+        path: "/",
+        actions: [render(DashboardView)]
+      }),
+      new Route({
+        name: "Database Users",
+        path: "/database/users",
+        actions: []
+      }),
+      new Route({
+        name: "Router",
+        path: "/router",
+        actions: [render(RouterView)]
+      }),
+      new Route({
+        name: "Form",
+        path: "/form",
+        actions: [render(SampleFormView)]
+      })
+    ]
   })
 ]);

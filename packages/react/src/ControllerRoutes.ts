@@ -1,5 +1,4 @@
 import type { RoutedResult, Router } from "@valkyr/router";
-import { deepEqual } from "fast-equals";
 
 import type { Controller, JsonLike } from "./Controller";
 
@@ -44,19 +43,8 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
   }
 
   async #setComponent(resolved: Router["resolved"]) {
-    const prev = this.controller.state.routed;
-    const next = await this.router.getComponent(resolved);
-    if (prev === undefined || hasChanged(prev, next) === true) {
-      this.controller.setState("routed", next as S[keyof S]);
-    }
+    this.controller.setState("routed", (await this.router.getComponent(resolved)) as S[keyof S]);
   }
-}
-
-function hasChanged(prev: RoutedResult<any>, next: RoutedResult<any>): boolean {
-  if (prev.component !== next.component) {
-    return true;
-  }
-  return deepEqual(prev.props, next.props) === false;
 }
 
 type Route = {

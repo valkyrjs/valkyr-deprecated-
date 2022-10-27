@@ -1,0 +1,35 @@
+.btn {
+  border: none;
+  border-radius: 5px;
+  
+  outline: none;
+
+  padding: 6px 12px;
+  margin-right: 10px;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &.btn-primary {
+    background-color: var(--primary);
+    color: var(--primary-text);
+
+    &:hover {
+      background-color: var(--primary-light);
+    }
+  }
+
+  &.btn-secondary {
+    background-color: var(--secondary);
+    color: var(--secondary-text);
+
+    &:hover {
+      background-color: var(--secondary-light);
+    }
+  }
+}

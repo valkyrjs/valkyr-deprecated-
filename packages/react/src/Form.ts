@@ -14,6 +14,7 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
   #elements: Record<string, HTMLInputElement | HTMLSelectElement> = {};
 
   #onChange: OnChangeCallback<Inputs>;
+  #onProcessing: OnProcessingCallback;
   #onError: OnErrorCallback<Inputs>;
   #onSubmit: OnSubmitCallback<Inputs>;
   #onResponse: OnResponseCallback;
@@ -77,6 +78,11 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
 
   onChange(callback: OnChangeCallback<Inputs>): this {
     this.#onChange = callback;
+    return this;
+  }
+
+  onProcessing(callback: OnProcessingCallback): this {
+    this.#onProcessing = callback;
     return this;
   }
 
@@ -170,11 +176,13 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
 
   async submit(event: any) {
     event.preventDefault?.();
+    this.#onProcessing?.(true);
     this.validate();
     if (this.hasError === false) {
       const response = await this.#onSubmit?.(this);
       this.#onResponse?.(response);
     }
+    this.#onProcessing?.(false);
   }
 
   validate(name?: keyof Inputs) {
@@ -230,6 +238,8 @@ type OnChangeCallback<Inputs extends {}, Key extends keyof Inputs = keyof Inputs
   name: Key,
   value: Inputs[Key]
 ) => void;
+
+type OnProcessingCallback = (value: boolean) => void;
 
 type OnErrorCallback<Inputs extends {}> = (errors: FormErrors<Inputs>) => void;
 
