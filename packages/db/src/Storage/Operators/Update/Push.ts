@@ -4,9 +4,9 @@ import type { RawObject } from "mingo/types";
 
 import { dot } from "../../../Dot";
 import { Document } from "../../Storage";
-import type { Update } from "../Operators";
+import type { UpdateOperators } from "./Update";
 
-export function $push(document: Document, operator: Update["operators"]["$push"] = {}): boolean {
+export function $push(document: Document, operator: UpdateOperators["$push"] = {}): boolean {
   let modified = false;
   for (const key in operator) {
     const values = getPushValues(document, key);

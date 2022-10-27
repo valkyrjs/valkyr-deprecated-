@@ -1,8 +1,8 @@
 import { dot } from "../../../Dot";
 import { Document } from "../../Storage";
-import type { Update } from "../Operators";
+import type { UpdateOperators } from "./Update";
 
-export function $unset(document: Document, $unset: Update["operators"]["$unset"] = {}): boolean {
+export function $unset(document: Document, $unset: UpdateOperators["$unset"] = {}): boolean {
   let modified = false;
   for (const key in $unset) {
     if (dot.deleteProperty(document, key)) {

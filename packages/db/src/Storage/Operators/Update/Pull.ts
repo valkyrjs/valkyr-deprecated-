@@ -4,9 +4,9 @@ import type { RawObject } from "mingo/types";
 import { dot } from "../../../Dot";
 import { PullUpdateArrayError } from "../../Errors";
 import { Document } from "../../Storage";
-import type { Update } from "../Operators";
+import type { UpdateOperators } from "./Update";
 
-export function $pull(document: Document, operator: Update["operators"]["$pull"] = {}): boolean {
+export function $pull(document: Document, operator: UpdateOperators["$pull"] = {}): boolean {
   let modified = false;
   for (const key in operator) {
     const values = getPullValues(document, key);

@@ -11,32 +11,28 @@ export class Store {
   }
 
   async resolve(documents: Document[]): Promise<Document[]> {
-    for (const document of documents) {
-      if ((await this.storage.hasDocument(document.id)) === false) {
-        await this.storage.insert(document);
-      }
-    }
+    await this.storage.insertMany(documents);
     return this.getDocuments();
   }
 
   async getDocuments(): Promise<Document[]> {
-    return this.storage.getDocuments();
+    return this.storage.find();
   }
 
   async insert(document: Document, criteria: Criteria): Promise<boolean> {
     if (isMatch(document, criteria)) {
-      await this.storage.replace(document.id, document);
+      await this.storage.insertOne(document);
       return true;
     }
     return false;
   }
 
   async update(document: Document, criteria: Criteria): Promise<boolean> {
-    if (await this.storage.hasDocument(document.id)) {
+    if (await this.storage.has(document.id)) {
       await this.#updateOrRemove(document, criteria);
       return true;
     } else if (isMatch(document, criteria)) {
-      await this.storage.insert(document);
+      await this.storage.insertOne(document);
       return true;
     }
     return false;
@@ -44,7 +40,7 @@ export class Store {
 
   async remove(document: Document): Promise<boolean> {
     if (isMatch(document, { id: document.id })) {
-      await this.storage.remove(document.id);
+      await this.storage.remove({ id: document.id });
       return true;
     }
     return false;
@@ -52,9 +48,9 @@ export class Store {
 
   async #updateOrRemove(document: Document, criteria: Criteria): Promise<void> {
     if (isMatch(document, criteria)) {
-      await this.storage.replace(document.id, document);
+      await this.storage.replace({ id: document.id }, document);
     } else {
-      await this.storage.remove(document.id);
+      await this.storage.remove({ id: document.id });
     }
   }
 }

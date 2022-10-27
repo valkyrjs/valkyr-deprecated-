@@ -5,7 +5,7 @@ import type { RawObject } from "mingo/types";
 import { clone } from "../../../Clone";
 import { dot } from "../../../Dot";
 import { Document } from "../../Storage";
-import type { Update } from "../Operators";
+import type { UpdateOperators } from "./Update";
 
 /**
  * Execute a $set based operators.
@@ -18,7 +18,7 @@ import type { Update } from "../Operators";
  * @param criteria - Search criteria provided with the operation. Eg. updateOne({ id: "1" })
  * @param $set     - $set action being executed.
  */
-export function $set(document: Document, criteria: RawObject, $set: Update["operators"]["$set"] = {}): boolean {
+export function $set(document: Document, criteria: RawObject, $set: UpdateOperators["$set"] = {}): boolean {
   let modified = false;
   for (const key in $set) {
     if (key.includes("$")) {

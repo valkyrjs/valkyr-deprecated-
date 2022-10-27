@@ -1,7 +1,7 @@
 import { Query } from "mingo";
 
-import { addOptions, Collection, Options } from "../Collection";
-import { Document } from "../Storage";
+import { Collection } from "../Collection";
+import { addOptions, Document, Options } from "../Storage";
 import { Criteria } from "./IsMatch";
 import { Store } from "./Store";
 

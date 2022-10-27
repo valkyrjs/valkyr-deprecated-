@@ -1,36 +1,13 @@
 import type { RawObject } from "mingo/types";
 
 import { clone } from "../../../Clone";
-import { DocumentNotFoundError } from "../../Errors";
-import { Document, Storage } from "../../Storage";
-import { Update } from "../Operators";
-import { UpdateOneException } from "./Exceptions";
+import { Document } from "../../Storage";
 import { $pull } from "./Pull";
 import { $push } from "./Push";
-import { UpdateOneResult } from "./Result";
 import { $set } from "./Set";
 import { $unset } from "./Unset";
 
-export async function update(storage: Storage, operator: Update): Promise<UpdateOneResult | UpdateOneException> {
-  try {
-    const { id, criteria, operators } = operator;
-
-    const currentDocument = await storage.getDocument(id);
-    if (currentDocument === undefined) {
-      return new UpdateOneException(false, new DocumentNotFoundError(criteria));
-    }
-
-    const { modified, document } = execute(criteria, operators, clone(currentDocument));
-
-    storage.commit("update", document);
-
-    return new UpdateOneResult(true, modified);
-  } catch (error) {
-    return new UpdateOneException(true, error);
-  }
-}
-
-function execute(criteria: RawObject, operators: Update["operators"], document: Document) {
+export function update<D extends Document>(criteria: RawObject, operators: UpdateOperators, document: D) {
   const updatedDocument = clone(document);
 
   const setModified = $set(updatedDocument, criteria, operators.$set);
@@ -43,3 +20,10 @@ function execute(criteria: RawObject, operators: Update["operators"], document: 
     document: updatedDocument
   };
 }
+
+export type UpdateOperators = {
+  $set?: RawObject;
+  $unset?: RawObject;
+  $push?: RawObject;
+  $pull?: RawObject;
+};

@@ -1,6 +1,13 @@
-import { IDBPDatabase, openDB } from "idb";
+import { getId } from "@valkyr/security";
+import { IDBPDatabase, openDB } from "idb/with-async-ittr";
+import { Query } from "mingo";
+import { RawObject } from "mingo/types";
 
-import { Document, Storage } from "../Storage";
+import { DuplicateDocumentError } from "../Errors";
+import { InsertResult } from "../Operators/Insert";
+import { RemoveResult } from "../Operators/Remove";
+import { update, UpdateOperators, UpdateResult } from "../Operators/Update";
+import { addOptions, Document, Options, PartialDocument, Storage } from "../Storage";
 
 const OBJECT_STORE_NAME = "documents";
 
@@ -15,45 +22,157 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
         const store = db.createObjectStore(OBJECT_STORE_NAME, {
           keyPath: "id"
         });
-        store.createIndex("primary", "id", { unique: true });
+        store.createIndex("id", "id", { unique: true });
       }
     });
   }
 
-  async hasDocument(id: string): Promise<boolean> {
+  async has(id: string): Promise<boolean> {
     if (this.#cache.has(id) === true) {
       return true;
     }
-    const document = await this.getDocument(id);
+    const document = await this.#db.getFromIndex(OBJECT_STORE_NAME, "id", id);
     if (document !== undefined) {
       return true;
     }
     return false;
   }
 
-  async getDocument(id: string): Promise<D | undefined> {
-    const cachedDocument = this.#cache.get(id);
-    if (cachedDocument) {
-      return cachedDocument;
+  async insertOne(data: PartialDocument<D>): Promise<InsertResult> {
+    const document = { ...data, id: data.id ?? getId() } as D;
+    if (await this.has(document.id)) {
+      throw new DuplicateDocumentError(document, this);
     }
-    return this.#db.get(OBJECT_STORE_NAME, id);
-  }
-
-  async getDocuments(): Promise<D[]> {
-    return [...(await this.#db.getAll(OBJECT_STORE_NAME)), ...Array.from(this.#cache.values())];
-  }
-
-  async setDocument(document: D): Promise<void> {
     this.#cache.set(document.id, document);
+    this.broadcast("insert", document);
     this.#db.put(OBJECT_STORE_NAME, document).then(() => {
       this.#cache.delete(document.id);
     });
+    return new InsertResult([document.id]);
   }
 
-  async delDocument(id: string): Promise<void> {
-    this.#db.delete(OBJECT_STORE_NAME, id).then(() => {
-      this.#cache.delete(id);
-    });
+  async insertMany(data: PartialDocument<D>[]): Promise<InsertResult> {
+    const tx = await this.#db.transaction(OBJECT_STORE_NAME, "readwrite");
+    const ids: string[] = [];
+    Promise.all([
+      ...data.map((data) => {
+        const document = { ...data, id: data.id ?? getId() } as D;
+
+        ids.push(document.id);
+
+        this.#cache.set(document.id, document);
+        this.broadcast("insert", document);
+
+        return tx.store.add(document).then(() => {
+          this.#cache.delete(document.id);
+        });
+      }),
+      tx.done
+    ]);
+    return new InsertResult(ids);
+  }
+
+  async findByIndex(index: string, value: any): Promise<D[]> {
+    return this.#db.getAllFromIndex(OBJECT_STORE_NAME, index, value);
+  }
+
+  async find(criteria: RawObject, options?: Options): Promise<D[]> {
+    let cursor = new Query(criteria ?? {}).find([
+      ...(await this.#db.getAll(OBJECT_STORE_NAME)),
+      ...Array.from(this.#cache.values())
+    ]);
+    if (options !== undefined) {
+      cursor = addOptions(cursor, options);
+    }
+    return cursor.all() as D[];
+  }
+
+  async update(criteria: RawObject, operators: UpdateOperators, options?: { justOne: boolean }): Promise<UpdateResult> {
+    const query = new Query(criteria);
+
+    let matchedCount = 0;
+    let modifiedCount = 0;
+
+    const tx = this.#db.transaction(OBJECT_STORE_NAME, "readwrite");
+    for await (const cursor of tx.store) {
+      if (query.test(cursor.value) === true) {
+        matchedCount += 1;
+
+        const { modified, document } = update<D>(criteria, operators, cursor.value);
+        if (modified === true) {
+          modifiedCount += 1;
+          this.#cache.set(document.id, document);
+          this.broadcast("update", document);
+          cursor.update(document).then(() => {
+            this.#cache.delete(document.id);
+          });
+        }
+
+        if (options?.justOne === true) {
+          break;
+        }
+      }
+    }
+
+    return new UpdateResult(matchedCount, modifiedCount);
+  }
+
+  async replace(criteria: RawObject, document: D): Promise<UpdateResult> {
+    const query = new Query(criteria);
+
+    let matchedCount = 0;
+    let modifiedCount = 0;
+
+    const tx = this.#db.transaction(OBJECT_STORE_NAME, "readwrite");
+    for await (const cursor of tx.store) {
+      if (query.test(cursor.value) === true) {
+        matchedCount += 1;
+        modifiedCount += 1;
+
+        this.#cache.set(document.id, document);
+        this.broadcast("update", document);
+
+        cursor.update(document).then(() => {
+          this.#cache.delete(document.id);
+        });
+      }
+    }
+
+    return new UpdateResult(matchedCount, modifiedCount);
+  }
+
+  async remove(criteria: RawObject): Promise<RemoveResult> {
+    let count = 0;
+    if (typeof criteria.id === "string") {
+      const id = criteria.id;
+      this.broadcast("remove", { id } as D);
+      await this.#db.delete(OBJECT_STORE_NAME, id).then(() => {
+        this.#cache.delete(id);
+        count += 1;
+      });
+    } else if (Object.keys(criteria).length === 0) {
+      const ids = await this.#db.getAllKeys(OBJECT_STORE_NAME);
+      for (const id of ids) {
+        this.broadcast("remove", { id } as D);
+        this.#db.delete(OBJECT_STORE_NAME, id).then(() => {
+          this.#cache.delete(id as string);
+          count += 1;
+        });
+      }
+    } else {
+      const query = new Query(criteria);
+      const tx = this.#db.transaction(OBJECT_STORE_NAME, "readwrite");
+      for await (const cursor of tx.store) {
+        if (query.test(cursor.value) === true) {
+          this.broadcast("remove", cursor.value);
+          cursor.delete().then(() => {
+            this.#cache.delete(cursor.value.id);
+          });
+          count += 1;
+        }
+      }
+    }
+    return new RemoveResult(count);
   }
 
   async count(): Promise<number> {

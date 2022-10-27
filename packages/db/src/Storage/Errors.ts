@@ -7,7 +7,7 @@ export class DuplicateDocumentError extends Error {
 
   constructor(readonly document: Document, storage: Storage) {
     super(
-      `Collection Insert Violation: Document '${document.id}' already exists in ${storage.name} ${storage.name} ${storage.id}`
+      `Collection Insert Violation: Document '${document.id}' already exists in ${storage.name} collection ${storage.id}`
     );
   }
 }

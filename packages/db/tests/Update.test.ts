@@ -51,9 +51,8 @@ describe("Field Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("100")).toEqual({
@@ -110,9 +109,8 @@ describe("Field Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("100")).toEqual({
@@ -170,9 +168,8 @@ describe("Field Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("100")).toEqual({
@@ -217,9 +214,8 @@ describe("Field Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.find()).toEqual([
@@ -288,9 +284,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.find()).toEqual([
@@ -335,9 +330,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.find()).toEqual([
@@ -378,9 +372,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("4")).toEqual({
@@ -433,9 +426,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("5")).toEqual({
@@ -482,9 +474,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 2,
-        modifiedCount: 2,
-        exceptions: []
+        matched: 2,
+        modified: 2
       });
 
       expect(await collection.find()).toEqual([
@@ -521,9 +512,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findOne({ id: "1" })).toEqual({ id: "1", votes: [3, 5] });
@@ -556,9 +546,8 @@ describe("Array Update Operators", () => {
       ]);
 
       expect(await collection.updateMany({}, { $pull: { results: { score: 8, item: "B" } } })).toEqual({
-        matchedCount: 2,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 2,
+        modified: 1
       });
 
       expect(await collection.find()).toEqual([
@@ -600,9 +589,8 @@ describe("Array Update Operators", () => {
       ]);
 
       expect(await collection.updateMany({}, { $pull: { results: { $elemMatch: { score: 8, item: "B" } } } })).toEqual({
-        matchedCount: 2,
-        modifiedCount: 0,
-        exceptions: []
+        matched: 2,
+        modified: 0
       });
 
       expect(await collection.find()).toEqual([
@@ -688,9 +676,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 2,
-        modifiedCount: 2,
-        exceptions: []
+        matched: 2,
+        modified: 2
       });
 
       expect(await collection.find()).toEqual([
@@ -743,9 +730,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findOne({ id: "1" })).toEqual({ id: "1", scores: [44, 78, 38, 80, 89] });
@@ -774,9 +760,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 4,
-        modifiedCount: 4,
-        exceptions: []
+        matched: 4,
+        modified: 4
       });
 
       expect(await collection.find()).toEqual([
@@ -807,9 +792,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findOne({ id: "1" })).toEqual({ id: "1", name: "Joe", scores: [44, 78, 90, 92, 85] });
@@ -852,9 +836,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("5")).toEqual({
@@ -888,9 +871,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("1")).toEqual({ id: "1", scores: [50, 60, 80, 78, 86] });
@@ -917,9 +899,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("2")).toEqual({ id: "2", scores: [89, 90, 100] });
@@ -946,9 +927,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("3")).toEqual({ id: "3", scores: [70, 100, 20] });
@@ -975,9 +955,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("1")).toEqual({ id: "1", scores: [50, 60, 70, 100] });
@@ -1004,9 +983,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("2")).toEqual({ id: "2", scores: [50, 60, 20, 30, 70, 100] });
@@ -1030,9 +1008,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("3")).toEqual({ id: "3", scores: [50, 60, 20, 30, 90, 80, 70, 100] });
@@ -1072,9 +1049,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("1")).toEqual({
@@ -1112,9 +1088,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("2")).toEqual({ id: "2", tests: [40, 50, 60, 70, 89, 89] });
@@ -1143,9 +1118,8 @@ describe("Array Update Operators", () => {
           }
         )
       ).toEqual({
-        matchedCount: 1,
-        modifiedCount: 1,
-        exceptions: []
+        matched: 1,
+        modified: 1
       });
 
       expect(await collection.findById("3")).toEqual({ id: "3", tests: [100, 89, 70, 20] });

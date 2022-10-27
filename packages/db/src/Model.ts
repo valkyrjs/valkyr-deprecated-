@@ -1,11 +1,11 @@
 import { RawObject } from "mingo/types";
 import { Observable, Subscription } from "rxjs";
 
-import type { Collection, Options } from "./Collection";
+import type { Collection } from "./Collection";
 import { observe, observeOne } from "./Observe";
-import { Document, DocumentNotFoundError, PartialDocument, Update } from "./Storage";
+import { Document, DocumentNotFoundError, Options, PartialDocument } from "./Storage";
 import { RemoveResult } from "./Storage/Operators/Remove";
-import { UpdateResult } from "./Storage/Operators/Update";
+import { UpdateOperators, UpdateResult } from "./Storage/Operators/Update";
 
 export abstract class Model<D extends Document = any> {
   private static _collection: Collection;
@@ -42,10 +42,10 @@ export abstract class Model<D extends Document = any> {
     document: PartialDocument<D>
   ): Promise<T> {
     const result = await this.$collection.insertOne(document);
-    if (result.acknowledged === false) {
-      throw result.exception;
+    if (result.ids.length === 0) {
+      throw new Error("Model Violation: Unable to insert document");
     }
-    return (this as any).findById(result.insertedId);
+    return (this as any).findById(result.ids[0]);
   }
 
   static async insertMany<D extends Document, T extends Model<D>>(
@@ -53,12 +53,12 @@ export abstract class Model<D extends Document = any> {
     documents: PartialDocument<D>[]
   ): Promise<T[]> {
     const result = await this.$collection.insertMany(documents);
-    if (result.acknowledged === false) {
-      throw result.exceptions;
+    if (result.ids.length === 0) {
+      return [];
     }
     return (this as any).find({
       id: {
-        $in: result.insertedIds
+        $in: result.ids
       }
     });
   }
@@ -66,25 +66,17 @@ export abstract class Model<D extends Document = any> {
   static async updateOne<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
-    update: Update["operators"]
+    update: UpdateOperators
   ): Promise<UpdateResult> {
-    const result = await this.$collection.updateOne(criteria, update);
-    if (result.acknowledged === false) {
-      throw result.exceptions[0];
-    }
-    return result;
+    return this.$collection.updateOne(criteria, update);
   }
 
   static async updateMany<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     criteria: RawObject,
-    update: Update["operators"]
+    update: UpdateOperators
   ): Promise<UpdateResult> {
-    const result = await this.$collection.updateMany(criteria, update);
-    if (result.acknowledged === false) {
-      throw result.exceptions;
-    }
-    return result;
+    return this.$collection.updateMany(criteria, update);
   }
 
   static async replaceOne<D extends Document, T extends Model<D>>(
@@ -92,23 +84,14 @@ export abstract class Model<D extends Document = any> {
     criteria: RawObject,
     document: D
   ): Promise<UpdateResult> {
-    const result = await this.$collection.replaceOne(criteria, document);
-    if (result.acknowledged === false) {
-      throw result.exceptions[0];
-    }
-    return result;
+    return this.$collection.replaceOne(criteria, document);
   }
 
   static async remove<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
-    criteria: RawObject,
-    options?: { justOne: boolean }
+    criteria: RawObject
   ): Promise<RemoveResult> {
-    const result = await this.$collection.remove(criteria, options);
-    if (result.acknowledged === false) {
-      throw result.exceptions[0];
-    }
-    return result;
+    return this.$collection.remove(criteria);
   }
 
   /*
@@ -222,13 +205,16 @@ export abstract class Model<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  async update(update: Update["operators"]): Promise<this> {
+  async update(update: UpdateOperators): Promise<this> {
     const result = await this.$collection.updateOne({ id: this.id }, update);
-    if (result.acknowledged === false) {
-      throw result.exceptions[0];
+    if (result.matched === 0) {
+      throw new Error("Model Violation: Unable to update document, document not found");
+    }
+    if (result.modified === 0) {
+      throw new Error("Model Violation: Unable to update document, document not modified");
     }
     const document = await this.$collection.findById(this.id);
-    if (!document) {
+    if (document === undefined) {
       throw new DocumentNotFoundError({ id: this.id });
     }
     return new (this as any).constructor(document).onInit();
@@ -251,8 +237,8 @@ type ModelContext<T = any, D = any> = {
 type ModelMethods<T = any, D = any> = {
   insertOne(document: D): Promise<T>;
   insertMany(documents: D[]): Promise<T[]>;
-  updateOne(criteria: RawObject, update: Update["operators"]): Promise<UpdateResult>;
-  updateMany(criteria: RawObject, update: Update["operators"]): Promise<UpdateResult>;
+  updateOne(criteria: RawObject, update: UpdateOperators): Promise<UpdateResult>;
+  updateMany(criteria: RawObject, update: UpdateOperators): Promise<UpdateResult>;
   replaceOne(criteria: RawObject, document: D): Promise<UpdateResult>;
   remove(criteria: RawObject, options?: { justOne: boolean }): Promise<RemoveResult>;
 
