@@ -1,4 +1,4 @@
-import { IDBPDatabase, openDB } from "idb";
+import { IDBPDatabase, openDB } from "idb/with-async-ittr";
 
 import { Collection } from "../collection";
 import { IndexedDbStorage } from "./indexed.storage";
