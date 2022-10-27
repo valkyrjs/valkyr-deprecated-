@@ -1,5 +1,5 @@
 import { getId } from "@valkyr/security";
-import { IDBPDatabase } from "idb";
+import { IDBPDatabase } from "idb/with-async-ittr";
 import { Query } from "mingo";
 import { RawObject } from "mingo/types";
 
