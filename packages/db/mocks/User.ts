@@ -1,5 +1,5 @@
-import { clone } from "../src/Clone";
-import { Document } from "../src/Storage";
+import { clone } from "../src/clone";
+import { Document } from "../src/storage";
 
 export const users: UserDocument[] = [
   {

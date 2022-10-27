@@ -1,6 +1,6 @@
-import { database } from "../src/Database";
-import { Model } from "../src/Model";
-import { MemoryStorage } from "../src/Storage";
+import { Collection } from "../src/collection";
+import { MemoryStorage } from "../src/databases/memory.storage";
+import { Model } from "../src/model";
 import { UserDocument } from "./User";
 
 export class User extends Model<UserDocument> {
@@ -10,4 +10,4 @@ export class User extends Model<UserDocument> {
   readonly interests!: UserDocument["interests"];
 }
 
-database.register([{ name: "User", model: User }], MemoryStorage);
+User.$collection = new Collection("users", new MemoryStorage("users"));
