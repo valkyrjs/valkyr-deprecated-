@@ -1,12 +1,13 @@
 import { getId } from "@valkyr/security";
 import type { IDBPDatabase } from "idb";
 import { Query } from "mingo";
-import type { RawObject } from "mingo/types";
+import type { AnyVal, RawObject } from "mingo/types";
 
 import {
   addOptions,
   Document,
   DuplicateDocumentError,
+  Index,
   InsertResult,
   Options,
   PartialDocument,
@@ -16,6 +17,9 @@ import {
   UpdateOperators,
   UpdateResult
 } from "../storage";
+
+const OBJECT_PROTOTYPE = Object.getPrototypeOf({}) as AnyVal;
+const OBJECT_TAG = "[object Object]";
 
 export class IndexedDbStorage<D extends Document = Document> extends Storage<D> {
   readonly #db: IDBPDatabase;
@@ -104,28 +108,50 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    * TODO: Prototype! Needs to cover more mongodb query cases and investigation around
    * nested indexing in indexeddb.
    */
-  async #resolveIndexes(criteria: RawObject, options: Options) {
+  async #resolveIndexes(criteria: any, options: Options) {
     const indexNames = this.#db.transaction(this.name, "readonly").store.indexNames;
     for (const key in criteria) {
       if (indexNames.contains(key) === true) {
-        if (options.index === undefined) {
-          options.index = {};
+        let val: any;
+        if (isObject(criteria[key]) === true) {
+          if (criteria[key]["$in"] !== undefined) {
+            val = criteria[key]["$in"];
+          }
+        } else {
+          val = criteria[key];
         }
-        options.index[key] = criteria[key];
+        if (val !== undefined) {
+          if (options.index === undefined) {
+            options.index = {};
+          }
+          options.index[key] = val;
+        }
       }
     }
   }
 
   async #getAll(options: Options["index"]) {
     if (options?.index !== undefined) {
-      let result = new Set();
-      for (const key in options.index) {
-        const values = await this.#db.getAllFromIndex(this.name, key, options.index[key]);
-        result = new Set([...result, ...values]);
-      }
-      return result;
+      return this.#getAllByFilter(options.index);
     }
     return this.#db.getAll(this.name, undefined, options?.limit);
+  }
+
+  async #getAllByFilter(index: Index) {
+    let result = new Set();
+    for (const key in index) {
+      const value = index[key];
+      if (Array.isArray(value)) {
+        for (const idx of value) {
+          const values = await this.#db.getAllFromIndex(this.name, key, idx);
+          result = new Set([...result, ...values]);
+        }
+      } else {
+        const values = await this.#db.getAllFromIndex(this.name, key, value);
+        result = new Set([...result, ...values]);
+      }
+    }
+    return result;
   }
 
   /*
@@ -250,4 +276,18 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
   async flush(): Promise<void> {
     this.#db.clear(this.name);
   }
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Utils
+ |--------------------------------------------------------------------------------
+ */
+
+export function isObject(v: AnyVal): v is object {
+  if (!v) {
+    return false;
+  }
+  const proto = Object.getPrototypeOf(v) as AnyVal;
+  return (proto === OBJECT_PROTOTYPE || proto === null) && OBJECT_TAG === Object.prototype.toString.call(v);
 }

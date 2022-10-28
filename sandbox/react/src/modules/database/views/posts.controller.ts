@@ -19,6 +19,27 @@ class PostsController extends Controller<State> {
     };
   }
 
+  async indexExpression() {
+    const users = await User.find();
+    this.setState(
+      "posts",
+      await this.query(
+        Post,
+        {
+          where: {
+            createdBy: {
+              $in: [
+                users[Math.floor(Math.random() * users.length)].id,
+                users[Math.floor(Math.random() * users.length)].id
+              ]
+            }
+          }
+        },
+        "posts"
+      )
+    );
+  }
+
   async addPosts(count = 1) {
     const users = await User.find();
     const counts: {

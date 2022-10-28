@@ -31,10 +31,11 @@ const columns = [
 ];
 
 export const PostsView = controller.view(
-  ({ state: { posts }, actions: { addPosts } }) => {
+  ({ state: { posts }, actions: { addPosts, indexExpression } }) => {
     return (
       <div>
         <button onClick={() => addPosts(5000)}>Add Posts</button>
+        <button onClick={indexExpression}>Indexed Expression</button>
         <div>Posts | {posts.length}</div>
         <Table columns={columns} data={posts} />
       </div>

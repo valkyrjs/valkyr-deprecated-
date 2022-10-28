@@ -149,7 +149,9 @@ export type Options = {
   };
   skip?: number;
   limit?: number;
-  index?: {
-    [index: string]: any;
-  };
+  index?: Index;
+};
+
+export type Index = {
+  [index: string]: any;
 };
