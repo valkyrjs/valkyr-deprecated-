@@ -273,6 +273,8 @@ type ModelMethods<T = any, D = any> = {
 export type SubscriptionOptions = {
   sort?: Options["sort"];
   skip?: Options["skip"];
+  range?: Options["range"];
+  offset?: Options["offset"];
   limit?: Options["limit"];
   index?: Options["index"];
 };

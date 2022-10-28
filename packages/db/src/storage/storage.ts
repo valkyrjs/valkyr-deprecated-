@@ -148,6 +148,14 @@ export type Options = {
     [key: string]: 1 | -1;
   };
   skip?: number;
+  range?: {
+    from: string;
+    to: string;
+  };
+  offset?: {
+    value: string;
+    direction: 1 | -1;
+  };
   limit?: number;
   index?: Index;
 };

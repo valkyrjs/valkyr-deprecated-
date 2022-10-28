@@ -34,14 +34,19 @@ const columns = [
   }
 ];
 
-export const UsersView = controller.view(({ state: { users }, actions: { addUsers } }) => {
-  return (
-    <div>
-      <button onClick={() => addUsers(100)}>Add User</button>
+export const UsersView = controller.view(
+  ({ state: { users }, actions: { addUsers, queryRange, queryOffset, exportUsers } }) => {
+    return (
       <div>
-        Users | {users.length} | Total Posts {users.reduce((total, user) => total + user.posts, 0)}
+        <button onClick={() => addUsers(100)}>Add User</button>
+        <button onClick={() => queryRange("0aObG04jJEcffbFpAUR08", "18GXoBJB0yVEDg1ynJTIw")}>Query Range</button>
+        <button onClick={() => queryOffset("15ykSozbZvEsd3r0onGaU", -1, 2)}>Query Offset</button>
+        <button onClick={exportUsers}>Export</button>
+        <div>
+          Users | {users.length} | Total Posts {users.reduce((total, user) => total + user.posts, 0)}
+        </div>
+        <Table columns={columns} data={users} />
       </div>
-      <Table columns={columns} data={users} />
-    </div>
-  );
-});
+    );
+  }
+);

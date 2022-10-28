@@ -28,6 +28,10 @@ export class IndexedDatabase {
     }
   }
 
+  async export(name: string, options?: { offset?: string; limit?: number }): Promise<any[]> {
+    return this.#db?.getAll(name, options?.offset, options?.limit) ?? [];
+  }
+
   register(registrars: Registrars[]): void {
     for (const registrar of registrars) {
       this.#registrars.push(registrar);

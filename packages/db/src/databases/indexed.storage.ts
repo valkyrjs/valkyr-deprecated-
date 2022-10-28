@@ -130,14 +130,20 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     }
   }
 
-  async #getAll(options: Options["index"]) {
-    if (options?.index !== undefined) {
-      return this.#getAllByFilter(options.index);
+  async #getAll({ index, offset, range, limit }: Options) {
+    if (index !== undefined) {
+      return this.#getAllByIndex(index);
     }
-    return this.#db.getAll(this.name, undefined, options?.limit);
+    if (range !== undefined) {
+      return this.#db.getAll(this.name, IDBKeyRange.bound(range.from, range.to));
+    }
+    if (offset !== undefined) {
+      return this.#getAllByOffset(offset.value, offset.direction, limit);
+    }
+    return this.#db.getAll(this.name, undefined, limit);
   }
 
-  async #getAllByFilter(index: Index) {
+  async #getAllByIndex(index: Index) {
     let result = new Set();
     for (const key in index) {
       const value = index[key];
@@ -152,6 +158,31 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
       }
     }
     return result;
+  }
+
+  async #getAllByOffset(value: string, direction: 1 | -1, limit?: number) {
+    if (direction === 1) {
+      return this.#db.getAll(this.name, IDBKeyRange.lowerBound(value), limit);
+    }
+    return this.#getAllByDescOffset(value, limit);
+  }
+
+  async #getAllByDescOffset(value: string, limit?: number) {
+    if (limit === undefined) {
+      return this.#db.getAll(this.name, IDBKeyRange.upperBound(value));
+    }
+    const result = [];
+    let cursor = await this.#db
+      .transaction(this.name, "readonly")
+      .store.openCursor(IDBKeyRange.upperBound(value), "prev");
+    for (let i = 0; i < limit; i++) {
+      if (cursor === null) {
+        break;
+      }
+      result.push(cursor.value);
+      cursor = await cursor.continue();
+    }
+    return result.reverse();
   }
 
   /*
