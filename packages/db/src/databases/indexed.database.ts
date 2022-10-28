@@ -9,13 +9,17 @@ export class IndexedDatabase {
 
   #db?: IDBPDatabase;
 
-  constructor(readonly name: string) {}
+  constructor(readonly name: string, readonly version = 1) {}
 
   async start(): Promise<void> {
-    this.#db = await openDB(this.name, 1, {
+    this.#db = await openDB(this.name, this.version, {
       upgrade: (db: IDBPDatabase) => {
-        for (const { name } of this.#registrars) {
-          db.createObjectStore(name, { keyPath: "id" }).createIndex("id", "id", { unique: true });
+        for (const { name, indexes = [] } of this.#registrars) {
+          const store = db.createObjectStore(name, { keyPath: "id" });
+          store.createIndex("id", "id", { unique: true });
+          for (const [keyPath, options] of indexes) {
+            store.createIndex(keyPath, keyPath, options);
+          }
         }
       }
     });

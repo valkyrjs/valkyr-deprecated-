@@ -44,14 +44,8 @@ export class MemoryStorage<D extends Document = Document> extends Storage<D> {
     return new InsertResult(ids);
   }
 
-  async findByIndex(index: string, value: any): Promise<D[]> {
-    if (index === "id") {
-      const document = this.#documents.get(value);
-      if (document !== undefined) {
-        return [document];
-      }
-    }
-    return [];
+  async findById(id: string): Promise<D | undefined> {
+    return this.#documents.get(id);
   }
 
   async find(criteria?: RawObject, options?: Options): Promise<D[]> {

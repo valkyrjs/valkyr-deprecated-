@@ -17,9 +17,15 @@ export const DatabaseTemplateView = controller.view(({ state: { routed } }) => {
               <Icon name="image-album" /> Dashboard
             </Link>
           </li>
+          <li className="separator" />
           <li>
             <Link href="/users">
               <Icon name="users" /> Users
+            </Link>
+          </li>
+          <li>
+            <Link href="/posts">
+              <Icon name="twitter" /> Posts
             </Link>
           </li>
           <li className="separator" />
@@ -37,10 +43,3 @@ export const DatabaseTemplateView = controller.view(({ state: { routed } }) => {
     </div>
   );
 });
-
-/*
-<button onClick={() => User.faker()}>Create User</button>
-<button onClick={() => User.faker(500)}>Create 500 Users</button>
-<div>Users | {users.length}</div>
-<pre>{JSON.stringify(users, null, 2)}</pre>
-*/

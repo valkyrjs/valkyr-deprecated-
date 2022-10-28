@@ -4,11 +4,14 @@ import { render } from "~middleware/render";
 import { db } from "~services/database";
 import { router } from "~services/router";
 
+import { Post } from "./models/post.entity";
 import { User } from "./models/user.entity";
 import { DashboardView } from "./views/dashboard.view";
+import { PostsView } from "./views/posts.view";
 import { RouterView } from "./views/router.view";
 import { SampleFormView } from "./views/sample-form.view";
 import { DatabaseTemplateView } from "./views/template.view";
+import { UsersView } from "./views/users.view";
 
 /*
  |--------------------------------------------------------------------------------
@@ -16,7 +19,14 @@ import { DatabaseTemplateView } from "./views/template.view";
  |--------------------------------------------------------------------------------
  */
 
-db.register([{ name: "users", model: User }]);
+db.register([
+  { name: "users", model: User },
+  {
+    name: "posts",
+    model: Post,
+    indexes: [["createdBy", { unique: false }]]
+  }
+]);
 
 /*
  |--------------------------------------------------------------------------------
@@ -36,8 +46,13 @@ router.register([
       }),
       new Route({
         name: "Database Users",
-        path: "/database/users",
-        actions: []
+        path: "/users",
+        actions: [render(UsersView)]
+      }),
+      new Route({
+        name: "Database Posts",
+        path: "/posts",
+        actions: [render(PostsView)]
       }),
       new Route({
         name: "Router",

@@ -274,6 +274,7 @@ export type SubscriptionOptions = {
   sort?: Options["sort"];
   skip?: Options["skip"];
   limit?: Options["limit"];
+  index?: Options["index"];
 };
 
 export type SubscribeToSingle = SubscriptionOptions & {

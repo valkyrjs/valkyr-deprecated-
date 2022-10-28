@@ -7,6 +7,7 @@ class DatabaseTemplateController extends Controller<State> {
   #routes = new ControllerRoutes(this, router, [
     { path: "/" },
     { path: "/users" },
+    { path: "/posts" },
     { path: "/router" },
     { path: "/form" }
   ]);

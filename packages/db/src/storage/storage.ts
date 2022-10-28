@@ -82,7 +82,7 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
 
   abstract insertMany(documents: PartialDocument<D>[]): Promise<InsertResult>;
 
-  abstract findByIndex(index: string, value: any): Promise<D[]>;
+  abstract findById(id: string): Promise<D | undefined>;
 
   abstract find(criteria?: RawObject, options?: Options): Promise<D[]>;
 
@@ -149,4 +149,7 @@ export type Options = {
   };
   skip?: number;
   limit?: number;
+  index?: {
+    [index: string]: any;
+  };
 };

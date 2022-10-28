@@ -81,7 +81,7 @@ export class Collection<D extends Document = any> {
    * Retrieve a record by the document 'id' key.
    */
   async findById(id: string): Promise<D | undefined> {
-    return this.storage.findByIndex("id", id).then((result) => result?.[0]);
+    return this.storage.findById(id);
   }
 
   /**

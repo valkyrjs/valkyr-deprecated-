@@ -38,6 +38,12 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     return false;
   }
 
+  /*
+   |--------------------------------------------------------------------------------
+   | Insert
+   |--------------------------------------------------------------------------------
+   */
+
   async insertOne(data: PartialDocument<D>): Promise<InsertResult> {
     const document = { ...data, id: data.id ?? getId() } as D;
     if (await this.has(document.id)) {
@@ -72,13 +78,20 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     return new InsertResult(ids);
   }
 
-  async findByIndex(index: string, value: any): Promise<D[]> {
-    return this.#db.getAllFromIndex(this.name, index, value);
+  /*
+   |--------------------------------------------------------------------------------
+   | Read
+   |--------------------------------------------------------------------------------
+   */
+
+  async findById(id: string): Promise<D | undefined> {
+    return this.#db.getFromIndex(this.name, "id", id);
   }
 
-  async find(criteria: RawObject, options?: Options): Promise<D[]> {
+  async find(criteria: RawObject, options: Options = {}): Promise<D[]> {
+    this.#resolveIndexes(criteria, options);
     let cursor = new Query(criteria ?? {}).find([
-      ...(await this.#db.getAll(this.name)),
+      ...(await this.#getAll(options)),
       ...Array.from(this.#cache.values())
     ]);
     if (options !== undefined) {
@@ -86,6 +99,40 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     }
     return cursor.all() as D[];
   }
+
+  /**
+   * TODO: Prototype! Needs to cover more mongodb query cases and investigation around
+   * nested indexing in indexeddb.
+   */
+  async #resolveIndexes(criteria: RawObject, options: Options) {
+    const indexNames = this.#db.transaction(this.name, "readonly").store.indexNames;
+    for (const key in criteria) {
+      if (indexNames.contains(key) === true) {
+        if (options.index === undefined) {
+          options.index = {};
+        }
+        options.index[key] = criteria[key];
+      }
+    }
+  }
+
+  async #getAll(options: Options["index"]) {
+    if (options?.index !== undefined) {
+      let result = new Set();
+      for (const key in options.index) {
+        const values = await this.#db.getAllFromIndex(this.name, key, options.index[key]);
+        result = new Set([...result, ...values]);
+      }
+      return result;
+    }
+    return this.#db.getAll(this.name, undefined, options?.limit);
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Update
+   |--------------------------------------------------------------------------------
+   */
 
   async update(criteria: RawObject, operators: UpdateOperators, options?: { justOne: boolean }): Promise<UpdateResult> {
     const query = new Query(criteria);
@@ -141,6 +188,12 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     return new UpdateResult(matchedCount, modifiedCount);
   }
 
+  /*
+   |--------------------------------------------------------------------------------
+   | Remove
+   |--------------------------------------------------------------------------------
+   */
+
   async remove(criteria: RawObject): Promise<RemoveResult> {
     let count = 0;
     if (typeof criteria.id === "string") {
@@ -175,9 +228,24 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     return new RemoveResult(count);
   }
 
-  async count(): Promise<number> {
+  /*
+   |--------------------------------------------------------------------------------
+   | Count
+   |--------------------------------------------------------------------------------
+   */
+
+  async count(criteria?: RawObject): Promise<number> {
+    if (criteria !== undefined) {
+      return new Query(criteria).find(await this.#db.getAll(this.name)).count();
+    }
     return this.#db.count(this.name);
   }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Flush
+   |--------------------------------------------------------------------------------
+   */
 
   async flush(): Promise<void> {
     this.#db.clear(this.name);

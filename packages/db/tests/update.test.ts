@@ -1132,4 +1132,148 @@ describe("Array Update Operators", () => {
       expect(await collection.findById("3")).toEqual({ id: "3", tests: [100, 89, 70, 20] });
     });
   });
+
+  describe("$inc", () => {
+    /**
+     * @see https://www.mongodb.com/docs/manual/reference/operator/update/inc
+     */
+    it("should increment and decrement values", async () => {
+      const collection = new Collection<
+        Document & { sku: string; quantity: number; metrics: { orders: number; ratings: number } }
+      >("products", new MemoryStorage("products"));
+
+      await collection.insertOne({ id: "1", sku: "abc123", quantity: 10, metrics: { orders: 2, ratings: 3.5 } });
+
+      expect(
+        await collection.updateOne(
+          {
+            id: "1"
+          },
+          { $inc: { quantity: -2, "metrics.orders": 1 } }
+        )
+      ).toEqual({
+        matched: 1,
+        modified: 1
+      });
+
+      expect(await collection.findById("1")).toEqual({
+        id: "1",
+        sku: "abc123",
+        quantity: 8,
+        metrics: { orders: 3, ratings: 3.5 }
+      });
+    });
+
+    it("should increment value of an array element with array object", async () => {
+      const collection = new Collection<Document & { details: { id: string; quantity: number }[] }>(
+        "products",
+        new MemoryStorage("products")
+      );
+
+      await collection.insertOne({
+        id: "2",
+        details: [
+          {
+            id: 1,
+            Quantity: 4
+          },
+          {
+            id: 2,
+            Quantity: 3
+          },
+          {
+            id: 3,
+            Quantity: 2
+          },
+          {
+            id: 4,
+            Quantity: 7
+          }
+        ]
+      });
+
+      expect(await collection.updateOne({ "details.id": 2 }, { $inc: { "details.$.Quantity": 10 } })).toEqual({
+        matched: 1,
+        modified: 1
+      });
+
+      expect(await collection.findById("2")).toEqual({
+        id: "2",
+        details: [
+          {
+            id: 1,
+            Quantity: 4
+          },
+          {
+            id: 2,
+            Quantity: 13
+          },
+          {
+            id: 3,
+            Quantity: 2
+          },
+          {
+            id: 4,
+            Quantity: 7
+          }
+        ]
+      });
+    });
+
+    it("should increment value of an array element with array index", async () => {
+      const collection = new Collection<Document & { details: { id: string; quantity: number }[] }>(
+        "products",
+        new MemoryStorage("products")
+      );
+
+      await collection.insertOne({
+        id: "3",
+        details: [
+          {
+            id: 1,
+            Quantity: 4
+          },
+          {
+            id: 2,
+            Quantity: 3
+          },
+          {
+            id: 3,
+            Quantity: 2
+          },
+          {
+            id: 4,
+            Quantity: 7
+          }
+        ]
+      });
+
+      expect(await collection.updateOne({ id: "3" }, { $inc: { "details[0].Quantity": 10 } })).toEqual({
+        matched: 1,
+        modified: 1
+      });
+
+      expect(await collection.findById("3")).toEqual({
+        id: "3",
+        details: [
+          {
+            id: 1,
+            Quantity: 14
+          },
+          {
+            id: 2,
+            Quantity: 3
+          },
+          {
+            id: 3,
+            Quantity: 2
+          },
+          {
+            id: 4,
+            Quantity: 7
+          }
+        ]
+      });
+    });
+  });
 });

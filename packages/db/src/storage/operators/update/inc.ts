@@ -9,7 +9,7 @@ import type { UpdateOperators } from "./update";
 import { getPositionalFilter } from "./utils";
 
 /**
- * Execute a $set based operators.
+ * Execute a $inc based operators.
  *
  * Supports positional array operator $(update)
  *
@@ -19,15 +19,15 @@ import { getPositionalFilter } from "./utils";
  * @param criteria - Search criteria provided with the operation. Eg. updateOne({ id: "1" })
  * @param $set     - $set action being executed.
  */
-export function $set(document: Document, criteria: RawObject, $set: UpdateOperators["$set"] = {}): boolean {
+export function $inc(document: Document, criteria: RawObject, $inc: UpdateOperators["$inc"] = {}): boolean {
   let modified = false;
-  for (const key in $set) {
+  for (const key in $inc) {
     if (key.includes("$")) {
-      if (setPositionalData(document, criteria, $set, key)) {
+      if (setPositionalData(document, criteria, $inc, key)) {
         modified = true;
       }
     } else {
-      document = dot.setProperty(document, key, $set[key]);
+      document = increment(document, key, $inc[key]);
       modified = true;
     }
   }
@@ -45,7 +45,12 @@ export function $set(document: Document, criteria: RawObject, $set: UpdateOperat
  *
  * @returns True if the document was modified.
  */
-function setPositionalData(document: Document, criteria: RawObject, $set: RawObject, key: string): boolean {
+function setPositionalData(
+  document: Document,
+  criteria: RawObject,
+  $inc: UpdateOperators["$inc"],
+  key: string
+): boolean {
   const { filter, path, target } = getPositionalFilter(criteria, key);
 
   const values = dot.getProperty(document, path);
@@ -55,9 +60,9 @@ function setPositionalData(document: Document, criteria: RawObject, $set: RawObj
 
   let items: any[];
   if (typeof filter === "object") {
-    items = getPositionalUpdateQuery(clone(values), $set, key, filter, target);
+    items = getPositionalUpdateQuery(clone(values), $inc, key, filter, target);
   } else {
-    items = getPositionalUpdate(clone(values), $set, key, filter);
+    items = getPositionalUpdate(clone(values), $inc, key, filter);
   }
 
   dot.setProperty(document, path, items);
@@ -65,11 +70,11 @@ function setPositionalData(document: Document, criteria: RawObject, $set: RawObj
   return deepEqual(values, items) === false;
 }
 
-function getPositionalUpdate(items: any[], $set: any, key: string, filter: string): any[] {
+function getPositionalUpdate(items: any[], $inc: any, key: string, filter: string): any[] {
   let index = 0;
   for (const item of items) {
     if (item === filter) {
-      items[index] = $set[key];
+      items[index] += $inc[key];
       break;
     }
     index += 1;
@@ -77,18 +82,26 @@ function getPositionalUpdate(items: any[], $set: any, key: string, filter: strin
   return items;
 }
 
-function getPositionalUpdateQuery(items: any[], $set: any, key: string, filter: RawObject, target: string): any[] {
+function getPositionalUpdateQuery(items: any[], $inc: any, key: string, filter: RawObject, target: string): any[] {
   let index = 0;
   for (const item of items) {
     if (new Query(filter).test(item) === true) {
       if (target === "") {
-        items[index] = $set[key];
+        items[index] += $inc[key];
       } else {
-        dot.setProperty(item, target, $set[key]);
+        increment(item, target, $inc[key]);
       }
       break;
     }
     index += 1;
   }
   return items;
+}
+
+function increment(document: Document, key: string, value: number): Document {
+  let currentValue = dot.getProperty(document, key) as unknown;
+  if (typeof currentValue !== "number") {
+    currentValue = 0;
+  }
+  return dot.setProperty(document, key, (currentValue as number) + value);
 }

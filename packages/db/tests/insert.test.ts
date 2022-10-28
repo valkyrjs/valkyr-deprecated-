@@ -12,8 +12,8 @@ describe("Storage Insert", () => {
   it("should successfully insert a new document", async () => {
     const collection = new Collection("users", new MemoryStorage("users"));
     await collection.insertMany(users);
-    expect(await collection.storage.findByIndex("id", users[0].id)).toEqual([users[0]]);
-    expect(await collection.storage.findByIndex("id", users[1].id)).toEqual([users[1]]);
+    expect(await collection.storage.findById(users[0].id)).toEqual(users[0]);
+    expect(await collection.storage.findById(users[1].id)).toEqual(users[1]);
   });
 
   it("should throw an error if the document already exists", async () => {

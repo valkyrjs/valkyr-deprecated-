@@ -2,6 +2,7 @@ import type { RawObject } from "mingo/types";
 
 import { clone } from "../../../clone";
 import { Document } from "../../storage";
+import { $inc } from "./inc";
 import { $pull } from "./pull";
 import { $push } from "./push";
 import { $set } from "./set";
@@ -14,9 +15,10 @@ export function update<D extends Document>(criteria: RawObject, operators: Updat
   const runModified = $unset(updatedDocument, operators.$unset);
   const pushModified = $push(updatedDocument, operators.$push);
   const pullModified = $pull(updatedDocument, operators.$pull);
+  const incModified = $inc(updatedDocument, criteria, operators.$inc);
 
   return {
-    modified: setModified || runModified || pushModified || pullModified,
+    modified: setModified || runModified || pushModified || pullModified || incModified,
     document: updatedDocument
   };
 }
@@ -26,4 +28,7 @@ export type UpdateOperators = {
   $unset?: RawObject;
   $push?: RawObject;
   $pull?: RawObject;
+  $inc?: {
+    [keyPath: string]: number;
+  };
 };
