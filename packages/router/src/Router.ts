@@ -310,7 +310,7 @@ export class Router<Component = unknown> {
             component: res.component,
             props: {
               ...res.props,
-              ...query.reduce((props, param) => {
+              ...query.reduce((props: any, param) => {
                 props[param] = matched.query.get(param);
                 return props;
               }, {})
