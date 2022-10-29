@@ -1,10 +1,11 @@
 import { Link } from "~components/link.component";
-import { router } from "~services/router";
 
-export const RouterView = () => {
+import { controller, Props } from "./router.controller";
+
+export const RouterView = controller.view<Props>(({ props }) => {
   return (
     <div>
-      Router Query <pre>{JSON.stringify(router.query.get(), null, 2)}</pre>
+      Router Query <pre>{JSON.stringify(props, null, 2)}</pre>
       <ul>
         <li>
           <Link href="/router">root</Link>
@@ -18,4 +19,4 @@ export const RouterView = () => {
       </ul>
     </div>
   );
-};
+});

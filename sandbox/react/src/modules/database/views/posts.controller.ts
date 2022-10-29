@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { Controller, ViewController } from "@valkyr/react";
 
 import { router } from "~services/router";
@@ -46,14 +47,28 @@ class PostsController extends Controller<State> {
       [id: string]: number;
     } = {};
 
+    const posts = [];
+
+    console.log("Generating posts");
+
     for (let i = 0; i < count; i++) {
       const user = users[Math.floor(Math.random() * users.length)];
-      Post.faker(user);
+      posts.push({
+        body: faker.lorem.paragraph(),
+        likes: 0,
+        comments: 0,
+        createdBy: user.id,
+        createdAt: Date.now()
+      });
       if (counts[user.id] === undefined) {
         counts[user.id] = 0;
       }
       counts[user.id] += 1;
     }
+
+    console.log("Generated posts", posts.length);
+
+    Post.insertMany(posts);
 
     for (const userId in counts) {
       const user = users.find((user) => user.id === userId);

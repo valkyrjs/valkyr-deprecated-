@@ -7,5 +7,3 @@ export type Registrars = {
 };
 
 type Index = [string, IDBIndexParameters?];
-
-// name: string, keyPath: string | string[], options?: IDBIndexParameters | undefined

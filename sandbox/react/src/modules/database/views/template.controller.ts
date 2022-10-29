@@ -8,7 +8,7 @@ class DatabaseTemplateController extends Controller<State> {
     { path: "/" },
     { path: "/users" },
     { path: "/posts" },
-    { path: "/router" },
+    { path: "/router", query: ["foo", "x"] },
     { path: "/form" }
   ]);
 

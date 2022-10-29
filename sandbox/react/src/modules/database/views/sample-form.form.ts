@@ -12,8 +12,12 @@ export class SampleForm extends Form<{
   });
 
   static async submit(form: SampleForm): Promise<string | void> {
-    return new Promise((resolve) => {
-      setTimeout(resolve, 2000, form.get("name"));
+    return new Promise((resolve, reject) => {
+      if (Math.random() >= 0.5) {
+        setTimeout(resolve, 2000, form.get("name"));
+      } else {
+        setTimeout(reject, 2000, "random error");
+      }
     });
   }
 }

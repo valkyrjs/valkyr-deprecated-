@@ -299,15 +299,22 @@ export class Router<Component = unknown> {
    * rendered.
    *
    * @param matched - Matched route result.
+   * @param query   - Query parameters to pass to the component.
    */
-  async getComponent<R extends Router>(matched: Resolved): Promise<RoutedResult<R> | undefined> {
+  async getComponent<R extends Router>(matched: Resolved, query: string[] = []): Promise<RoutedResult<R> | undefined> {
     for (const action of matched.route.actions) {
       const res = await action.call(response, matched);
       switch (res.status) {
         case "render": {
           return {
             component: res.component,
-            props: res.props
+            props: {
+              ...res.props,
+              ...query.reduce((props, param) => {
+                props[param] = matched.query.get(param);
+                return props;
+              }, {})
+            }
           };
         }
       }

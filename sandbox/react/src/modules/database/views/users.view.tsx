@@ -38,7 +38,7 @@ export const UsersView = controller.view(
   ({ state: { users }, actions: { addUsers, queryRange, queryOffset, exportUsers } }) => {
     return (
       <div>
-        <button onClick={() => addUsers(100)}>Add User</button>
+        <button onClick={() => addUsers(10)}>Add User</button>
         <button onClick={() => queryRange("0aObG04jJEcffbFpAUR08", "18GXoBJB0yVEDg1ynJTIw")}>Query Range</button>
         <button onClick={() => queryOffset("15ykSozbZvEsd3r0onGaU", -1, 2)}>Query Offset</button>
         <button onClick={exportUsers}>Export</button>

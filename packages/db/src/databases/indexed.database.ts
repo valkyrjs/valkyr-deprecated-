@@ -9,7 +9,7 @@ export class IndexedDatabase {
 
   #db?: IDBPDatabase;
 
-  constructor(readonly name: string, readonly version = 1) {}
+  constructor(readonly name: string, readonly version = 1, readonly log = (_: string) => {}) {}
 
   async start(): Promise<void> {
     this.#db = await openDB(this.name, this.version, {
@@ -24,7 +24,7 @@ export class IndexedDatabase {
       }
     });
     for (const { name, model } of this.#registrars) {
-      model.$collection = new Collection(name, new IndexedDbStorage(name, this.#db));
+      model.$collection = new Collection(name, new IndexedDbStorage(name, this.#db, this.log));
     }
   }
 

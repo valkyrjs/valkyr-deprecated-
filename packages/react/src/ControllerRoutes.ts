@@ -31,22 +31,24 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
   }
 
   async #preload() {
-    for (const { path } of this.routes) {
+    for (const { path, query } of this.routes) {
       const isCurrentPath = this.router.match(path);
       if (isCurrentPath === true) {
         const resolved = this.router.getResolvedRoute(this.router.location.pathname);
         if (resolved !== undefined) {
-          return this.router.getComponent<R>(resolved);
+          return this.router.getComponent<R>(resolved, query);
         }
       }
     }
   }
 
   async #setComponent(resolved: Router["resolved"]) {
-    this.controller.setState("routed", (await this.router.getComponent(resolved)) as S[keyof S]);
+    const { query } = this.routes.find(({ path }) => path === resolved.route.path);
+    this.controller.setState("routed", (await this.router.getComponent(resolved, query)) as S[keyof S]);
   }
 }
 
 type Route = {
   path: string;
+  query?: string[];
 };

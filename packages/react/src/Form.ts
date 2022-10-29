@@ -17,7 +17,7 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
   #onProcessing: OnProcessingCallback;
   #onError: OnErrorCallback<Inputs>;
   #onSubmit: OnSubmitCallback<Inputs>;
-  #onResponse: OnResponseCallback;
+  #onResponse: OnResponseCallback<unknown, unknown>;
 
   /*
    |--------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
     return this;
   }
 
-  onResponse(callback: OnResponseCallback): this {
+  onResponse<E, R>(callback: OnResponseCallback<E, R>): this {
     this.#onResponse = callback;
     return this;
   }
@@ -179,8 +179,12 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
     this.#onProcessing?.(true);
     this.validate();
     if (this.hasError === false) {
-      const response = await this.#onSubmit?.(this);
-      this.#onResponse?.(response);
+      try {
+        const response = await this.#onSubmit?.(this);
+        this.#onResponse?.(undefined, response);
+      } catch (error) {
+        this.#onResponse?.(error, undefined as any);
+      }
     }
     this.#onProcessing?.(false);
   }
@@ -245,7 +249,7 @@ type OnErrorCallback<Inputs extends {}> = (errors: FormErrors<Inputs>) => void;
 
 type OnSubmitCallback<Inputs extends {}> = (form: Form<Inputs>) => Promise<any>;
 
-type OnResponseCallback = (response: any) => void;
+type OnResponseCallback<Error, Response> = (err: Error, res: Response) => void;
 
 type FormDebounce<Inputs extends {}> = {
   validate: {

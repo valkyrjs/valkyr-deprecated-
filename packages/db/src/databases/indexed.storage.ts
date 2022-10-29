@@ -17,18 +17,20 @@ import {
   UpdateOperators,
   UpdateResult
 } from "../storage";
+import { IndexedDbTransactionQueue, TransactionHandler } from "./indexed.queue";
 
 const OBJECT_PROTOTYPE = Object.getPrototypeOf({}) as AnyVal;
 const OBJECT_TAG = "[object Object]";
 
 export class IndexedDbStorage<D extends Document = Document> extends Storage<D> {
   readonly #db: IDBPDatabase;
+  readonly #queue: IndexedDbTransactionQueue;
+  readonly #cache = new Map<string, D>();
 
-  #cache = new Map<string, D>();
-
-  constructor(name: string, db: IDBPDatabase) {
+  constructor(name: string, db: IDBPDatabase, readonly log: (message: string) => void) {
     super(name);
     this.#db = db;
+    this.#queue = new IndexedDbTransactionQueue(name, db, log);
   }
 
   async has(id: string): Promise<boolean> {
@@ -53,19 +55,25 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     if (await this.has(document.id)) {
       throw new DuplicateDocumentError(document, this);
     }
+
     this.#cache.set(document.id, document);
     this.broadcast("insert", document);
-    this.#db.put(this.name, document).then(() => {
-      this.#cache.delete(document.id);
-    });
+
+    this.#queue.push([
+      (tx) =>
+        tx.store.put(document).then(() => {
+          this.#cache.delete(document.id);
+        })
+    ]);
+
     return new InsertResult([document.id]);
   }
 
   async insertMany(data: PartialDocument<D>[]): Promise<InsertResult> {
-    const tx = await this.#db.transaction(this.name, "readwrite");
     const ids: string[] = [];
-    Promise.all([
-      ...data.map((data) => {
+
+    this.#queue.push(
+      data.map((data) => {
         const document = { ...data, id: data.id ?? getId() } as D;
 
         ids.push(document.id);
@@ -73,12 +81,13 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
         this.#cache.set(document.id, document);
         this.broadcast("insert", document);
 
-        return tx.store.add(document).then(() => {
-          this.#cache.delete(document.id);
-        });
-      }),
-      tx.done
-    ]);
+        return (tx) =>
+          tx.store.add(document).then(() => {
+            this.#cache.delete(document.id);
+          });
+      })
+    );
+
     return new InsertResult(ids);
   }
 
@@ -192,55 +201,48 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    */
 
   async update(criteria: RawObject, operators: UpdateOperators, options?: { justOne: boolean }): Promise<UpdateResult> {
-    const query = new Query(criteria);
+    const data = await this.find(criteria, { limit: options?.justOne === true ? 1 : undefined });
 
-    let matchedCount = 0;
     let modifiedCount = 0;
 
-    const tx = this.#db.transaction(this.name, "readwrite");
-    for await (const cursor of tx.store) {
-      if (query.test(cursor.value) === true) {
-        matchedCount += 1;
+    const txs: TransactionHandler[] = [];
 
-        const { modified, document } = update<D>(criteria, operators, cursor.value);
-        if (modified === true) {
-          modifiedCount += 1;
-          this.#cache.set(document.id, document);
-          this.broadcast("update", document);
-          cursor.update(document).then(() => {
+    for (const item of data) {
+      const { modified, document } = update<D>(criteria, operators, item);
+      if (modified === true) {
+        modifiedCount += 1;
+        this.#cache.set(document.id, document);
+        this.broadcast("update", document);
+        txs.push((tx) =>
+          tx.store.put(document).then(() => {
             this.#cache.delete(document.id);
-          });
-        }
-
-        if (options?.justOne === true) {
-          break;
-        }
+          })
+        );
       }
     }
 
-    return new UpdateResult(matchedCount, modifiedCount);
+    this.#queue.push(txs);
+
+    return new UpdateResult(data.length, modifiedCount);
   }
 
   async replace(criteria: RawObject, document: D): Promise<UpdateResult> {
-    const query = new Query(criteria);
+    const data = await this.find(criteria);
 
     let matchedCount = 0;
     let modifiedCount = 0;
 
-    const tx = this.#db.transaction(this.name, "readwrite");
-    for await (const cursor of tx.store) {
-      if (query.test(cursor.value) === true) {
+    this.#queue.push(
+      data.map((data) => {
         matchedCount += 1;
         modifiedCount += 1;
 
-        this.#cache.set(document.id, document);
+        this.#cache.set(data.id, document);
         this.broadcast("update", document);
 
-        cursor.update(document).then(() => {
-          this.#cache.delete(document.id);
-        });
-      }
-    }
+        return (tx) => tx.store.put(document, data.id);
+      })
+    );
 
     return new UpdateResult(matchedCount, modifiedCount);
   }
@@ -252,37 +254,18 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    */
 
   async remove(criteria: RawObject): Promise<RemoveResult> {
-    let count = 0;
-    if (typeof criteria.id === "string") {
-      const id = criteria.id;
-      this.broadcast("remove", { id } as D);
-      await this.#db.delete(this.name, id).then(() => {
-        this.#cache.delete(id);
-        count += 1;
-      });
-    } else if (Object.keys(criteria).length === 0) {
-      const ids = await this.#db.getAllKeys(this.name);
-      for (const id of ids) {
-        this.broadcast("remove", { id } as D);
-        this.#db.delete(this.name, id).then(() => {
-          this.#cache.delete(id as string);
-          count += 1;
+    const data = await this.find(criteria);
+    const tx = this.#db.transaction(this.name, "readwrite");
+    await Promise.all([
+      ...data.map((data) => {
+        this.broadcast("remove", data);
+        return tx.store.delete(data.id).then(() => {
+          this.#cache.delete(data.id);
         });
-      }
-    } else {
-      const query = new Query(criteria);
-      const tx = this.#db.transaction(this.name, "readwrite");
-      for await (const cursor of tx.store) {
-        if (query.test(cursor.value) === true) {
-          this.broadcast("remove", cursor.value);
-          cursor.delete().then(() => {
-            this.#cache.delete(cursor.value.id);
-          });
-          count += 1;
-        }
-      }
-    }
-    return new RemoveResult(count);
+      }),
+      tx.done
+    ]);
+    return new RemoveResult(data.length);
   }
 
   /*
