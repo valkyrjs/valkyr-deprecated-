@@ -36,6 +36,7 @@ db.register([
 
 router.register([
   new Route({
+    id: "database",
     path: "/",
     actions: [render(DatabaseTemplateView)],
     children: [
@@ -57,6 +58,7 @@ router.register([
       new Route({
         name: "Router",
         path: "/router",
+        query: ["foo", "x"],
         actions: [render(RouterView)]
       }),
       new Route({

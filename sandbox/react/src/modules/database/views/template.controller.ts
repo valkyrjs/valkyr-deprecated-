@@ -4,13 +4,7 @@ import { RoutedResult } from "@valkyr/router";
 import { router } from "~services/router";
 
 class DatabaseTemplateController extends Controller<State> {
-  #routes = new ControllerRoutes(this, router, [
-    { path: "/" },
-    { path: "/users" },
-    { path: "/posts" },
-    { path: "/router", query: ["foo", "x"] },
-    { path: "/form" }
-  ]);
+  #routes = new ControllerRoutes(this, router, "database");
 
   async onInit() {
     return {

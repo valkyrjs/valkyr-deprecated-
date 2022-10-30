@@ -294,18 +294,32 @@ export class Router<Component = unknown> {
   }
 
   /**
+   * Get a route by its assigned id.
+   *
+   * @param id - Route id to retrieve.
+   */
+  getRouteById(id: string): Route | undefined {
+    for (const route of this.#routes) {
+      if (route.id === id) {
+        return route;
+      }
+    }
+    return undefined;
+  }
+
+  /**
    * Return a routing result that should render for the provided matched component
    * or return undefined if the matched route does not result in a component being
    * rendered.
    *
    * @param matched - Matched route result.
-   * @param query   - Query parameters to pass to the component.
    */
-  async getComponent<R extends Router>(matched: Resolved, query: string[] = []): Promise<RoutedResult<R> | undefined> {
+  async getComponent<R extends Router>(matched: Resolved): Promise<RoutedResult<R> | undefined> {
     for (const action of matched.route.actions) {
       const res = await action.call(response, matched);
       switch (res.status) {
         case "render": {
+          const query = matched.route.query;
           return {
             component: res.component,
             props: {
@@ -322,6 +336,12 @@ export class Router<Component = unknown> {
     return undefined;
   }
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
 
 type RoutedHandler = (result: Resolved) => void;
 

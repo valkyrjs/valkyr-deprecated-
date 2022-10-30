@@ -9,7 +9,9 @@ import { Action } from "./Action";
  */
 
 export class Route {
+  readonly id?: string;
   readonly name?: string;
+  readonly query: string[];
   readonly children?: Route[];
   readonly actions: Action[];
 
@@ -18,8 +20,10 @@ export class Route {
 
   parent?: Route;
 
-  constructor({ name, path = "", children, actions }: RouteOptions) {
+  constructor({ id, name, path = "", query = [], children, actions }: RouteOptions) {
+    this.id = id;
     this.name = name;
+    this.query = query;
     this.children = children;
     this.actions = actions;
     this.#setPath(path);
@@ -95,8 +99,10 @@ export function getParameters<Response = any>(params: Parameter[], match: any): 
  */
 
 type RouteOptions = {
+  id?: string;
   name?: string;
   path: string;
+  query?: string[]; // query values to convert to component properties
   children?: Route[];
   actions: Action[];
 };
