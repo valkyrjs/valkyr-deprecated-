@@ -1,7 +1,7 @@
 import { deepEqual } from "fast-equals";
 import React, { createElement, memo, PropsWithChildren, useEffect, useMemo, useState } from "react";
 
-import { Refs } from "./ControllerRefs";
+import { ControllerClass, ReactComponent } from "./Controller";
 
 export class ViewController<Controller extends ControllerClass> {
   static #options: Partial<ViewOptions<any>> = {
@@ -39,17 +39,15 @@ export class ViewController<Controller extends ControllerClass> {
 
     const wrapper: React.FC<PropsWithChildren<Props>> = (props) => {
       const [controller, setController] = useState<InstanceType<Controller> | undefined>(undefined);
-      const [actions, setActions] = useState<any | undefined>();
-      const [state, setState] = useState();
+      const [view, setView] = useState();
       const [error, setError] = useState<Error | undefined>();
 
       const renderLoading = useMemo(() => this.#getLoadingComponent(this.controller.name, options), []);
       const renderError = useMemo(() => this.#getErrorComponent(this.controller.name, options), []);
 
       useEffect(() => {
-        const controller = this.controller.make(setState);
+        const controller = this.controller.make(component, setView);
         setController(controller);
-        setActions(controller.toActions());
         return () => {
           controller.$destroy();
         };
@@ -70,7 +68,7 @@ export class ViewController<Controller extends ControllerClass> {
         };
       }, [controller, props]);
 
-      if (state === undefined) {
+      if (view === undefined) {
         return renderLoading(props);
       }
 
@@ -78,7 +76,7 @@ export class ViewController<Controller extends ControllerClass> {
         return renderError({ ...props, error });
       }
 
-      return component({ props, state, actions, refs: controller!.refs });
+      return view;
     };
 
     component.displayName = options?.name ?? component.name;
@@ -143,14 +141,6 @@ function defaultMemoizeHandler(prev: any, next: any): boolean {
  |--------------------------------------------------------------------------------
  */
 
-type ReactComponent<Props extends {}, Controller extends ControllerClass> = React.FC<{
-  props: Props;
-  state: InstanceType<Controller>["state"];
-  actions: Omit<InstanceType<Controller>, ReservedPropertyMembers>;
-  refs: Refs;
-  component?: React.FC;
-}>;
-
 type ViewOptions<Props> = {
   name?: string;
   loading: React.FC<Props>;
@@ -158,15 +148,8 @@ type ViewOptions<Props> = {
   memoize: false | Memoize<Props>;
 };
 
-type ReservedPropertyMembers = "state" | "pushState" | "init" | "destroy" | "setNext" | "setState" | "toActions";
-
 type Memoize<Props> = (prevProps: Readonly<Props>, nextProps: Readonly<Props>) => boolean;
 
 type Readonly<T> = {
   readonly [P in keyof T]: T[P];
-};
-
-type ControllerClass = {
-  new (state: any, pushState: Function): any;
-  make(pushState: Function): any;
 };

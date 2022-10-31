@@ -34,10 +34,10 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    * Creates a new controller instance with given default state and pushState
    * handler method.
    *
-   * @param state     - Default state to assign to controller.
-   * @param pushState - Push state handler method.
+   * @param state    - Default state to assign to controller.
+   * @param pushData - Push data handler method.
    */
-  constructor(readonly pushState: Function) {
+  constructor(readonly view: ReactComponent<any, any>, readonly setView: Function) {
     this.query = this.query.bind(this);
     this.subscribe = this.subscribe.bind(this);
     this.setState = this.setState.bind(this);
@@ -55,10 +55,10 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    * @remarks This factory method will pass the static state as defined on the
    * controller.
    *
-   * @param pushState - Push state handler method.
+   * @param pushState - Push data handler method.
    */
-  static make(pushState: Function) {
-    return new (this as any)(pushState);
+  static make(component: ReactComponent<any, any>, setView: Function) {
+    return new (this as any)(component, setView);
   }
 
   /*
@@ -69,7 +69,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
 
   async $resolve(props: Props): Promise<void> {
     this.props = props;
-    let state: Partial<State> = this.state;
+    let state: Partial<State> = {};
     if (this.#resolved === false) {
       state = {
         ...state,
@@ -145,6 +145,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
     query: Query = {} as Query,
     next: K | ((value: InstanceType<M>[] | InstanceType<M> | undefined) => Promise<Partial<State>>)
   ) {
+    let resolved = false;
     this.subscriptions.get(model)?.unsubscribe();
     return new Promise<InstanceType<M>[] | InstanceType<M> | undefined>((resolve) => {
       const { where, ...options } = query;
@@ -152,11 +153,16 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
         model,
         (model as any).subscribe(where, options, (value: any) => {
           if (this.#isStateKey(next)) {
-            this.setState(next, value);
+            if (resolved === true) {
+              this.setState(next, value);
+            }
           } else {
             (next as any)(value).then(this.setState);
           }
-          setTimeout(resolve, 0, value);
+          setTimeout(() => {
+            resolve(value);
+            resolved = true;
+          }, 0);
         })
       );
     });
@@ -238,7 +244,14 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
 
     if (this.#resolved === true) {
       this.#debounce.run(() => {
-        this.pushState(this.state);
+        this.setView(
+          this.view({
+            props: this.props,
+            state: this.state,
+            actions: this.toActions(),
+            refs: this.refs
+          })
+        );
       }, 0);
     }
   }
@@ -276,6 +289,12 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
   }
 }
 
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
 type Query = Where & SubscriptionOptions;
 
 type QuerySingle = Where & SubscribeToSingle;
@@ -297,3 +316,18 @@ export type JsonLike = {
 };
 
 type SubscriptionType<Type> = Type extends Subject<infer X> | Observable<infer X> ? X : never;
+
+export type ReactComponent<Props extends {}, Controller extends ControllerClass> = React.FC<{
+  props: Props;
+  state: InstanceType<Controller>["state"];
+  actions: Omit<InstanceType<Controller>, ReservedPropertyMembers>;
+  refs: Refs;
+  component?: React.FC;
+}>;
+
+export type ControllerClass = {
+  new (state: any, pushState: Function): any;
+  make(component: ReactComponent<any, any>, pushState: Function): any;
+};
+
+export type ReservedPropertyMembers = "state" | "pushState" | "init" | "destroy" | "setNext" | "setState" | "toActions";
