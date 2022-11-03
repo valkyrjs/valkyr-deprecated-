@@ -4,10 +4,13 @@ import { db } from "~services/database";
 
 import { User } from "../models/user.entity";
 
+let page = 1;
+
 class UsersController extends Controller<State> {
   async onInit() {
     return {
-      users: await this.query(User, {}, "users")
+      users: await this.query(User, {}, "users"),
+      page
     };
   }
 
@@ -28,10 +31,16 @@ class UsersController extends Controller<State> {
   async exportUsers() {
     console.log("export users", await db.export("users"));
   }
+
+  async goToPage(value: number) {
+    page = value;
+    this.setState("page", page);
+  }
 }
 
 type State = {
   users: User[];
+  page: number;
 };
 
 export const controller = new ViewController(UsersController);

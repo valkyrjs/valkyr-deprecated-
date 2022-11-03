@@ -58,7 +58,6 @@ router.register([
       new Route({
         name: "Router",
         path: "/router",
-        query: ["foo", "x"],
         actions: [render(RouterView)]
       }),
       new Route({

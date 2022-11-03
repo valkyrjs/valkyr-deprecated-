@@ -35,7 +35,7 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
       "$controller.routes",
       this.router.subscribe(this.routes, (resolved) => {
         if (this.#resolved !== undefined) {
-          this.router.getComponent(resolved).then((result) => this.#resolved(resolved, result));
+          this.router.getRender(resolved).then((result) => this.#resolved(resolved, result));
         } else {
           this.#setComponent(resolved);
         }
@@ -50,13 +50,13 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
       if (isCurrentPath === true) {
         const resolved = this.router.getResolvedRoute(this.router.location.pathname);
         if (resolved !== undefined) {
-          return this.router.getComponent<R>(resolved);
+          return this.router.getRender<R>(resolved);
         }
       }
     }
   }
 
   async #setComponent(resolved: Router["resolved"]) {
-    this.controller.setState("routed", (await this.router.getComponent(resolved)) as S[keyof S]);
+    this.controller.setState("routed", (await this.router.getRender(resolved)) as S[keyof S]);
   }
 }

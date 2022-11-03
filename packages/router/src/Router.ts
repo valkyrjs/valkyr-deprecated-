@@ -120,21 +120,25 @@ export class Router<Component = unknown> {
     }
 
     this.#destroy = this.#history.listen(async ({ location }) => {
-      const resolved = this.getResolvedRoute(location.pathname);
-      if (resolved === undefined) {
-        return this.#error?.(new RouteNotFoundException(location.pathname));
-      }
-      this.setRoute(resolved);
-      try {
-        await this.#execute(resolved.route, resolved);
-      } catch (err) {
-        this.#error?.(err);
-      }
+      this.#resolve(location.pathname, location.search);
     });
 
-    this.goTo(`${this.location.pathname}${this.location.search}`);
+    this.#resolve(this.location.pathname, this.location.search);
 
     return this;
+  }
+
+  async #resolve(path: string, search?: string) {
+    const resolved = this.getResolvedRoute(path, search);
+    if (resolved === undefined) {
+      return this.#error?.(new RouteNotFoundException(path));
+    }
+    this.setRoute(resolved);
+    try {
+      await this.#execute(resolved.route, resolved);
+    } catch (err) {
+      this.#error?.(err);
+    }
   }
 
   async #execute(route: Route, resolved: Resolved): Promise<void> {
@@ -211,7 +215,7 @@ export class Router<Component = unknown> {
     this.#history.push(
       {
         pathname: parts[0] || "/",
-        search: parts[1] ? `?${parts[1]}` : ""
+        search: parts[1] ? `${parts[1]}` : ""
       },
       state
     );
@@ -268,14 +272,15 @@ export class Router<Component = unknown> {
    * Get the resolved route for the provided path or return undefined if provided
    * path does not match any registered routes.
    *
-   * @param path - Path to retrieve a route for.
+   * @param path   - Path to retrieve a route for.
+   * @param search - Search string starting with `?`.
    */
-  getResolvedRoute(path: string): Resolved | undefined {
+  getResolvedRoute(path: string, search = this.location.search): Resolved | undefined {
     const resolved = this.getRoute(path);
     if (resolved === undefined) {
       return undefined;
     }
-    return new Resolved(resolved.route, resolved.params, this.#history);
+    return new Resolved(resolved.route, resolved.params, search, this.#history);
   }
 
   /**
@@ -308,26 +313,26 @@ export class Router<Component = unknown> {
   }
 
   /**
-   * Return a routing result that should render for the provided matched component
-   * or return undefined if the matched route does not result in a component being
-   * rendered.
+   * Return a render result that should render for the provided resolved route
+   * or return undefined if the route does not result in a render output.
    *
-   * @param matched - Matched route result.
+   * @param resolved - Resolved route.
    */
-  async getComponent<R extends Router>(matched: Resolved): Promise<RoutedResult<R> | undefined> {
-    for (const action of matched.route.actions) {
-      const res = await action.call(response, matched);
+  async getRender<R extends Router>(resolved: Resolved): Promise<RoutedResult<R> | undefined> {
+    for (const action of resolved.route.actions) {
+      const res = await action.call(response, resolved);
       switch (res.status) {
         case "render": {
-          const query = matched.route.query;
+          const params = resolved.params.get() ?? {};
+          const query = resolved.query.get() ?? {};
           return {
+            id: resolved.route.id,
+            name: resolved.route.name,
             component: res.component,
             props: {
               ...res.props,
-              ...query.reduce((props: any, param) => {
-                props[param] = matched.query.get(param);
-                return props;
-              }, {})
+              ...params,
+              ...query
             }
           };
         }
@@ -346,6 +351,8 @@ export class Router<Component = unknown> {
 type RoutedHandler = (result: Resolved) => void;
 
 export type RoutedResult<Router> = {
+  id?: string;
+  name?: string;
   component: RouterComponent<Router>;
   props: RenderProps;
 };

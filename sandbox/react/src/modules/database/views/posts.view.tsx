@@ -1,6 +1,8 @@
+import Pagination from "rc-pagination";
+
 import { Table } from "~components/table.component";
 
-import { controller } from "./posts.controller";
+import { controller, Props } from "./posts.controller";
 
 const columns = [
   {
@@ -30,14 +32,17 @@ const columns = [
   }
 ];
 
-export const PostsView = controller.view(
-  ({ state: { posts }, actions: { addPosts, indexExpression } }) => {
+export const PostsView = controller.view<Props>(
+  ({ props: { author }, state: { posts, page }, actions: { addPosts, indexExpression, goToPage } }) => {
     return (
       <div>
-        <button onClick={() => addPosts(100)}>Add Posts</button>
+        <Pagination current={page} pageSize={10} onChange={goToPage} total={posts.length} />
+        <button onClick={() => addPosts(300)}>Add Posts</button>
         <button onClick={indexExpression}>Indexed Expression</button>
-        <div>Posts | {posts.length}</div>
-        <Table columns={columns} data={posts} />
+        <div>
+          Posts | {author && `by author: ${author} | `} {posts.length}
+        </div>
+        <Table columns={columns} data={posts.slice((page - 1) * 10, (page - 1) * 10 + 10)} />
       </div>
     );
   },

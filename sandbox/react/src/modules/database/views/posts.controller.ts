@@ -1,22 +1,16 @@
 import { faker } from "@faker-js/faker";
 import { Controller, ViewController } from "@valkyr/react";
 
-import { router } from "~services/router";
-
 import { Post } from "../models/post.entity";
 import { User } from "../models/user.entity";
 
-class PostsController extends Controller<State> {
+let page = 1;
+
+class PostsController extends Controller<State, Props> {
   async onResolve() {
-    const filter: { where?: { createdBy: string } } = {};
-    const author = router.query.get("author");
-    if (author !== undefined) {
-      filter.where = {
-        createdBy: author
-      };
-    }
     return {
-      posts: await this.query(Post, filter, "posts")
+      posts: await this.#getPosts(),
+      page
     };
   }
 
@@ -49,8 +43,6 @@ class PostsController extends Controller<State> {
 
     const posts = [];
 
-    console.log("Generating posts");
-
     for (let i = 0; i < count; i++) {
       const user = users[Math.floor(Math.random() * users.length)];
       posts.push({
@@ -66,8 +58,6 @@ class PostsController extends Controller<State> {
       counts[user.id] += 1;
     }
 
-    console.log("Generated posts", posts.length);
-
     Post.insertMany(posts);
 
     for (const userId in counts) {
@@ -81,10 +71,30 @@ class PostsController extends Controller<State> {
       }
     }
   }
+
+  async goToPage(value: number) {
+    page = value;
+    this.setState("page", page);
+  }
+
+  async #getPosts() {
+    const filter: { where?: { createdBy: string } } = {};
+    if (this.props.author !== undefined) {
+      filter.where = {
+        createdBy: this.props.author
+      };
+    }
+    return this.query(Post, filter, "posts");
+  }
 }
+
+export type Props = {
+  author?: string;
+};
 
 type State = {
   posts: Post[];
+  page: number;
 };
 
 export const controller = new ViewController(PostsController);

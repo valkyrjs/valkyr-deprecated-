@@ -18,6 +18,7 @@ describe("Router", () => {
       new Route({ name: "Test-2", path: "/test-1/:bar/baz", actions: [] }),
       new Route({
         path: "/:slug",
+        actions: [],
         children: [
           new Route({
             name: "Test-3",
@@ -40,8 +41,7 @@ describe("Router", () => {
             ],
             actions: []
           })
-        ],
-        actions: []
+        ]
       })
     ]);
 
@@ -50,5 +50,39 @@ describe("Router", () => {
     expect(router.getRoute("/my-slug")?.route.name).toStrictEqual("Test-3");
     expect(router.getRoute("/my-slug/foo")?.route.name).toStrictEqual("Test-4");
     expect(router.getRoute("/my-slug/bar/baz")?.route.name).toStrictEqual("Test-5");
+  });
+
+  it("should retrieve expected properties from getComponent", async () => {
+    const router = new Router(createMemoryHistory());
+
+    router.register([
+      new Route({
+        id: "test",
+        name: "Test",
+        path: "/test/:bar/baz",
+        actions: [
+          async function () {
+            return this.render("fake-component");
+          }
+        ]
+      })
+    ]);
+
+    const resolved = router.getResolvedRoute("/test/sample/baz", "?foo=bar");
+
+    expect(resolved).toBeDefined();
+    expect(resolved?.route.id).toStrictEqual("test");
+
+    const render = await router.getRender(resolved!);
+
+    expect(render).toMatchObject({
+      id: "test",
+      name: "Test",
+      component: "fake-component",
+      props: {
+        bar: "sample",
+        foo: "bar"
+      }
+    });
   });
 });

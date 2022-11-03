@@ -8,8 +8,13 @@ export class Resolved {
   readonly params: ValueStore;
   readonly query: Query;
 
-  constructor(readonly route: Route, params: Object, history: BrowserHistory | HashHistory | MemoryHistory) {
+  constructor(
+    readonly route: Route,
+    params: Object,
+    search: string | undefined,
+    history: BrowserHistory | HashHistory | MemoryHistory
+  ) {
     this.params = new ValueStore(params);
-    this.query = new Query(history, history.location.search);
+    this.query = new Query(history, search);
   }
 }

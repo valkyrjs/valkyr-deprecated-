@@ -225,6 +225,7 @@ importers:
       css-loader: 6.7.1
       dotenv-webpack: 8.0.1
       html-webpack-plugin: ^5.5.0
+      rc-pagination: ^3.1.17
       react: ^18.2.0
       react-dom: ^18.2.0
       react-table: ^7.8.0
@@ -244,6 +245,7 @@ importers:
       '@valkyr/ledger': link:../../packages/ledger
       '@valkyr/react': link:../../packages/react
       '@valkyr/router': link:../../packages/router
+      rc-pagination: 3.1.17_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-table: 7.8.0_react@18.2.0
@@ -3147,6 +3149,10 @@ packages:
     dependencies:
       libphonenumber-js: 1.10.14
       validator: 13.7.0
+    dev: false
+
+  /classnames/2.3.2:
+    resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
     dev: false
 
   /clean-css/5.3.1:
@@ -6390,6 +6396,18 @@ packages:
       http-errors: 2.0.0
       iconv-lite: 0.4.24
       unpipe: 1.0.0
+
+  /rc-pagination/3.1.17_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-/BQ5UxcBnW28vFAcP2hfh+Xg15W0QZn8TWYwdCApchMH1H0CxiaUUcULP8uXcFM1TygcdKWdt3JqsL9cTAfdkQ==}
+    peerDependencies:
+      react: '>=16.9.0'
+      react-dom: '>=16.9.0'
+    dependencies:
+      '@babel/runtime': 7.20.0
+      classnames: 2.3.2
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
 
   /react-dom/18.2.0_react@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
