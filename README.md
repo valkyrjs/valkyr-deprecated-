@@ -4,7 +4,6 @@
 
 <p align="center">
   <a href="https://codeclimate.com/github/kodemon/valkyr/maintainability"><img src="https://api.codeclimate.com/v1/badges/d12a6788570bda777116/maintainability" /></a>
-  <a href="https://codeclimate.com/github/kodemon/valkyr/test_coverage"><img src="https://api.codeclimate.com/v1/badges/d12a6788570bda777116/test_coverage" /></a>
 </p>
 
 # Valkyr
