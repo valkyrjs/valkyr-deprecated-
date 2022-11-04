@@ -20,7 +20,18 @@ export class Store {
     return this.storage.find();
   }
 
-  async insert(document: Document, criteria: Criteria): Promise<boolean> {
+  async insertMany(documents: Document[], criteria: Criteria): Promise<boolean> {
+    let matched = false;
+    for (const document of documents) {
+      const changed = await this.insertOne(document, criteria);
+      if (changed === true) {
+        matched = true;
+      }
+    }
+    return matched;
+  }
+
+  async insertOne(document: Document, criteria: Criteria): Promise<boolean> {
     if (isMatch(document, criteria)) {
       await this.storage.insertOne(document);
       return true;
@@ -28,7 +39,18 @@ export class Store {
     return false;
   }
 
-  async update(document: Document, criteria: Criteria): Promise<boolean> {
+  async updateMany(documents: Document[], criteria: Criteria): Promise<boolean> {
+    let matched = false;
+    for (const document of documents) {
+      const changed = await this.updateOne(document, criteria);
+      if (changed === true) {
+        matched = true;
+      }
+    }
+    return matched;
+  }
+
+  async updateOne(document: Document, criteria: Criteria): Promise<boolean> {
     if (await this.storage.has(document.id)) {
       await this.#updateOrRemove(document, criteria);
       return true;
@@ -39,12 +61,15 @@ export class Store {
     return false;
   }
 
-  async remove(document: Document): Promise<boolean> {
-    if (isMatch(document, { id: document.id })) {
-      await this.storage.remove({ id: document.id });
-      return true;
+  async remove(documents: Document[]): Promise<boolean> {
+    let matched = false;
+    for (const document of documents) {
+      if (isMatch(document, { id: document.id })) {
+        await this.storage.remove({ id: document.id });
+        matched = true;
+      }
     }
-    return false;
+    return matched;
   }
 
   async #updateOrRemove(document: Document, criteria: Criteria): Promise<void> {

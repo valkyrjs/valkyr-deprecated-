@@ -37,7 +37,7 @@ export const PostsView = controller.view<Props>(
     return (
       <div>
         <Pagination current={page} pageSize={10} onChange={goToPage} total={posts.length} />
-        <button onClick={() => addPosts(300)}>Add Posts</button>
+        <button onClick={() => addPosts(10000)}>Add Posts</button>
         <button onClick={indexExpression}>Indexed Expression</button>
         <div>
           Posts | {author && `by author: ${author} | `} {posts.length}

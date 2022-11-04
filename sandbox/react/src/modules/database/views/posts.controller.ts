@@ -36,6 +36,8 @@ class PostsController extends Controller<State, Props> {
   }
 
   async addPosts(count = 1) {
+    console.log("Adding posts");
+
     const users = await User.find();
     const counts: {
       [id: string]: number;
@@ -45,31 +47,31 @@ class PostsController extends Controller<State, Props> {
 
     for (let i = 0; i < count; i++) {
       const user = users[Math.floor(Math.random() * users.length)];
-      posts.push({
-        body: faker.lorem.paragraph(),
-        likes: 0,
-        comments: 0,
-        createdBy: user.id,
-        createdAt: Date.now()
-      });
+      posts.push(Post.fake(user));
       if (counts[user.id] === undefined) {
         counts[user.id] = 0;
       }
       counts[user.id] += 1;
     }
 
-    Post.insertMany(posts);
+    await Post.insertMany(posts);
+
+    console.log("Posts added");
+
+    console.log("Updating users post count");
 
     for (const userId in counts) {
       const user = users.find((user) => user.id === userId);
       if (user) {
-        user.update({
+        await user.update({
           $inc: {
             posts: counts[userId]
           }
         });
       }
     }
+
+    console.log("Users post count updated");
   }
 
   async goToPage(value: number) {

@@ -42,25 +42,19 @@ export abstract class Model<D extends Document = any> {
     document: PartialDocument<D>
   ): Promise<T> {
     const result = await this.$collection.insertOne(document);
-    if (result.ids.length === 0) {
+    if (result.documents.length === 0) {
       throw new Error("Model Violation: Unable to insert document");
     }
-    return (this as any).findById(result.ids[0]);
+    return result.documents.map((document) => new this(document as D))[0];
   }
 
   static async insertMany<D extends Document, T extends Model<D>>(
     this: ModelContext<T, D>,
     documents: PartialDocument<D>[]
   ): Promise<T[]> {
-    const result = await this.$collection.insertMany(documents);
-    if (result.ids.length === 0) {
-      return [];
-    }
-    return (this as any).find({
-      id: {
-        $in: result.ids
-      }
-    });
+    return await this.$collection
+      .insertMany(documents)
+      .then((result) => result.documents.map((document) => new this(document as D)));
   }
 
   static async updateOne<D extends Document, T extends Model<D>>(

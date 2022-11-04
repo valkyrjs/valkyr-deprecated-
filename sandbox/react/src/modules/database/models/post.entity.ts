@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Document, Model } from "@valkyr/db";
+import { Document, Model, PartialDocument } from "@valkyr/db";
 
 import { User } from "./user.entity";
 
@@ -18,13 +18,13 @@ export class Post extends Model<PostDocument> {
   readonly createdBy!: PostDocument["createdBy"];
   readonly createdAt!: PostDocument["createdAt"];
 
-  static async faker(user: User): Promise<void> {
-    await this.insertOne({
+  static fake(user: User): PartialDocument<PostDocument> {
+    return {
       body: faker.lorem.paragraph(),
       likes: 0,
       comments: 0,
       createdBy: user.id,
       createdAt: Date.now()
-    });
+    };
   }
 }

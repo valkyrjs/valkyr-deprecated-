@@ -17,26 +17,19 @@ import {
   UpdateOperators,
   UpdateResult
 } from "../storage";
-import { IndexedDbTransactionQueue, TransactionHandler } from "./indexed.queue";
 
 const OBJECT_PROTOTYPE = Object.getPrototypeOf({}) as AnyVal;
 const OBJECT_TAG = "[object Object]";
 
 export class IndexedDbStorage<D extends Document = Document> extends Storage<D> {
   readonly #db: IDBPDatabase;
-  readonly #queue: IndexedDbTransactionQueue;
-  readonly #cache = new Map<string, D>();
 
   constructor(name: string, db: IDBPDatabase, readonly log: (message: string) => void) {
     super(name);
     this.#db = db;
-    this.#queue = new IndexedDbTransactionQueue(name, db, log);
   }
 
   async has(id: string): Promise<boolean> {
-    if (this.#cache.has(id) === true) {
-      return true;
-    }
     const document = await this.#db.getFromIndex(this.name, "id", id);
     if (document !== undefined) {
       return true;
@@ -51,44 +44,40 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    */
 
   async insertOne(data: PartialDocument<D>): Promise<InsertResult> {
+    const t0 = performance.now();
     const document = { ...data, id: data.id ?? getId() } as D;
     if (await this.has(document.id)) {
       throw new DuplicateDocumentError(document, this);
     }
+    await this.#db.transaction(this.name, "readwrite", { durability: "relaxed" }).store.add(document);
 
-    this.#cache.set(document.id, document);
-    this.broadcast("insert", document);
+    this.broadcast("insertOne", document);
+    this.log(`@valkyr/db > 1 ${this.name} inserted in ${(performance.now() - t0).toFixed(2)} milliseconds`);
 
-    this.#queue.push([
-      (tx) =>
-        tx.store.put(document).then(() => {
-          this.#cache.delete(document.id);
-        })
-    ]);
-
-    return new InsertResult([document.id]);
+    return new InsertResult([document]);
   }
 
   async insertMany(data: PartialDocument<D>[]): Promise<InsertResult> {
-    const ids: string[] = [];
+    const documents: D[] = [];
 
-    this.#queue.push(
+    const t0 = performance.now();
+
+    const tx = this.#db.transaction(this.name, "readwrite", { durability: "relaxed" });
+    await Promise.all(
       data.map((data) => {
         const document = { ...data, id: data.id ?? getId() } as D;
-
-        ids.push(document.id);
-
-        this.#cache.set(document.id, document);
-        this.broadcast("insert", document);
-
-        return (tx) =>
-          tx.store.add(document).then(() => {
-            this.#cache.delete(document.id);
-          });
+        documents.push(document);
+        return tx.store.add(document);
       })
     );
+    await tx.done;
 
-    return new InsertResult(ids);
+    this.broadcast("insertMany", documents);
+    this.log(
+      `@valkyr/db > ${documents.length} ${this.name} inserted in ${(performance.now() - t0).toFixed(2)} milliseconds`
+    );
+
+    return new InsertResult(documents);
   }
 
   /*
@@ -102,15 +91,17 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
   }
 
   async find(criteria: RawObject, options: Options = {}): Promise<D[]> {
+    const t0 = performance.now();
     this.#resolveIndexes(criteria, options);
-    let cursor = new Query(criteria ?? {}).find([
-      ...(await this.#getAll(options)),
-      ...Array.from(this.#cache.values())
-    ]);
+    let cursor = new Query(criteria ?? {}).find(await this.#getAll(options));
     if (options !== undefined) {
       cursor = addOptions(cursor, options);
     }
-    return cursor.all() as D[];
+    const documents = cursor.all() as D[];
+    this.log(
+      `@valkyr/db > ${documents.length} ${this.name} found in ${(performance.now() - t0).toFixed(2)} milliseconds`
+    );
+    return documents;
   }
 
   /**
@@ -166,7 +157,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
         result = new Set([...result, ...values]);
       }
     }
-    return result;
+    return Array.from(result);
   }
 
   async #getAllByOffset(value: string, direction: 1 | -1, limit?: number) {
@@ -200,51 +191,97 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    |--------------------------------------------------------------------------------
    */
 
-  async update(criteria: RawObject, operators: UpdateOperators, options?: { justOne: boolean }): Promise<UpdateResult> {
-    const data = await this.find(criteria, { limit: options?.justOne === true ? 1 : undefined });
+  async updateOne(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
+    if (typeof criteria.id === "string") {
+      return this.#update(criteria.id, criteria, operators);
+    }
+    const documents = await this.find(criteria);
+    if (documents.length > 0) {
+      return this.#update(documents[0].id, criteria, operators);
+    }
+    return new UpdateResult(0, 0);
+  }
 
+  async updateMany(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
+    const ids = await this.find(criteria).then((data) => data.map((d) => d.id));
+
+    const documents: D[] = [];
     let modifiedCount = 0;
 
-    const txs: TransactionHandler[] = [];
+    const t0 = performance.now();
+    const tx = this.#db.transaction(this.name, "readwrite", { durability: "relaxed" });
+    await Promise.all(
+      ids.map((id) =>
+        tx.store.get(id).then((current) => {
+          if (current === undefined) {
+            return;
+          }
+          const { modified, document } = update(criteria, operators, current);
+          if (modified) {
+            modifiedCount += 1;
+            documents.push(document);
+            return tx.store.put(document);
+          }
+        })
+      )
+    );
 
-    for (const item of data) {
-      const { modified, document } = update<D>(criteria, operators, item);
-      if (modified === true) {
-        modifiedCount += 1;
-        this.#cache.set(document.id, document);
-        this.broadcast("update", document);
-        txs.push((tx) =>
-          tx.store.put(document).then(() => {
-            this.#cache.delete(document.id);
-          })
-        );
-      }
-    }
+    await tx.done;
 
-    this.#queue.push(txs);
+    this.log(
+      `@valkyr/db > ${modifiedCount} ${this.name} updated in ${(performance.now() - t0).toFixed(2)} milliseconds`
+    );
+    this.broadcast("updateMany", documents);
 
-    return new UpdateResult(data.length, modifiedCount);
+    return new UpdateResult(ids.length, modifiedCount);
   }
 
   async replace(criteria: RawObject, document: D): Promise<UpdateResult> {
-    const data = await this.find(criteria);
+    const t0 = performance.now();
+    const ids = await this.find(criteria).then((data) => data.map((d) => d.id));
 
-    let matchedCount = 0;
-    let modifiedCount = 0;
+    const documents: D[] = [];
+    const count = ids.length;
 
-    this.#queue.push(
-      data.map((data) => {
-        matchedCount += 1;
-        modifiedCount += 1;
-
-        this.#cache.set(data.id, document);
-        this.broadcast("update", document);
-
-        return (tx) => tx.store.put(document, data.id);
+    const tx = this.#db.transaction(this.name, "readwrite", { durability: "relaxed" });
+    await Promise.all(
+      ids.map((id) => {
+        const next = { ...document, id };
+        documents.push(next);
+        return tx.store.put(next);
       })
     );
+    await tx.done;
 
-    return new UpdateResult(matchedCount, modifiedCount);
+    this.broadcast("updateMany", documents);
+    this.log(`@valkyr/db > ${count} ${this.name} replaced in ${(performance.now() - t0).toFixed(2)} milliseconds`);
+
+    return new UpdateResult(count, count);
+  }
+
+  async #update(id: string, criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
+    const t0 = performance.now();
+    const tx = this.#db.transaction(this.name, "readwrite", { durability: "relaxed" });
+
+    const current = await tx.store.get(id);
+    if (current === undefined) {
+      await tx.done;
+      return new UpdateResult(0, 0);
+    }
+
+    const { modified, document } = await update(criteria, operators, current);
+    if (modified === true) {
+      await tx.store.put(document);
+    }
+    await tx.done;
+
+    if (modified === true) {
+      this.broadcast("updateOne", document);
+      this.log(`@valkyr/db > 1 ${this.name} updated in ${(performance.now() - t0).toFixed(2)} milliseconds`);
+      return new UpdateResult(1, 1);
+    }
+
+    return new UpdateResult(1);
   }
 
   /*
@@ -254,18 +291,20 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    */
 
   async remove(criteria: RawObject): Promise<RemoveResult> {
-    const data = await this.find(criteria);
+    const t0 = performance.now();
+
+    const documents = await this.find(criteria);
     const tx = this.#db.transaction(this.name, "readwrite");
-    await Promise.all([
-      ...data.map((data) => {
-        this.broadcast("remove", data);
-        return tx.store.delete(data.id).then(() => {
-          this.#cache.delete(data.id);
-        });
-      }),
-      tx.done
-    ]);
-    return new RemoveResult(data.length);
+
+    await Promise.all(documents.map((data) => tx.store.delete(data.id)));
+    await tx.done;
+
+    this.broadcast("remove", documents);
+    this.log(
+      `@valkyr/db > ${documents.length} ${this.name} removed in ${(performance.now() - t0).toFixed(2)} milliseconds`
+    );
+
+    return new RemoveResult(documents.length);
   }
 
   /*

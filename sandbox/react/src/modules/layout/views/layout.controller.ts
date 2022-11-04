@@ -3,8 +3,8 @@ import { RoutedResult } from "@valkyr/router";
 
 import { router } from "~services/router";
 
-class DatabaseTemplateController extends Controller<State> {
-  #routes = new ControllerRoutes(this, router, "database");
+class LayoutController extends Controller<State> {
+  #routes = new ControllerRoutes(this, router, "app");
 
   async onInit() {
     return {
@@ -17,4 +17,4 @@ type State = {
   routed?: RoutedResult<typeof router>;
 };
 
-export const controller = new ViewController(DatabaseTemplateController);
+export const controller = new ViewController(LayoutController);

@@ -15,9 +15,11 @@ class UsersController extends Controller<State> {
   }
 
   addUsers(count = 1) {
+    const users = [];
     for (let i = 0; i < count; i++) {
-      User.faker();
+      users.push(User.fake());
     }
+    User.insertMany(users);
   }
 
   async queryRange(from: string, to: string) {

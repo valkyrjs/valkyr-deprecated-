@@ -16,12 +16,20 @@
   ],
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json",
-    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
+    "flush": "npm run clean && rm -rf ./node_modules",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "@valkyr/jest"
   },
   "dependencies": {
     "@valkyr/event-emitter": "workspace:*",
     "history": "5.3.0",
     "path-to-regexp": "6.2.1",
     "rxjs": "7.5.7"
+  },
+  "devDependencies": {
+    "@valkyr/jest": "workspace:*"
   }
 }

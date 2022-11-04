@@ -38,6 +38,12 @@ export class IndexedDatabase {
     }
   }
 
+  async flush() {
+    for (const { name } of this.#registrars) {
+      await this.#db?.clear(name);
+    }
+  }
+
   close() {
     this.#db?.close();
   }

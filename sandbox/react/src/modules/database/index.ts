@@ -1,1 +1,1 @@
-import "./database.module";
+export * from "./database.module";

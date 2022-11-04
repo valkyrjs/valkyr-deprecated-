@@ -29,19 +29,21 @@ export class MemoryStorage<D extends Document = Document> extends Storage<D> {
       throw new DuplicateDocumentError(document, this);
     }
     this.#documents.set(document.id, document);
-    this.broadcast("insert", document);
+    this.broadcast("insertOne", document);
     return new InsertResult([document.id]);
   }
 
   async insertMany(documents: PartialDocument<D>[]): Promise<InsertResult> {
-    const ids: string[] = [];
+    const result: D[] = [];
     for (const data of documents) {
       const document = { ...data, id: data.id ?? getId() } as D;
+      result.push(document);
       this.#documents.set(document.id, document);
-      this.broadcast("insert", document);
-      ids.push(document.id);
     }
-    return new InsertResult(ids);
+
+    this.broadcast("insertMany", result);
+
+    return new InsertResult(result);
   }
 
   async findById(id: string): Promise<D | undefined> {
@@ -56,27 +58,43 @@ export class MemoryStorage<D extends Document = Document> extends Storage<D> {
     return cursor.all() as D[];
   }
 
-  async update(criteria: RawObject, operators: UpdateOperators, options?: { justOne: boolean }): Promise<UpdateResult> {
+  async updateOne(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
     const query = new Query(criteria);
+    for (const current of Array.from(this.#documents.values())) {
+      if (query.test(current) === true) {
+        const { modified, document } = update<D>(criteria, operators, current);
+        if (modified === true) {
+          this.#documents.set(document.id, document);
+          this.broadcast("updateOne", document);
+          return new UpdateResult(1, 1);
+        }
+        return new UpdateResult(1, 0);
+      }
+    }
+    return new UpdateResult(0, 0);
+  }
+
+  async updateMany(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
+    const query = new Query(criteria);
+
+    const documents: D[] = [];
 
     let matchedCount = 0;
     let modifiedCount = 0;
 
-    const documents = Array.from(this.#documents.values());
-    for (const data of documents) {
-      if (query.test(data) === true) {
+    for (const current of Array.from(this.#documents.values())) {
+      if (query.test(current) === true) {
         matchedCount += 1;
-        const { modified, document } = update<D>(criteria, operators, data);
+        const { modified, document } = update<D>(criteria, operators, current);
         if (modified === true) {
           modifiedCount += 1;
+          documents.push(document);
           this.#documents.set(document.id, document);
-          this.broadcast("update", document);
-        }
-        if (options?.justOne === true) {
-          break;
         }
       }
     }
+
+    this.broadcast("updateMany", documents);
 
     return new UpdateResult(matchedCount, modifiedCount);
   }
@@ -84,18 +102,21 @@ export class MemoryStorage<D extends Document = Document> extends Storage<D> {
   async replace(criteria: RawObject, document: D): Promise<UpdateResult> {
     const query = new Query(criteria);
 
+    const documents: D[] = [];
+
     let matchedCount = 0;
     let modifiedCount = 0;
 
-    const documents = Array.from(this.#documents.values());
-    for (const data of documents) {
-      if (query.test(data) === true) {
+    for (const current of Array.from(this.#documents.values())) {
+      if (query.test(current) === true) {
         matchedCount += 1;
         modifiedCount += 1;
+        documents.push(document);
         this.#documents.set(document.id, document);
-        this.broadcast("update", document);
       }
     }
+
+    this.broadcast("updateMany", documents);
 
     return new UpdateResult(matchedCount, modifiedCount);
   }

@@ -1,6 +1,9 @@
 {
   "$schema": "https://turborepo.org/schema.json",
   "pipeline": {
+    "flush": {
+      "cache": false
+    },
     "clean": {
       "cache": false
     },
@@ -8,8 +11,9 @@
       "inputs": ["tsconfig.json", "tsconfig.build.json", "**/src/**", "src/**"],
       "outputs": ["dist/**"]
     },
+    "test": {},
     "lint": {
-      "outputs": []
+      "cache": false
     }
   }
 }

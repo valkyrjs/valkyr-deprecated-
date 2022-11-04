@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Document, Model } from "@valkyr/db";
+import { Document, Model, PartialDocument } from "@valkyr/db";
 
 type UserDocument = Document & {
   name: string;
@@ -14,12 +14,12 @@ export class User extends Model<UserDocument> {
   readonly posts!: UserDocument["posts"];
   readonly createdAt!: UserDocument["createdAt"];
 
-  static async faker(): Promise<void> {
-    await this.insertOne({
+  static fake(): PartialDocument<UserDocument> {
+    return {
       name: faker.name.fullName(),
       email: faker.internet.email(),
       posts: 0,
       createdAt: Date.now()
-    });
+    };
   }
 }

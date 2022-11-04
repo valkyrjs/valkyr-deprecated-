@@ -2,15 +2,11 @@ import { Route } from "@valkyr/router";
 
 import { render } from "~middleware/render";
 import { db } from "~services/database";
-import { router } from "~services/router";
 
 import { Post } from "./models/post.entity";
 import { User } from "./models/user.entity";
-import { DashboardView } from "./views/dashboard.view";
 import { PostsView } from "./views/posts.view";
-import { RouterView } from "./views/router.view";
-import { SampleFormView } from "./views/sample-form.view";
-import { DatabaseTemplateView } from "./views/template.view";
+import { TestsView } from "./views/tests.view";
 import { UsersView } from "./views/users.view";
 
 /*
@@ -34,37 +30,20 @@ db.register([
  |--------------------------------------------------------------------------------
  */
 
-router.register([
+export const routes = [
   new Route({
-    id: "database",
-    path: "/",
-    actions: [render(DatabaseTemplateView)],
-    children: [
-      new Route({
-        name: "Dashboard",
-        path: "/",
-        actions: [render(DashboardView)]
-      }),
-      new Route({
-        name: "Database Users",
-        path: "/users",
-        actions: [render(UsersView)]
-      }),
-      new Route({
-        name: "Database Posts",
-        path: "/posts",
-        actions: [render(PostsView)]
-      }),
-      new Route({
-        name: "Router",
-        path: "/router",
-        actions: [render(RouterView)]
-      }),
-      new Route({
-        name: "Form",
-        path: "/form",
-        actions: [render(SampleFormView)]
-      })
-    ]
+    name: "Database Users",
+    path: "/users",
+    actions: [render(UsersView)]
+  }),
+  new Route({
+    name: "Database Posts",
+    path: "/posts",
+    actions: [render(PostsView)]
+  }),
+  new Route({
+    name: "Database Tests",
+    path: "/tests",
+    actions: [render(TestsView)]
   })
-]);
+];

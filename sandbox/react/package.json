@@ -4,8 +4,7 @@
   "private": true,
   "description": "A space where we test out the functionality of our packages. It also serves as a sample space for various ways we can create applications.",
   "scripts": {
-    "start": "webpack serve --port 3001",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack serve --port 3001"
   },
   "author": "",
   "license": "MIT",

@@ -8,18 +8,21 @@ export function observeOne(
   onChange: (document: Document | undefined) => void
 ): () => void {
   collection.findOne(criteria).then(onChange);
-  return collection.storage.onChange((type, document) => {
+  return collection.storage.onChange((type, data) => {
     switch (type) {
-      case "insert":
-      case "update": {
-        if (isMatch(document, criteria) === true) {
-          onChange(document);
+      case "insertOne":
+      case "updateOne": {
+        if (isMatch(data, criteria) === true) {
+          onChange(data);
         }
         break;
       }
       case "remove": {
-        if (isMatch(document, criteria) === true) {
-          onChange(undefined);
+        for (const document of data) {
+          if (isMatch(document, criteria) === true) {
+            onChange(undefined);
+            break;
+          }
         }
         break;
       }

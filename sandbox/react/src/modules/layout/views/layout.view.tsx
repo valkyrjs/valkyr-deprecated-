@@ -1,13 +1,13 @@
-import "./template.styles.scss";
+import "./layout.styles.scss";
 
 import { createElement } from "react";
 
 import { Icon } from "~components/icon.component";
 import { Link } from "~components/link.component";
 
-import { controller } from "./template.controller";
+import { controller } from "./layout.controller";
 
-export const DatabaseTemplateView = controller.view(({ state: { routed } }) => {
+export const LayoutView = controller.view(({ state: { routed } }) => {
   return (
     <div id="database-template">
       <div className="sidebar">
@@ -26,6 +26,11 @@ export const DatabaseTemplateView = controller.view(({ state: { routed } }) => {
           <li>
             <Link href="/posts">
               <Icon name="twitter" /> Posts
+            </Link>
+          </li>
+          <li>
+            <Link href="/tests">
+              <Icon name="console" /> Tests
             </Link>
           </li>
           <li className="separator" />

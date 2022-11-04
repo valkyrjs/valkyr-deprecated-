@@ -11,7 +11,12 @@
   ],
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json",
-    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
+    "flush": "npm run clean && rm -rf ./node_modules",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "@valkyr/jest"
   },
   "dependencies": {
     "@valkyr/event-emitter": "workspace:*",
@@ -19,6 +24,7 @@
     "crypto-js": "4.1.1"
   },
   "devDependencies": {
-    "@types/crypto-js": "4.1.1"
+    "@types/crypto-js": "4.1.1",
+    "@valkyr/jest": "workspace:*"
   }
 }

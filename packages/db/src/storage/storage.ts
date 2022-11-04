@@ -11,7 +11,7 @@ import { UpdateOperators, UpdateResult } from "./operators/update";
 export abstract class Storage<D extends Document = Document> extends EventEmitter<{
   loading: () => void;
   ready: () => void;
-  change: (type: ChangeType, document: D) => void;
+  change: (type: ChangeType, data: D | D[]) => void;
 }> {
   readonly id = getId(6);
 
@@ -25,8 +25,8 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
   }
 
   #startBrowserListener() {
-    this.#channel.onmessage = ({ data: { type, document } }: MessageEvent<StorageBroadcast>) =>
-      this.emit("change", type, document);
+    this.#channel.onmessage = ({ data: { type, data } }: MessageEvent<StorageBroadcast>) =>
+      this.emit("change", type, data);
   }
 
   /*
@@ -55,9 +55,9 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
    |
    */
 
-  broadcast(type: ChangeType, document: D): void {
-    this.emit("change", type, document);
-    this.#channel.postMessage({ type, document });
+  broadcast(type: ChangeType, data: D | D[]): void {
+    this.emit("change", type, data);
+    this.#channel.postMessage({ type, data });
   }
 
   /*
@@ -66,7 +66,7 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
    |--------------------------------------------------------------------------------
    */
 
-  onChange(callback: (type: ChangeType, document: D) => void): () => void {
+  onChange(callback: (type: ChangeType, data: D | D[]) => void): () => void {
     return this.subscribe("change", callback);
   }
 
@@ -86,11 +86,9 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
 
   abstract find(criteria?: RawObject, options?: Options): Promise<D[]>;
 
-  abstract update(
-    criteria: RawObject,
-    operators: UpdateOperators,
-    options?: { justOne: boolean }
-  ): Promise<UpdateResult>;
+  abstract updateOne(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult>;
+
+  abstract updateMany(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult>;
 
   abstract replace(criteria: RawObject, document: Document): Promise<UpdateResult>;
 
@@ -136,12 +134,17 @@ export type PartialDocument<D extends Document> = Omit<D, "id"> & {
 
 type Status = "loading" | "ready";
 
-type ChangeType = "insert" | "update" | "remove";
+type StorageBroadcast =
+  | {
+      type: "insertOne" | "updateOne";
+      data: Document<any>;
+    }
+  | {
+      type: "insertMany" | "updateMany" | "remove";
+      data: Document<any>[];
+    };
 
-type StorageBroadcast = {
-  type: "insert" | "update" | "remove";
-  document: Document<any>;
-};
+type ChangeType = "insertOne" | "insertMany" | "updateOne" | "updateMany" | "remove";
 
 export type Options = {
   sort?: {

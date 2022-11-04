@@ -1,3 +1,3 @@
 export class InsertResult {
-  constructor(readonly ids: string[]) {}
+  constructor(readonly documents: any[]) {}
 }

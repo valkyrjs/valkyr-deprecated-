@@ -38,11 +38,11 @@ export class Collection<D extends Document = any> {
   }
 
   async updateOne(criteria: RawObject, update: UpdateOperators): Promise<UpdateResult> {
-    return this.storage.update(criteria, update, { justOne: true });
+    return this.storage.updateOne(criteria, update);
   }
 
   async updateMany(criteria: RawObject, update: UpdateOperators): Promise<UpdateResult> {
-    return this.storage.update(criteria, update);
+    return this.storage.updateMany(criteria, update);
   }
 
   async replaceOne(criteria: RawObject, document: D): Promise<UpdateResult> {

@@ -5,7 +5,7 @@
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
-  "main": "src/index.ts",
+  "main": "./src/index.ts",
   "files": [
     "dist"
   ],
@@ -17,7 +17,12 @@
   ],
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json",
-    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
+    "flush": "npm run clean && rm -rf ./node_modules",
+    "clean": "rm -rf .turbo && rm -rf dist",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "@valkyr/jest"
   },
   "dependencies": {
     "@valkyr/event-emitter": "workspace:*",
@@ -31,6 +36,8 @@
     "rxjs": "7.5.7"
   },
   "devDependencies": {
+    "@valkyr/jest": "workspace:*",
+    "fake-indexeddb": "^4.0.0",
     "type-fest": "^2.18.1"
   }
 }

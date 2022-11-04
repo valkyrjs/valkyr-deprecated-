@@ -5,6 +5,8 @@ import { Table } from "~components/table.component";
 
 import { controller } from "./users.controller";
 
+const limit = 50;
+
 const columns = [
   {
     Header: "Users",
@@ -40,7 +42,7 @@ export const UsersView = controller.view(
   ({ state: { users, page }, actions: { addUsers, queryRange, queryOffset, exportUsers, goToPage } }) => {
     return (
       <div>
-        <Pagination current={page} pageSize={10} onChange={goToPage} total={users.length} />
+        <Pagination current={page} pageSize={limit} onChange={goToPage} total={users.length} />
         <button onClick={() => addUsers(10)}>Add User</button>
         <button onClick={() => queryRange("0aObG04jJEcffbFpAUR08", "18GXoBJB0yVEDg1ynJTIw")}>Query Range</button>
         <button onClick={() => queryOffset("15ykSozbZvEsd3r0onGaU", -1, 2)}>Query Offset</button>
@@ -48,7 +50,7 @@ export const UsersView = controller.view(
         <div>
           Users | {users.length} | Total Posts {users.reduce((total, user) => total + user.posts, 0)}
         </div>
-        <Table columns={columns} data={users.slice((page - 1) * 10, (page - 1) * 10 + 10)} />
+        <Table columns={columns} data={users.slice((page - 1) * limit, (page - 1) * limit + limit)} />
       </div>
     );
   }
