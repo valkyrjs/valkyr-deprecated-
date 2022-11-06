@@ -13,6 +13,7 @@ router.register([
   new Route({
     id: "app",
     path: "/",
+    base: "/dashboard",
     actions: [render(LayoutView)],
     children: [...dashboardRoutes, ...databaseRoutes, ...routerRoutes, ...formRoutes]
   })

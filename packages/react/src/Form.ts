@@ -57,6 +57,10 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
    |--------------------------------------------------------------------------------
    */
 
+  get isValid(): boolean {
+    return Object.keys(this.#getFormErrors()).length === 0;
+  }
+
   get hasError() {
     return Object.keys(this.errors).length !== 0;
   }

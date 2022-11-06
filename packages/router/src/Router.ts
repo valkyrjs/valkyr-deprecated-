@@ -141,7 +141,7 @@ export class Router<Component = unknown> {
     }
   }
 
-  async #execute(route: Route, resolved: Resolved): Promise<void> {
+  async #execute(route: Route, resolved: Resolved, origin = true): Promise<void> {
     for (const action of route.actions) {
       const res = await action.call(response, resolved);
       switch (res.status) {
@@ -152,9 +152,12 @@ export class Router<Component = unknown> {
           throw new ActionRejectedException(res.message, res.details);
         }
         case "render": {
+          if (origin === true && route.redirect !== undefined) {
+            return this.redirect(response.redirect(route.redirect));
+          }
           if (route.parent !== undefined) {
             this.#subscriber.next(resolved);
-            return this.#execute(route.parent, resolved);
+            return this.#execute(route.parent, resolved, false);
           }
           return this.#render?.(res.component, res.props);
         }
@@ -317,8 +320,9 @@ export class Router<Component = unknown> {
    * or return undefined if the route does not result in a render output.
    *
    * @param resolved - Resolved route.
+   * @param props    - Additional props to assign to the render result.
    */
-  async getRender<R extends Router>(resolved: Resolved): Promise<RoutedResult<R> | undefined> {
+  async getRender<R extends Router>(resolved: Resolved, props: any = {}): Promise<RoutedResult<R> | undefined> {
     for (const action of resolved.route.actions) {
       const res = await action.call(response, resolved);
       switch (res.status) {
@@ -332,7 +336,8 @@ export class Router<Component = unknown> {
             props: {
               ...res.props,
               ...params,
-              ...query
+              ...query,
+              ...props
             }
           };
         }

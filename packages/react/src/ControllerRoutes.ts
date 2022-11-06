@@ -1,4 +1,4 @@
-import type { RoutedResult, Router } from "@valkyr/router";
+import type { Router } from "@valkyr/router";
 
 import type { Controller, JsonLike } from "./Controller";
 
@@ -22,41 +22,34 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
     }
   }
 
-  #resolved?: (resolved: Router["resolved"], result: RoutedResult<typeof this.router>) => void;
-
-  resolved(handleResolved: (resolved: Router["resolved"], result: RoutedResult<typeof this.router>) => void): this {
-    this.#resolved = handleResolved;
-    return this;
-  }
-
-  async subscribe() {
+  async subscribe(onResolved: OnResolvedHandler = async () => ({})) {
     this.controller.subscriptions.get("$controller.routes")?.unsubscribe();
     this.controller.subscriptions.set(
       "$controller.routes",
       this.router.subscribe(this.routes, (resolved) => {
-        if (this.#resolved !== undefined) {
-          this.router.getRender(resolved).then((result) => this.#resolved(resolved, result));
-        } else {
-          this.#setComponent(resolved);
-        }
+        onResolved(resolved).then((props = {}) => {
+          this.#setComponent(resolved, props);
+        });
       })
     );
-    return this.#preload();
+    return this.#preload(onResolved);
   }
 
-  async #preload() {
+  async #preload(onResolved: OnResolvedHandler) {
     for (const path of this.routes) {
       const isCurrentPath = this.router.match(path);
       if (isCurrentPath === true) {
         const resolved = this.router.getResolvedRoute(this.router.location.pathname);
         if (resolved !== undefined) {
-          return this.router.getRender<R>(resolved);
+          return onResolved(resolved).then((props = {}) => this.router.getRender<R>(resolved, props));
         }
       }
     }
   }
 
-  async #setComponent(resolved: Router["resolved"]) {
-    this.controller.setState("routed", (await this.router.getRender(resolved)) as S[keyof S]);
+  async #setComponent(resolved: Router["resolved"], props: JsonLike = {}) {
+    this.controller.setState("routed", (await this.router.getRender(resolved, props)) as S[keyof S]);
   }
 }
+
+type OnResolvedHandler = (resolved: Router["resolved"]) => Promise<any | void>;

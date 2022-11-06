@@ -19,12 +19,21 @@ export class Route {
 
   parent?: Route;
 
-  constructor({ id, name, path = "", children, actions }: RouteOptions) {
+  #base?: string;
+
+  constructor({ id, name, path = "", base, children, actions }: RouteOptions) {
     this.id = id;
     this.name = name;
     this.children = children;
     this.actions = actions;
+    this.#base = base;
     this.#setPath(path);
+  }
+
+  get redirect(): string | undefined {
+    if (this.#base !== undefined) {
+      return `${this.path}${this.#base}`;
+    }
   }
 
   register(options: RegisterOptions): this {
@@ -34,9 +43,6 @@ export class Route {
   }
 
   match(path: string): false | Object {
-    if (this.children !== undefined) {
-      return false;
-    }
     const matched = this.parser.exec(path);
     if (matched !== null) {
       const res = match(this.path)(path);
@@ -100,6 +106,7 @@ type RouteOptions = {
   id?: string;
   name?: string;
   path: string;
+  base?: string;
   children?: Route[];
   actions: Action[];
 };

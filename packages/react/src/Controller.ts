@@ -1,4 +1,5 @@
 import type { ModelClass, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
+import type { FunctionComponent } from "react";
 import type { Observable, Subject, Subscription } from "rxjs";
 
 import { Refs } from "./ControllerRefs";
@@ -70,16 +71,21 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
   async $resolve(props: Props): Promise<void> {
     this.props = props;
     let state: Partial<State> = {};
-    if (this.#resolved === false) {
+    try {
+      if (this.#resolved === false) {
+        state = {
+          ...state,
+          ...((await this.onInit()) ?? {})
+        };
+      }
       state = {
         ...state,
-        ...((await this.onInit()) ?? {})
+        ...((await this.onResolve()) ?? {})
       };
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
-    state = {
-      ...state,
-      ...((await this.onResolve()) ?? {})
-    };
     this.#resolved = true;
     this.setState(state);
   }
@@ -317,7 +323,7 @@ export type JsonLike = {
 
 type SubscriptionType<Type> = Type extends Subject<infer X> | Observable<infer X> ? X : never;
 
-export type ReactComponent<Props extends {}, Controller extends ControllerClass> = React.FC<{
+export type ReactComponent<Props extends {}, Controller extends ControllerClass> = FunctionComponent<{
   props: Props;
   state: InstanceType<Controller>["state"];
   actions: Omit<InstanceType<Controller>, ReservedPropertyMembers>;

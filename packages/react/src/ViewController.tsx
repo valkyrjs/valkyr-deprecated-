@@ -1,5 +1,5 @@
 import { deepEqual } from "fast-equals";
-import React, { createElement, memo, PropsWithChildren, useEffect, useMemo, useState } from "react";
+import React, { createElement, FunctionComponent, memo, PropsWithChildren, useEffect, useMemo, useState } from "react";
 
 import { ControllerClass, ReactComponent } from "./Controller";
 
@@ -34,10 +34,13 @@ export class ViewController<Controller extends ControllerClass> {
    *
    * @param component - Functional react component.
    */
-  view<Props extends {}>(component: ReactComponent<Props, Controller>, options?: Partial<ViewOptions<Props>>) {
+  view<Props extends {}>(
+    component: ReactComponent<Props, Controller>,
+    options?: Partial<ViewOptions<Props>>
+  ): FunctionComponent<Props> {
     const memoize = this.#getMemoize(options?.memoize);
 
-    const wrapper: React.FC<PropsWithChildren<Props>> = (props) => {
+    const wrapper: FunctionComponent<PropsWithChildren<Props>> = (props) => {
       const [controller, setController] = useState<InstanceType<Controller> | undefined>(undefined);
       const [view, setView] = useState();
       const [error, setError] = useState<Error | undefined>();

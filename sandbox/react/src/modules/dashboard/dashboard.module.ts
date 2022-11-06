@@ -7,7 +7,7 @@ import { DashboardView } from "./views/dashboard.view";
 export const routes = [
   new Route({
     name: "Dashboard",
-    path: "/",
+    path: "/dashboard",
     actions: [render(DashboardView)]
   })
 ];
