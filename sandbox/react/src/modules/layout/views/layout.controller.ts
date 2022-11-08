@@ -4,11 +4,9 @@ import { RoutedResult } from "@valkyr/router";
 import { router } from "~services/router";
 
 class LayoutController extends Controller<State> {
-  #routes = new ControllerRoutes(this, router, "app");
-
   async onInit() {
     return {
-      routed: await this.#routes.subscribe()
+      routed: await new ControllerRoutes(this, router, "app").subscribe("routed")
     };
   }
 }

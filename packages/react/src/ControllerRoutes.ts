@@ -1,4 +1,4 @@
-import type { Router } from "@valkyr/router";
+import type { RoutedResult, Router } from "@valkyr/router";
 
 import type { Controller, JsonLike } from "./Controller";
 
@@ -22,34 +22,32 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
     }
   }
 
-  async subscribe(onResolved: OnResolvedHandler = async () => ({})) {
+  async subscribe<K extends keyof S>(next: K | NextHandler<S, R>) {
     this.controller.subscriptions.get("$controller.routes")?.unsubscribe();
     this.controller.subscriptions.set(
       "$controller.routes",
       this.router.subscribe(this.routes, (resolved) => {
-        onResolved(resolved).then((props = {}) => {
-          this.#setComponent(resolved, props);
-        });
+        this.#setComponent(resolved, typeof next === "string" ? (this.controller.setState(next) as any) : next);
       })
     );
-    return this.#preload(onResolved);
+    return this.#preload();
   }
 
-  async #preload(onResolved: OnResolvedHandler) {
+  async #setComponent(resolved: Router["resolved"], next: NextHandler<S, R>) {
+    this.controller.setState(await this.router.getRender(resolved).then(next));
+  }
+
+  async #preload() {
     for (const path of this.routes) {
       const isCurrentPath = this.router.match(path);
       if (isCurrentPath === true) {
         const resolved = this.router.getResolvedRoute(this.router.location.pathname);
         if (resolved !== undefined) {
-          return onResolved(resolved).then((props = {}) => this.router.getRender<R>(resolved, props));
+          return this.router.getRender<R>(resolved);
         }
       }
     }
   }
-
-  async #setComponent(resolved: Router["resolved"], props: JsonLike = {}) {
-    this.controller.setState("routed", (await this.router.getRender(resolved, props)) as S[keyof S]);
-  }
 }
 
-type OnResolvedHandler = (resolved: Router["resolved"]) => Promise<any | void>;
+type NextHandler<S extends JsonLike, R extends Router> = (result: RoutedResult<R>) => S;
