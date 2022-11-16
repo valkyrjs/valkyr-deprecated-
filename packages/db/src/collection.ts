@@ -104,7 +104,7 @@ export class Collection<D extends Document = any> {
    * Performs a mingo criteria search over the collection data and returns
    * the count of all documents found matching the criteria and options.
    */
-  async count(criteria: RawObject = {}): Promise<number> {
+  async count(criteria?: RawObject): Promise<number> {
     return this.storage.count(criteria);
   }
 

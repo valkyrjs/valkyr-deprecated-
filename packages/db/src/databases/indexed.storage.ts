@@ -93,7 +93,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
   async find(criteria: RawObject, options: Options = {}): Promise<D[]> {
     const t0 = performance.now();
     this.#resolveIndexes(criteria, options);
-    let cursor = new Query(criteria ?? {}).find(await this.#getAll(options));
+    let cursor = new Query(criteria).find(await this.#getAll(options));
     if (options !== undefined) {
       cursor = addOptions(cursor, options);
     }
@@ -315,7 +315,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
 
   async count(criteria?: RawObject): Promise<number> {
     if (criteria !== undefined) {
-      return new Query(criteria).find(await this.#db.getAll(this.name)).count();
+      return (await this.find(criteria)).length;
     }
     return this.#db.count(this.name);
   }

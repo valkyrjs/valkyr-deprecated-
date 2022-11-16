@@ -179,7 +179,7 @@ export abstract class Model<D extends Document = any> {
     return new this(document as D).onInit();
   }
 
-  static async count(criteria: RawObject = {}): Promise<number> {
+  static async count(criteria?: RawObject): Promise<number> {
     return this.$collection.count(criteria);
   }
 
