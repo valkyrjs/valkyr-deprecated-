@@ -3,6 +3,37 @@ import { createMemoryHistory } from "history";
 import { Route } from "../src/Route";
 import { Router } from "../src/Router";
 
+const routes: Route[] = [
+  new Route({ name: "Test-1", path: "/test-1", actions: [] }),
+  new Route({ name: "Test-2", path: "/test-1/:bar/baz", actions: [] }),
+  new Route({
+    path: "/:slug",
+    actions: [],
+    children: [
+      new Route({
+        name: "Test-3",
+        actions: []
+      }),
+      new Route({
+        name: "Test-4",
+        path: "/foo",
+        actions: []
+      }),
+      new Route({
+        path: "/bar",
+        children: [
+          new Route({
+            name: "Test-5",
+            path: "/baz",
+            actions: []
+          })
+        ],
+        actions: []
+      })
+    ]
+  })
+];
+
 /*
  |--------------------------------------------------------------------------------
  | Unit Tests
@@ -10,40 +41,18 @@ import { Router } from "../src/Router";
  */
 
 describe("Router", () => {
-  it("should determine the correct route to resolve from complex paths", async () => {
+  it("should prefix base path when provided", () => {
+    const router = new Router(createMemoryHistory(), "/app");
+
+    router.register(routes);
+
+    expect(router.getRoute("/app/test-1")?.route.name).toStrictEqual("Test-1");
+  });
+
+  it("should determine the correct route to resolve from complex paths", () => {
     const router = new Router(createMemoryHistory());
 
-    router.register([
-      new Route({ name: "Test-1", path: "/test-1", actions: [] }),
-      new Route({ name: "Test-2", path: "/test-1/:bar/baz", actions: [] }),
-      new Route({
-        path: "/:slug",
-        actions: [],
-        children: [
-          new Route({
-            name: "Test-3",
-            path: "",
-            actions: []
-          }),
-          new Route({
-            name: "Test-4",
-            path: "/foo",
-            actions: []
-          }),
-          new Route({
-            path: "/bar",
-            children: [
-              new Route({
-                name: "Test-5",
-                path: "/baz",
-                actions: []
-              })
-            ],
-            actions: []
-          })
-        ]
-      })
-    ]);
+    router.register(routes);
 
     expect(router.getRoute("/test-1")?.route.name).toStrictEqual("Test-1");
     expect(router.getRoute("/test-1/bar/baz")?.route.name).toStrictEqual("Test-2");

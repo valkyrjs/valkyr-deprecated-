@@ -1,3 +1,5 @@
+import type { Redirect } from "./Action";
+
 /**
  * @classdesc
  * Inform the client that no render action has been assigned to the
@@ -33,5 +35,15 @@ export class ActionRejectedException extends Error {
   constructor(message: string, details: any = {}) {
     super(message);
     this.details = details;
+  }
+}
+
+/**
+ * @classdesc
+ * Inform the client that an action resulted in a redirect event.
+ */
+export class ActionRedirected extends Error {
+  constructor(readonly redirect: Redirect) {
+    super(`Router Redirected: Action redirected to '${redirect.path}'`);
   }
 }

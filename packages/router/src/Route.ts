@@ -14,36 +14,40 @@ export class Route {
   readonly children?: Route[];
   readonly actions: Action[];
 
-  path!: string;
-  parser!: RegExp;
-
-  parent?: Route;
-
+  #parser!: RegExp;
   #base?: string;
+  #path?: string;
+  #parent?: Route;
 
-  constructor({ id, name, path = "", base, children, actions }: RouteOptions) {
+  constructor({ id, name, path, base, children, actions }: RouteOptions) {
     this.id = id;
     this.name = name;
     this.children = children;
     this.actions = actions;
     this.#base = base;
-    this.#setPath(path);
+    this.#path = path;
   }
 
-  get redirect(): string | undefined {
-    if (this.#base !== undefined) {
-      return `${this.path}${this.#base}`;
-    }
+  set parent(parent: Route) {
+    this.#parent = parent;
   }
 
-  register(options: RegisterOptions): this {
-    this.#setBase(options.base);
-    this.#setParent(options.parent);
+  get parent(): Route | undefined {
+    return this.#parent;
+  }
+
+  get path(): string {
+    return `${this.#base ?? ""}${this.#parent?.path ?? ""}${this.#path ?? ""}`.replace(/\/$/, "");
+  }
+
+  register(base?: string): this {
+    this.#base = base;
+    this.#parser = pathToRegexp(this.path);
     return this;
   }
 
   match(path: string): false | Object {
-    const matched = this.parser.exec(path);
+    const matched = this.#parser.exec(path);
     if (matched !== null) {
       const res = match(this.path)(path);
       if (res === false) {
@@ -52,21 +56,6 @@ export class Route {
       return res.params;
     }
     return false;
-  }
-
-  #setBase(path = ""): this {
-    this.#setPath(`${path}${this.path}`);
-    return this;
-  }
-
-  #setParent(route?: Route): this {
-    this.parent = route;
-    return this;
-  }
-
-  #setPath(path: string) {
-    this.path = path.replace(/\/$/, "");
-    this.parser = pathToRegexp(path);
   }
 }
 
@@ -105,15 +94,10 @@ export function getParameters<Response = any>(params: Parameter[], match: any): 
 type RouteOptions = {
   id?: string;
   name?: string;
-  path: string;
+  path?: string;
   base?: string;
   children?: Route[];
   actions: Action[];
-};
-
-export type RegisterOptions = {
-  base: string;
-  parent?: Route;
 };
 
 export type Parameter = {

@@ -13,7 +13,7 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
    * @param templateId - Route id containing the child routes to subscribe to.
    */
   constructor(readonly controller: Controller<S>, readonly router: R, templateId: string) {
-    const parent = router.getRouteById(templateId);
+    const parent = router.getParentRouteById(templateId);
     if (parent === undefined) {
       throw new Error(`ControllerRoutes Exception: Template route for ${templateId} was not found`);
     }

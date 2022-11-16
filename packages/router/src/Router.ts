@@ -3,15 +3,20 @@ import { match } from "path-to-regexp";
 import { Subject, Subscription } from "rxjs";
 
 import { Redirect, RenderProps, response } from "./Action";
-import { ActionRejectedException, RenderActionMissingException, RouteNotFoundException } from "./Exceptions";
+import {
+  ActionRedirected,
+  ActionRejectedException,
+  RenderActionMissingException,
+  RouteNotFoundException
+} from "./Exceptions";
 import { Resolved } from "./Resolved";
-import { RegisterOptions } from "./Route";
 import { Route } from "./Route";
 
 export class Router<Component = unknown> {
   #base: string;
   #history: BrowserHistory | HashHistory | MemoryHistory;
-  #routes: Set<Route> = new Set();
+  #parents: Route[] = [];
+  #routes: Route[] = [];
   #resolved?: Resolved;
   #subscriber = new Subject<Resolved>();
 
@@ -67,19 +72,14 @@ export class Router<Component = unknown> {
    |--------------------------------------------------------------------------------
    */
 
-  register(routes: Route[], options?: Partial<RegisterOptions>): this {
+  register(routes: Route[], parent?: Route): this {
     for (const route of routes) {
-      this.#routes.add(
-        route.register({
-          base: options?.base ?? this.#base,
-          parent: options?.parent
-        })
-      );
+      route.parent = parent;
       if (route.children !== undefined) {
-        this.register(route.children, {
-          base: route.path,
-          parent: route
-        });
+        this.#parents.push(route);
+        this.register(route.children, route);
+      } else {
+        this.#routes.push(route.register(this.#base));
       }
     }
     return this;
@@ -137,27 +137,28 @@ export class Router<Component = unknown> {
     try {
       await this.#execute(resolved.route, resolved);
     } catch (err) {
-      this.#error?.(err);
+      if (err instanceof ActionRedirected) {
+        this.redirect(err.redirect);
+      } else {
+        this.#error?.(err);
+      }
     }
   }
 
-  async #execute(route: Route, resolved: Resolved, origin = true): Promise<void> {
+  async #execute(route: Route, resolved: Resolved): Promise<void> {
     for (const action of route.actions) {
       const res = await action.call(response, resolved);
       switch (res.status) {
         case "redirect": {
-          return this.redirect(res);
+          throw new ActionRedirected(res);
         }
         case "reject": {
           throw new ActionRejectedException(res.message, res.details);
         }
         case "render": {
-          if (origin === true && route.redirect !== undefined) {
-            return this.redirect(response.redirect(route.redirect));
-          }
           if (route.parent !== undefined) {
             this.#subscriber.next(resolved);
-            return this.#execute(route.parent, resolved, false);
+            return this.#execute(route.parent, resolved);
           }
           return this.#render?.(res.component, res.props);
         }
@@ -292,7 +293,7 @@ export class Router<Component = unknown> {
    * @param path - Path to match against.
    */
   getRoute(path: string): { route: Route; params: Object } | undefined {
-    for (const route of Array.from(this.#routes.values())) {
+    for (const route of this.#routes) {
       const params = route.match(path);
       if (params !== false) {
         return { route, params };
@@ -301,18 +302,17 @@ export class Router<Component = unknown> {
     return undefined;
   }
 
+  getParentRouteById(id: string): Route | undefined {
+    return this.#parents.find((route) => route.id === id);
+  }
+
   /**
    * Get a route by its assigned id.
    *
    * @param id - Route id to retrieve.
    */
   getRouteById(id: string): Route | undefined {
-    for (const route of this.#routes) {
-      if (route.id === id) {
-        return route;
-      }
-    }
-    return undefined;
+    return this.#routes.find((route) => route.id === id);
   }
 
   /**
