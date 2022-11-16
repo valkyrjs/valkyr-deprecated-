@@ -33,6 +33,11 @@ export const LayoutView = controller.view(({ state: { routed } }) => {
               <Icon name="console" /> Tests
             </Link>
           </li>
+          <li>
+            <Link href="/performance">
+              <Icon name="console" /> Performance
+            </Link>
+          </li>
           <li className="separator" />
           <li>
             <Link href="/router">

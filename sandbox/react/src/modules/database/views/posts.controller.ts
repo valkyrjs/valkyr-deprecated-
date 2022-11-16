@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { Controller, ViewController } from "@valkyr/react";
 
 import { Post } from "../models/post.entity";

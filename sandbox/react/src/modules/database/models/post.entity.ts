@@ -24,6 +24,7 @@ export class Post extends Model<PostDocument> {
       likes: 0,
       comments: 0,
       createdBy: user.id,
+      updatedBy: user.id,
       createdAt: Date.now()
     };
   }
