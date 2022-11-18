@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
-import { Role, RoleDocument } from "../Models/Role";
+import { RoleDocument, RoleEntity } from "../models/role.entity";
 
 /**
  * Proxy service to be able to inject model for utilization in the AccessService
@@ -17,5 +17,5 @@ import { Role, RoleDocument } from "../Models/Role";
  */
 @Injectable()
 export class RoleService {
-  constructor(@InjectModel(Role.name) readonly model: Model<RoleDocument>) {}
+  constructor(@InjectModel(RoleEntity.name) readonly model: Model<RoleDocument>) {}
 }

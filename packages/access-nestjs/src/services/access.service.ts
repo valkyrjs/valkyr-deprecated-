@@ -11,8 +11,8 @@ import {
 } from "@valkyr/access";
 import { Model } from "mongoose";
 
-import { Role, RoleDocument } from "../Models/Role";
-import { RoleService } from "./RoleService";
+import { RoleDocument, RoleEntity } from "../models/role.entity";
+import { RoleService } from "./role.service";
 
 @Injectable()
 export class AccessService<
@@ -46,21 +46,21 @@ export class AccessService<
    *
    * @param roleId - Role primary identifier.
    */
-  async getRoleById(roleId: string): Promise<Role | null> {
+  async getRoleById(roleId: string): Promise<RoleEntity | null> {
     return this.roles.findOne({ id: roleId });
   }
 
   /**
    * Get a list of roles added under the provided container.
    */
-  async getRolesByContainer(container: string): Promise<Role[]> {
+  async getRolesByContainer(container: string): Promise<RoleEntity[]> {
     return this.roles.find({ container });
   }
 
   /**
    * Get a list of roles added under the provided member identifier.
    */
-  async getRolesByMember(memberId: string): Promise<Role[]> {
+  async getRolesByMember(memberId: string): Promise<RoleEntity[]> {
     return this.roles.find({ members: memberId });
   }
 
@@ -160,7 +160,7 @@ export class AccessService<
    |--------------------------------------------------------------------------------
    */
 
-  reduce(_: Role[]): Permissions {
+  reduce(_: RoleEntity[]): Permissions {
     throw new Error(
       `Access Service Violation: No reduce method has been defined on the ${this.constructor.name} service`
     );

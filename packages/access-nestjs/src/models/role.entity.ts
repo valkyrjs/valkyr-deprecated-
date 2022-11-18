@@ -7,7 +7,7 @@ import { Document } from "mongoose";
  |--------------------------------------------------------------------------------
  */
 
-export type RoleDocument = Role & Document;
+export type RoleDocument = RoleEntity & Document;
 
 /*
  |--------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ export type RoleDocument = Role & Document;
  */
 
 @Schema()
-export class Role<Permissions extends Record<string, unknown> = any> {
+export class RoleEntity<Permissions extends Record<string, unknown> = any> {
   @Prop({ required: true, index: true })
   id!: string;
 
@@ -42,4 +42,4 @@ export class Role<Permissions extends Record<string, unknown> = any> {
  |--------------------------------------------------------------------------------
  */
 
-export const RoleSchema = SchemaFactory.createForClass(Role);
+export const RoleSchema = SchemaFactory.createForClass(RoleEntity);

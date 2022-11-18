@@ -1,1 +1,2 @@
-export * from "./Containers/MongoDbContainer";
+export * from "./containers/mongodb.container";
+export * from "./nestjs/testing.module";

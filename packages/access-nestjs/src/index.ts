@@ -1,3 +1,3 @@
-export * from "./Models/Role";
-export * from "./Module";
-export * from "./Services/AccessService";
+export * from "./access.module";
+export * from "./models/role.entity";
+export * from "./services/access.service";

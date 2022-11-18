@@ -20,5 +20,6 @@ export class MongoDbContainer {
 
   async close() {
     await this.server.stop();
+    this.#server = undefined;
   }
 }

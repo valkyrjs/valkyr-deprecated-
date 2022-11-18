@@ -19,16 +19,15 @@
     "preset": "@valkyr/jest"
   },
   "dependencies": {
-    "@nestjs/core": "^9.0.11",
-    "@nestjs/common": "^9.0.8",
-    "@nestjs/mongoose": "^9.2.0",
+    "@nestjs/core": "^9.2.0",
+    "@nestjs/common": "^9.2.0",
+    "@nestjs/mongoose": "^9.2.1",
     "@valkyr/access": "workspace:*",
-    "mongoose": "^6.5.2",
+    "mongoose": "^6.7.2",
     "rxjs": "7.5.7"
   },
   "devDependencies": {
-    "@nestjs/platform-express": "^9.0.8",
-    "@nestjs/testing": "^9.0.8",
+    "@nestjs/platform-express": "^9.2.0",
     "@valkyr/jest": "workspace:*",
     "@valkyr/testing": "workspace:*",
     "reflect-metadata": "^0.1.13"

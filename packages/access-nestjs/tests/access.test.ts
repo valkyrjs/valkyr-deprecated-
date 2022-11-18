@@ -1,7 +1,7 @@
 import { RoleSettings } from "@valkyr/access";
 
-import type { TestPermissions } from "../mocks/AccessTestingModule";
-import { AppTestingModule } from "../mocks/AppTestingModule";
+import { AccessTestingModule } from "../mocks/access.module";
+import { UserPermissions } from "../mocks/user.role";
 
 /*
  |--------------------------------------------------------------------------------
@@ -12,7 +12,7 @@ import { AppTestingModule } from "../mocks/AppTestingModule";
 const ROLE_CONTAINER = "xyz";
 const ROLE_MEMBER = "abc";
 
-const adminRoleData: RoleSettings<TestPermissions> = {
+const adminRoleData: RoleSettings<UserPermissions> = {
   id: "xyz-1",
   container: ROLE_CONTAINER,
   name: "Administrator",
@@ -25,7 +25,7 @@ const adminRoleData: RoleSettings<TestPermissions> = {
   members: []
 };
 
-const userRoleData: RoleSettings<TestPermissions> = {
+const userRoleData: RoleSettings<UserPermissions> = {
   id: "xyz-2",
   container: ROLE_CONTAINER,
   name: "User",
@@ -44,7 +44,7 @@ const userRoleData: RoleSettings<TestPermissions> = {
  |--------------------------------------------------------------------------------
  */
 
-const testing = new AppTestingModule();
+const testing = new AccessTestingModule();
 
 beforeAll(async () => {
   await testing.start();
@@ -62,7 +62,7 @@ afterAll(async () => {
  |--------------------------------------------------------------------------------
  */
 
-describe("AccessService", () => {
+describe("Access Service", () => {
   describe("when executing against role methods", () => {
     it("should have successfully created admin role", async () => {
       const role = await testing.access.getRoleById(adminRoleData.id);

@@ -18,6 +18,8 @@
     "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
   },
   "devDependencies": {
-    "mongodb-memory-server": "^8.8.0"
+    "@nestjs/common": "^9.2.0",
+    "@nestjs/testing": "^9.2.0",
+    "mongodb-memory-server": "^8.10.0"
   }
 }
