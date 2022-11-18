@@ -11,7 +11,9 @@
       "inputs": ["tsconfig.json", "tsconfig.build.json", "**/src/**", "src/**"],
       "outputs": ["dist/**"]
     },
-    "test": {},
+    "test": {
+      "cache": false
+    },
     "lint": {
       "cache": false
     }
