@@ -1,4 +1,4 @@
-import { events } from "../mocks/Events";
+import { events } from "../mocks/event.mock";
 import { createEventRecord, Projector } from "../src";
 
 /*

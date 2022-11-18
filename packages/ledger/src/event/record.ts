@@ -1,57 +1,55 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { EventRecord } from "@valkyr/ledger";
-import { Document } from "mongoose";
+import { getId } from "@valkyr/security";
+
+import { getLogicalTimestamp } from "../time";
+import type { Event } from "./event";
+
+export function createEventRecord<E extends Event>(stream: string, event: E): EventRecord<E> {
+  const timestamp = getLogicalTimestamp();
+  return {
+    id: getId(),
+    stream,
+    ...event,
+    created: timestamp,
+    recorded: timestamp
+  };
+}
 
 /*
  |--------------------------------------------------------------------------------
- | Document
+ | Types
  |--------------------------------------------------------------------------------
  */
 
-export type EventDocument = Document & EventRecord;
-
-/*
- |--------------------------------------------------------------------------------
- | Model
- |--------------------------------------------------------------------------------
- */
-
-@Schema()
-export class Event {
+export type EventRecord<E extends Event = Event> = {
   /**
    * A unique event identifier correlating its identity in the **event store**
    * _(database)_.
    */
-  @Prop({ required: true, unique: true })
-  id!: string;
+  id: string;
 
   /**
    * Identifier representing the stream in which many individual events/transactions
    * belongs to and is used to generate a specific aggregate state representation of
    * that particular identity.
    */
-  @Prop({ required: true, index: true })
-  streamId!: string;
+  stream: string;
 
   /**
    * Event identifier describing the intent of the event in a past tense format.
    */
-  @Prop({ required: true, index: true })
-  type!: string;
+  type: E["type"];
 
   /**
    * Stores the recorded partial piece of data that makes up a larger aggregate
    * state.
    */
-  @Prop({ type: {}, required: true })
-  data!: any;
+  data: E["data"];
 
   /**
    * Stores additional meta data about the event that is not directly related
    * to the aggregate state.
    */
-  @Prop({ type: {}, required: true })
-  meta!: any;
+  meta: E["meta"];
 
   /**
    * An immutable logical hybrid clock timestamp representing the wall time when
@@ -61,8 +59,7 @@ export class Event {
    * key when performing reduction logic to generate aggregate state for the stream
    * in which the event belongs.
    */
-  @Prop({ required: true, index: true })
-  created!: string;
+  created: string;
 
   /**
    * A mutable logical hybrid clock timestamps representing the wall time when the
@@ -72,14 +69,7 @@ export class Event {
    * This value is used when performing event synchronization between two different
    * event ledgers.
    */
-  @Prop({ required: true, index: true })
-  recorded!: string;
-}
+  recorded: string;
+};
 
-/*
- |--------------------------------------------------------------------------------
- | Schema
- |--------------------------------------------------------------------------------
- */
-
-export const EventSchema = SchemaFactory.createForClass(Event);
+export type EventToRecord<E> = E extends Event ? EventRecord<E> : never;

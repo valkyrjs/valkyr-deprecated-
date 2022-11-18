@@ -1,4 +1,4 @@
-import { getDate, getLogicalTimestamp, getTimestamp, Timestamp } from "../src/Time";
+import { getDate, getLogicalTimestamp, getTimestamp, Timestamp } from "../src/time";
 
 type TimestampEntry = { count: number; id: string; ts: Timestamp; dt: Date };
 

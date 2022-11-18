@@ -1,6 +1,4 @@
-import type { TimeLike } from "./Types";
-
-export const RADIX = 36;
+const RADIX = 36;
 
 export class Timestamp {
   readonly time: number;
@@ -42,3 +40,5 @@ export class Timestamp {
     });
   }
 }
+
+export type TimeLike = string | number;

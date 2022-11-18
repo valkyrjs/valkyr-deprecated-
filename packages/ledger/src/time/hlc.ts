@@ -1,4 +1,4 @@
-import { Timestamp } from "./Timestamp";
+import { Timestamp } from "./timestamp";
 
 /*
  |--------------------------------------------------------------------------------

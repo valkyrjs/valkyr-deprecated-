@@ -1,5 +1,5 @@
-import { EventRecord } from "./Event";
-import { Queue } from "./Queue";
+import type { EventRecord } from "./event";
+import { Queue } from "./queue";
 
 export const validator = new (class Projector {
   listeners: Listeners = {};

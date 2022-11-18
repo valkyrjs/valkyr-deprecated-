@@ -1,11 +1,5 @@
 import { EventEmitter } from "@valkyr/event-emitter";
 
-/*
- |--------------------------------------------------------------------------------
- | Queue
- |--------------------------------------------------------------------------------
- */
-
 export class Queue<T> extends EventEmitter<{
   idle: () => void;
   working: () => void;

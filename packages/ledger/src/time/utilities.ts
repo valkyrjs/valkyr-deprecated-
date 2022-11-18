@@ -1,5 +1,5 @@
-import { HLC } from "./HLC";
-import { Timestamp } from "./Timestamp";
+import { HLC } from "./hlc";
+import { Timestamp } from "./timestamp";
 
 const clock = new HLC();
 

@@ -1,4 +1,4 @@
-import { createReducer, LedgerEvent, LedgerEventToLedgerRecord, makeEventFactory } from "../src";
+import { Event, EventToRecord, makeEventFactory, makeReducer } from "../src";
 
 export type State = {
   title: string;
@@ -11,17 +11,13 @@ export type State = {
  |--------------------------------------------------------------------------------
  */
 
-export const reducer = createReducer<State, EventRecord>(
-  {
-    title: "",
-    members: []
-  },
+export const reducer = makeReducer<State, FooEvent>(
   (state, event) => {
     switch (event.type) {
       case "FooCreated": {
         return {
-          ...state,
-          title: event.data.title
+          title: event.data.title,
+          members: []
         };
       }
       case "FooMemberAdded": {
@@ -31,6 +27,9 @@ export const reducer = createReducer<State, EventRecord>(
         };
       }
     }
+  },
+  {
+    title: ""
   }
 );
 
@@ -53,8 +52,8 @@ export const events = {
  |--------------------------------------------------------------------------------
  */
 
-export type Created = LedgerEvent<"FooCreated", { title: string }, never>;
-export type MemberAdded = LedgerEvent<"FooMemberAdded", { name: string }, never>;
+export type Created = Event<"FooCreated", { title: string }>;
+export type MemberAdded = Event<"FooMemberAdded", { name: string }>;
 
 /*
  |--------------------------------------------------------------------------------
@@ -62,6 +61,4 @@ export type MemberAdded = LedgerEvent<"FooMemberAdded", { name: string }, never>
  |--------------------------------------------------------------------------------
  */
 
-export type Event = Created | MemberAdded;
-
-export type EventRecord = LedgerEventToLedgerRecord<Event>;
+export type FooEvent = EventToRecord<Created | MemberAdded>;
