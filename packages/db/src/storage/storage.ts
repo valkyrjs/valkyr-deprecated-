@@ -39,12 +39,6 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
     return this.status === status;
   }
 
-  #setStatus(value: Status): this {
-    this.status = value;
-    this.emit(value);
-    return this;
-  }
-
   /*
    |--------------------------------------------------------------------------------
    | Broadcaster

@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "@valkyr/event-emitter": "workspace:*",
-    "@valkyr/logger": "workspace:*",
     "@valkyr/security": "workspace:*",
     "fast-equals": "4.0.3",
     "idb": "^7.1.1",
