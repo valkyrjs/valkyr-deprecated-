@@ -1,7 +1,7 @@
 {
-  "name": "@valkyr/ledger-nestjs",
+  "name": "@valkyr/nestjs-access",
   "version": "0.0.0",
-  "description": "@valkyr/ledger module for nestjs.",
+  "description": "@valkyr/access module for nestjs.",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
@@ -22,11 +22,12 @@
     "@nestjs/core": "^9.2.0",
     "@nestjs/common": "^9.2.0",
     "@nestjs/mongoose": "^9.2.1",
-    "@valkyr/ledger": "workspace:*",
+    "@valkyr/access": "workspace:*",
     "mongoose": "^6.7.2",
-    "rxjs": "^7.5.7"
+    "rxjs": "7.5.7"
   },
   "devDependencies": {
+    "@nestjs/platform-express": "^9.2.0",
     "@valkyr/jest": "workspace:*",
     "@valkyr/testing": "workspace:*",
     "reflect-metadata": "^0.1.13"
