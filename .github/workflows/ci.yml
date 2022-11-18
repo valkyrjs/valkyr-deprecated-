@@ -23,6 +23,7 @@ jobs:
 
       - run: pnpm install
       - run: pnpm build
+      - run: pnpm test
 
   Lint:
     runs-on: ubuntu-latest
