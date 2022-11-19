@@ -1,4 +1,5 @@
 import { db } from "~services/database";
+import { queue } from "~services/queue";
 
 /*
  |--------------------------------------------------------------------------------
@@ -14,4 +15,5 @@ import { db } from "~services/database";
 export async function setup(): Promise<void> {
   await import("./modules");
   await db.start();
+  await queue.start();
 }

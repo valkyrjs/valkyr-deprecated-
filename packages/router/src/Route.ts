@@ -28,7 +28,7 @@ export class Route {
     this.#path = path;
   }
 
-  set parent(parent: Route) {
+  set parent(parent: Route | undefined) {
     this.#parent = parent;
   }
 

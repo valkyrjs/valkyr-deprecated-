@@ -7,6 +7,7 @@ import { DashboardView } from "./dashboard";
 import { PerformanceView, PostsView, TestsView, UsersView } from "./database";
 import { SampleFormView } from "./form";
 import { LayoutView } from "./layout/layout.module";
+import { QueueView } from "./queue";
 import { RouterView } from "./router";
 
 router.register([
@@ -49,6 +50,11 @@ router.register([
         name: "Router",
         path: "/router",
         actions: [render(RouterView)]
+      }),
+      new Route({
+        name: "Queue",
+        path: "/queue",
+        actions: [render(QueueView)]
       })
     ]
   })

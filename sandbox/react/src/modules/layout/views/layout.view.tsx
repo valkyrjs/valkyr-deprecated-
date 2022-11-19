@@ -46,6 +46,9 @@ export const LayoutView = controller.view(({ state: { routed } }) => {
             <Link href="/form">
               <Icon name="clipboard-copy" /> Form
             </Link>
+            <Link href="/queue">
+              <Icon name="models" /> Queue
+            </Link>
           </li>
         </ul>
       </div>

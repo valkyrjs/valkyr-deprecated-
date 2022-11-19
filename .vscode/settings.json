@@ -42,6 +42,7 @@
     "COSEECDH",
     "ECDHA",
     "IDBP",
+    "indexeddb",
     "Instantiator",
     "Instantiators",
     "ittr",
