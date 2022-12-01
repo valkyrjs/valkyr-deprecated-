@@ -7,12 +7,14 @@
   "license": "MIT",
   "files": [],
   "workspaces": [
-    "./packages/*"
+    "./packages/*",
+    "./app"
   ],
   "scripts": {
     "build": "turbo build",
     "flush": "turbo flush",
     "clean": "turbo clean",
+    "app": "npm start --prefix app",
     "lint": "eslint ./packages --ext .ts --fix",
     "test": "turbo test",
     "publish": "node ./scripts/publish.js",

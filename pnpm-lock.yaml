@@ -37,6 +37,65 @@ importers:
       turbo: 1.5.5
       typescript: 4.8.3
 
+  app:
+    specifiers:
+      '@faker-js/faker': ^7.6.0
+      '@types/react': 18.0.25
+      '@types/react-dom': 18.0.9
+      '@types/webpack': ^5.28.0
+      '@types/webpack-env': ^1.18.0
+      '@valkyr/access': workspace:*
+      '@valkyr/db': workspace:*
+      '@valkyr/ledger': workspace:*
+      '@valkyr/queue': workspace:*
+      '@valkyr/react': workspace:*
+      '@valkyr/router': workspace:*
+      css-loader: 6.7.2
+      dotenv-webpack: 8.0.1
+      html-webpack-plugin: ^5.5.0
+      rc-pagination: ^3.2.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      react-table: ^7.8.0
+      rxjs: 7.5.7
+      sass: ^1.56.1
+      sass-loader: ^13.2.0
+      style-loader: ^3.3.1
+      ts-loader: ^9.4.1
+      typescript: ^4.9.3
+      webpack: ^5.75.0
+      webpack-cli: ^5.0.0
+      webpack-dev-server: ^4.11.1
+    dependencies:
+      '@faker-js/faker': 7.6.0
+      '@valkyr/access': link:../packages/access
+      '@valkyr/db': link:../packages/db
+      '@valkyr/ledger': link:../packages/ledger
+      '@valkyr/queue': link:../packages/queue
+      '@valkyr/react': link:../packages/react
+      '@valkyr/router': link:../packages/router
+      rc-pagination: 3.2.0_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-table: 7.8.0_react@18.2.0
+      rxjs: 7.5.7
+    devDependencies:
+      '@types/react': 18.0.25
+      '@types/react-dom': 18.0.9
+      '@types/webpack': 5.28.0_webpack-cli@5.0.0
+      '@types/webpack-env': 1.18.0
+      css-loader: 6.7.2_webpack@5.75.0
+      dotenv-webpack: 8.0.1_webpack@5.75.0
+      html-webpack-plugin: 5.5.0_webpack@5.75.0
+      sass: 1.56.1
+      sass-loader: 13.2.0_sass@1.56.1+webpack@5.75.0
+      style-loader: 3.3.1_webpack@5.75.0
+      ts-loader: 9.4.1_vfotqvx6lgcbf3upbs6hgaza4q
+      typescript: 4.9.3
+      webpack: 5.75.0_webpack-cli@5.0.0
+      webpack-cli: 5.0.0_uaydpeuxkjjcxdbyfgk36cjdxi
+      webpack-dev-server: 4.11.1_5mhpyft47fxnqdave7meqiud7i
+
   docs:
     specifiers:
       '@birthdayresearch/contented': 1.7.0
@@ -242,65 +301,6 @@ importers:
       '@nestjs/common': 9.2.0_crjre2vledtu4rih5rmvhsoh54
       '@nestjs/testing': 9.2.0_nhoblnoc5mqx677rgorgrq6chi
       mongodb-memory-server: 8.10.0
-
-  sandbox/react:
-    specifiers:
-      '@faker-js/faker': ^7.6.0
-      '@types/react': 18.0.25
-      '@types/react-dom': 18.0.9
-      '@types/webpack': ^5.28.0
-      '@types/webpack-env': ^1.18.0
-      '@valkyr/access': workspace:*
-      '@valkyr/db': workspace:*
-      '@valkyr/ledger': workspace:*
-      '@valkyr/queue': workspace:*
-      '@valkyr/react': workspace:*
-      '@valkyr/router': workspace:*
-      css-loader: 6.7.2
-      dotenv-webpack: 8.0.1
-      html-webpack-plugin: ^5.5.0
-      rc-pagination: ^3.2.0
-      react: ^18.2.0
-      react-dom: ^18.2.0
-      react-table: ^7.8.0
-      rxjs: 7.5.7
-      sass: ^1.56.1
-      sass-loader: ^13.2.0
-      style-loader: ^3.3.1
-      ts-loader: ^9.4.1
-      typescript: ^4.9.3
-      webpack: ^5.75.0
-      webpack-cli: ^5.0.0
-      webpack-dev-server: ^4.11.1
-    dependencies:
-      '@faker-js/faker': 7.6.0
-      '@valkyr/access': link:../../packages/access
-      '@valkyr/db': link:../../packages/db
-      '@valkyr/ledger': link:../../packages/ledger
-      '@valkyr/queue': link:../../packages/queue
-      '@valkyr/react': link:../../packages/react
-      '@valkyr/router': link:../../packages/router
-      rc-pagination: 3.2.0_biqbaboplfbrettd7655fr4n2y
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      react-table: 7.8.0_react@18.2.0
-      rxjs: 7.5.7
-    devDependencies:
-      '@types/react': 18.0.25
-      '@types/react-dom': 18.0.9
-      '@types/webpack': 5.28.0_webpack-cli@5.0.0
-      '@types/webpack-env': 1.18.0
-      css-loader: 6.7.2_webpack@5.75.0
-      dotenv-webpack: 8.0.1_webpack@5.75.0
-      html-webpack-plugin: 5.5.0_webpack@5.75.0
-      sass: 1.56.1
-      sass-loader: 13.2.0_sass@1.56.1+webpack@5.75.0
-      style-loader: 3.3.1_webpack@5.75.0
-      ts-loader: 9.4.1_vfotqvx6lgcbf3upbs6hgaza4q
-      typescript: 4.9.3
-      webpack: 5.75.0_webpack-cli@5.0.0
-      webpack-cli: 5.0.0_uaydpeuxkjjcxdbyfgk36cjdxi
-      webpack-dev-server: 4.11.1_5mhpyft47fxnqdave7meqiud7i
 
 packages:
 
@@ -7053,7 +7053,7 @@ packages:
   /rxjs/7.5.7:
     resolution: {integrity: sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==}
     dependencies:
-      tslib: 2.4.0
+      tslib: 2.4.1
 
   /sade/1.8.1:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
@@ -7740,9 +7740,6 @@ packages:
 
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
-
-  /tslib/2.4.0:
-    resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
 
   /tslib/2.4.1:
     resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
