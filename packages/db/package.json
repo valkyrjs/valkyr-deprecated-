@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@valkyr/jest": "workspace:*",
-    "fake-indexeddb": "^4.0.0",
-    "type-fest": "^3.2.0"
+    "fake-indexeddb": "^4.0.1",
+    "type-fest": "^3.3.0"
   }
 }

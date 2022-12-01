@@ -17,12 +17,14 @@ import {
   UpdateOperators,
   UpdateResult
 } from "../storage";
+import { IndexedCache } from "./indexed.cache";
 
 const OBJECT_PROTOTYPE = Object.getPrototypeOf({}) as AnyVal;
 const OBJECT_TAG = "[object Object]";
 
 export class IndexedDbStorage<D extends Document = Document> extends Storage<D> {
   readonly #db: IDBPDatabase;
+  readonly #cache = new IndexedCache<D>();
 
   constructor(name: string, db: IDBPDatabase, readonly log: (message: string) => void) {
     super(name);
@@ -54,6 +56,8 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     this.broadcast("insertOne", document);
     this.log(`@valkyr/db > 1 ${this.name} inserted in ${(performance.now() - t0).toFixed(2)} milliseconds`);
 
+    this.#cache.flush();
+
     return new InsertResult([document]);
   }
 
@@ -77,6 +81,8 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
       `@valkyr/db > ${documents.length} ${this.name} inserted in ${(performance.now() - t0).toFixed(2)} milliseconds`
     );
 
+    this.#cache.flush();
+
     return new InsertResult(documents);
   }
 
@@ -91,7 +97,19 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
   }
 
   async find(criteria: RawObject, options: Options = {}): Promise<D[]> {
+    const hashCode = this.#cache.hash(criteria, options);
+
     const t0 = performance.now();
+    const cached = this.#cache.get(hashCode);
+    if (cached !== undefined) {
+      this.log(
+        `@valkyr/db > ${cached.length} [cached] ${this.name} found in ${(performance.now() - t0).toFixed(
+          2
+        )} milliseconds`
+      );
+      return cached;
+    }
+
     this.#resolveIndexes(criteria, options);
     let cursor = new Query(criteria).find(await this.#getAll(options));
     if (options !== undefined) {
@@ -101,6 +119,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     this.log(
       `@valkyr/db > ${documents.length} ${this.name} found in ${(performance.now() - t0).toFixed(2)} milliseconds`
     );
+    this.#cache.set(this.#cache.hash(criteria, options), documents);
     return documents;
   }
 
@@ -233,6 +252,8 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     );
     this.broadcast("updateMany", documents);
 
+    this.#cache.flush();
+
     return new UpdateResult(ids.length, modifiedCount);
   }
 
@@ -256,6 +277,8 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     this.broadcast("updateMany", documents);
     this.log(`@valkyr/db > ${count} ${this.name} replaced in ${(performance.now() - t0).toFixed(2)} milliseconds`);
 
+    this.#cache.flush();
+
     return new UpdateResult(count, count);
   }
 
@@ -278,6 +301,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     if (modified === true) {
       this.broadcast("updateOne", document);
       this.log(`@valkyr/db > 1 ${this.name} updated in ${(performance.now() - t0).toFixed(2)} milliseconds`);
+      this.#cache.flush();
       return new UpdateResult(1, 1);
     }
 
@@ -304,6 +328,8 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
       `@valkyr/db > ${documents.length} ${this.name} removed in ${(performance.now() - t0).toFixed(2)} milliseconds`
     );
 
+    this.#cache.flush();
+
     return new RemoveResult(documents.length);
   }
 
@@ -328,6 +354,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
 
   async flush(): Promise<void> {
     this.#db.clear(this.name);
+    this.#cache.flush();
   }
 }
 

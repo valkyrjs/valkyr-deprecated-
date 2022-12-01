@@ -4,7 +4,7 @@ import { render } from "~middleware/render";
 import { router } from "~services/router";
 
 import { DashboardView } from "./dashboard";
-import { PerformanceView, PostsView, TestsView, UsersView } from "./database";
+import { MultiView, PerformanceView, PostsView, TestsView, UsersView } from "./database";
 import { SampleFormView } from "./form";
 import { LayoutView } from "./layout/layout.module";
 import { QueueView } from "./queue";
@@ -30,6 +30,11 @@ router.register([
         name: "Database Posts",
         path: "/posts",
         actions: [render(PostsView)]
+      }),
+      new Route({
+        name: "Database Multi",
+        path: "/multi",
+        actions: [render(MultiView)]
       }),
       new Route({
         name: "Database Tests",
