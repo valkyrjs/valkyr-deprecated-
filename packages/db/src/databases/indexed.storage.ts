@@ -110,8 +110,8 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
       return cached;
     }
 
-    this.#resolveIndexes(criteria, options);
-    let cursor = new Query(criteria).find(await this.#getAll(options));
+    const indexes = this.#resolveIndexes(criteria);
+    let cursor = new Query(criteria).find(await this.#getAll({ ...options, ...indexes }));
     if (options !== undefined) {
       cursor = addOptions(cursor, options);
     }
@@ -127,8 +127,9 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    * TODO: Prototype! Needs to cover more mongodb query cases and investigation around
    * nested indexing in indexeddb.
    */
-  async #resolveIndexes(criteria: any, options: Options) {
+  #resolveIndexes(criteria: any): { index?: { [key: string]: any } } {
     const indexNames = this.#db.transaction(this.name, "readonly").store.indexNames;
+    const index: { [key: string]: any } = {};
     for (const key in criteria) {
       if (indexNames.contains(key) === true) {
         let val: any;
@@ -140,13 +141,14 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
           val = criteria[key];
         }
         if (val !== undefined) {
-          if (options.index === undefined) {
-            options.index = {};
-          }
-          options.index[key] = val;
+          index[key] = val;
         }
       }
     }
+    if (Object.keys(index).length > 0) {
+      return { index };
+    }
+    return {};
   }
 
   async #getAll({ index, offset, range, limit }: Options) {
