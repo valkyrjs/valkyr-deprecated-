@@ -3,4 +3,5 @@ export const BroadcastChannel =
   class BroadcastChannelMock {
     onmessage?: any;
     postMessage() {}
+    close() {}
   };
