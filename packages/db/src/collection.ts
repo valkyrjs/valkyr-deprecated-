@@ -112,6 +112,7 @@ export class Collection<D extends Document = any> {
    * Removes all documents from the storage instance.
    */
   flush(): void {
+    this.storage.broadcast("flush");
     this.storage.flush();
   }
 }

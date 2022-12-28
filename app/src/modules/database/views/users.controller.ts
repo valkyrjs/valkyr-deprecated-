@@ -1,4 +1,5 @@
 import { Controller, ViewController } from "@valkyr/react";
+import { ChangeEvent } from "react";
 
 import { db } from "~services/database";
 
@@ -20,6 +21,24 @@ class UsersController extends Controller<State> {
       users.push(User.fake());
     }
     User.insertMany(users);
+  }
+
+  async search({ target: { value } }: ChangeEvent<HTMLInputElement>) {
+    this.setState(
+      "users",
+      await this.query(
+        User,
+        {
+          where:
+            value === ""
+              ? {}
+              : {
+                  name: { $regex: value, $options: "i" }
+                }
+        },
+        "users"
+      )
+    );
   }
 
   async queryRange(from: string, to: string) {

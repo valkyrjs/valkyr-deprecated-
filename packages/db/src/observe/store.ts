@@ -1,14 +1,18 @@
-import { MemoryStorage } from "../databases/memory.storage";
+import { getId } from "@valkyr/security";
+
+import { ObserverStorage } from "../databases/observer.storage";
 import { Document, Storage } from "../storage";
 import { Criteria, isMatch } from "./is-match";
-
-export type OnChangeFn = (documents: Document[]) => void;
 
 export class Store {
   private constructor(private storage: Storage) {}
 
-  static create(name = "observer") {
-    return new Store(new MemoryStorage(name));
+  static create() {
+    return new Store(new ObserverStorage(`observer[${getId()}]`));
+  }
+
+  get destroy() {
+    return this.storage.destroy.bind(this.storage);
   }
 
   async resolve(documents: Document[]): Promise<Document[]> {
@@ -79,4 +83,10 @@ export class Store {
       await this.storage.remove({ id: document.id });
     }
   }
+
+  flush() {
+    this.storage.flush();
+  }
 }
+
+export type OnChangeFn = (documents: Document[]) => void;

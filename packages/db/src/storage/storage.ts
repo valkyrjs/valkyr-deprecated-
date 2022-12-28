@@ -12,6 +12,7 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
   loading: () => void;
   ready: () => void;
   change: (type: ChangeType, data: D | D[]) => void;
+  flush: () => void;
 }> {
   readonly id = getId(6);
 
@@ -21,12 +22,18 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
 
   constructor(readonly name: string) {
     super();
-    this.#startBrowserListener();
-  }
-
-  #startBrowserListener() {
-    this.#channel.onmessage = ({ data: { type, data } }: MessageEvent<StorageBroadcast>) =>
-      this.emit("change", type, data);
+    this.#channel.onmessage = ({ data }: MessageEvent<StorageBroadcast>) => {
+      switch (data.type) {
+        case "flush": {
+          this.emit("flush");
+          break;
+        }
+        default: {
+          this.emit("change", data.type, data.data);
+          break;
+        }
+      }
+    };
   }
 
   /*
@@ -49,8 +56,17 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
    |
    */
 
-  broadcast(type: ChangeType, data: D | D[]): void {
-    this.emit("change", type, data);
+  broadcast(type: StorageBroadcast["type"], data?: D | D[]): void {
+    switch (type) {
+      case "flush": {
+        this.emit("flush");
+        break;
+      }
+      default: {
+        this.emit("change", type, data as D | D[]);
+        break;
+      }
+    }
     this.#channel.postMessage({ type, data });
   }
 
@@ -91,6 +107,16 @@ export abstract class Storage<D extends Document = Document> extends EventEmitte
   abstract count(criteria?: RawObject): Promise<number>;
 
   abstract flush(): Promise<void>;
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Destructor
+   |--------------------------------------------------------------------------------
+   */
+
+  destroy() {
+    this.#channel.close();
+  }
 }
 
 /*
@@ -136,6 +162,9 @@ type StorageBroadcast =
   | {
       type: "insertMany" | "updateMany" | "remove";
       data: Document<any>[];
+    }
+  | {
+      type: "flush";
     };
 
 type ChangeType = "insertOne" | "insertMany" | "updateOne" | "updateMany" | "remove";

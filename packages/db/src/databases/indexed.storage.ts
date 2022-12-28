@@ -355,7 +355,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    */
 
   async flush(): Promise<void> {
-    this.#db.clear(this.name);
+    await this.#db.clear(this.name);
     this.#cache.flush();
   }
 }

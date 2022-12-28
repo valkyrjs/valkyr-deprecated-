@@ -13,7 +13,7 @@ export function observe(
 ): {
   unsubscribe: () => void;
 } {
-  const store = Store.create("CollectionObserver");
+  const store = Store.create();
 
   let debounce: NodeJS.Timeout;
 
@@ -21,8 +21,13 @@ export function observe(
     onChange(await store.resolve(documents));
   });
 
-  return {
-    unsubscribe: collection.storage.onChange(async (type, document) => {
+  const subscribers = [
+    collection.storage.subscribe("flush", () => {
+      clearTimeout(debounce);
+      store.flush();
+      onChange([]);
+    }),
+    collection.storage.subscribe("change", async (type, document) => {
       const hasChanged = await store[type](document, criteria);
       if (hasChanged === true) {
         clearTimeout(debounce);
@@ -33,6 +38,15 @@ export function observe(
         }, 0);
       }
     })
+  ];
+
+  return {
+    unsubscribe: () => {
+      for (const unsubscribe of subscribers) {
+        unsubscribe();
+      }
+      store.destroy();
+    }
   };
 }
 
