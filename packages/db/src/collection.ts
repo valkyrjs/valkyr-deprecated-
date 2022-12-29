@@ -1,5 +1,5 @@
 import type { RawObject } from "mingo/types";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 
 import { IndexedDbStorage } from "./databases/indexed.storage";
 import { MemoryStorage } from "./databases/memory.storage";
@@ -22,6 +22,10 @@ import {
 
 export class Collection<D extends Document = any> {
   constructor(readonly name: string, readonly storage: IndexedDbStorage<D> | MemoryStorage<D>) {}
+
+  get observable() {
+    return this.storage.observable;
+  }
 
   /*
    |--------------------------------------------------------------------------------
@@ -59,15 +63,24 @@ export class Collection<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
+  subscribe(criteria?: RawObject, options?: SubscribeToSingle, next?: (document: D | undefined) => void): Subscription;
+  subscribe(criteria?: RawObject, options?: SubscribeToMany, next?: (documents: D[]) => void): Subscription;
+  subscribe(criteria: RawObject = {}, options?: Options, next?: (value: any) => void): Subscription {
+    if (options?.limit === 1) {
+      return this.observeOne(criteria).subscribe({ next });
+    }
+    return this.observe(criteria, options).subscribe({ next });
+  }
+
   observe(criteria: RawObject = {}, options?: Options): Observable<D[]> {
     return new Observable<D[]>((subscriber) => {
-      return observe(this, criteria, options, subscriber.next as any);
+      return observe(this, criteria, options, (values) => subscriber.next(values as any));
     });
   }
 
   observeOne(criteria: RawObject = {}): Observable<D | undefined> {
     return new Observable<D | undefined>((subscriber) => {
-      return observeOne(this, criteria, subscriber.next as any);
+      return observeOne(this, criteria, (values) => subscriber.next(values as any));
     });
   }
 
@@ -116,3 +129,26 @@ export class Collection<D extends Document = any> {
     this.storage.flush();
   }
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type SubscriptionOptions = {
+  sort?: Options["sort"];
+  skip?: Options["skip"];
+  range?: Options["range"];
+  offset?: Options["offset"];
+  limit?: Options["limit"];
+  index?: Options["index"];
+};
+
+export type SubscribeToSingle = Options & {
+  limit: 1;
+};
+
+export type SubscribeToMany = Options & {
+  limit?: number;
+};

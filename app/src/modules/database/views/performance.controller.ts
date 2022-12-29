@@ -2,8 +2,8 @@ import { Controller, ViewController } from "@valkyr/react";
 
 import { db } from "~services/database";
 
-import { Post } from "../models/post.entity";
-import { User } from "../models/user.entity";
+import { getFakePostData } from "../utils/post.utils";
+import { getFakeUserData } from "../utils/user.utils";
 
 class PerformanceController extends Controller<State> {
   async onInit() {
@@ -33,12 +33,12 @@ class PerformanceController extends Controller<State> {
 
     const users = [];
     for (let i = 0; i < count; i++) {
-      users.push(User.fake());
+      users.push(getFakeUserData());
     }
 
     this.#log("Inserting users");
     const t0 = performance.now();
-    await User.insertMany(users);
+    await db.collection("users").insertMany(users);
     this.#report({
       test: `${count} users inserted`,
       time: this.#toTime(t0)
@@ -48,7 +48,7 @@ class PerformanceController extends Controller<State> {
   async #createPosts(count: number) {
     this.#log("Creating posts");
 
-    const users = await User.find();
+    const users = await db.collection("users").find();
     const counts: {
       [id: string]: number;
     } = {};
@@ -57,7 +57,7 @@ class PerformanceController extends Controller<State> {
 
     for (let i = 0; i < count; i++) {
       const user = users[Math.floor(Math.random() * users.length)];
-      posts.push(Post.fake(user));
+      posts.push(getFakePostData(user));
       if (counts[user.id] === undefined) {
         counts[user.id] = 0;
       }
@@ -65,7 +65,7 @@ class PerformanceController extends Controller<State> {
     }
 
     const t0 = performance.now();
-    await Post.insertMany(posts);
+    await db.collection("posts").insertMany(posts);
     this.#report({
       test: `${count} posts inserted`,
       time: this.#toTime(t0)
@@ -75,11 +75,16 @@ class PerformanceController extends Controller<State> {
     for (const userId in counts) {
       const user = users.find((user) => user.id === userId);
       if (user) {
-        await user.update({
-          $inc: {
-            posts: counts[userId]
+        await db.collection("users").updateOne(
+          {
+            id: user.id
+          },
+          {
+            $inc: {
+              posts: counts[userId]
+            }
           }
-        });
+        );
       }
     }
     this.#report({
@@ -90,7 +95,7 @@ class PerformanceController extends Controller<State> {
 
   async #countWithoutCriteria() {
     const t0 = performance.now();
-    const count = await Post.count();
+    const count = await db.collection("posts").count();
     this.#report({
       test: `${count} posts counted without criteria`,
       time: this.#toTime(t0)
@@ -98,9 +103,9 @@ class PerformanceController extends Controller<State> {
   }
 
   async #indexedCount() {
-    const user = await User.findOne();
+    const user = await db.collection("users").findOne();
     const t0 = performance.now();
-    const count = await Post.count({ createdBy: user.id });
+    const count = await db.collection("posts").count({ createdBy: user.id });
     this.#report({
       test: `${count} posts counted on indexed field`,
       time: this.#toTime(t0)
@@ -108,9 +113,9 @@ class PerformanceController extends Controller<State> {
   }
 
   async #nonIndexedCount() {
-    const user = await User.findOne();
+    const user = await db.collection("users").findOne();
     const t0 = performance.now();
-    const count = await Post.count({ updatedBy: user.id });
+    const count = await db.collection("posts").count({ updatedBy: user.id });
     this.#report({
       test: `${count} posts counted on non indexed field`,
       time: this.#toTime(t0)

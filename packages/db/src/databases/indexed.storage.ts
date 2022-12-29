@@ -1,8 +1,8 @@
-import { getId } from "@valkyr/security";
 import type { IDBPDatabase } from "idb";
 import { Query } from "mingo";
 import type { AnyVal, RawObject } from "mingo/types";
 
+import { crypto } from "../crypto";
 import {
   addOptions,
   Document,
@@ -47,7 +47,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
 
   async insertOne(data: PartialDocument<D>): Promise<InsertResult> {
     const t0 = performance.now();
-    const document = { ...data, id: data.id ?? getId() } as D;
+    const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
     if (await this.has(document.id)) {
       throw new DuplicateDocumentError(document, this);
     }
@@ -69,7 +69,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     const tx = this.#db.transaction(this.name, "readwrite", { durability: "relaxed" });
     await Promise.all(
       data.map((data) => {
-        const document = { ...data, id: data.id ?? getId() } as D;
+        const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
         documents.push(document);
         return tx.store.add(document);
       })

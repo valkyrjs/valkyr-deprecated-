@@ -1,5 +1,4 @@
-import { getId } from "@valkyr/security";
-
+import { crypto } from "../crypto";
 import { ObserverStorage } from "../databases/observer.storage";
 import { Document, Storage } from "../storage";
 import { Criteria, isMatch } from "./is-match";
@@ -8,7 +7,7 @@ export class Store {
   private constructor(private storage: Storage) {}
 
   static create() {
-    return new Store(new ObserverStorage(`observer[${getId()}]`));
+    return new Store(new ObserverStorage(`observer[${crypto.randomUUID()}]`));
   }
 
   get destroy() {

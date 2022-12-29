@@ -1,4 +1,4 @@
-import type { ModelClass, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
+import type { Collection, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
 import type { FunctionComponent } from "react";
 import type { Observable, Subject, Subscription } from "rxjs";
 
@@ -136,28 +136,28 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    |--------------------------------------------------------------------------------
    */
 
-  query<M extends QueryModel, K extends keyof State>(
-    model: M,
+  query<C extends Collection, K extends keyof State>(
+    collection: C,
     query: QuerySingle,
-    next: K | ((value: InstanceType<M> | undefined) => Promise<Partial<State>>)
-  ): Promise<InstanceType<M> | undefined>;
-  query<M extends QueryModel, K extends keyof State>(
-    model: M,
+    next: K | ((value: CollectionType<C> | undefined) => Promise<Partial<State>>)
+  ): Promise<CollectionType<C> | undefined>;
+  query<C extends Collection, K extends keyof State>(
+    collection: C,
     query: QueryMany,
-    next: K | ((value: InstanceType<M>[]) => Promise<Partial<State>>)
-  ): Promise<InstanceType<M>[]>;
-  query<M extends QueryModel, K extends keyof State>(
-    model: M,
+    next: K | ((value: CollectionType<C>[]) => Promise<Partial<State>>)
+  ): Promise<CollectionType<C>[]>;
+  query<C extends Collection, K extends keyof State>(
+    collection: C,
     query: Query = {} as Query,
-    next: K | ((value: InstanceType<M>[] | InstanceType<M> | undefined) => Promise<Partial<State>>)
+    next: K | ((value: CollectionType<C>[] | CollectionType<C> | undefined) => Promise<Partial<State>>)
   ) {
     let resolved = false;
-    this.subscriptions.get(model)?.unsubscribe();
-    return new Promise<InstanceType<M>[] | InstanceType<M> | undefined>((resolve) => {
+    this.subscriptions.get(collection)?.unsubscribe();
+    return new Promise<CollectionType<C>[] | CollectionType<C> | undefined>((resolve) => {
       const { where, ...options } = query;
       this.subscriptions.set(
-        model,
-        (model as any).subscribe(where, options, (value: any) => {
+        collection.name,
+        collection.subscribe(where, options, (value: any) => {
           if (this.#isStateKey(next)) {
             if (resolved === true) {
               this.setState(next, value);
@@ -307,12 +307,6 @@ type QuerySingle = Where & SubscribeToSingle;
 
 type QueryMany = Where & SubscribeToMany;
 
-type QueryModel = {
-  new (...args: any[]): any;
-  findOne: ModelClass["findOne"];
-  find: ModelClass["find"];
-};
-
 type Where = {
   where?: Record<string, unknown>;
 };
@@ -320,6 +314,8 @@ type Where = {
 export type JsonLike = {
   [key: string]: any;
 };
+
+type CollectionType<Type> = Type extends Collection<infer X> ? X : never;
 
 type SubscriptionType<Type> = Type extends Subject<infer X> | Observable<infer X> ? X : never;
 

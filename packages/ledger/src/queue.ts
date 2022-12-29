@@ -1,18 +1,10 @@
-import { EventEmitter } from "@valkyr/event-emitter";
-
-export class Queue<T> extends EventEmitter<{
-  idle: () => void;
-  working: () => void;
-  drained: () => void;
-}> {
+export class Queue<T> {
   status: Status;
 
   #queue: Message<T>[];
   #handle: Handler<T>;
 
   constructor(handler: Handler<T>) {
-    super();
-
     this.status = "idle";
     this.#queue = [];
     this.#handle = handler;
@@ -73,7 +65,6 @@ export class Queue<T> extends EventEmitter<{
 
   #setStatus(value: Status): this {
     this.status = value;
-    this.emit(value);
     return this;
   }
 }

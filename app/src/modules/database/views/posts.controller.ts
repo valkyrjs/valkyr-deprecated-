@@ -1,7 +1,9 @@
 import { Controller, ViewController } from "@valkyr/react";
 
-import { Post } from "../models/post.entity";
-import { User } from "../models/user.entity";
+import { db } from "~services/database";
+
+import type { Post } from "../models/post.entity";
+import { getFakePostData } from "../utils/post.utils";
 
 let page = 1;
 
@@ -14,11 +16,11 @@ class PostsController extends Controller<State, Props> {
   }
 
   async indexExpression() {
-    const users = await User.find();
+    const users = await db.collection("users").find();
     this.setState(
       "posts",
       await this.query(
-        Post,
+        db.collection("posts"),
         {
           where: {
             createdBy: {
@@ -37,7 +39,7 @@ class PostsController extends Controller<State, Props> {
   async addPosts(count = 1) {
     console.log("Adding posts");
 
-    const users = await User.find();
+    const users = await db.collection("users").find();
     const counts: {
       [id: string]: number;
     } = {};
@@ -46,14 +48,14 @@ class PostsController extends Controller<State, Props> {
 
     for (let i = 0; i < count; i++) {
       const user = users[Math.floor(Math.random() * users.length)];
-      posts.push(Post.fake(user));
+      posts.push(getFakePostData(user));
       if (counts[user.id] === undefined) {
         counts[user.id] = 0;
       }
       counts[user.id] += 1;
     }
 
-    await Post.insertMany(posts);
+    await db.collection("posts").insertMany(posts);
 
     console.log("Posts added");
 
@@ -62,11 +64,16 @@ class PostsController extends Controller<State, Props> {
     for (const userId in counts) {
       const user = users.find((user) => user.id === userId);
       if (user) {
-        await user.update({
-          $inc: {
-            posts: counts[userId]
+        await db.collection("users").updateOne(
+          {
+            id: user.id
+          },
+          {
+            $inc: {
+              posts: counts[userId]
+            }
           }
-        });
+        );
       }
     }
 
@@ -85,7 +92,7 @@ class PostsController extends Controller<State, Props> {
         createdBy: this.props.author
       };
     }
-    return this.query(Post, filter, "posts");
+    return this.query(db.collection("posts"), filter, "posts");
   }
 }
 

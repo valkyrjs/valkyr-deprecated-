@@ -1,7 +1,7 @@
-import { getId } from "@valkyr/security";
 import { Query } from "mingo";
 import { RawObject } from "mingo/types";
 
+import { crypto } from "../crypto";
 import {
   addOptions,
   Document,
@@ -24,7 +24,7 @@ export class MemoryStorage<D extends Document = Document> extends Storage<D> {
   }
 
   async insertOne(data: PartialDocument<D>): Promise<InsertResult> {
-    const document = { ...data, id: data.id ?? getId() } as D;
+    const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
     if (await this.has(document.id)) {
       throw new DuplicateDocumentError(document, this);
     }
@@ -36,7 +36,7 @@ export class MemoryStorage<D extends Document = Document> extends Storage<D> {
   async insertMany(documents: PartialDocument<D>[]): Promise<InsertResult> {
     const result: D[] = [];
     for (const data of documents) {
-      const document = { ...data, id: data.id ?? getId() } as D;
+      const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
       result.push(document);
       this.#documents.set(document.id, document);
     }

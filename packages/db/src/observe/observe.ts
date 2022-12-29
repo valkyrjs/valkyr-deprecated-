@@ -21,14 +21,14 @@ export function observe(
     onChange(await store.resolve(documents));
   });
 
-  const subscribers = [
-    collection.storage.subscribe("flush", () => {
+  const subscriptions = [
+    collection.observable.flush.subscribe(() => {
       clearTimeout(debounce);
       store.flush();
       onChange([]);
     }),
-    collection.storage.subscribe("change", async (type, document) => {
-      const hasChanged = await store[type](document, criteria);
+    collection.observable.change.subscribe(async ({ type, data }) => {
+      const hasChanged = await store[type](data, criteria);
       if (hasChanged === true) {
         clearTimeout(debounce);
         debounce = setTimeout(() => {
@@ -42,8 +42,8 @@ export function observe(
 
   return {
     unsubscribe: () => {
-      for (const unsubscribe of subscribers) {
-        unsubscribe();
+      for (const subscription of subscriptions) {
+        subscription.unsubscribe();
       }
       store.destroy();
     }

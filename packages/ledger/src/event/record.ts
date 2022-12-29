@@ -1,12 +1,11 @@
-import { getId } from "@valkyr/security";
-
+import { crypto } from "../crypto";
 import { getLogicalTimestamp } from "../time";
 import type { Event } from "./event";
 
 export function createEventRecord<E extends Event>(stream: string, event: E): EventRecord<E> {
   const timestamp = getLogicalTimestamp();
   return {
-    id: getId(),
+    id: crypto.randomUUID(),
     stream,
     ...event,
     created: timestamp,

@@ -4,13 +4,14 @@ import { ChangeEvent } from "react";
 import { db } from "~services/database";
 
 import { User } from "../models/user.entity";
+import { getFakeUserData } from "../utils/user.utils";
 
 let page = 1;
 
 class UsersController extends Controller<State> {
   async onInit() {
     return {
-      users: await this.query(User, {}, "users"),
+      users: await this.query(db.collection("users"), {}, "users"),
       page
     };
   }
@@ -18,16 +19,16 @@ class UsersController extends Controller<State> {
   addUsers(count = 1) {
     const users = [];
     for (let i = 0; i < count; i++) {
-      users.push(User.fake());
+      users.push(getFakeUserData());
     }
-    User.insertMany(users);
+    db.collection("users").insertMany(users);
   }
 
   async search({ target: { value } }: ChangeEvent<HTMLInputElement>) {
     this.setState(
       "users",
       await this.query(
-        User,
+        db.collection("users"),
         {
           where:
             value === ""
@@ -42,11 +43,11 @@ class UsersController extends Controller<State> {
   }
 
   async queryRange(from: string, to: string) {
-    this.setState("users", await this.query(User, { range: { from, to } }, "users"));
+    this.setState("users", await this.query(db.collection("users"), { range: { from, to } }, "users"));
   }
 
   async queryOffset(value: string, direction: 1 | -1, limit?: number) {
-    this.setState("users", await this.query(User, { offset: { value, direction }, limit }, "users"));
+    this.setState("users", await this.query(db.collection("users"), { offset: { value, direction }, limit }, "users"));
   }
 
   async exportUsers() {

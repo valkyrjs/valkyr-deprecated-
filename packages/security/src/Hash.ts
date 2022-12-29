@@ -1,10 +1,4 @@
 import * as CryptoJS from "crypto-js";
-import { customAlphabet } from "nanoid";
-
-const nanoid = customAlphabet(
-  '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!"#¤%&/()=?@£$€{[]}+-*',
-  64
-);
 
 /**
  * Generate a random hash.
@@ -12,7 +6,7 @@ const nanoid = customAlphabet(
  * @returns random SHA256 hash
  */
 export function generateRandomHash(): string {
-  return generateHash(nanoid());
+  return CryptoJS.lib.WordArray.random(32).toString();
 }
 
 /**

@@ -8,7 +8,7 @@ export function observeOne(
   onChange: (document: Document | undefined) => void
 ): () => void {
   collection.findOne(criteria).then(onChange);
-  return collection.storage.onChange((type, data) => {
+  return collection.observable.change.subscribe(({ type, data }) => {
     switch (type) {
       case "insertOne":
       case "updateOne": {
@@ -27,5 +27,5 @@ export function observeOne(
         break;
       }
     }
-  });
+  }).unsubscribe;
 }

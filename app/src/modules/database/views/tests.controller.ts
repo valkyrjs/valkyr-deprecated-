@@ -3,7 +3,7 @@ import { Controller, ViewController } from "@valkyr/react";
 
 import { db } from "~services/database";
 
-import { User } from "../models/user.entity";
+import { getFakeUserData } from "../utils/user.utils";
 
 class TestsController extends Controller<State> {
   #email = faker.internet.email();
@@ -30,7 +30,7 @@ class TestsController extends Controller<State> {
 
   async #testInsertOne() {
     try {
-      await User.insertOne(User.fake());
+      await db.collection("users").insertOne(getFakeUserData());
       this.setState("tests", [
         ...this.state.tests,
         {
@@ -51,7 +51,7 @@ class TestsController extends Controller<State> {
 
   async #testInsertMany() {
     try {
-      await User.insertMany([User.fake(), User.fake(), User.fake()]);
+      await db.collection("users").insertMany([getFakeUserData(), getFakeUserData(), getFakeUserData()]);
       this.setState("tests", [
         ...this.state.tests,
         {
@@ -71,7 +71,7 @@ class TestsController extends Controller<State> {
   }
 
   async #testUpdateOne() {
-    const user = await User.findOne();
+    const user = await db.collection("users").findOne();
     if (user === undefined) {
       return this.setState("tests", [
         ...this.state.tests,
@@ -82,7 +82,7 @@ class TestsController extends Controller<State> {
       ]);
     }
     try {
-      const result = await User.updateOne({ id: user.id }, { $set: { email: this.#email } });
+      const result = await db.collection("users").updateOne({ id: user.id }, { $set: { email: this.#email } });
       this.setState("tests", [
         ...this.state.tests,
         {
@@ -103,7 +103,7 @@ class TestsController extends Controller<State> {
 
   async #testUpdateMany() {
     try {
-      const result = await User.updateMany(
+      const result = await db.collection("users").updateMany(
         { posts: 0 },
         {
           $inc: {
@@ -131,7 +131,7 @@ class TestsController extends Controller<State> {
 
   async #testRemove() {
     try {
-      const result = await User.remove({ email: this.#email });
+      const result = await db.collection("users").remove({ email: this.#email });
       this.setState("tests", [
         ...this.state.tests,
         {

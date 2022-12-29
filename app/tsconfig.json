@@ -11,7 +11,8 @@
     "paths": {
       "~components/*": ["./src/components/*"],
       "~middleware/*": ["./src/middleware/*"],
-      "~services/*": ["./src/services/*"]
+      "~services/*": ["./src/services/*"],
+      "~stores/*": ["./src/stores/*"],
     },
 
     "incremental": true,
