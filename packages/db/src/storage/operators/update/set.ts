@@ -27,7 +27,7 @@ export function $set(document: Document, criteria: RawObject, $set: UpdateOperat
         modified = true;
       }
     } else {
-      document = dot.setProperty(document, key, $set[key]);
+      document = dot.setProperty(document, key, getSetValue(document, key, $set));
       modified = true;
     }
   }
@@ -82,13 +82,21 @@ function getPositionalUpdateQuery(items: any[], $set: any, key: string, filter: 
   for (const item of items) {
     if (new Query(filter).test(item) === true) {
       if (target === "") {
-        items[index] = $set[key];
+        items[index] = getSetValue(items[index], key, $set);
       } else {
-        dot.setProperty(item, target, $set[key]);
+        dot.setProperty(item, target, getSetValue(item, key, $set));
       }
       break;
     }
     index += 1;
   }
   return items;
+}
+
+function getSetValue(data: any, key: string, $set: UpdateOperators["$set"] = {}) {
+  const value = $set[key];
+  if (typeof value === "function") {
+    return value(dot.getProperty(data, key), data);
+  }
+  return value;
 }

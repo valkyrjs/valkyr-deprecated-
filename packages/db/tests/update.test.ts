@@ -125,12 +125,39 @@ describe("Field Update Operators", () => {
       });
     });
 
+    it("should assign value returned from provided attribute method", async () => {
+      const collection = new Collection<Document<{ favorite: boolean }>>("tests", new MemoryStorage("tests"));
+
+      await collection.insertOne({ id: "1", favorite: false });
+
+      expect(
+        await collection.updateOne(
+          {
+            id: "1"
+          },
+          {
+            $set: {
+              favorite: (value: boolean) => !value
+            }
+          }
+        )
+      ).toEqual({
+        matched: 1,
+        modified: 1
+      });
+
+      expect(await collection.findById("1")).toEqual({
+        id: "1",
+        favorite: true
+      });
+    });
+
     /**
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/set/#set-elements-in-arrays
      */
     it("should set elements in arrays", async () => {
       const collection = new Collection<
-        Document & {
+        Document<{
           quantity: number;
           instock: boolean;
           reorder: boolean;
@@ -143,7 +170,7 @@ describe("Field Update Operators", () => {
             by: string;
             rating: number;
           }[];
-        }
+        }>
       >("tests", new MemoryStorage("tests"));
 
       await collection.insertOne({
@@ -165,6 +192,62 @@ describe("Field Update Operators", () => {
             $set: {
               "tags[1]": "rain gear",
               "ratings[0].rating": 2
+            }
+          }
+        )
+      ).toEqual({
+        matched: 1,
+        modified: 1
+      });
+
+      expect(await collection.findById("100")).toEqual({
+        id: "100",
+        quantity: 500,
+        instock: true,
+        reorder: false,
+        details: { model: "2600", make: "Kustom Kidz" },
+        tags: ["coats", "rain gear", "clothing"],
+        ratings: [{ by: "Customer007", rating: 2 }]
+      });
+    });
+
+    it("should set elements in arrays with function value assignment", async () => {
+      const collection = new Collection<
+        Document<{
+          quantity: number;
+          instock: boolean;
+          reorder: boolean;
+          details: {
+            model: string;
+            make: string;
+          };
+          tags: string[];
+          ratings: {
+            by: string;
+            rating: number;
+          }[];
+        }>
+      >("tests", new MemoryStorage("tests"));
+
+      await collection.insertOne({
+        id: "100",
+        quantity: 500,
+        instock: true,
+        reorder: false,
+        details: { model: "2600", make: "Kustom Kidz" },
+        tags: ["coats", "outerwear", "clothing"],
+        ratings: [{ by: "Customer007", rating: 4 }]
+      });
+
+      expect(
+        await collection.updateOne(
+          {
+            id: "100"
+          },
+          {
+            $set: {
+              "tags[1]": () => "rain gear",
+              "ratings[0].rating": () => 2
             }
           }
         )
