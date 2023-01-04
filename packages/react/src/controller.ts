@@ -66,14 +66,16 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
   }
 
   /**
-   * Creates a new controller instance with given push state handler.
+   * Creates a new controller instance using the given component and setView handler.
    *
-   * @remarks This factory method will pass the static state as defined on the
-   * controller.
-   *
-   * @param pushState - Push data handler method.
+   * @param component - Component to render.
+   * @param setView   - Method to provide a resolved view component.
    */
-  static make<T extends ControllerClass>(this: T, component: ReactComponent<any, any>, setView: Function) {
+  static make<T extends ControllerClass, Props = InstanceType<T>["props"]>(
+    this: T,
+    component: ReactComponent<Props, T>,
+    setView: Function
+  ) {
     return new this(component, setView);
   }
 
@@ -129,8 +131,8 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    *
    * @returns Partial state or void.
    */
-  async onInit(): Promise<State> {
-    return this.state;
+  async onInit(): Promise<Partial<State>> {
+    return {};
   }
 
   /**
@@ -140,8 +142,8 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    *
    * @returns Partial state or void.
    */
-  async onResolve(): Promise<State> {
-    return this.state;
+  async onResolve(): Promise<Partial<State>> {
+    return {};
   }
 
   /**
