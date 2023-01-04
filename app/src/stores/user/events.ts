@@ -16,7 +16,7 @@ export const user = {
  |--------------------------------------------------------------------------------
  */
 
-export type UserCreated = Event<"UserCreated", { name: string; email: string }, { auditor: string }>;
+export type UserCreated = Event<"UserCreated", { name: string; email: string }>;
 
 /*
  |--------------------------------------------------------------------------------

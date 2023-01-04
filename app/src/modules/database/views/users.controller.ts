@@ -1,4 +1,4 @@
-import { Controller, ViewController } from "@valkyr/react";
+import { Controller } from "@valkyr/react";
 import { ChangeEvent } from "react";
 
 import { db } from "~services/database";
@@ -8,7 +8,7 @@ import { getFakeUserData } from "../utils/user.utils";
 
 let page = 1;
 
-class UsersController extends Controller<State> {
+export class UsersController extends Controller<State> {
   async onInit() {
     return {
       users: await this.query(db.collection("users"), {}, "users"),
@@ -64,5 +64,3 @@ type State = {
   users: User[];
   page: number;
 };
-
-export const controller = new ViewController(UsersController);

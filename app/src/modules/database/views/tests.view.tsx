@@ -1,6 +1,6 @@
-import { controller } from "./tests.controller";
+import { TestsController } from "./tests.controller";
 
-export const TestsView = controller.view(({ state: { tests }, actions: { start } }) => {
+export const TestsView = TestsController.view(({ state: { tests }, actions: { start } }) => {
   return (
     <div>
       <button onClick={start}>Start Tests</button>

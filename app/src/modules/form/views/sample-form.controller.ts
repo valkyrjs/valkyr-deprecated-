@@ -1,8 +1,8 @@
-import { Controller, ViewController } from "@valkyr/react";
+import { Controller } from "@valkyr/react";
 
 import { SampleForm } from "./sample-form.form";
 
-class SampleFormController extends Controller<State> {
+export class SampleFormController extends Controller<State> {
   async onInit() {
     return {
       form: new SampleForm({
@@ -26,5 +26,3 @@ type State = {
   error?: Error;
   response?: any;
 };
-
-export const controller = new ViewController(SampleFormController);

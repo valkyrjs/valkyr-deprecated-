@@ -1,8 +1,8 @@
 import { Link } from "~components/link.component";
 
-import { controller, Props } from "./router.controller";
+import { Props, RouterController } from "./router.controller";
 
-export const RouterView = controller.view<Props>(({ props }) => {
+export const RouterView = RouterController.view<Props>(({ props }) => {
   return (
     <div>
       Router Query <pre>{JSON.stringify(props, null, 2)}</pre>

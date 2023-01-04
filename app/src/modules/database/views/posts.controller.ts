@@ -1,4 +1,4 @@
-import { Controller, ViewController } from "@valkyr/react";
+import { Controller } from "@valkyr/react";
 
 import { db } from "~services/database";
 
@@ -7,7 +7,7 @@ import { getFakePostData } from "../utils/post.utils";
 
 let page = 1;
 
-class PostsController extends Controller<State, Props> {
+export class PostsController extends Controller<State, Props> {
   async onResolve() {
     return {
       posts: await this.#getPosts(),
@@ -104,5 +104,3 @@ type State = {
   posts: Post[];
   page: number;
 };
-
-export const controller = new ViewController(PostsController);

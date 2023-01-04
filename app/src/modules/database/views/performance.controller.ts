@@ -1,11 +1,11 @@
-import { Controller, ViewController } from "@valkyr/react";
+import { Controller } from "@valkyr/react";
 
 import { db } from "~services/database";
 
 import { getFakePostData } from "../utils/post.utils";
 import { getFakeUserData } from "../utils/user.utils";
 
-class PerformanceController extends Controller<State> {
+export class PerformanceController extends Controller<State> {
   async onInit() {
     return {
       action: "Stopped",
@@ -143,5 +143,3 @@ type State = {
   action: string;
   results: any[];
 };
-
-export const controller = new ViewController(PerformanceController);

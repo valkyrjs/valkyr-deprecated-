@@ -1,6 +1,6 @@
 import "./styles.scss";
 
-import { createElement, ReactElement } from "react";
+import { createElement, ReactElement, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import { config } from "./config";
@@ -18,7 +18,7 @@ const app = createRoot(document.getElementById("app"));
 setup().then(() => {
   router
     .render((component, props = {}) => {
-      app.render(createElement(component, props));
+      app.render(<StrictMode>{createElement(component, props)}</StrictMode>);
     })
     .error((error) => {
       const component = handleError(error);

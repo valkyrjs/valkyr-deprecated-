@@ -1,4 +1,3 @@
-export * from "./Controller";
-export * from "./ControllerRoutes";
-export * from "./Form";
-export * from "./ViewController";
+export * from "./controller";
+export * from "./controller.routes";
+export * from "./form";

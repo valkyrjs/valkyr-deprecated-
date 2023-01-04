@@ -11,7 +11,7 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
 
   #defaults: Partial<Inputs> = {};
   #errors: FormErrors<Inputs> = {};
-  #elements: Record<string, HTMLInputElement | HTMLSelectElement> = {};
+  #elements: Record<string, HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> = {};
 
   #onChange: OnChangeCallback<Inputs>;
   #onProcessing: OnProcessingCallback;
@@ -114,7 +114,7 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
   register<Key extends keyof Inputs>(name: Key) {
     return {
       name,
-      ref: (element: HTMLInputElement | HTMLSelectElement) => {
+      ref: (element: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => {
         this.#elements[name as string] = element;
       },
       defaultValue: this.get(name),

@@ -1,6 +1,6 @@
 const refs = new Map<string, HTMLElement>();
 
-export class Refs {
+export class ControllerRefs {
   #refs = new Map<string, HTMLElement>();
 
   #forwarded: string[] = [];

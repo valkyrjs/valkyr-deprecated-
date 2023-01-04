@@ -1,8 +1,8 @@
 import { Button } from "~components/button.component";
 
-import { controller } from "./sample-form.controller";
+import { SampleFormController } from "./sample-form.controller";
 
-export const SampleFormView = controller.view(({ state: { form, errors, processing, error, response } }) => {
+export const SampleFormView = SampleFormController.view(({ state: { form, errors, processing, error, response } }) => {
   return (
     <div>
       Sample Form

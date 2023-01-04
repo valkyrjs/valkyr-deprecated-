@@ -3,7 +3,7 @@ import Pagination from "rc-pagination";
 import { Link } from "~components/link.component";
 import { Table } from "~components/table.component";
 
-import { controller } from "./users.controller";
+import { UsersController } from "./users.controller";
 
 const limit = 50;
 
@@ -38,7 +38,7 @@ const columns = [
   }
 ];
 
-export const UsersView = controller.view(
+export const UsersView = UsersController.view(
   ({ state: { users, page }, actions: { addUsers, search, queryRange, queryOffset, exportUsers, goToPage } }) => {
     return (
       <div>

@@ -1,8 +1,8 @@
 import { Button } from "~components/button.component";
 
-import { controller } from "./queue.controller";
+import { QueueController } from "./queue.controller";
 
-export const QueueView = controller.view(
+export const QueueView = QueueController.view(
   ({ state: { pending, active, failed, completed }, actions: { push, flush } }) => {
     return (
       <div>

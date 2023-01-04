@@ -1,9 +1,10 @@
 import type { Collection, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
-import type { FunctionComponent } from "react";
 import type { Observable, Subject, Subscription } from "rxjs";
 
-import { Refs } from "./ControllerRefs";
-import { Debounce } from "./Debounce";
+import { ControllerRefs } from "./controller.refs";
+import { ControllerClass, ReactComponent } from "./controller.types";
+import { makeControllerView, ViewOptions } from "./controller.view";
+import { Debounce } from "./debounce";
 
 export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}> {
   state: State = {} as State;
@@ -12,7 +13,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
   /**
    * Stores a list of referenced elements identifies by a unique key.
    */
-  readonly refs = new Refs();
+  readonly refs = new ControllerRefs();
 
   /**
    * Records of rxjs subscriptions. They are keyed to a subscription name for
@@ -51,6 +52,20 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    */
 
   /**
+   * Register a react component as a view for this controller.
+   *
+   * @param component - Component to render.
+   * @param options   - View options.
+   */
+  static view<Props extends {}, T extends ControllerClass>(
+    this: T,
+    component: ReactComponent<Props, T>,
+    options?: Partial<ViewOptions<Props>>
+  ) {
+    return makeControllerView(this)(component, options);
+  }
+
+  /**
    * Creates a new controller instance with given push state handler.
    *
    * @remarks This factory method will pass the static state as defined on the
@@ -58,8 +73,8 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    *
    * @param pushState - Push data handler method.
    */
-  static make(component: ReactComponent<any, any>, setView: Function) {
-    return new (this as any)(component, setView);
+  static make<T extends ControllerClass>(this: T, component: ReactComponent<any, any>, setView: Function) {
+    return new this(component, setView);
   }
 
   /*
@@ -318,18 +333,3 @@ export type JsonLike = {
 type CollectionType<Type> = Type extends Collection<infer X> ? X : never;
 
 type SubscriptionType<Type> = Type extends Subject<infer X> | Observable<infer X> ? X : never;
-
-export type ReactComponent<Props extends {}, Controller extends ControllerClass> = FunctionComponent<{
-  props: Props;
-  state: InstanceType<Controller>["state"];
-  actions: Omit<InstanceType<Controller>, ReservedPropertyMembers>;
-  refs: Refs;
-  component?: React.FC;
-}>;
-
-export type ControllerClass = {
-  new (state: any, pushState: Function): any;
-  make(component: ReactComponent<any, any>, pushState: Function): any;
-};
-
-export type ReservedPropertyMembers = "state" | "pushState" | "init" | "destroy" | "setNext" | "setState" | "toActions";

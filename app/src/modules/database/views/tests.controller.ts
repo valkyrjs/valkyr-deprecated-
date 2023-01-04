@@ -1,11 +1,11 @@
 import { faker } from "@faker-js/faker";
-import { Controller, ViewController } from "@valkyr/react";
+import { Controller } from "@valkyr/react";
 
 import { db } from "~services/database";
 
 import { getFakeUserData } from "../utils/user.utils";
 
-class TestsController extends Controller<State> {
+export class TestsController extends Controller<State> {
   #email = faker.internet.email();
 
   async onInit() {
@@ -159,5 +159,3 @@ type Test = {
   name: string;
   success: boolean;
 };
-
-export const controller = new ViewController(TestsController);

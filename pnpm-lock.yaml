@@ -57,7 +57,7 @@ importers:
       react: ^18.2.0
       react-dom: ^18.2.0
       react-table: ^7.8.0
-      rxjs: 7.5.7
+      rxjs: ^7.8.0
       sass: ^1.56.1
       sass-loader: ^13.2.0
       style-loader: ^3.3.1
@@ -78,7 +78,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-table: 7.8.0_react@18.2.0
-      rxjs: 7.5.7
+      rxjs: 7.8.0
     devDependencies:
       '@types/react': 18.0.25
       '@types/react-dom': 18.0.9
@@ -7009,12 +7009,6 @@ packages:
     dependencies:
       queue-microtask: 1.2.3
     dev: true
-
-  /rxjs/7.5.7:
-    resolution: {integrity: sha512-z9MzKh/UcOqB3i20H6rtrlaE/CgjLOvheWK/9ILrbhROGTweAi1BaFsTT9FbwZi5Trr1qNRs+MXkhmR06awzQA==}
-    dependencies:
-      tslib: 2.4.1
-    dev: false
 
   /rxjs/7.8.0:
     resolution: {integrity: sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==}

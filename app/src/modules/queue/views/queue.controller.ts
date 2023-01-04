@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
 import { Job, Worker } from "@valkyr/queue";
-import { Controller, ViewController } from "@valkyr/react";
+import { Controller } from "@valkyr/react";
 
 import { queue } from "~services/queue";
 
-class QueueController extends Controller<State> {
+export class QueueController extends Controller<State> {
   async onInit() {
     this.#startQueueObserver();
     return {
@@ -80,5 +80,3 @@ type State = {
   active: Job<Worker>[];
   completed: Job<Worker>[];
 };
-
-export const controller = new ViewController(QueueController);
