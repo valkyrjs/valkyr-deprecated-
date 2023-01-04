@@ -8,7 +8,10 @@ import { getFakeUserData } from "../utils/user.utils";
 
 let page = 1;
 
-export class UsersController extends Controller<State> {
+export class UsersController extends Controller<{
+  users: User[];
+  page: number;
+}> {
   async onInit() {
     return {
       users: await this.query(db.collection("users"), {}, "users"),
@@ -59,8 +62,3 @@ export class UsersController extends Controller<State> {
     this.setState("page", page);
   }
 }
-
-type State = {
-  users: User[];
-  page: number;
-};

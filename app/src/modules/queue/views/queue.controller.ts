@@ -4,7 +4,12 @@ import { Controller } from "@valkyr/react";
 
 import { queue } from "~services/queue";
 
-export class QueueController extends Controller<State> {
+export class QueueController extends Controller<{
+  pending: Job<Worker>[];
+  failed: Job<Worker>[];
+  active: Job<Worker>[];
+  completed: Job<Worker>[];
+}> {
   async onInit() {
     this.#startQueueObserver();
     return {
@@ -73,10 +78,3 @@ export class QueueController extends Controller<State> {
     queue.requests.flush();
   }
 }
-
-type State = {
-  pending: Job<Worker>[];
-  failed: Job<Worker>[];
-  active: Job<Worker>[];
-  completed: Job<Worker>[];
-};

@@ -7,7 +7,9 @@ import { user } from "~stores/user";
 
 import { getFakeUserData } from "../../database/utils/user.utils";
 
-export class EventsController extends Controller<State> {
+export class EventsController extends Controller<{
+  events: EventRecord[];
+}> {
   async onInit() {
     this.subscribe(keyboard, async (key) => {
       if (key === "1") {
@@ -26,7 +28,3 @@ export class EventsController extends Controller<State> {
     await ledger.push(userId, user.created({ name, email }));
   }
 }
-
-type State = {
-  events: EventRecord[];
-};

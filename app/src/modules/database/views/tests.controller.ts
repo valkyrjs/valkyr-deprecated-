@@ -5,7 +5,9 @@ import { db } from "~services/database";
 
 import { getFakeUserData } from "../utils/user.utils";
 
-export class TestsController extends Controller<State> {
+export class TestsController extends Controller<{
+  tests: Test[];
+}> {
   #email = faker.internet.email();
 
   async onInit() {
@@ -150,10 +152,6 @@ export class TestsController extends Controller<State> {
     }
   }
 }
-
-type State = {
-  tests: Test[];
-};
 
 type Test = {
   name: string;

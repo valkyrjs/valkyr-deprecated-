@@ -2,7 +2,13 @@ import { Controller } from "@valkyr/react";
 
 import { SampleForm } from "./sample-form.form";
 
-export class SampleFormController extends Controller<State> {
+export class SampleFormController extends Controller<{
+  form: SampleForm;
+  processing: boolean;
+  errors?: SampleForm["errors"];
+  error?: Error;
+  response?: any;
+}> {
   async onInit() {
     return {
       form: new SampleForm({
@@ -18,11 +24,3 @@ export class SampleFormController extends Controller<State> {
     };
   }
 }
-
-type State = {
-  form: SampleForm;
-  processing: boolean;
-  errors?: SampleForm["errors"];
-  error?: Error;
-  response?: any;
-};

@@ -57,7 +57,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    * @param component - Component to render.
    * @param options   - View options.
    */
-  static view<Props extends {}, T extends ControllerClass>(
+  static view<T extends ControllerClass, Props = InstanceType<T>["props"]>(
     this: T,
     component: ReactComponent<Props, T>,
     options?: Partial<ViewOptions<Props>>
@@ -129,7 +129,9 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    *
    * @returns Partial state or void.
    */
-  async onInit(): Promise<Partial<State> | void> {}
+  async onInit(): Promise<State> {
+    return this.state;
+  }
 
   /**
    * Method runs every time the controller is resolved. This is where you should
@@ -138,7 +140,9 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    *
    * @returns Partial state or void.
    */
-  async onResolve(): Promise<Partial<State> | void> {}
+  async onResolve(): Promise<State> {
+    return this.state;
+  }
 
   /**
    * Method runs when the controller parent view is destroyed.

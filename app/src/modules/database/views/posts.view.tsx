@@ -2,7 +2,7 @@ import Pagination from "rc-pagination";
 
 import { Table } from "~components/table.component";
 
-import { PostsController, Props } from "./posts.controller";
+import { PostsController } from "./posts.controller";
 
 const columns = [
   {
@@ -32,7 +32,7 @@ const columns = [
   }
 ];
 
-export const PostsView = PostsController.view<Props>(
+export const PostsView = PostsController.view(
   ({ props: { author }, state: { posts, page }, actions: { addPosts, indexExpression, goToPage } }) => {
     return (
       <div>

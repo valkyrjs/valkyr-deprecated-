@@ -5,7 +5,10 @@ import { db } from "~services/database";
 import { getFakePostData } from "../utils/post.utils";
 import { getFakeUserData } from "../utils/user.utils";
 
-export class PerformanceController extends Controller<State> {
+export class PerformanceController extends Controller<{
+  action: string;
+  results: any[];
+}> {
   async onInit() {
     return {
       action: "Stopped",
@@ -138,8 +141,3 @@ export class PerformanceController extends Controller<State> {
     return `Operation executed in ${(performance.now() - time).toFixed(2)} milliseconds`;
   }
 }
-
-type State = {
-  action: string;
-  results: any[];
-};

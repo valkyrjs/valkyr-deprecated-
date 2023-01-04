@@ -7,7 +7,15 @@ import { getFakePostData } from "../utils/post.utils";
 
 let page = 1;
 
-export class PostsController extends Controller<State, Props> {
+export class PostsController extends Controller<
+  {
+    posts: Post[];
+    page: number;
+  },
+  {
+    author?: string;
+  }
+> {
   async onResolve() {
     return {
       posts: await this.#getPosts(),
@@ -95,12 +103,3 @@ export class PostsController extends Controller<State, Props> {
     return this.query(db.collection("posts"), filter, "posts");
   }
 }
-
-export type Props = {
-  author?: string;
-};
-
-type State = {
-  posts: Post[];
-  page: number;
-};
