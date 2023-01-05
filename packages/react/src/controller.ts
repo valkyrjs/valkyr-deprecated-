@@ -131,7 +131,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    *
    * @returns Partial state or void.
    */
-  async onInit(): Promise<Partial<State>> {
+  async onInit(): Promise<Partial<State> | void> {
     return {};
   }
 
@@ -142,7 +142,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    *
    * @returns Partial state or void.
    */
-  async onResolve(): Promise<Partial<State>> {
+  async onResolve(): Promise<Partial<State> | void> {
     return {};
   }
 
