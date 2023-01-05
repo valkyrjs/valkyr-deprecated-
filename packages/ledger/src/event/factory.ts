@@ -16,4 +16,4 @@ type EventFactory<E extends Event> = E["meta"] extends Empty
     : (data: E["data"]) => E
   : E["data"] extends Empty
   ? (data: Empty, meta: E["meta"]) => E
-  : (data: E["data"], meta: Empty) => E;
+  : (data: E["data"], meta: E["meta"]) => E;
