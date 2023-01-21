@@ -1,0 +1,24 @@
+{
+  "name": "@valkyr/jsonrpc",
+  "version": "0.0.0",
+  "description": "JSON RPC 2.0",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json",
+    "flush": "npm run clean && rm -rf ./node_modules",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "@valkyr/jest"
+  },
+  "devDependencies": {
+    "@valkyr/jest": "workspace:*"
+  }
+}

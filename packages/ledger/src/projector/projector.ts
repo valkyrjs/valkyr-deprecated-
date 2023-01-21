@@ -1,11 +1,11 @@
-import type { Event, EventRecord } from "../event";
+import type { EventRecord } from "../event";
 import { Queue } from "../queue";
 import { FILTER_ALL, FILTER_CONTINUOUS, FILTER_ONCE } from "./filters";
 import { Projection, ProjectionEventHandler, ProjectionHandler, ProjectionState } from "./projection";
 
-export class Projector {
-  #listeners: Listeners = {};
-  #queue: Queue<ProjectionMessage>;
+export class Projector<Record extends EventRecord> {
+  #listeners: Listeners<Record> = {};
+  #queue: Queue<ProjectionMessage<Record>>;
 
   constructor() {
     this.project = this.project.bind(this);
@@ -14,7 +14,7 @@ export class Projector {
     });
   }
 
-  async project<Event extends EventRecord>(event: Event, state: ProjectionState) {
+  async project(event: Record, state: ProjectionState) {
     return new Promise<boolean>((resolve, reject) => {
       this.#queue.push({ event, state }, resolve, reject);
     });
@@ -33,8 +33,11 @@ export class Projector {
    * We disallow `hydrate` and `outdated` as these events represents events
    * that has already been processed.
    */
-  once<E extends Event>(type: EventRecord<E>["type"], handler: ProjectionEventHandler<EventRecord<E>>) {
-    return new Projection<EventRecord<E>>(this, { type, handler, filter: FILTER_ONCE });
+  once<T extends Record["type"], R extends Record = Extract<Record, { type: T }>>(
+    type: T,
+    handler: ProjectionEventHandler<R>
+  ): Projection<R> {
+    return new Projection<any>(this, { type, handler, filter: FILTER_ONCE });
   }
 
   /**
@@ -57,8 +60,11 @@ export class Projector {
    * have processing requirements that needs to know about every unknown
    * events that has occurred in the event stream.
    */
-  on<E extends Event>(type: EventRecord<E>["type"], handler: ProjectionEventHandler<EventRecord<E>>) {
-    return new Projection<EventRecord<E>>(this, { type, handler, filter: FILTER_CONTINUOUS });
+  on<T extends Record["type"], R extends Record = Extract<Record, { type: T }>>(
+    type: T,
+    handler: ProjectionEventHandler<R>
+  ): Projection<R> {
+    return new Projection<any>(this, { type, handler, filter: FILTER_CONTINUOUS });
   }
 
   /**
@@ -70,8 +76,11 @@ export class Projector {
    * stricter definitions of once and on patterns. This is a good place
    * to deal with data that does not depend on a strict order of events.
    */
-  all<E extends Event>(type: EventRecord<E>["type"], handler: ProjectionEventHandler<EventRecord<E>>) {
-    return new Projection<EventRecord<E>>(this, { type, handler, filter: FILTER_ALL });
+  all<T extends Record["type"], R extends Record = Extract<Record, { type: T }>>(
+    type: T,
+    handler: ProjectionEventHandler<R>
+  ): Projection<R> {
+    return new Projection<any>(this, { type, handler, filter: FILTER_ALL });
   }
 
   addEventListener(type: string, fn: ProjectionHandler) {
@@ -97,7 +106,7 @@ export class Projector {
  |--------------------------------------------------------------------------------
  */
 
-export type Listeners = Record<string, Set<ProjectionHandler> | undefined>;
+export type Listeners<R extends EventRecord> = Record<string, Set<ProjectionHandler<R>> | undefined>;
 
 export type ProjectionMessage<Event extends EventRecord = EventRecord> = {
   event: Event;

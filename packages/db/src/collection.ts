@@ -34,27 +34,27 @@ export class Collection<D extends Document = any> {
    */
 
   async insertOne(document: PartialDocument<D>): Promise<InsertResult> {
-    return this.storage.insertOne(document);
+    return this.storage.resolve().then((storage) => storage.insertOne(document));
   }
 
   async insertMany(documents: PartialDocument<D>[]): Promise<InsertResult> {
-    return this.storage.insertMany(documents);
+    return this.storage.resolve().then((storage) => storage.insertMany(documents));
   }
 
   async updateOne(criteria: RawObject, update: UpdateOperators): Promise<UpdateResult> {
-    return this.storage.updateOne(criteria, update);
+    return this.storage.resolve().then((storage) => storage.updateOne(criteria, update));
   }
 
   async updateMany(criteria: RawObject, update: UpdateOperators): Promise<UpdateResult> {
-    return this.storage.updateMany(criteria, update);
+    return this.storage.resolve().then((storage) => storage.updateMany(criteria, update));
   }
 
   async replaceOne(criteria: RawObject, document: D): Promise<UpdateResult> {
-    return this.storage.replace(criteria, document);
+    return this.storage.resolve().then((storage) => storage.replace(criteria, document));
   }
 
   async remove(criteria: RawObject): Promise<RemoveResult> {
-    return this.storage.remove(criteria);
+    return this.storage.resolve().then((storage) => storage.remove(criteria));
   }
 
   /*
@@ -94,7 +94,7 @@ export class Collection<D extends Document = any> {
    * Retrieve a record by the document 'id' key.
    */
   async findById(id: string): Promise<D | undefined> {
-    return this.storage.findById(id);
+    return this.storage.resolve().then((storage) => storage.findById(id));
   }
 
   /**
@@ -110,7 +110,7 @@ export class Collection<D extends Document = any> {
    * documents matching the provided criteria and options.
    */
   async find(criteria: RawObject = {}, options?: Options): Promise<D[]> {
-    return this.storage.find(criteria, options);
+    return this.storage.resolve().then((storage) => storage.find(criteria, options));
   }
 
   /**
@@ -118,15 +118,17 @@ export class Collection<D extends Document = any> {
    * the count of all documents found matching the criteria and options.
    */
   async count(criteria?: RawObject): Promise<number> {
-    return this.storage.count(criteria);
+    return this.storage.resolve().then((storage) => storage.count(criteria));
   }
 
   /**
    * Removes all documents from the storage instance.
    */
   flush(): void {
-    this.storage.broadcast("flush");
-    this.storage.flush();
+    this.storage.resolve().then((storage) => {
+      storage.broadcast("flush");
+      storage.flush();
+    });
   }
 }
 

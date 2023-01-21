@@ -157,6 +157,16 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    |--------------------------------------------------------------------------------
    */
 
+  /**
+   * Executes a query on a given collection and returns the initial result. A
+   * subsequent internal subscription is also created, which automatically updates
+   * the controller state when changes are made to the data in which the query
+   * subscribes.
+   *
+   * @param collection - Collection to query.
+   * @param query      - Query to execute.
+   * @param options    - Query options.
+   */
   query<C extends Collection, K extends keyof State>(
     collection: C,
     query: QuerySingle,

@@ -1,0 +1,31 @@
+{
+  "name": "@valkyr/app",
+  "version": "0.0.0",
+  "description": "A collection of tools for building fullstack @valkyr applications",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "browser",
+    "jsonrpc",
+    "event-sourcing",
+    "app"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json",
+    "flush": "npm run clean && rm -rf ./node_modules",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
+  },
+  "dependencies": {
+    "@valkyr/db": "workspace:*",
+    "@valkyr/event-store": "workspace:*",
+    "@valkyr/jsonrpc": "workspace:*",
+    "@valkyr/ledger": "workspace:*",
+    "@valkyr/queue": "workspace:*",
+    "rxjs": "^7.8.0"
+  }
+}

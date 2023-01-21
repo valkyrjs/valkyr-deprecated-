@@ -19,6 +19,10 @@ import {
 export class MemoryStorage<D extends Document = Document> extends Storage<D> {
   readonly #documents = new Map<string, D>();
 
+  async resolve() {
+    return this;
+  }
+
   async has(id: string): Promise<boolean> {
     return this.#documents.has(id);
   }

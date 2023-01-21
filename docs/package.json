@@ -8,6 +8,6 @@
     "clean": "rm -rf dist && rm -rf .contented"
   },
   "devDependencies": {
-    "@birthdayresearch/contented": "1.7.0"
+    "@birthdayresearch/contented": "1.8.8"
   }
 }

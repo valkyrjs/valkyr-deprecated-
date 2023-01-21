@@ -1,4 +1,5 @@
 packages:
-  - "packages/*"
-  - "app"
   - "docs"
+  - "packages/*"
+  - "services/*"
+  - "templates/*"

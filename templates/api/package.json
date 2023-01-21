@@ -1,0 +1,25 @@
+{
+  "name": "@valkyr/api",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "source": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && resolve-tspaths"
+  },
+  "dependencies": {
+    "@valkyr/access": "workspace:*",
+    "@valkyr/event-store": "workspace:*",
+    "@valkyr/jsonrpc": "workspace:*",
+    "@valkyr/ledger": "workspace:*",
+    "bcrypt": "^5.1.0",
+    "dotenv": "^16.0.3",
+    "fastify": "^4.11.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^4.13.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "resolve-tspaths": "^0.8.3"
+  }
+}

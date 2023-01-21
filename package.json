@@ -6,26 +6,34 @@
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
   "files": [],
-  "workspaces": [
-    "./packages/*",
-    "./app"
-  ],
   "scripts": {
     "build": "turbo build",
     "flush": "turbo flush",
     "clean": "turbo clean",
+    "api": "npm start --prefix services/api",
     "app": "npm start --prefix app",
+    "docs": "npm run write --prefix docs",
     "lint": "eslint ./packages --ext .ts --fix",
     "test": "turbo test",
     "publish": "node ./scripts/publish.js",
-    "docs": "npm i --prefix docs && npm run generate --prefix docs",
     "docs:write": "npm i --prefix docs && npm run write --prefix docs"
+  },
+  "valkyr": {
+    "name": "@valkyr",
+    "input": {
+      "adapter": "fs",
+      "location": "./configs"
+    },
+    "output": {
+      "api": "./templates/api/src/generated",
+      "app": "./templates/app/src/generated"
+    }
   },
   "dependencies": {
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
-    "@types/node": "18.7.20",
+    "@types/node": "18.11.18",
     "@typescript-eslint/eslint-plugin": "5.38.0",
     "@typescript-eslint/parser": "5.38.0",
     "eslint": "8.24.0",

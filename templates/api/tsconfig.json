@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "baseUrl": "./src",
+    "outDir": "./dist",
+
+    "paths": {
+      "~api": ["./api"],
+      "~generated/*": ["./generated/*"],
+      "~services/*": ["./services/*"]
+    },
+
+    "skipLibCheck": true,
+    "incremental": true,
+    "sourceMap": true,
+    "declaration": true,
+    "removeComments": true,
+    
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "forceConsistentCasingInFileNames": false,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "paths": {
+      "~middleware/*": ["./src/actions/*"],
+      "~services/*": ["./src/services/*"]
+    },
+    "baseUrl": "./",
+
+    "skipLibCheck": true,
+    "incremental": true,
+    "sourceMap": true,
+    "declaration": true,
+    "removeComments": true,
+    
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "forceConsistentCasingInFileNames": false,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true
+  }
+}

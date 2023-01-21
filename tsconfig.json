@@ -4,7 +4,8 @@
     "baseUrl": "./",
     "paths": {
       "@valkyr/*": [
-        "packages/*/src"
+        "packages/*/src",
+        "templates/*/src"
       ]
     },
     "target": "es2020",
