@@ -12,12 +12,6 @@ export function Sidebar() {
         </li>
         <li className="separator" />
         <li>
-          <Link href="/events">
-            <Icon name="console" /> Events
-          </Link>
-        </li>
-        <li className="separator" />
-        <li>
           <Link href="/users">
             <Icon name="users" /> Users
           </Link>

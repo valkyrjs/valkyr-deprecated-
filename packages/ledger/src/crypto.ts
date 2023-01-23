@@ -1,1 +1,1 @@
-export const crypto = globalThis.crypto ?? eval(`require("crypto")`);
+export const crypto = (globalThis as any).crypto ?? eval(`require("crypto")`);

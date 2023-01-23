@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
+    "@valkyr/app": "workspace:*",
     "@valkyr/db": "workspace:*",
     "@valkyr/react": "workspace:*",
     "@valkyr/router": "workspace:*",

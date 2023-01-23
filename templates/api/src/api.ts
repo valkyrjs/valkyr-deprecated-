@@ -5,6 +5,7 @@ import { FastifyInstance } from "fastify";
 import { WebSocket } from "ws";
 
 import { ActionContext, Method, response, validateRequest } from "~services/jsonrpc";
+import { log } from "~services/log";
 
 import { event, EventFactory, EventRecord } from "./generated/events";
 import { db } from "./services/database";
@@ -76,8 +77,8 @@ class Api {
   }
 
   register<P extends void | Params = void, R = void>(method: string, handler: Method<P, R>): void {
-    console.log(`Registering method '${method}'`);
     this.#methods.set(method, handler);
+    log("JsonRpcService", `registered method ${method}`);
   }
 
   /**
@@ -186,19 +187,23 @@ class Api {
     }
 
     if ("id" in request) {
+      log("JsonRpcService", "incoming request", request);
+      let result: any;
       try {
-        return {
+        result = {
           jsonrpc: "2.0",
           result: await method.handler((request.params ?? context) as any, context as any),
           id: request.id
         };
       } catch (error) {
-        return {
+        result = {
           jsonrpc: "2.0",
           error,
           id: request.id
         };
       }
+      log("JsonRpcService", "outgoing response", result);
+      return result;
     }
 
     await method?.handler((request.params ?? context) as any, context as any);

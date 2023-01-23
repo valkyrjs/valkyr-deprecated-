@@ -1,0 +1,9 @@
+[
+  {
+    "method": "Health",
+    "result": {
+      "status": "p:string",
+      "version": "p:string"
+    }
+  }
+]

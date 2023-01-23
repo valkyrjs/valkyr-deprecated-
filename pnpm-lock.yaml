@@ -19,7 +19,6 @@ importers:
       ts-jest: 29.0.2
       ts-node: 10.9.1
       turbo: 1.5.5
-      typescript: 4.9.4
     dependencies:
       reflect-metadata: 0.1.13
     devDependencies:
@@ -37,7 +36,6 @@ importers:
       ts-jest: 29.0.2_p6ekqnroyms5nhqbfxosryz7rm
       ts-node: 10.9.1_awa2wsr5thmg3i7jqycphctjfq
       turbo: 1.5.5
-      typescript: 4.9.4
 
   docs:
     specifiers:
@@ -243,6 +241,7 @@ importers:
       '@types/react-dom': 18.0.9
       '@types/webpack': ^5.28.0
       '@types/webpack-env': ^1.18.0
+      '@valkyr/app': workspace:*
       '@valkyr/db': workspace:*
       '@valkyr/queue': workspace:*
       '@valkyr/react': workspace:*
@@ -265,6 +264,7 @@ importers:
       webpack-dev-server: ^4.11.1
     dependencies:
       '@faker-js/faker': 7.6.0
+      '@valkyr/app': link:../../templates/app
       '@valkyr/db': link:../../packages/db
       '@valkyr/queue': link:../../packages/queue
       '@valkyr/react': link:../../packages/react
@@ -361,11 +361,13 @@ importers:
   templates/api:
     specifiers:
       '@types/bcrypt': ^5.0.0
+      '@types/jsonwebtoken': ^9.0.1
       '@valkyr/access': workspace:*
       '@valkyr/event-store': workspace:*
       '@valkyr/jsonrpc': workspace:*
       '@valkyr/ledger': workspace:*
       bcrypt: ^5.1.0
+      chalk: ^4.1.2
       dotenv: ^16.0.3
       fastify: ^4.11.0
       jsonwebtoken: ^9.0.0
@@ -377,12 +379,14 @@ importers:
       '@valkyr/jsonrpc': link:../../packages/jsonrpc
       '@valkyr/ledger': link:../../packages/ledger
       bcrypt: 5.1.0
+      chalk: 4.1.2
       dotenv: 16.0.3
       fastify: 4.11.0
       jsonwebtoken: 9.0.0
       mongodb: 4.13.0
     devDependencies:
       '@types/bcrypt': 5.0.0
+      '@types/jsonwebtoken': 9.0.1
       resolve-tspaths: 0.8.3_typescript@4.9.4
 
   templates/app:
@@ -2597,6 +2601,12 @@ packages:
 
   /@types/jsonfile/6.1.1:
     resolution: {integrity: sha512-GSgiRCVeapDN+3pqA35IkQwasaCh/0YFH5dEF6S88iDvEn901DjOeH3/QPY+XYP1DFzDZPvIvfeEgk+7br5png==}
+    dependencies:
+      '@types/node': 18.11.18
+    dev: true
+
+  /@types/jsonwebtoken/9.0.1:
+    resolution: {integrity: sha512-c5ltxazpWabia/4UzhIoaDcIza4KViOQhdbjRlfcIGVnsE3c3brkz9Z+F/EeJIECOQP7W7US2hNE930cWWkPiw==}
     dependencies:
       '@types/node': 18.11.18
     dev: true

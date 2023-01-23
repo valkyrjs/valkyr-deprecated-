@@ -1,11 +1,11 @@
 import "./styles.scss";
+import "./modules";
 
 import { createElement, ReactElement, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import { config } from "./config";
 import { router } from "./services/router";
-import { setup } from "./setup";
 
 const app = createRoot(document.getElementById("app"));
 
@@ -15,19 +15,17 @@ const app = createRoot(document.getElementById("app"));
  |--------------------------------------------------------------------------------
  */
 
-setup().then(() => {
-  router
-    .render((component, props = {}) => {
-      app.render(<StrictMode>{createElement(component, props)}</StrictMode>);
-    })
-    .error((error) => {
-      const component = handleError(error);
-      if (component) {
-        app.render(component);
-      }
-    })
-    .listen();
-});
+router
+  .render((component, props = {}) => {
+    app.render(<StrictMode>{createElement(component, props)}</StrictMode>);
+  })
+  .error((error) => {
+    const component = handleError(error);
+    if (component) {
+      app.render(component);
+    }
+  })
+  .listen();
 
 /*
  |--------------------------------------------------------------------------------

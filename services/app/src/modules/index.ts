@@ -5,7 +5,6 @@ import { router } from "~services/router";
 
 import { DashboardView } from "./dashboard";
 import { MultiView, PerformanceView, PostsView, TestsView, UsersView } from "./database";
-import { EventsView } from "./events";
 import { SampleFormView } from "./form";
 import { LayoutView } from "./layout/layout.module";
 import { QueueView } from "./queue";
@@ -21,11 +20,6 @@ router.register([
         name: "Dashboard",
         path: "/",
         actions: [render(DashboardView)]
-      }),
-      new Route({
-        name: "Events",
-        path: "/events",
-        actions: [render(EventsView)]
       }),
       new Route({
         name: "Database Users",
