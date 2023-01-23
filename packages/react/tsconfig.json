@@ -1,24 +1,9 @@
 {
+  "extends": "@valkyr/typescript",
   "compilerOptions": {
-    "target": "es2020",
-    "module": "es2020",
-    "moduleResolution": "node",
-    "lib": ["es2020", "dom", "dom.iterable"],
+    "lib": ["ES2022", "dom", "dom.iterable"],
     "jsx": "react-jsx",
-
-    "declaration": true,
-    "incremental": true,
-    "isolatedModules": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "skipLibCheck": true,
-
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-
-    "outDir": "dist"
-  },
-  "include": ["src"],
-  "exclude": ["node_modules"]
+    "outDir": "./dist",
+    "rootDir": "./src"
+  }
 }

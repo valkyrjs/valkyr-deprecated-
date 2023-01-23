@@ -1,31 +1,20 @@
 {
+  "extends": "@valkyr/typescript",
   "compilerOptions": {
     "types": ["webpack-env"],
-    "outDir": "./dist/",
 
-    "target": "es2020",
-    "module": "es2020",
-    "moduleResolution": "node",
-    "lib": ["es2020", "dom", "dom.iterable"],
+    "lib": ["ES2022", "dom", "dom.iterable"],
     "jsx": "react-jsx",
+    
     "paths": {
       "~components/*": ["./src/components/*"],
       "~middleware/*": ["./src/middleware/*"],
       "~services/*": ["./src/services/*"],
       "~stores/*": ["./src/stores/*"],
-    },
-
-    "incremental": true,
-    "isolatedModules": true,
-    "sourceMap": true,
-
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true
+    }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx"
-  ],
-  "exclude": ["node_modules"]
+  ]
 }

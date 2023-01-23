@@ -1,8 +1,5 @@
 {
-  "extends": "../../tsconfig.build.json",
-  "include": [
-    "./src/**/*"
-  ],
+  "extends": "@valkyr/typescript",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",

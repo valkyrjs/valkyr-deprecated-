@@ -7,6 +7,7 @@ importers:
       '@types/node': 18.11.18
       '@typescript-eslint/eslint-plugin': 5.38.0
       '@typescript-eslint/parser': 5.38.0
+      '@valkyr/typescript': workspace:*
       eslint: 8.24.0
       eslint-config-prettier: 8.5.0
       eslint-plugin-prettier: 4.2.1
@@ -25,6 +26,7 @@ importers:
       '@types/node': 18.11.18
       '@typescript-eslint/eslint-plugin': 5.38.0_5jpdpggmztxx5lyhivej5oijky
       '@typescript-eslint/parser': 5.38.0_mf7k6pf56vcpzce2rm6wugk24a
+      '@valkyr/typescript': link:packages/typescript
       eslint: 8.24.0
       eslint-config-prettier: 8.5.0_eslint@8.24.0
       eslint-plugin-prettier: 4.2.1_cfn5x6ujhhgzv3423d6k7r2zzm
@@ -198,6 +200,12 @@ importers:
       '@nestjs/common': 9.2.1_mnr6j2del53muneqly5h4y27ai
       '@nestjs/testing': 9.2.1_hjcqpoaebdr7gdo5hgc22hthbe
       mongodb-memory-server: 8.11.2
+
+  packages/typescript:
+    specifiers:
+      typescript: 4.9.4
+    dependencies:
+      typescript: 4.9.4
 
   services/api:
     specifiers:

@@ -15,7 +15,7 @@
     "spa"
   ],
   "scripts": {
-    "build": "tsc -b ./tsconfig.build.json",
+    "build": "tsc -b ./tsconfig.json",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo",
     "test": "jest"

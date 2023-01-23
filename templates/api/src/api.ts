@@ -10,7 +10,7 @@ import { event, EventFactory, EventRecord } from "./generated/events";
 import { db } from "./services/database";
 
 class Api {
-  #methods: Record<symbol, Method> = {};
+  #methods = new Map<string, Method<any, any>>();
 
   constructor(readonly store = new EventStore<"server", EventRecord>(db.collection<EventRecord>("events"))) {
     this.fastify = this.fastify.bind(this);
@@ -77,7 +77,7 @@ class Api {
 
   register<P extends void | Params = void, R = void>(method: string, handler: Method<P, R>): void {
     console.log(`Registering method '${method}'`);
-    this.#methods[method] = handler;
+    this.#methods.set(method, handler);
   }
 
   /**
@@ -164,7 +164,7 @@ class Api {
       };
     }
 
-    const method = this.#methods[request.method as any];
+    const method = this.#methods.get(request.method);
 
     if (method === undefined) {
       return {
