@@ -6,7 +6,7 @@ import { db } from "~services/database";
 import { EventNode } from "../nodes/event.node";
 import { NodeManager } from "../services/NodeManager";
 
-export class DashboardController extends Controller<{
+export class EditorController extends Controller<{
   nodeTypes: NodeTypes;
   nodes: Node[];
   edges: Edge[];

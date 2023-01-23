@@ -3,13 +3,13 @@ import { Route } from "@valkyr/router";
 import { render } from "~middleware/render";
 import { router } from "~services/router";
 
-import { DashboardView } from "./dashboard";
+import { EditorView } from "./editor";
 
 router.register([
   new Route({
-    id: "dashboard",
-    name: "Dashboard",
+    id: "editor",
+    name: "Editor",
     path: "/",
-    actions: [render(DashboardView)]
+    actions: [render(EditorView)]
   })
 ]);

@@ -4,11 +4,13 @@
   "version": "0.0.0",
   "description": "Visual editor building data solutions for @valkyr projects",
   "scripts": {
-    "start": "webpack serve --port 3001"
+    "start": "webpack serve --port 3000 --config ./webpack/config.js"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@tailwindcss/aspect-ratio": "0.4.2",
+    "@tailwindcss/typography": "0.5.9",
     "@valkyr/db": "workspace:*",
     "@valkyr/react": "workspace:*",
     "@valkyr/router": "workspace:*",
@@ -16,19 +18,25 @@
     "react-dom": "^18.2.0",
     "react-table": "^7.8.0",
     "reactflow": "^11.4.2",
-    "rxjs": "^7.8.0"
+    "rxjs": "^7.8.0",
+    "tailwindcss-fluid-type": "2.0.3",
+    "tailwind-scrollbar-hide": "^1.1.7"
   },
   "devDependencies": {
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
     "@types/webpack": "^5.28.0",
     "@types/webpack-env": "^1.18.0",
+    "autoprefixer": "^10.4.13",
     "css-loader": "6.7.3",
     "dotenv-webpack": "8.0.1",
     "html-webpack-plugin": "^5.5.0",
-    "sass": "^1.57.1",
-    "sass-loader": "^13.2.0",
+    "postcss": "^8.4.21",
+    "postcss-cli": "^10.1.0",
+    "postcss-import": "^15.1.0",
+    "postcss-loader": "^7.0.2",
     "style-loader": "^3.3.1",
+    "tailwindcss": "3.2.4",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.4",
     "webpack": "^5.75.0",
