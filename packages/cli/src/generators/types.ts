@@ -1,6 +1,6 @@
 import prettier from "prettier";
 
-import { toType } from "../services/types";
+import { toType } from "../services/types.js";
 
 export function generateTypes(template: string, config: TypeEntry[]): string {
   return prettier.format(template.replace("${types}", getTypes(config)), {

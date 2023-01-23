@@ -1,11 +1,11 @@
-import { EventEntry, generateEvents } from "../generators/events";
-import { generateTypes, TypeEntry } from "../generators/types";
-import { program } from "../program";
-import { readFile, writeFile } from "../services/files";
-import { getJSON } from "../services/json";
-import { ModuleEntry } from "../services/modules";
-import { getRelativePath, getTemplatePath } from "../services/paths";
-import { getValkyrConfiguration, ProjectConfiguration } from "../services/project";
+import { EventEntry, generateEvents } from "../generators/events.js";
+import { generateTypes, TypeEntry } from "../generators/types.js";
+import { program } from "../program.js";
+import { readFile, writeFile } from "../services/files.js";
+import { getJSON } from "../services/json.js";
+import { ModuleEntry } from "../services/modules.js";
+import { getRelativePath, getTemplatePath } from "../services/paths.js";
+import { getValkyrConfiguration, ProjectConfiguration } from "../services/project.js";
 
 program
   .command("generate")

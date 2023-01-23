@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "local": "npm uninstall -g && npm run build && npm i -g",
-    "build": "tsc && node ./esm.js",
+    "build": "tsc",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo",
     "lint": "eslint .",

@@ -1,8 +1,8 @@
 import prettier from "prettier";
 
-import { ModuleEntry } from "../services/modules";
-import { toType } from "../services/types";
-import { getGeneratedHeader } from "./shared";
+import { ModuleEntry } from "../services/modules.js";
+import { toType } from "../services/types.js";
+import { getGeneratedHeader } from "./shared.js";
 
 export function generateEvents(events: EventEntry[], modules: ModuleEntry[]): string {
   const eventNames: string[] = events.map((event) => event.type);

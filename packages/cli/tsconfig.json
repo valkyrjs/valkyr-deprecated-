@@ -1,11 +1,7 @@
 {
   "extends": "@valkyr/typescript",
-  "include": [
-    "./src/**/*"
-  ],
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
-    "skipLibCheck": true
+    "rootDir": "./src"
   }
 }
