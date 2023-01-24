@@ -19,7 +19,7 @@ export function Select() {
     <Listbox value={selected} onChange={setSelected}>
       {({ open }) => (
         <div className="relative">
-          <Listbox.Button className="text-xs font-mono relative w-44 cursor-default rounded border border-gray-200 bg-transparent py-1 pl-1.5 pr-10 text-left shadow-sm focus:border-cta-hover focus:outline-none focus:ring-1 focus:ring-cta-hover sm:text-sm">
+          <Listbox.Button className="relative w-44 cursor-default rounded border border-gray-200 bg-transparent py-1 pl-1.5 pr-10 text-left shadow-sm focus:border-cta-hover focus:outline-none">
             <span className="block truncate">{selected?.name}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <CaretDown className="h-5 w-5 text-gray-400" aria-hidden="true" />

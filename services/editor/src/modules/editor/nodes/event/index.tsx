@@ -17,7 +17,7 @@ export const EventNode = NodeController.view(({ state: { type }, actions: { setT
           EVENT
         </header>
         <section className="p-2">
-          <form className="flex flex-col gap-1">
+          <form className="flex flex-col gap-1 font-mono text-xs">
             <div className="flex flex-row gap-2">
               <div className="form-control">
                 <input id="field.name" name="field.name" defaultValue={type} onChange={setType} />
