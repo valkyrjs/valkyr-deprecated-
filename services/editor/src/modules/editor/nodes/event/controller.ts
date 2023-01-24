@@ -3,9 +3,9 @@ import { Node } from "reactflow";
 
 import { db } from "~services/database";
 
-import { EventConfig } from "../types";
+import { EventConfig } from "../../types";
 
-export class EventNodeController extends Controller<EventConfig, Node<EventConfig>> {
+export class NodeController extends Controller<EventConfig, Node<EventConfig>> {
   #typeTimeout: any;
 
   async onResolve() {

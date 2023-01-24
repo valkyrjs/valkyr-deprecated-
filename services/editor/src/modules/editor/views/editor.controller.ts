@@ -3,7 +3,8 @@ import { addEdge, applyEdgeChanges, applyNodeChanges, Edge, EdgeChange, Node, No
 
 import { db } from "~services/database";
 
-import { EventNode } from "../nodes/event.node";
+import { EventNode } from "../nodes/event";
+import { ReducerNode } from "../nodes/reducer";
 import { NodeManager } from "../services/NodeManager";
 
 export class EditorController extends Controller<{
@@ -16,7 +17,8 @@ export class EditorController extends Controller<{
   async onInit() {
     return {
       nodeTypes: {
-        event: EventNode
+        event: EventNode,
+        reducer: ReducerNode
       },
       nodes: await db.collection("nodes").find(),
       edges: await db.collection("edges").find()

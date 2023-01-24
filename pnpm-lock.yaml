@@ -33,7 +33,7 @@ importers:
       husky: 8.0.1
       prettier: 2.7.1
       process: 0.11.10
-      ts-jest: 29.0.2_b6ud3wjfzxmze5tmlpgpdpo43e
+      ts-jest: 29.0.2_p6ekqnroyms5nhqbfxosryz7rm
       ts-node: 10.9.1_awa2wsr5thmg3i7jqycphctjfq
       turbo: 1.5.5
 
@@ -293,6 +293,7 @@ importers:
 
   services/editor:
     specifiers:
+      '@headlessui/react': 1.7.7
       '@tailwindcss/aspect-ratio': 0.4.2
       '@tailwindcss/typography': 0.5.9
       '@types/react': 18.0.27
@@ -307,6 +308,7 @@ importers:
       dotenv-webpack: 8.0.1
       html-webpack-plugin: ^5.5.0
       monaco-editor: ^0.34.1
+      phosphor-react: 1.4.1
       postcss: ^8.4.21
       postcss-cli: ^10.1.0
       postcss-import: ^15.1.0
@@ -326,12 +328,14 @@ importers:
       webpack-cli: ^5.0.1
       webpack-dev-server: ^4.11.1
     dependencies:
+      '@headlessui/react': 1.7.7_biqbaboplfbrettd7655fr4n2y
       '@tailwindcss/aspect-ratio': 0.4.2_tailwindcss@3.2.4
       '@tailwindcss/typography': 0.5.9_tailwindcss@3.2.4
       '@valkyr/db': link:../../packages/db
       '@valkyr/react': link:../../packages/react
       '@valkyr/router': link:../../packages/router
       monaco-editor: 0.34.1
+      phosphor-react: 1.4.1_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-table: 7.8.0_react@18.2.0
@@ -1613,6 +1617,18 @@ packages:
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
     dependencies:
       '@hapi/hoek': 9.3.0
+    dev: false
+
+  /@headlessui/react/1.7.7_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-BqDOd/tB9u2tA0T3Z0fn18ktw+KbVwMnkxxsGPIH2hzssrQhKB5n/6StZOyvLYP/FsYtvuXfi9I0YowKPv2c1w==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: ^16 || ^17 || ^18
+      react-dom: ^16 || ^17 || ^18
+    dependencies:
+      client-only: 0.0.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@humanwhocodes/config-array/0.10.7:
@@ -3643,6 +3659,10 @@ packages:
     dependencies:
       source-map: 0.6.1
     dev: true
+
+  /client-only/0.0.1:
+    resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
+    dev: false
 
   /clipanion/3.2.0-rc.14_typanion@3.12.1:
     resolution: {integrity: sha512-lj5zydbH786t6gpXe6oNX7CM5YKhd0CDhcXG8pKyRa2Nz5cgj1yhnNKxDi/MyPYwjyvAG5oVBeDdYCGUAgD8lQ==}
@@ -7130,6 +7150,15 @@ packages:
     resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
     dev: true
 
+  /phosphor-react/1.4.1_react@18.2.0:
+    resolution: {integrity: sha512-gO5j7U0xZrdglTAYDYPACU4xDOFBTJmptrrB/GeR+tHhCZF3nUMyGmV/0hnloKjuTrOmpSFlbfOY78H39rgjUQ==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /picocolors/1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
 
@@ -8517,7 +8546,7 @@ packages:
     resolution: {integrity: sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==}
     dev: true
 
-  /ts-jest/29.0.2_b6ud3wjfzxmze5tmlpgpdpo43e:
+  /ts-jest/29.0.2_p6ekqnroyms5nhqbfxosryz7rm:
     resolution: {integrity: sha512-P03IUItnAjG6RkJXtjjD5pu0TryQFOwcb1YKmW63rO19V0UFqL3wiXZrmR5D7qYjI98btzIOAcYafLZ0GHAcQg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     hasBin: true
@@ -8538,7 +8567,6 @@ packages:
       esbuild:
         optional: true
     dependencies:
-      '@babel/core': 7.20.12
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
       jest: 29.3.1_zfha7dvnw4nti6zkbsmhmn6xo4
