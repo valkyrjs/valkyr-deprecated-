@@ -21,6 +21,7 @@ export const EditorView = EditorController.view(
             </Button>
           </div>
           <ReactFlow
+            id="blocks"
             nodeTypes={nodeTypes}
             nodes={nodes}
             edges={edges}

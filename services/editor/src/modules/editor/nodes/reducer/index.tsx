@@ -8,12 +8,10 @@ export const ReducerNode = NodeController.view(({ state: { type }, actions: { se
   return (
     <>
       <Handle type="target" position={Position.Left} />
-      <div className="bg-indigo-400">
+      <div className="bg-indigo-400 p-2 border rounded-sm text-xs border-gray-200">
         <div>
-          <label htmlFor="text" className="bg-white">
-            Type:
-          </label>
-          <input className="bg-white p-2" id="text" name="text" defaultValue={type} onChange={setType} />
+          <label htmlFor="text">Type:</label>
+          <input id="text" name="text" defaultValue={type} onChange={setType} />
         </div>
         <div>
           <label htmlFor="text">Data:</label>
