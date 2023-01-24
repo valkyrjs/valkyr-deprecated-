@@ -8,7 +8,7 @@ import { UnstyledButton } from "~components/unstyled-button";
 
 import { NodeController } from "./controller";
 
-export const EventNode = NodeController.view(({ state: { type }, actions: { setType } }) => {
+export const EventNode = NodeController.view(({ props: { name, data, meta }, actions: { setData } }) => {
   return (
     <div className="relative">
       <div className="bg-gray-100 border rounded-sm text-xs border-gray-200 min-w-[320px]">
@@ -18,9 +18,19 @@ export const EventNode = NodeController.view(({ state: { type }, actions: { setT
         </header>
         <section className="p-2">
           <form className="flex flex-col gap-1 font-mono text-xs">
+            {Object.keys(data).map((key) => (
+              <div key={key} className="flex flex-row gap-2">
+                <div className="form-control">
+                  <input id={`data.${key}`} name={`data.${key}`} defaultValue={data.data[key]} onBlur={setData} />
+                </div>
+                <div className="form-control">
+                  <Select />
+                </div>
+              </div>
+            ))}
             <div className="flex flex-row gap-2">
               <div className="form-control">
-                <input id="field.name" name="field.name" defaultValue={type} onChange={setType} />
+                <input id="data.new" name="data.new" defaultValue="" onBlur={setData} />
               </div>
               <div className="form-control">
                 <Select />
