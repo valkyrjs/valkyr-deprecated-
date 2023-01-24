@@ -33,7 +33,7 @@ importers:
       husky: 8.0.1
       prettier: 2.7.1
       process: 0.11.10
-      ts-jest: 29.0.2_p6ekqnroyms5nhqbfxosryz7rm
+      ts-jest: 29.0.2_b6ud3wjfzxmze5tmlpgpdpo43e
       ts-node: 10.9.1_awa2wsr5thmg3i7jqycphctjfq
       turbo: 1.5.5
 
@@ -306,6 +306,7 @@ importers:
       css-loader: 6.7.3
       dotenv-webpack: 8.0.1
       html-webpack-plugin: ^5.5.0
+      monaco-editor: ^0.34.1
       postcss: ^8.4.21
       postcss-cli: ^10.1.0
       postcss-import: ^15.1.0
@@ -330,6 +331,7 @@ importers:
       '@valkyr/db': link:../../packages/db
       '@valkyr/react': link:../../packages/react
       '@valkyr/router': link:../../packages/router
+      monaco-editor: 0.34.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-table: 7.8.0_react@18.2.0
@@ -6745,6 +6747,10 @@ packages:
       obliterator: 2.0.4
     dev: false
 
+  /monaco-editor/0.34.1:
+    resolution: {integrity: sha512-FKc80TyiMaruhJKKPz5SpJPIjL+dflGvz4CpuThaPMc94AyN7SeC9HQ8hrvaxX7EyHdJcUY5i4D0gNyJj1vSZQ==}
+    dev: false
+
   /mongodb-connection-string-url/2.6.0:
     resolution: {integrity: sha512-WvTZlI9ab0QYtTYnuMLgobULWhokRjtC7db9LtcVfJ+Hsnyr5eo6ZtNAt3Ly24XZScGMelOcGtm7lSn0332tPQ==}
     dependencies:
@@ -8511,7 +8517,7 @@ packages:
     resolution: {integrity: sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==}
     dev: true
 
-  /ts-jest/29.0.2_p6ekqnroyms5nhqbfxosryz7rm:
+  /ts-jest/29.0.2_b6ud3wjfzxmze5tmlpgpdpo43e:
     resolution: {integrity: sha512-P03IUItnAjG6RkJXtjjD5pu0TryQFOwcb1YKmW63rO19V0UFqL3wiXZrmR5D7qYjI98btzIOAcYafLZ0GHAcQg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     hasBin: true
@@ -8532,6 +8538,7 @@ packages:
       esbuild:
         optional: true
     dependencies:
+      '@babel/core': 7.20.12
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
       jest: 29.3.1_zfha7dvnw4nti6zkbsmhmn6xo4
