@@ -15,51 +15,6 @@ body {
   min-width: 100vw;
 }
 
-form {
-  .form-actions {
-    @apply flex justify-between items-center mt-2;
-    button {
-      @apply delay-75;
-    }
-  }
-  .form-control {
-    @apply flex flex-col gap-1 justify-center items-start;
-    label {
-      @apply block;
-      @apply text-xs;
-      @apply text-gray-600;
-      &.checkbox {
-        @apply flex gap-3 items-center justify-start;
-      }
-    }
-    &.compact {
-      input {
-        @apply px-0;
-        @apply py-1;
-      }
-    }
-    input {
-      @apply w-full;
-      @apply px-3;
-      @apply py-2;
-      @apply placeholder-gray-300;
-      @apply border-b;
-      @apply border-gray-300;
-      @apply text-left;
-      @apply focus:ring;
-      @apply focus:outline-none;
-      @apply bg-transparent;
-      @apply text-black;
-      @apply focus:ring-0;
-      @apply focus:border-cta-default;
-      @apply transition-colors;
-      &[type="checkbox"] {
-        @apply bg-gray-100 border border-gray-300 h-5 w-5 rounded;
-      }
-    }
-  }
-}
-
 .dark {
   --celery-400: 34 184 51;
   --celery-500: 68 202 73;
@@ -219,4 +174,53 @@ form {
     }
   }
 
+
+  form {
+    .form-actions {
+      @apply flex justify-between items-center mt-2;
+      button {
+        @apply delay-75;
+      }
+    }
+    .form-control {
+      @apply flex flex-col gap-1 justify-center items-start;
+      label {
+        @apply block;
+        @apply text-xs;
+        @apply text-gray-600;
+        &.checkbox {
+          @apply flex gap-3 items-center justify-start;
+        }
+      }
+      &.compact {
+        input {
+          @apply px-0;
+          @apply py-1;
+        }
+      }
+      select,
+      input {
+        @apply rounded;
+        @apply shadow-sm;
+        @apply w-full;
+        @apply px-1.5;
+        @apply py-1;
+        @apply placeholder-gray-300;
+        @apply border;
+        @apply border-gray-200;
+        @apply text-left;
+        @apply focus:ring;
+        @apply focus:outline-none;
+        @apply bg-transparent;
+        @apply text-black;
+        @apply focus:ring-0;
+        @apply focus:border-cta-default;
+        @apply transition-colors;
+        &[type="checkbox"] {
+          @apply bg-gray-100 border border-gray-300 h-5 w-5 rounded;
+        }
+      }
+    }
+  }
+ 
 }
