@@ -3,7 +3,7 @@ import "reactflow/dist/style.css";
 import { Plus } from "phosphor-react";
 import ReactFlow, { Background, Controls } from "reactflow";
 
-import { Button } from "~components/Button";
+import { Button } from "~components/button";
 import { ModalPortal } from "~components/modal/view";
 
 import { openLibraryModal } from "../library";

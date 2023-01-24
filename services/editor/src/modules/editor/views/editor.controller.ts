@@ -20,20 +20,13 @@ export class EditorController extends Controller<{
         event: EventNode,
         reducer: ReducerNode
       },
-      nodes: await db.collection("nodes").find(),
-      edges: await db.collection("edges").find()
+      nodes: await this.query(db.collection("nodes"), {}, "nodes"),
+      edges: await this.query(db.collection("edges"), {}, "edges")
     };
   }
 
-  async addNode(node: Omit<Node, "id">): Promise<void> {
-    const result = await db.collection("nodes").insertOne(node);
-    this.setState("nodes", [
-      ...this.state.nodes,
-      {
-        ...node,
-        id: result.documents[0].id
-      }
-    ]);
+  addNode(node: Omit<Node, "id">): void {
+    db.collection("nodes").insertOne(node);
   }
 
   onNodesChange(changes: NodeChange[]): void {
