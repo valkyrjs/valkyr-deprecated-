@@ -10,7 +10,10 @@ import { openLibraryModal } from "../library";
 import { EditorController } from "./editor.controller";
 
 export const EditorView = EditorController.view(
-  ({ state: { nodeTypes, nodes, edges }, actions: { onNodesChange, onEdgesChange, onConnect } }) => {
+  ({
+    state: { nodeTypes, nodes, edges },
+    actions: { onNodesChange, onEdgesChange, onNodePositionChanged, onConnect }
+  }) => {
     return (
       <>
         <div className="w-full h-screen">
@@ -27,6 +30,7 @@ export const EditorView = EditorController.view(
             edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
+            onNodeDragStop={onNodePositionChanged}
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
           >

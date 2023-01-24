@@ -5,15 +5,12 @@ import { db } from "~services/database";
 
 import { EventNode } from "../nodes/event";
 import { ReducerNode } from "../nodes/reducer";
-import { NodeManager } from "../services/NodeManager";
 
 export class EditorController extends Controller<{
   nodeTypes: NodeTypes;
   nodes: Node[];
   edges: Edge[];
 }> {
-  #nodeManager = new NodeManager();
-
   async onInit() {
     return {
       nodeTypes: {
@@ -31,7 +28,18 @@ export class EditorController extends Controller<{
 
   onNodesChange(changes: NodeChange[]): void {
     this.setState("nodes", applyNodeChanges(changes, this.state.nodes));
-    this.#nodeManager.addNodeChanges(changes);
+  }
+
+  onNodePositionChanged(_: any, node: Node): void {
+    db.collection("nodes").updateOne(
+      { id: node.id },
+      {
+        $set: {
+          position: node.position,
+          positionAbsolute: node.positionAbsolute
+        }
+      }
+    );
   }
 
   onEdgesChange(changes: EdgeChange[]): void {
