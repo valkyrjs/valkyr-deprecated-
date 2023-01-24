@@ -1,9 +1,9 @@
 import { Modal } from "~components/modal/view";
 import { UnstyledButton } from "~components/unstyled-button";
 
-import { LibraryController } from "./controller";
+import { LibraryController } from "./library.controller";
 
-export const LibraryModal = LibraryController.view(({ state: { blocks }, actions: { addBlock } }) => {
+export const LibraryModal = LibraryController.view(({ state: { blocks } }) => {
   return (
     <Modal title="Library">
       <div className="w-[800px] h-[80vh] flex flex-row gap-0">
@@ -18,7 +18,7 @@ export const LibraryModal = LibraryController.view(({ state: { blocks }, actions
             >
               <h6 className="text-sm uppercase">{block.name}</h6>
               <p className="text-xs">{block.description}</p>
-              <UnstyledButton className="absolute inset-0" onClick={() => addBlock(block)}></UnstyledButton>
+              <UnstyledButton className="absolute inset-0" onClick={block.add}></UnstyledButton>
             </div>
           ))}
         </div>

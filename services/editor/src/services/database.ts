@@ -10,3 +10,6 @@ export const db = new IndexedDatabase<{
   registrars: [{ name: "nodes" }, { name: "edges" }],
   log: console.log
 });
+
+export const nodes = db.collection("nodes");
+export const edges = db.collection("edges");

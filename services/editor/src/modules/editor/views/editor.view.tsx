@@ -7,29 +7,25 @@ import { Button } from "~components/button";
 import { ModalPortal } from "~components/modal/view";
 
 import { openLibraryModal } from "../library";
-import { EditorController } from "./editor.controller";
+import { EditorController, nodeTypes } from "./editor.controller";
 
 export const EditorView = EditorController.view(
-  ({
-    state: { nodeTypes, nodes, edges },
-    actions: { onNodesChange, onEdgesChange, onNodePositionChanged, onConnect }
-  }) => {
+  ({ state: { nodes, edges }, actions: { setInstance, onNodePositionChanged, onConnect } }) => {
     return (
       <>
         <div className="w-full h-screen">
           <div className="absolute left-4 top-4 z-50">
-            <Button variant="primary" outline type="button" onClick={() => openLibraryModal()}>
+            <Button variant="primary" outline type="button" onClick={openLibraryModal}>
               <Plus size={10} color="#fff" />
               block
             </Button>
           </div>
           <ReactFlow
             id="blocks"
+            onInit={setInstance}
+            defaultNodes={nodes}
+            defaultEdges={edges}
             nodeTypes={nodeTypes}
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
             onNodeDragStop={onNodePositionChanged}
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}

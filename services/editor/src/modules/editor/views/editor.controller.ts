@@ -1,52 +1,77 @@
 import { Controller } from "@valkyr/react";
-import { addEdge, applyEdgeChanges, applyNodeChanges, Edge, EdgeChange, Node, NodeChange, NodeTypes } from "reactflow";
+import { Connection, Edge, Node, ReactFlowInstance } from "reactflow";
 
-import { db } from "~services/database";
+import { edges, nodes } from "~services/database";
 
-import { EventNode } from "../nodes/event";
-import { ReducerNode } from "../nodes/reducer";
+import { EventNode } from "../nodes/event/event.component";
+import { ReducerNode } from "../nodes/reducer/reducer.component";
+import { TypeNode } from "../nodes/type/type.component";
+
+export const nodeTypes = {
+  event: EventNode,
+  reducer: ReducerNode,
+  type: TypeNode
+};
 
 export class EditorController extends Controller<{
-  nodeTypes: NodeTypes;
   nodes: Node[];
   edges: Edge[];
 }> {
+  #instance?: ReactFlowInstance;
+
   async onInit() {
     return {
-      nodeTypes: {
-        event: EventNode,
-        reducer: ReducerNode
-      },
-      nodes: await this.query(db.collection("nodes"), {}, "nodes"),
-      edges: await this.query(db.collection("edges"), {}, "edges")
+      nodes: await this.query(nodes, {}, async (list) => {
+        this.#instance?.addNodes(list);
+        return {
+          nodes: list
+        };
+      }),
+      edges: await edges.find()
     };
   }
 
-  addNode(node: Omit<Node, "id">): void {
-    db.collection("nodes").insertOne(node);
-  }
-
-  onNodesChange(changes: NodeChange[]): void {
-    this.setState("nodes", applyNodeChanges(changes, this.state.nodes));
+  setInstance(instance: ReactFlowInstance) {
+    this.#instance = instance;
   }
 
   onNodePositionChanged(_: any, node: Node): void {
-    db.collection("nodes").updateOne(
-      { id: node.id },
-      {
-        $set: {
-          position: node.position,
-          positionAbsolute: node.positionAbsolute
-        }
+    nodes.findOne({ id: node.id }).then((current) => {
+      if (nodePositionChanged(current, node) === true) {
+        nodes.updateOne(
+          { id: node.id },
+          {
+            $set: {
+              position: node.position,
+              positionAbsolute: node.positionAbsolute
+            }
+          }
+        );
       }
-    );
+    });
   }
 
-  onEdgesChange(changes: EdgeChange[]): void {
-    this.setState("edges", applyEdgeChanges(changes, this.state.edges));
+  onConnect(connection: Connection): void {
+    const { source, target } = connection;
+    if (source !== null && target !== null) {
+      edges.insertOne({
+        id: `reactflow__edge-${source}-${target}`,
+        source,
+        target
+      });
+    }
   }
+}
 
-  onConnect(params: any): void {
-    this.setState("edges", addEdge(params, this.state.edges));
+function nodePositionChanged(current: Node | undefined, node: Node): boolean {
+  if (current === undefined) {
+    return true;
   }
+  if (current.position.x !== node.position.x) {
+    return true;
+  }
+  if (current.position.y !== node.position.y) {
+    return true;
+  }
+  return false;
 }
