@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 
 module.exports = {
-  "plugins": {
+  plugins: {
     "tailwindcss/nesting": {},
-    "tailwindcss": {},
-    "autoprefixer": {}
+    tailwindcss: {},
+    autoprefixer: {}
   }
 }
