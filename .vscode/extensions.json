@@ -1,9 +1,9 @@
 {
-    "recommendations": [
-        "angular.ng-template",
-        "hookyqr.beautify",
-        "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint",
-        "EditorConfig.EditorConfig"
-    ]
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "EditorConfig.EditorConfig",
+    "esbenp.prettier-vscode",
+    "hookyqr.beautify",
+    "vunguyentuan.vscode-postcss"
+  ]
 }
