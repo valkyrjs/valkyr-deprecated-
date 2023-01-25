@@ -26,6 +26,7 @@ export class ReducerNodeController extends Controller<{}, Node<ReducerNodeData>>
     this.refs.on("editor").then(async (element) => {
       if (element !== undefined) {
         this.#editor = monaco.editor.create(element, {
+          theme: "dracula",
           language: "typescript",
           value: this.props.data.config.code,
           minimap: {
