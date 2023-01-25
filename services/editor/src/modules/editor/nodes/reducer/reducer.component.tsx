@@ -1,5 +1,5 @@
 import { Disclosure } from "@headlessui/react";
-import { Plus } from "phosphor-react";
+import { Plus, XSquare } from "phosphor-react";
 import { Handle, Position } from "reactflow";
 
 import { BlockHeader } from "~components/block-header";
@@ -16,10 +16,10 @@ export const ReducerNode = ReducerNodeController.view(
         <Disclosure defaultOpen={true}>
           {({ open }) => (
             <div className="bg-darker border rounded-sm text-xs border-darker-800 min-w-[390px] font-mono">
-              <BlockHeader open={open} color="blue" symbol="R" content="Reducer" />
+              <BlockHeader open={open} color="cyan" symbol="R" content="Reducer" />
               <Disclosure.Panel className="text-gray-500">
                 <div
-                  className="border rounded-sm text-xs border-gray-200"
+                  className="border-b border-b-darker-800"
                   style={{
                     width: 800,
                     height: 600
@@ -27,14 +27,23 @@ export const ReducerNode = ReducerNodeController.view(
                 >
                   <div className="h-full w-full" ref={refs.set("editor")}></div>
                 </div>
-                <header className="bg-gray-100 flex gap-2 items-center justify-start border-b border-b-gray-200 py-1 px-2">
+                <header
+                  className={`flex w-full gap-2 text-darker-700 items-center justify-between ${
+                    open && "border-b border-b-darker-800"
+                  } py-1 px-2`}
+                >
                   State
                 </header>
-                <section className="bg-gray-100 p-2">
-                  <form className="flex flex-col gap-1 font-mono text-xs">
+                <section className="p-2 flex flex-col gap-2">
+                  <form className="flex flex-col gap-1">
                     {data.config.state.map(([key], index) => (
                       <div key={index} className="flex flex-row gap-2">
-                        <UnstyledButton onClick={removeDataField(index)}>X</UnstyledButton>
+                        <UnstyledButton
+                          className="text-darker-700 hover:text-darker-600"
+                          onClick={removeDataField(index)}
+                        >
+                          <XSquare size={16} />
+                        </UnstyledButton>
                         <div className="form-control">
                           <input
                             id={`data.${index}`}
