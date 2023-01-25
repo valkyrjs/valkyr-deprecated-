@@ -6,11 +6,13 @@ import { edges, nodes } from "~services/database";
 import { format } from "~services/prettier";
 
 import { EventNodeData, generateEventRecords, generateLedger } from "../event/event.node";
-import { ReducerNodeData } from "./reducer.node";
+import { getStateType, ReducerNodeData } from "./reducer.node";
 
 export class ReducerNodeController extends Controller<{}, Node<ReducerNodeData>> {
   #editor?: monaco.editor.IStandaloneCodeEditor;
   #model?: monaco.editor.ITextModel;
+
+  #inputNodes: Node[] = [];
 
   async onInit() {
     this.#loadEditor();
@@ -45,15 +47,15 @@ export class ReducerNodeController extends Controller<{}, Node<ReducerNodeData>>
           target: this.props.id
         },
         {},
-        this.#subscribeToNodes
+        this.#subscribeToInputNodes
       )
     );
   }
 
-  #subscribeToNodes = (edgeList: Edge[]) => {
+  #subscribeToInputNodes = (edgeList: Edge[]) => {
     this.subscriptions.get("node:observer")?.unsubscribe();
     this.subscriptions.set(
-      "node:observer",
+      "input:observer",
       nodes.subscribe(
         {
           id: {
@@ -62,21 +64,89 @@ export class ReducerNodeController extends Controller<{}, Node<ReducerNodeData>>
         },
         {},
         (eventNodes) => {
-          const model = format(`
-            ${generateLedger()}
-            ${generateReducerEvents(eventNodes)}
-            ${generateEventRecords(eventNodes.map((node) => node.data.config.name))}
-            type State = {};
-          `);
-          if (this.#model !== undefined) {
-            this.#model.setValue(model);
-          } else {
-            this.#model = monaco.editor.createModel(model, "typescript");
-          }
-          this.#editor?.setModel(this.#editor?.getModel());
+          this.#inputNodes = eventNodes;
+          this.#reloadEditorModels();
         }
       )
     );
+  };
+
+  addDataField() {
+    nodes.updateOne(
+      {
+        id: this.props.id
+      },
+      {
+        $push: {
+          "data.config.state": ["", "p:string"]
+        }
+      }
+    );
+  }
+
+  setDataField(index: number) {
+    return (e: any) => {
+      nodes
+        .updateOne(
+          { id: this.props.id },
+          {
+            $set: { [`data.config.state[${index}]`]: [e.target.value, "p:string"] }
+          }
+        )
+        .then(this.#generateMonacoModel);
+    };
+  }
+
+  removeDataField(index: number) {
+    return () => {
+      nodes
+        .updateOne(
+          {
+            id: this.props.id
+          },
+          {
+            $set: {
+              "data.config.state": (data: any[]) =>
+                data.reduce((list, _, i) => {
+                  if (i !== index) {
+                    list.push(data[i]);
+                  }
+                  return list;
+                }, [])
+            }
+          }
+        )
+        .then(this.#generateMonacoModel);
+    };
+  }
+
+  #reloadEditorModels = () => {
+    const model = format(`
+      ${generateLedger()}
+      ${generateReducerEvents(this.#inputNodes)}
+      ${generateEventRecords(this.#inputNodes.map((node) => node.data.config.name))}
+      ${this.props.data.monaco.model}
+    `);
+    if (this.#model !== undefined) {
+      this.#model.setValue(model);
+    } else {
+      this.#model = monaco.editor.createModel(model, "typescript");
+    }
+    this.#editor?.setModel(this.#editor?.getModel());
+  };
+
+  #generateMonacoModel = async (): Promise<void> => {
+    const node = await nodes.findById(this.props.id);
+    if (node !== undefined) {
+      nodes.updateOne(
+        { id: node.id },
+        {
+          $set: {
+            "data.monaco.model": getStateType(node.data.config.state)
+          }
+        }
+      );
+    }
   };
 }
 
