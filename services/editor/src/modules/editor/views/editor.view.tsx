@@ -13,10 +13,10 @@ export const EditorView = EditorController.view(
   ({ state: { nodes, edges }, actions: { setInstance, onNodePositionChanged, onConnect } }) => {
     return (
       <>
-        <div className="w-full h-screen">
+        <div className="w-full h-screen text-light bg-back">
           <div className="absolute left-4 top-4 z-50">
             <Button variant="primary" outline type="button" onClick={openLibraryModal}>
-              <Plus size={10} color="#fff" />
+              <Plus size={10} />
               block
             </Button>
           </div>

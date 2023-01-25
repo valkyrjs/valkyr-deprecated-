@@ -276,7 +276,7 @@ monaco.editor.defineTheme("dracula", {
   ],
   colors: {
     "editor.foreground": "#ABB2BF",
-    "editor.background": "#282C34",
+    "editor.background": "#282a36",
     "editor.selectionBackground": "#515151",
     "editor.lineHighlightBackground": "#292C33",
     "editorCursor.foreground": "#CCCCCC",

@@ -15,7 +15,7 @@ export function Button({
   ...other
 }: ButtonProps) {
   const cx = [
-    `border-2 border-transparent m-0 py-0 shrink-0 ring-0 focus:ring-0 focus:outline-none leading-none flex flex-row gap-2 justify-center items-center transition-colors duration-200 z-100`,
+    `border-transparent m-0 py-0 shrink-0 ring-0 focus:ring-0 focus:outline-none leading-none flex flex-row gap-2 justify-center items-center transition-colors duration-200 z-100`,
     getSize(sized),
     getColors(variant, outline, disabled)
   ].join(" ");
@@ -34,14 +34,14 @@ export type ButtonSize = "base" | "medium" | "large" | "header";
 function getSize(size: ButtonSize): string {
   switch (size) {
     case "large":
-      return "h-12 px-10 rounded-full text-sm";
+      return "h-12 px-10 rounded-full text-sm border-2";
     case "medium":
-      return "h-9 px-6 rounded-full text-sm";
+      return "h-9 px-6 rounded-full text-sm border-2";
     case "header":
-      return "h-6 px-3 rounded-full text-sm";
+      return "h-6 px-3 rounded-full text-sm border";
     case "base":
     default:
-      return "px-3 h-8 rounded-full text-xs";
+      return "px-3 h-8 rounded-full text-xs border";
   }
 }
 
@@ -52,16 +52,16 @@ function getColors(variant: ButtonVariant, outline: boolean, disabled: boolean):
   switch (variant) {
     case "cta": {
       return outline
-        ? "bg-transparent border-cta-default text-cta-default hover:bg-cta-light hover:border-cta-hover"
+        ? "bg-transparent border-cyan text-cyan hover:bg-cyan-50 hover:border-cyan-500 hover:bg-opacity-10"
         : "bg-cta-static border-cta-static text-static-white hover:bg-cta-static-hover hover:border-cta-static-hover";
     }
     case "primary":
       return outline
-        ? "bg-transparent border-primary-default text-black hover:bg-primary-light hover:border-primary-hover"
+        ? "bg-transparent border-pink text-pink hover:bg-pink-50 hover:border-pink-500 hover:bg-opacity-10"
         : "bg-primary-default border-primary-default text-white hover:bg-primary-hover hover:border-primary-hover";
     case "negative":
       return outline
-        ? "bg-transparent border-negative-light text-negative-light hover:bg-negative-outlineHover"
+        ? "bg-transparent border-red text-red hover:bg-red-50 hover:border-red-500 hover:bg-opacity-10"
         : "bg-negative-default border-negative-default text-static-white hover:bg-negative-hover hover:border-negative-hover";
     case "secondary":
     default:

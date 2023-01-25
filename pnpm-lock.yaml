@@ -319,6 +319,7 @@ importers:
       reactflow: ^11.4.2
       rxjs: ^7.8.0
       style-loader: ^3.3.1
+      tailwind-dracula: 1.1.0
       tailwind-scrollbar-hide: ^1.1.7
       tailwindcss: 3.2.4
       tailwindcss-fluid-type: 2.0.3
@@ -357,6 +358,7 @@ importers:
       postcss-import: 15.1.0_postcss@8.4.21
       postcss-loader: 7.0.2_6jdsrmfenkuhhw3gx4zvjlznce
       style-loader: 3.3.1_webpack@5.75.0
+      tailwind-dracula: 1.1.0_tailwindcss@3.2.4
       tailwindcss: 3.2.4_postcss@8.4.21
       ts-loader: 9.4.2_3fkjkrd3audxnith3e7fo4fnxi
       typescript: 4.9.4
@@ -8345,6 +8347,14 @@ packages:
   /supports-preserve-symlinks-flag/1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  /tailwind-dracula/1.1.0_tailwindcss@3.2.4:
+    resolution: {integrity: sha512-LjU1df6WGS5eUwozdPtZ7jARojHYTIe6y1Gj5v2QNaNnMnLm7ipPtlIEGlNXXraWjVnWeRbLZl4vvr48mMFGxw==}
+    peerDependencies:
+      tailwindcss: 2.x || 3.x
+    dependencies:
+      tailwindcss: 3.2.4_postcss@8.4.21
+    dev: true
 
   /tailwind-scrollbar-hide/1.1.7:
     resolution: {integrity: sha512-X324n9OtpTmOMqEgDUEA/RgLrNfBF/jwJdctaPZDzB3mppxJk7TLIDmOreEDm1Bq4R9LSPu4Epf8VSdovNU+iA==}
