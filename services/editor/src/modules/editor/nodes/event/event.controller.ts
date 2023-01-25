@@ -3,7 +3,8 @@ import { Node } from "reactflow";
 
 import { nodes } from "~services/database";
 
-import { EventNodeData, getEventType } from "./event.node";
+import { EventNodeData } from "./event.node";
+import { generateEvent } from "./generators/ledger";
 
 export class EventNodeController extends Controller<{}, Node<EventNodeData>> {
   setType(e: any) {
@@ -73,7 +74,7 @@ export class EventNodeController extends Controller<{}, Node<EventNodeData>> {
         { id: node.id },
         {
           $set: {
-            "data.monaco.model": getEventType(node.data.config)
+            "data.monaco.model": generateEvent(node.data.config)
           }
         }
       );

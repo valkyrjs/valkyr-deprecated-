@@ -14,11 +14,7 @@ export function addReducerNode(): void {
         state: [],
         code: format(`
         async function reduce(state: State, event: EventRecord): Promise<State> {
-          switch (event.type) {
-            default: {
-              return state;
-            }
-          }
+          // write your reducer logic here ...
         };
         `)
       },

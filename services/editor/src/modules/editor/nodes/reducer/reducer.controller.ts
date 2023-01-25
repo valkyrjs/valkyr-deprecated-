@@ -36,6 +36,21 @@ export class ReducerNodeController extends Controller<{}, Node<ReducerNodeData>>
             enabled: false
           }
         });
+
+        let timeout: any;
+        this.#editor.onDidChangeModelContent((e) => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            nodes.updateOne(
+              { id: this.props.id },
+              {
+                $set: {
+                  "data.config.code": this.#editor?.getValue()
+                }
+              }
+            );
+          }, 500);
+        });
       }
     });
   }
