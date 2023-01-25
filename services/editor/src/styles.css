@@ -44,6 +44,17 @@ body {
       @apply bg-darker-600;
     }
   }
+  .react-flow__controls {
+    @apply flex flex-col gap-2;
+  }
+  .react-flow__controls-button {
+    @apply bg-transparent;
+    @apply text-pink;
+    @apply border border-pink rounded border-solid border-opacity-50 hover:bg-pink hover:bg-opacity-20;
+    > svg {
+      @apply fill-pink;
+    }
+  }
 
   form {
     .form-actions {

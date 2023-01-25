@@ -30,7 +30,7 @@ export const EditorView = EditorController.view(
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
           >
-            <Controls />
+            <Controls showInteractive={false} />
             <Background />
           </ReactFlow>
         </div>
