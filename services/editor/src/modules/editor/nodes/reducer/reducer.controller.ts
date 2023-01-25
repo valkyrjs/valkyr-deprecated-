@@ -5,7 +5,8 @@ import { Edge, Node } from "reactflow";
 import { edges, nodes } from "~services/database";
 import { format } from "~services/prettier";
 
-import { EventNodeData, generateEventRecords, generateLedger } from "../event/event.node";
+import { EventNodeData } from "../event/event.node";
+import { generateEventRecord, generateLedger } from "../event/generators/ledger";
 import { getStateType, ReducerNodeData } from "./reducer.node";
 
 export class ReducerNodeController extends Controller<{}, Node<ReducerNodeData>> {
@@ -124,7 +125,7 @@ export class ReducerNodeController extends Controller<{}, Node<ReducerNodeData>>
     const model = format(`
       ${generateLedger()}
       ${generateReducerEvents(this.#inputNodes)}
-      ${generateEventRecords(this.#inputNodes.map((node) => node.data.config.name))}
+      ${generateEventRecord(this.#inputNodes.map((node) => node.data.config.name))}
       ${this.props.data.monaco.model}
     `);
     if (this.#model !== undefined) {
