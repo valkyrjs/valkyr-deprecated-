@@ -1,11 +1,9 @@
 import { Disclosure } from "@headlessui/react";
-import { Plus, XSquare } from "phosphor-react";
 import { Handle, Position } from "reactflow";
 
 import { BlockHeader } from "~components/block-header";
 import { Editable } from "~components/editable";
-import { Select } from "~components/select";
-import { UnstyledButton } from "~components/unstyled-button";
+import { TypeFields } from "~components/type-fields";
 
 import { EventNodeController } from "./event.controller";
 
@@ -25,39 +23,12 @@ export const EventNode = EventNodeController.view(
                 }
               />
               <Disclosure.Panel className="text-gray-500">
-                <section className="p-2 flex flex-col gap-2">
-                  <form className="flex flex-col gap-1">
-                    {data.config.data.map(([key], index) => (
-                      <div key={index} className="flex flex-row gap-2">
-                        <UnstyledButton
-                          className="text-darker-700 hover:text-darker-600"
-                          onClick={removeDataField(index)}
-                        >
-                          <XSquare size={16} />
-                        </UnstyledButton>
-                        <div className="form-control">
-                          <input
-                            id={`data.${index}`}
-                            name={`data.${index}`}
-                            defaultValue={key}
-                            onBlur={setDataField(index)}
-                          />
-                        </div>
-                        <div className="form-control">
-                          <Select />
-                        </div>
-                      </div>
-                    ))}
-                  </form>
-                  <div className="form-actions">
-                    <UnstyledButton
-                      className="w-full text-darker-500 hover:text-light flex justify-start items-center text-xs"
-                      onClick={addDataField}
-                    >
-                      <Plus size={8} /> more
-                    </UnstyledButton>
-                  </div>
-                </section>
+                <TypeFields
+                  data={data.config.data}
+                  addField={addDataField}
+                  setFieldKey={setDataField}
+                  removeField={removeDataField}
+                />
               </Disclosure.Panel>
             </div>
           )}
