@@ -1,4 +1,4 @@
-import { ArrowsOutCardinal, Plus } from "phosphor-react";
+import { ArrowsOutCardinal, Plus, XSquare } from "phosphor-react";
 import { Handle, Position } from "reactflow";
 
 import { Select } from "~components/select";
@@ -19,7 +19,9 @@ export const EventNode = EventNodeController.view(
             <form className="flex flex-col gap-1 font-mono text-xs">
               {data.config.data.map(([key], index) => (
                 <div key={index} className="flex flex-row gap-2">
-                  <UnstyledButton onClick={removeDataField(index)}>X</UnstyledButton>
+                  <UnstyledButton className="text-gray-300 hover:text-gray-400" onClick={removeDataField(index)}>
+                    <XSquare size={16} />
+                  </UnstyledButton>
                   <div className="form-control">
                     <input
                       id={`data.${index}`}
