@@ -6,6 +6,7 @@ export function addReducerNode(): void {
   db.collection("nodes").insertOne({
     type: "reducer",
     position: { x: 0, y: 0 },
+    dragHandle: ".node-drag-handle",
     data: {
       type: "reducer",
       config: {

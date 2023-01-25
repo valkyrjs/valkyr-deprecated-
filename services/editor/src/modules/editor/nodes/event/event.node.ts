@@ -5,7 +5,8 @@ import { toType } from "~services/types";
 export function addEventNode(): void {
   db.collection("nodes").insertOne({
     type: "event",
-    position: { x: 0, y: 0 },
+    position: { x: 20, y: 80 },
+    dragHandle: ".node-drag-handle",
     data: {
       type: "event",
       config: {

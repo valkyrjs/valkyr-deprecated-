@@ -5,6 +5,7 @@ export function addTypeNode(): void {
   db.collection("nodes").insertOne({
     type: "type",
     position: { x: 0, y: 0 },
+    dragHandle: ".node-drag-handle",
     data: {
       type: "type",
       config: {

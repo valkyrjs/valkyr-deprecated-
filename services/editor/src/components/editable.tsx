@@ -1,3 +1,4 @@
+import { Pencil, PencilSimple } from "phosphor-react";
 import React, { useEffect, useRef, useState } from "react";
 
 export function Editable({ name, value, onChange, placeholder, ...props }) {
@@ -36,12 +37,13 @@ export function Editable({ name, value, onChange, placeholder, ...props }) {
         </div>
       ) : (
         <div
-          className={`rounded py-1 px-1.5 text-light border border-transparent leading-tight whitespace-pre-wrap hover:shadow-outline w-full`}
+          className={`rounded py-1 px-1.5 text-light border border-transparent leading-tight whitespace-pre-wrap hover:shadow-outline w-full flex items-center justify-between`}
           onClick={() => setEditing(true)}
         >
           <span className={`${value ? "text-light" : "text-light-200"}`}>
             {value || placeholder || "Editable content"}
           </span>
+          <PencilSimple size={10} className="text-darker-700 hover:text-darker-600" />
         </div>
       )}
     </section>
