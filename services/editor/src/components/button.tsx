@@ -15,7 +15,7 @@ export function Button({
   ...other
 }: ButtonProps) {
   const cx = [
-    `border-transparent m-0 py-0 shrink-0 ring-0 focus:ring-0 focus:outline-none leading-none flex flex-row gap-2 justify-center items-center transition-colors duration-200 z-100`,
+    `m-0 py-0 shrink-0 ring-0 focus:ring-0 focus:outline-none leading-none flex flex-row gap-2 justify-center items-center transition-colors duration-200 z-100`,
     getSize(sized),
     getColors(variant, outline, disabled)
   ].join(" ");
@@ -47,22 +47,24 @@ function getSize(size: ButtonSize): string {
 
 function getColors(variant: ButtonVariant, outline: boolean, disabled: boolean): string {
   if (disabled) {
-    return outline ? "bg-transparent border-gray-200 text-gray-400" : "bg-gray-200 border-gray-200 text-gray-400";
+    return outline
+      ? "bg-transparent border-darker-600 text-darker-400"
+      : "bg-darker-700 border-darker-700 text-darker-400";
   }
   switch (variant) {
     case "cta": {
       return outline
         ? "bg-transparent border-cyan text-cyan hover:bg-cyan-50 hover:border-cyan-500 hover:bg-opacity-10"
-        : "bg-cta-static border-cta-static text-static-white hover:bg-cta-static-hover hover:border-cta-static-hover";
+        : "bg-cyan border-cyan text-light hover:bg-cyan-50 hover:border-cyan-50";
     }
     case "primary":
       return outline
         ? "bg-transparent border-pink text-pink hover:bg-pink-50 hover:border-pink-500 hover:bg-opacity-10"
-        : "bg-primary-default border-primary-default text-white hover:bg-primary-hover hover:border-primary-hover";
+        : "bg-pink border-pink text-white hover:bg-pink-50 hover:border-pink-50";
     case "negative":
       return outline
         ? "bg-transparent border-red text-red hover:bg-red-50 hover:border-red-500 hover:bg-opacity-10"
-        : "bg-negative-default border-negative-default text-static-white hover:bg-negative-hover hover:border-negative-hover";
+        : "bg-red border-red text-white hover:bg-red-400 hover:border-red-400";
     case "secondary":
     default:
       return "";

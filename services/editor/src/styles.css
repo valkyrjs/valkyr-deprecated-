@@ -57,7 +57,7 @@ body {
       label {
         @apply block;
         @apply text-xs;
-        @apply text-gray-600;
+        @apply text-darker-600;
         &.checkbox {
           @apply flex gap-3 items-center justify-start;
         }
@@ -91,27 +91,5 @@ body {
         }
       }
     }
-  }
-}
-
-input.block-title {
-  @apply rounded;
-  @apply shadow-sm;
-  @apply w-full;
-  @apply px-1.5;
-  @apply py-1;
-  @apply placeholder-gray-300;
-  @apply border;
-  @apply border-gray-200;
-  @apply text-left;
-  @apply focus:ring;
-  @apply focus:outline-none;
-  @apply bg-transparent;
-  @apply text-black;
-  @apply focus:ring-0;
-  @apply focus:border-cta-default;
-  @apply transition-colors;
-  &[type="checkbox"] {
-    @apply bg-gray-100 border border-gray-300 h-5 w-5 rounded;
   }
 }

@@ -22,7 +22,7 @@ export const TypeNode = TypeNodeController.view(({ props: { data } }) => {
           </div>
         </section>
       </div>
-      <Handle className="bg-gray-200" type="source" position={Position.Right} />
+      <Handle type="source" position={Position.Right} />
     </div>
   );
 });

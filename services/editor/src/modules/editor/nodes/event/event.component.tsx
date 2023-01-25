@@ -22,7 +22,7 @@ export const EventNode = EventNodeController.view(
                   <Editable value={data.config.name} onChange={setType} name="type" placeholder="Add event name" />
                 }
               />
-              <Disclosure.Panel className="text-gray-500">
+              <Disclosure.Panel>
                 <TypeFields
                   data={data.config.data}
                   addField={addDataField}
@@ -33,7 +33,7 @@ export const EventNode = EventNodeController.view(
             </div>
           )}
         </Disclosure>
-        <Handle className="bg-gray-200" type="source" position={Position.Right} />
+        <Handle type="source" position={Position.Right} />
       </div>
     );
   }

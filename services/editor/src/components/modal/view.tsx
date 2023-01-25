@@ -35,7 +35,7 @@ export const ModalPortal = ModalController.view(({ state: { show, mode, modal },
         leave="transition easy-in duration-95"
         leaveFrom="transform opacity-100"
         leaveTo="transform opacity-0"
-        className="absolute w-full h-screen inset-0 bg-gray-100 bg-opacity-75 z-[9996]"
+        className="absolute w-full h-screen inset-0  bg-back bg-opacity-90 z-[9996]"
         onClick={closeModal}
       ></Transition.Child>
       <Transition.Child
@@ -59,14 +59,14 @@ export const Modal: FunctionComponent<PropsWithChildren<Props>> = ({ children, t
   }
 
   return (
-    <div className="bg-white">
-      <div className="flex items-center justify-between w-full py-2.5 px-6 bg-black-static border-b border-gray-300">
-        <div className="text-sm uppercase text-gray-600">{title}</div>
+    <div className="bg-darker">
+      <div className="flex items-center justify-between w-full py-2.5 px-6 bg-black-static border-b border-darker-800">
+        <div className="text-sm uppercase text-light">{title}</div>
         <UnstyledButton onClick={closeModal}>
-          <X className="w-4 text-gray-400 hover:text-gray-700" />
+          <X className="w-4 text-darker-700 hover:text-darker-600" />
         </UnstyledButton>
       </div>
-      <div className="px-6 py-6">{children}</div>
+      <div className="px-6 py-6 text-light">{children}</div>
     </div>
   );
 };
