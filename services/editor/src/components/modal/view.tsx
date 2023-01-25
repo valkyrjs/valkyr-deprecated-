@@ -60,7 +60,7 @@ export const Modal: FunctionComponent<PropsWithChildren<Props>> = ({ children, t
 
   return (
     <div className="bg-darker">
-      <div className="flex items-center justify-between w-full py-2.5 px-6 bg-black-static border-b border-darker-800">
+      <div className="flex items-center justify-between w-full py-2.5 px-6 bg-black border-b border-darker-800">
         <div className="text-sm uppercase text-light">{title}</div>
         <UnstyledButton onClick={closeModal}>
           <X className="w-4 text-darker-700 hover:text-darker-600" />

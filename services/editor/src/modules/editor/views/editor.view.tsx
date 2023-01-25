@@ -1,16 +1,17 @@
 import "reactflow/dist/style.css";
 
-import { Plus } from "phosphor-react";
+import { CaretDoubleLeft, Plus } from "phosphor-react";
 import ReactFlow, { Background, Controls } from "reactflow";
 
 import { Button } from "~components/button";
 import { ModalPortal } from "~components/modal/view";
 
 import { openLibraryModal } from "../library";
+import { Settings } from "../settings/settings.view";
 import { EditorController, nodeTypes } from "./editor.controller";
 
 export const EditorView = EditorController.view(
-  ({ state: { nodes, edges }, actions: { setInstance, onNodePositionChanged, onConnect } }) => {
+  ({ state: { nodes, edges, asideOpen }, actions: { toggleAside, setInstance, onNodePositionChanged, onConnect } }) => {
     return (
       <>
         <div className="w-full h-screen text-light bg-back">
@@ -18,6 +19,11 @@ export const EditorView = EditorController.view(
             <Button variant="primary" outline type="button" onClick={openLibraryModal}>
               <Plus size={10} />
               block
+            </Button>
+          </div>
+          <div className="absolute right-4 top-4 z-10">
+            <Button variant="primary" outline type="button" onClick={() => toggleAside(true)}>
+              <CaretDoubleLeft size={16} />
             </Button>
           </div>
           <ReactFlow
@@ -33,6 +39,7 @@ export const EditorView = EditorController.view(
             <Controls showInteractive={false} />
             <Background />
           </ReactFlow>
+          <Settings isOpen={asideOpen} setClosed={() => toggleAside(false)} />
         </div>
         <ModalPortal />
       </>

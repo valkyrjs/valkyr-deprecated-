@@ -16,6 +16,7 @@ export const nodeTypes = {
 export class EditorController extends Controller<{
   nodes: Node[];
   edges: Edge[];
+  asideOpen: boolean;
 }> {
   #instance?: ReactFlowInstance;
 
@@ -27,12 +28,17 @@ export class EditorController extends Controller<{
           nodes: list
         };
       }),
-      edges: await edges.find()
+      edges: await edges.find(),
+      asideOpen: false
     };
   }
 
   setInstance(instance: ReactFlowInstance) {
     this.#instance = instance;
+  }
+
+  toggleAside(state: boolean) {
+    this.setState("asideOpen", state);
   }
 
   onNodePositionChanged(_: any, node: Node): void {
