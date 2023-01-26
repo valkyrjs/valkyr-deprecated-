@@ -38,7 +38,7 @@ export class ReducerNodeController extends Controller<
             ${generateLedger()}
             ${generateReducerEvents(events)}
             ${generateEventRecord(events.map((node) => node.data.config.name))}
-            ${state.data.monaco.model ?? "interface State = {};"}
+            ${state?.data.monaco.model ?? "interface State = {};"}
           `)
         );
       })
