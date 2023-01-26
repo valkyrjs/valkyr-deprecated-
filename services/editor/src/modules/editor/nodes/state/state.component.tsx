@@ -5,10 +5,10 @@ import { BlockHeader } from "~components/block-header";
 import { Editable } from "~components/editable";
 import { TypeFields } from "~components/type-fields";
 
-import { EventNodeController } from "./event.controller";
+import { StateNodeController } from "./state.controller";
 
-export const EventView = EventNodeController.view(
-  ({ state: { node }, actions: { setType, addDataField, setDataField, removeDataField } }) => {
+export const StateView = StateNodeController.view(
+  ({ state: { node }, actions: { setName, addDataField, setDataField, removeDataField } }) => {
     return (
       <div className="relative">
         <Disclosure defaultOpen={true}>
@@ -16,13 +16,13 @@ export const EventView = EventNodeController.view(
             <div className="bg-darker border rounded-sm text-xs border-darker-800 min-w-[390px] font-mono">
               <BlockHeader
                 open={open}
-                color="orange"
-                symbol="E"
+                color="magenta"
+                symbol="S"
                 content={
-                  <Editable value={node.data.config.name} onChange={setType} name="type" placeholder="Add event name" />
+                  <Editable value={node.data.config.name} onChange={setName} name="name" placeholder="Add state name" />
                 }
               />
-              <Disclosure.Panel>
+              <Disclosure.Panel className="text-gray-500">
                 <TypeFields
                   data={node.data.config.data}
                   addField={addDataField}
@@ -33,12 +33,12 @@ export const EventView = EventNodeController.view(
             </div>
           )}
         </Disclosure>
-        <Handle type="source" position={Position.Right} />
+        <Handle className="bg-gray-200" type="source" position={Position.Right} />
       </div>
     );
   }
 );
 
-export function EventNode({ id }: Node) {
-  return <EventView id={id} />;
+export function StateNode({ id }: Node) {
+  return <StateView id={id} />;
 }

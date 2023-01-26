@@ -5,12 +5,14 @@ import { edges, nodes } from "~services/database";
 
 import { EventNode } from "../nodes/event/event.component";
 import { ReducerNode } from "../nodes/reducer/reducer.component";
+import { StateNode } from "../nodes/state/state.component";
 import { TypeNode } from "../nodes/type/type.component";
 
 export const nodeTypes = {
   event: EventNode,
   reducer: ReducerNode,
-  type: TypeNode
+  type: TypeNode,
+  state: StateNode
 };
 
 export class EditorController extends Controller<{

@@ -17,8 +17,10 @@ export function BlockHeader({
       className={`flex w-full gap-2 text-darker-700 items-center justify-between ${
         open && "border-b border-b-darker-800"
       } py-1 px-2`}
+      style={{ height: 35 }}
     >
-      <div className="node-drag-handle h-full text-darker-400 hover:text-darker-200">
+      <div className="flex h-full items-center text-darker-400 hover:text-darker-200">
+        <div className="node-drag-handle absolute" style={{ top: 0, left: 0, width: 35, height: 35 }}></div>
         <DotsSixVertical size={16} />
       </div>
       <div className={`border ${getColor(color)} rounded w-5 h-5 flex items-center justify-center`}>{symbol}</div>

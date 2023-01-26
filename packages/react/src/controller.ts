@@ -2,7 +2,7 @@ import type { Collection, SubscribeToMany, SubscribeToSingle, SubscriptionOption
 import type { Observable, Subject, Subscription } from "rxjs";
 
 import { ControllerRefs } from "./controller.refs";
-import { ControllerClass, ReactComponent } from "./controller.types";
+import { ControllerClass, ReactComponent, ReservedPropertyMembers } from "./controller.types";
 import { makeControllerView, ViewOptions } from "./controller.view";
 import { Debounce } from "./debounce";
 
@@ -39,7 +39,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    * @param state    - Default state to assign to controller.
    * @param pushData - Push data handler method.
    */
-  constructor(readonly view: ReactComponent<any, any>, readonly setView: Function) {
+  constructor(readonly view: ReactComponent<Props, any>, readonly setView: Function) {
     this.query = this.query.bind(this);
     this.subscribe = this.subscribe.bind(this);
     this.setState = this.setState.bind(this);
@@ -57,7 +57,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    * @param component - Component to render.
    * @param options   - View options.
    */
-  static view<T extends ControllerClass, Props = InstanceType<T>["props"]>(
+  static view<T extends ControllerClass, Props extends {} = InstanceType<T>["props"]>(
     this: T,
     component: ReactComponent<Props, T>,
     options?: Partial<ViewOptions<Props>>
@@ -71,7 +71,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    * @param component - Component to render.
    * @param setView   - Method to provide a resolved view component.
    */
-  static make<T extends ControllerClass, Props = InstanceType<T>["props"]>(
+  static make<T extends ControllerClass, Props extends {} = InstanceType<T>["props"]>(
     this: T,
     component: ReactComponent<Props, T>,
     setView: Function
@@ -233,7 +233,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
         if (this.#isStateKey(next)) {
           this.setState(next, value);
         } else {
-          (next as any)(value).then((state) => {
+          (next as any)(value).then((state: State) => {
             if (state !== undefined) {
               this.setState(state);
             }
@@ -305,7 +305,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    *
    * @returns List of actions.
    */
-  toActions(): unknown {
+  toActions(): Omit<this, ReservedPropertyMembers> {
     const actions: any = {};
     for (const name of Object.getOwnPropertyNames(this.constructor.prototype)) {
       if (name !== "constructor" && name !== "resolve") {

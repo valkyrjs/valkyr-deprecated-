@@ -26,12 +26,12 @@ export function makeControllerView<Controller extends ControllerClass>(controlle
   ): FunctionComponent<Props> {
     const memoize = getMemoizeHandler(options?.memoize);
     const render = {
-      loading: getLoadingComponent(options),
-      error: getErrorComponent(options)
+      loading: getLoadingComponent<Props>(options),
+      error: getErrorComponent<Props>(options)
     };
 
     const container: FunctionComponent<PropsWithChildren<Props>> = (props) => {
-      const { error, view } = useView(controller, component, props);
+      const { error, view } = useView<Props, Controller>(controller, component, props);
       if (view === undefined) {
         return render.loading(props);
       }
@@ -61,7 +61,11 @@ export function makeControllerView<Controller extends ControllerClass>(controlle
  |--------------------------------------------------------------------------------
  */
 
-function useView(instance: InstanceType<ControllerClass> | undefined, component: React.FC, props: any) {
+function useView<Props extends {}, Controller extends ControllerClass>(
+  instance: InstanceType<ControllerClass> | undefined,
+  component: ReactComponent<Props, Controller>,
+  props: any
+) {
   const [view, setView] = useState();
 
   const error = useController(instance, component, props, setView);
@@ -115,24 +119,24 @@ export function setLoadingComponent(component: React.FC) {
   options.loading = component;
 }
 
-function getLoadingComponent({ loading }: Partial<ViewOptions<any>> = {}) {
+function getLoadingComponent<Props extends {}>({ loading }: Partial<ViewOptions<any>> = {}) {
   const component = loading ?? options.loading;
   if (component === undefined) {
     return () => null;
   }
-  return (props) => createElement(component, props);
+  return (props: Props) => createElement(component, props);
 }
 
 export function setErrorComponent(component: React.FC) {
   options.error = component;
 }
 
-function getErrorComponent({ error }: Partial<ViewOptions<any>> = {}) {
+function getErrorComponent<Props extends {}>({ error }: Partial<ViewOptions<any>> = {}) {
   const component = error ?? options.loading;
   if (component === undefined) {
     return () => null;
   }
-  return (props) => createElement(component, props);
+  return (props: Props) => createElement(component, props);
 }
 
 /*
@@ -151,7 +155,7 @@ export function setMemoizeHandler(value: boolean | Memoize<any>) {
   }
 }
 
-function getMemoizeHandler(memoize?: ViewOptions<any>["memoize"]): false | Memoize<any> {
+function getMemoizeHandler(memoize?: ViewOptions<any>["memoize"]): false | Memoize<any> | undefined {
   if (typeof memoize === "function") {
     return memoize;
   }

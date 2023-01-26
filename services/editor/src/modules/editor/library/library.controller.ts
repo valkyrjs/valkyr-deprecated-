@@ -4,6 +4,7 @@ import { closeModal } from "~components/modal";
 
 import { addEventNode } from "../nodes/event/event.node";
 import { addReducerNode } from "../nodes/reducer/reducer.node";
+import { addStateNode } from "../nodes/state/state.node";
 import { addTypeNode } from "../nodes/type/type.node";
 
 export class LibraryController extends Controller<{
@@ -28,6 +29,11 @@ export class LibraryController extends Controller<{
           name: "type",
           description: "Types are things...",
           add: this.#addBlock(addTypeNode)
+        },
+        {
+          name: "state",
+          description: "State are things...",
+          add: this.#addBlock(addStateNode)
         }
       ]
     };

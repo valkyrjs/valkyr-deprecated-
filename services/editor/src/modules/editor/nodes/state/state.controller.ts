@@ -1,25 +1,24 @@
 import { Controller } from "@valkyr/react";
 import { Node } from "reactflow";
 
-import { nodes } from "~services/database";
+import { db } from "~services/database";
 
-import { EventNodeData } from "./event.node";
-import { generateEvent } from "./generators/ledger";
+import { generateState, StateNodeData } from "./state.node";
 
-export class EventNodeController extends Controller<
+export class StateNodeController extends Controller<
   {
-    node: Node<EventNodeData>;
+    node: Node<StateNodeData>;
   },
   { id: string }
 > {
   async onInit() {
     return {
-      node: await this.query(nodes, { where: { id: this.props.id }, limit: 1 }, "node")
+      node: await this.query(db.collection("nodes"), { where: { id: this.props.id }, limit: 1 }, "node")
     };
   }
 
-  setType(e: any) {
-    nodes
+  setName(e: any) {
+    db.collection("nodes")
       .updateOne(
         { id: this.props.id },
         {
@@ -30,7 +29,7 @@ export class EventNodeController extends Controller<
   }
 
   addDataField() {
-    nodes.updateOne(
+    db.collection("nodes").updateOne(
       {
         id: this.props.id
       },
@@ -44,7 +43,7 @@ export class EventNodeController extends Controller<
 
   setDataField(index: number) {
     return (e: any) => {
-      nodes
+      db.collection("nodes")
         .updateOne(
           { id: this.props.id },
           {
@@ -57,7 +56,7 @@ export class EventNodeController extends Controller<
 
   removeDataField(index: number) {
     return () => {
-      nodes
+      db.collection("nodes")
         .updateOne(
           {
             id: this.props.id
@@ -79,13 +78,13 @@ export class EventNodeController extends Controller<
   }
 
   #generateMonacoModel = async (): Promise<void> => {
-    const node = await nodes.findById(this.props.id);
+    const node = await db.collection("nodes").findById(this.props.id);
     if (node !== undefined) {
-      nodes.updateOne(
+      db.collection("nodes").updateOne(
         { id: node.id },
         {
           $set: {
-            "data.monaco.model": generateEvent(node.data.config)
+            "data.monaco.model": generateState(node.data.config.data)
           }
         }
       );
