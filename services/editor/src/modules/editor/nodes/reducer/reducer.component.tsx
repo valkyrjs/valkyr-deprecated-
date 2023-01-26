@@ -14,7 +14,7 @@ const ReducerView = ReducerNodeController.view(({ state: { node, model }, action
         {({ open }) => (
           <div className="bg-darker border rounded-sm text-xs border-darker-800 min-w-[390px] font-mono">
             <BlockHeader open={open} color="cyan" symbol="R" content="Reducer" />
-            <Disclosure.Panel className="text-gray-500">
+            <Disclosure.Panel>
               <div
                 className="border-b border-b-darker-800"
                 style={{

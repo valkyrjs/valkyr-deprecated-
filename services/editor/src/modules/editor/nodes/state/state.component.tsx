@@ -22,7 +22,7 @@ export const StateView = StateNodeController.view(
                   <Editable value={node.data.config.name} onChange={setName} name="name" placeholder="Add state name" />
                 }
               />
-              <Disclosure.Panel className="text-gray-500">
+              <Disclosure.Panel>
                 <TypeFields
                   data={node.data.config.data}
                   addField={addDataField}
