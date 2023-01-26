@@ -1,35 +1,28 @@
 import { db } from "~services/database";
 import { format } from "~services/prettier";
 
+import { NodeTypeCache, NodeTypeFields } from "../node.utils";
+
 export function addTypeNode(): void {
   db.collection("nodes").insertOne({
     type: "type",
-    position: { x: 0, y: 0 },
+    position: { x: 20, y: 80 },
     dragHandle: ".node-drag-handle",
-    data: {
-      type: "type",
-      config: {
-        name: "Foo",
-        data: {}
-      },
-      monaco: {
-        model: format(`
-          type Foo = {};
-        `)
-      }
-    }
+    data: getTypeData()
   });
 }
 
-export type TypeNodeData = {
-  type: "type";
-  config: {
-    name: string;
-    data: {
-      [key: string]: string;
-    };
+function getTypeData(): TypeData {
+  return {
+    name: "Foo",
+    data: [["", "p:string"]],
+    cache: format(`
+      type Foo = {};
+    `)
   };
-  monaco: {
-    model: string;
-  };
-};
+}
+
+export type TypeData = {
+  name: string;
+  data: NodeTypeFields;
+} & NodeTypeCache;

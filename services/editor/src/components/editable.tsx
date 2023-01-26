@@ -31,8 +31,8 @@ export function Editable({ name, value, onChange, placeholder, ...props }) {
             name={name}
             className="shadow m-0 bg-transparent border border-darker-700 w-full py-1 px-1.5 text-light leading-tight focus:outline-none focus:shadow-outline"
             placeholder={placeholder}
-            value={value}
-            onChange={onChange}
+            defaultValue={value}
+            onBlur={onChange}
           />
         </div>
       ) : (

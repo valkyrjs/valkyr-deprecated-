@@ -6,29 +6,22 @@ export function addReducerNode(): void {
     type: "reducer",
     position: { x: 0, y: 0 },
     dragHandle: ".node-drag-handle",
-    data: {
-      type: "reducer",
-      config: {
-        events: [],
-        state: [],
-        code: format(`
-          async function reduce(state: State, event: EventRecord): Promise<State> {
-            // write your reducer logic here ...
-          };
-        `)
-      }
-    }
+    data: getReducerData()
   });
 }
 
-export type ReducerNodeData = {
-  type: "reducer";
-  config: {
-    events: string[];
-    state: [string, string][];
-    code: string;
+function getReducerData(): ReducerData {
+  return {
+    name: "reducer",
+    value: format(`
+      async function reduce(state: State, event: EventRecord): Promise<State> {
+        // write your reducer logic here ...
+      };
+    `)
   };
-  monaco: {
-    model: string;
-  };
+}
+
+export type ReducerData = {
+  name: string;
+  value: string;
 };

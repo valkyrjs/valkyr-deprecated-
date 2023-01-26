@@ -1,20 +1,10 @@
 import { Listbox, Transition } from "@headlessui/react";
 import { CaretDown, Check } from "phosphor-react";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 
-const types = [
-  { id: 1, name: "string" },
-  { id: 2, name: "number" },
-  { id: 3, name: "boolean" }
-];
+import { SelectController } from "./select.controller";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
-export function Select() {
-  const [selected, setSelected] = useState(types[0]);
-
+export const Select = SelectController.view(({ state: { types, selected }, actions: { setSelected } }) => {
   return (
     <Listbox value={selected} onChange={setSelected}>
       {({ open }) => (
@@ -25,7 +15,6 @@ export function Select() {
               <CaretDown className="h-5 w-5 text-darker-700 hover:text-darker-600" aria-hidden="true" />
             </span>
           </Listbox.Button>
-
           <Transition
             show={open}
             as={Fragment}
@@ -45,12 +34,11 @@ export function Select() {
                   }
                   value={t}
                 >
-                  {({ selected, active }) => (
+                  {({ selected }) => (
                     <>
                       <span className={classNames(selected ? "text-cyan" : "text-light-200", "block truncate")}>
                         {t.name}
                       </span>
-
                       {selected ? (
                         <span className="text-cyan absolute inset-y-0 right-0 flex items-center pr-4">
                           <Check className="h-5 w-5" aria-hidden="true" />
@@ -66,4 +54,8 @@ export function Select() {
       )}
     </Listbox>
   );
+});
+
+function classNames(...classes: any[]) {
+  return classes.filter(Boolean).join(" ");
 }

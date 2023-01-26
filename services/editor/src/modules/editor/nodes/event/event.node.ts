@@ -1,35 +1,30 @@
 import { db } from "~services/database";
 import { format } from "~services/prettier";
 
+import { NodeTypeCache, NodeTypeFields } from "../node.utils";
+
 export function addEventNode(): void {
   db.collection("nodes").insertOne({
     type: "event",
     position: { x: 20, y: 80 },
     dragHandle: ".node-drag-handle",
-    data: {
-      type: "event",
-      config: {
-        name: "FooCreated",
-        data: [["", "p:string"]],
-        meta: []
-      },
-      monaco: {
-        model: format(`
-          type FooCreated = LedgerEvent<"FooCreated">;
-        `)
-      }
-    }
+    data: getEventData()
   });
 }
 
-export type EventNodeData = {
-  type: "event";
-  config: {
-    name: string;
-    data: [string, string][];
-    meta: [string, string][];
+function getEventData(): EventData {
+  return {
+    name: "Foo",
+    data: [["", "p:string"]],
+    meta: [],
+    cache: format(`
+      type FooCreated = LedgerEvent<"FooCreated">;
+    `)
   };
-  monaco: {
-    model: string;
-  };
-};
+}
+
+export type EventData = {
+  name: string;
+  data: NodeTypeFields;
+  meta: NodeTypeFields;
+} & NodeTypeCache;

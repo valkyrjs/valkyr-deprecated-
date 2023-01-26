@@ -6,14 +6,14 @@ import { CodeEditor } from "~components/code-editor";
 
 import { ReducerNodeController } from "./reducer.controller";
 
-const ReducerView = ReducerNodeController.view(({ state: { node, model }, actions: { onChange } }) => {
+const ReducerView = ReducerNodeController.view(({ state: { node, model }, actions: { onChange, onRemove } }) => {
   return (
     <div className="relative">
       <Handle type="target" position={Position.Left} />
       <Disclosure defaultOpen={true}>
         {({ open }) => (
           <div className="bg-darker border rounded-sm text-xs border-darker-800 min-w-[390px] font-mono">
-            <BlockHeader open={open} color="cyan" symbol="R" content="Reducer" />
+            <BlockHeader open={open} color="cyan" symbol="R" content="Reducer" onRemove={onRemove} />
             <Disclosure.Panel>
               <div
                 className="border-b border-b-darker-800"
@@ -22,7 +22,7 @@ const ReducerView = ReducerNodeController.view(({ state: { node, model }, action
                   height: 600
                 }}
               >
-                <CodeEditor defaultValue={node.data.config.code} model={model} onChange={onChange} />
+                <CodeEditor defaultValue={node.data.value} model={model} onChange={onChange} />
               </div>
             </Disclosure.Panel>
           </div>

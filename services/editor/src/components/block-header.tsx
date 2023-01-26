@@ -1,16 +1,20 @@
 import { Disclosure } from "@headlessui/react";
-import { DotsSixVertical, Eye, EyeClosed } from "phosphor-react";
+import { DotsSixVertical, Eye, EyeClosed, XSquare } from "phosphor-react";
+
+import { UnstyledButton } from "./unstyled-button";
 
 export function BlockHeader({
   open,
   color,
   symbol,
-  content
+  content,
+  onRemove
 }: {
   open: boolean;
   color: string;
   symbol: string;
   content: string | JSX.Element;
+  onRemove?: () => void;
 }) {
   return (
     <header
@@ -28,12 +32,17 @@ export function BlockHeader({
       <Disclosure.Button className="w-7 text-darker-400">
         {open ? <Eye size={16} /> : <EyeClosed size={16} />}
       </Disclosure.Button>
+      <UnstyledButton className="text-darker-700 hover:text-darker-600" onClick={onRemove}>
+        <XSquare size={16} />
+      </UnstyledButton>
     </header>
   );
 }
 
 function getColor(color: string): string {
   switch (color) {
+    case "green":
+      return `border-green text-green`;
     case "orange":
       return `border-orange text-orange`;
     case "cyan":

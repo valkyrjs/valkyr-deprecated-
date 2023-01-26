@@ -38,5 +38,5 @@ function toPrimitiveType(type: string, value?: string): string {
 }
 
 function toCustomType(type: string): string {
-  return `Type.${type}`;
+  return type;
 }

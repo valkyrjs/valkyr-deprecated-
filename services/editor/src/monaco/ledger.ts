@@ -1,8 +1,3 @@
-import { format } from "~services/prettier";
-import { toType } from "~services/types";
-
-import type { EventNodeData } from "../event.node";
-
 const event = `
   type LedgerEvent<Type extends string = string, Data extends {} = Empty, Meta extends {} = Empty> = {
     /**
@@ -102,51 +97,13 @@ const empty = `
   type Empty = Record<string, never>;
 `;
 
-export function generateLedger(): string {
+export function getLedgerModel(): string {
   return `
     ${ledger.event}
     ${ledger.eventStatus}
     ${ledger.eventRecord}
     ${ledger.empty}
   `;
-}
-
-export function generateEvent(event: EventNodeData["config"]): string {
-  const data = getEventRecord(event.data);
-  const meta = getEventRecord(event.meta);
-  if (data.length === 0 && meta.length === 0) {
-    return format(`type ${event.name} = LedgerEvent<"${event.name}">;`);
-  }
-  if (data.length > 0 && meta.length === 0) {
-    return format(`type ${event.name} = LedgerEvent<"${event.name}",Required<{${data.join("")}}>>`);
-  }
-  if (data.length === 0 && meta.length > 0) {
-    return format(`type ${event.name} = LedgerEvent<"${event.name}",{},Required<{${meta.join("")}}>>`);
-  }
-  if (data.length > 0 && meta.length > 0) {
-    return format(
-      `type ${event.name} = LedgerEvent<"${event.name}",Required<{${data.join("")}}>,Required<{${meta.join("")}}>>`
-    );
-  }
-  return "";
-}
-
-export function generateEventRecord(events: string[]): string {
-  if (events.length === 0) {
-    return "";
-  }
-  return `type EventRecord = ${events.map((name) => `LedgerEventRecord<${name}>`).join(" | ")};`;
-}
-
-function getEventRecord(record: [string, string][]): string[] {
-  const result = [];
-  for (const [key, type] of record) {
-    if (key === "") {
-      continue; // do not add empty keys
-    }
-    result.push(`${key}:${toType(type)};`);
-  }
-  return result;
 }
 
 export const ledger = {
