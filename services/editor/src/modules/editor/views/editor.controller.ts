@@ -1,5 +1,5 @@
 import { Controller } from "@valkyr/react";
-import { Connection, Edge, Node, ReactFlowInstance } from "reactflow";
+import { applyNodeChanges, Connection, Edge, Node, ReactFlowInstance } from "reactflow";
 
 import { db } from "~services/database";
 
@@ -24,10 +24,25 @@ export class EditorController extends Controller<{
 
   async onInit() {
     return {
-      nodes: await this.query(db.collection("nodes"), {}, async (list) => {
-        this.#instance?.addNodes(list);
+      nodes: await this.query(db.collection("nodes"), {}, async (documents, changed, type) => {
+        switch (type) {
+          case "insertOne":
+          case "insertMany": {
+            this.#instance?.addNodes(changed);
+            break;
+          }
+          case "updateOne":
+          case "updateMany": {
+            this.#instance?.setNodes(documents);
+            break;
+          }
+          case "remove": {
+            this.#instance?.deleteElements({ nodes: changed });
+            break;
+          }
+        }
         return {
-          nodes: list
+          nodes: documents
         };
       }),
       edges: await db.collection("edges").find(),

@@ -1,4 +1,4 @@
-import type { Collection, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
+import type { ChangeEvent, Collection, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
 import type { Observable, Subject, Subscription } from "rxjs";
 
 import { ControllerRefs } from "./controller.refs";
@@ -175,12 +175,18 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
   query<C extends Collection, K extends keyof State>(
     collection: C,
     query: QueryMany,
-    next: K | ((value: CollectionType<C>[]) => Promise<Partial<State>>)
+    next:
+      | K
+      | ((
+          documents: CollectionType<C>[],
+          changed: CollectionType<C>[],
+          type: ChangeEvent["type"]
+        ) => Promise<Partial<State>>)
   ): Promise<CollectionType<C>[]>;
   query<C extends Collection, K extends keyof State>(
     collection: C,
     query: Query = {} as Query,
-    next: K | ((value: CollectionType<C>[] | CollectionType<C> | undefined) => Promise<Partial<State>>)
+    next: K | ((...args: any[]) => Promise<Partial<State>>)
   ) {
     let resolved = false;
     this.subscriptions.get(collection)?.unsubscribe();
@@ -188,16 +194,16 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
       const { where, ...options } = query;
       this.subscriptions.set(
         collection.name,
-        collection.subscribe(where, options, (value: any) => {
+        collection.subscribe(where, options, (...args: any[]) => {
           if (this.#isStateKey(next)) {
             if (resolved === true) {
-              this.setState(next, value);
+              this.setState(next, args[0]);
             }
           } else {
-            (next as any)(value).then(this.setState);
+            (next as any)(...args).then(this.setState);
           }
           setTimeout(() => {
-            resolve(value);
+            resolve(args[0]);
             resolved = true;
           }, 0);
         })

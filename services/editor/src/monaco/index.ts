@@ -39,15 +39,13 @@ monaco.editor.createModel(getLedgerModel(), "typescript");
 
 const typeModel = monaco.editor.createModel("", "typescript");
 
-db.collection("nodes")
-  .observe({ type: "type" })
-  .subscribe((nodes) => {
-    typeModel.setValue(
-      format(`
+db.collection("nodes").subscribe({ type: "type" }, {}, (nodes) => {
+  typeModel.setValue(
+    format(`
         ${nodes.map((node) => node.data.cache).join("\n")}
       `)
-    );
-  });
+  );
+});
 
 /*
  |--------------------------------------------------------------------------------

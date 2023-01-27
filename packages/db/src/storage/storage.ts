@@ -149,7 +149,7 @@ export type PartialDocument<D extends Document> = Omit<D, "id"> & {
 
 type Status = "loading" | "ready";
 
-type ChangeEvent =
+export type ChangeEvent =
   | {
       type: "insertOne" | "updateOne";
       data: Document<any>;

@@ -5,6 +5,7 @@ import { IndexedDbStorage } from "./databases/indexed.storage";
 import { MemoryStorage } from "./databases/memory.storage";
 import { observe, observeOne } from "./observe";
 import {
+  ChangeEvent,
   Document,
   InsertResult,
   Options,
@@ -64,21 +65,29 @@ export class Collection<D extends Document = any> {
    */
 
   subscribe(criteria?: RawObject, options?: SubscribeToSingle, next?: (document: D | undefined) => void): Subscription;
-  subscribe(criteria?: RawObject, options?: SubscribeToMany, next?: (documents: D[]) => void): Subscription;
-  subscribe(criteria: RawObject = {}, options?: Options, next?: (value: any) => void): Subscription {
+  subscribe(
+    criteria?: RawObject,
+    options?: SubscribeToMany,
+    next?: (documents: D[], changed: D[], type: ChangeEvent["type"]) => void
+  ): Subscription;
+  subscribe(criteria: RawObject = {}, options?: Options, next?: (...args: any[]) => void): Subscription {
     if (options?.limit === 1) {
-      return this.observeOne(criteria).subscribe({ next });
+      return this.#observeOne(criteria).subscribe({ next });
     }
-    return this.observe(criteria, options).subscribe({ next });
-  }
-
-  observe(criteria: RawObject = {}, options?: Options): Observable<D[]> {
-    return new Observable<D[]>((subscriber) => {
-      return observe(this, criteria, options, (values) => subscriber.next(values as any));
+    return this.#observe(criteria, options).subscribe({
+      next: (value: [D[], D[], ChangeEvent["type"]]) => next?.(...value)
     });
   }
 
-  observeOne(criteria: RawObject = {}): Observable<D | undefined> {
+  #observe(criteria: RawObject = {}, options?: Options): Observable<[D[], D[], ChangeEvent["type"]]> {
+    return new Observable<[D[], D[], ChangeEvent["type"]]>((subscriber) => {
+      return observe(this, criteria, options, (values, changed, type) =>
+        subscriber.next([values, changed, type] as any)
+      );
+    });
+  }
+
+  #observeOne(criteria: RawObject = {}): Observable<D | undefined> {
     return new Observable<D | undefined>((subscriber) => {
       return observeOne(this, criteria, (values) => subscriber.next(values as any));
     });
