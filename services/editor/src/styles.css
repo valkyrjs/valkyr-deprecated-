@@ -55,6 +55,17 @@ body {
       @apply fill-pink;
     }
   }
+  .react-flow__edge {
+    .react-flow__edge-path {
+      @apply stroke-darker-800;
+      @apply stroke-2;
+    }
+    &:hover {
+      .react-flow__edge-path {
+        @apply stroke-darker-600;
+      }
+    }
+  }
 
   form {
     .form-actions {
