@@ -1,3 +1,5 @@
+import { Document } from "@valkyr/db";
+
 import { format } from "~services/prettier";
 
 import { NodeTypeCache, NodeTypeFields } from "../node.utils";
@@ -11,6 +13,8 @@ export function getTypeData(): TypeData {
     `)
   };
 }
+
+export type Type = Document<TypeData>;
 
 export type TypeData = {
   name: string;
