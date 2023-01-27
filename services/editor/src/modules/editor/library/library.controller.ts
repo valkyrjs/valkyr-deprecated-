@@ -99,8 +99,8 @@ async function getNode(type: string) {
         position: await getPosition(type),
         dragHandle: ".node-drag-handle",
         data: getEventData("AccountCreated", [
-          ["email", "string"],
-          ["password", "password"]
+          ["email", "p:string"],
+          ["password", "p:string"]
         ])
       };
     }
