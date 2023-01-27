@@ -2,19 +2,6 @@ import { Controller } from "@valkyr/react";
 import { Connection, Edge, Node, NodeChange, ReactFlowInstance } from "reactflow";
 
 import { db } from "~services/database";
-
-import { EventNode } from "../nodes/event/event.component";
-import { ReducerNode } from "../nodes/reducer/reducer.component";
-import { StateNode } from "../nodes/state/state.component";
-import { TypeNode } from "../nodes/type/type.component";
-
-export const nodeTypes = {
-  event: EventNode,
-  reducer: ReducerNode,
-  state: StateNode,
-  type: TypeNode
-};
-
 export class EditorController extends Controller<{
   nodes: Node[];
   edges: Edge[];
@@ -47,7 +34,29 @@ export class EditorController extends Controller<{
           nodes: documents
         };
       }),
-      edges: await db.collection("edges").find(),
+      edges: await this.query(db.collection("edges"), {}, async (documents, changed, type) => {
+        switch (type) {
+          case "insertOne":
+          case "insertMany": {
+            this.#instance?.addEdges(changed);
+            break;
+          }
+          case "updateOne":
+          case "updateMany": {
+            this.#instance?.setEdges(documents);
+            break;
+          }
+          case "remove": {
+            this.#instance?.deleteElements({ edges: changed });
+            break;
+          }
+        }
+        // TODO: this will resize the view based on elements to ensure everything is visible.
+        // setTimeout(() => this.#instance?.fitView(), 75);
+        return {
+          edges: documents
+        };
+      }),
       asideOpen: false
     };
   }

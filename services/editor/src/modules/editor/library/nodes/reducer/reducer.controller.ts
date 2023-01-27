@@ -4,8 +4,7 @@ import { Node } from "reactflow";
 import { db } from "~services/database";
 import { format } from "~services/prettier";
 
-import { EventData } from "../event/event.node";
-import { getEventRecordCache } from "../node.utils";
+import { getEventDataTypes, getEventNamesRecord, getFieldsInterface } from "../node.utils";
 import { ReducerData } from "./reducer.node";
 
 export class ReducerNodeController extends Controller<
@@ -32,12 +31,21 @@ export class ReducerNodeController extends Controller<
         const nodes = await db.collection("nodes").find({ id: { $in: edges.map((edge) => edge.source) } });
         const events = nodes.filter((node) => node.type === "event");
         const state = nodes.filter((node) => node.type === "state")[0];
+
+        console.log(
+          format(`
+            ${events.map((event) => getEventDataTypes(event.data)).join("\n")}
+            ${getEventNamesRecord(events.map((event) => event.data.name))}
+            ${state ? getFieldsInterface("State", state.data.data) : "interface State {};"}
+          `)
+        );
+
         this.setState(
           "model",
           format(`
-            ${generateReducerEvents(events)}
-            ${getEventRecordCache(events.map((node) => node.data.name))}
-            ${state?.data.cache ?? "interface State {};"}
+            ${events.map((event) => getEventDataTypes(event.data)).join("\n")}
+            ${getEventNamesRecord(events.map((event) => event.data.name))}
+            ${state ? getFieldsInterface("State", state.data.data) : "interface State {};"}
           `)
         );
       })
@@ -59,8 +67,4 @@ export class ReducerNodeController extends Controller<
     await db.collection("edges").remove({ source: this.props.id });
     await db.collection("nodes").remove({ id: this.props.id });
   }
-}
-
-function generateReducerEvents(eventNodes: Node<EventData>[]): string {
-  return eventNodes.map((node) => node.data.cache).join("\n");
 }

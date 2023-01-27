@@ -1,13 +1,13 @@
 import { Disclosure } from "@headlessui/react";
-import { Node } from "reactflow";
+import { Handle, NodeProps, Position } from "reactflow";
 
 import { BlockHeader } from "~components/block-header";
 import { Editable } from "~components/editable";
 import { TypeFields } from "~components/type-fields";
 
-import { TypeNodeController } from "./type.controller";
+import { StateNodeController } from "./state.controller";
 
-export const TypeView = TypeNodeController.view(({ state: { node, data }, actions: { onRemove } }) => {
+export const StateView = StateNodeController.view(({ state: { node, data }, actions: { onRemove } }) => {
   return (
     <div className="relative">
       <Disclosure defaultOpen={true}>
@@ -16,10 +16,10 @@ export const TypeView = TypeNodeController.view(({ state: { node, data }, action
             <BlockHeader
               open={open}
               onRemove={onRemove}
-              color="green"
-              symbol="T"
+              color="magenta"
+              symbol="S"
               content={
-                <Editable value={node.data.name} onChange={data.name} name="name" placeholder="Add event name" />
+                <Editable value={node.data.name} onChange={data.name} name="name" placeholder="Add state name" />
               }
             />
             <Disclosure.Panel>
@@ -34,10 +34,11 @@ export const TypeView = TypeNodeController.view(({ state: { node, data }, action
           </div>
         )}
       </Disclosure>
+      <Handle className="bg-gray-200" type="source" position={Position.Right} />
     </div>
   );
 });
 
-export function TypeNode({ id }: Node) {
-  return <TypeView id={id} />;
+export function StateNode({ id }: NodeProps) {
+  return <StateView id={id} />;
 }

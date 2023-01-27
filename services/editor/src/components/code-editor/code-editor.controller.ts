@@ -53,15 +53,22 @@ export class CodeEditorController extends Controller<
     });
   }
 
-  #loadModel(value?: string) {
-    if (value === undefined && this.#model !== undefined) {
+  #loadModel(model?: string) {
+    if (model === undefined && this.#model !== undefined) {
       this.#model.dispose();
     }
-    if (value !== undefined && this.#model === undefined) {
-      this.#model = monaco.editor.createModel(value, "typescript");
+    if (model !== undefined && this.#model === undefined) {
+      this.#model = monaco.editor.createModel(model, "typescript");
     }
-    if (value !== undefined && this.#model !== undefined) {
-      this.#model.setValue(value);
+    if (model !== undefined && this.#model !== undefined) {
+      this.#model.setValue(model);
+    }
+    if (this.#editor !== undefined && this.#model !== undefined) {
+      this.#editor.focus();
+      const currentPosition = this.#editor.getPosition();
+      if (currentPosition) {
+        this.#editor.setPosition(currentPosition);
+      }
     }
   }
 }

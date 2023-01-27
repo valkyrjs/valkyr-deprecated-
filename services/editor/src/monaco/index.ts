@@ -5,6 +5,30 @@ import { format } from "~services/prettier";
 
 import { getLedgerModel } from "./ledger";
 
+const packages = ["mongodb"];
+
+// validation settings
+monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+  noSemanticValidation: true,
+  noSyntaxValidation: false
+});
+
+// compiler options
+monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+  target: monaco.languages.typescript.ScriptTarget.ES2020,
+  allowNonTsExtensions: true
+});
+
+for (const pkg of packages) {
+  fetch(`http://localhost:3000/${pkg}.d.ts`, { method: "GET" })
+    .then((res) => res.text())
+    .then((value) => {
+      const libUri = `ts:${pkg}.d.ts`;
+      monaco.languages.typescript.javascriptDefaults.addExtraLib(value, libUri);
+      monaco.editor.createModel(value, "typescript", monaco.Uri.parse(libUri));
+    });
+}
+
 /*
  |--------------------------------------------------------------------------------
  | Workers

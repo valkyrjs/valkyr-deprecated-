@@ -1,5 +1,5 @@
 import { Disclosure } from "@headlessui/react";
-import { Handle, Node, Position } from "reactflow";
+import { Handle, NodeProps, Position } from "reactflow";
 
 import { BlockHeader } from "~components/block-header";
 import { CodeEditor } from "~components/code-editor";
@@ -33,6 +33,6 @@ const ReducerView = ReducerNodeController.view(({ state: { node, model }, action
   );
 });
 
-export function ReducerNode({ id }: Node) {
+export function ReducerNode({ id }: NodeProps) {
   return <ReducerView id={id} />;
 }

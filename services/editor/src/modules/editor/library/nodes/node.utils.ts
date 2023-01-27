@@ -4,38 +4,38 @@ import { toType } from "~services/types";
 
 import type { EventData } from "./event/event.node";
 
-export function getEventCache(event: EventData): string {
+export function getEventDataTypes(event: EventData): string {
   const data = getFieldsArray(event.data);
   const meta = getFieldsArray(event.meta);
   if (data.length === 0 && meta.length === 0) {
     return format(`type ${event.name} = LedgerEvent<"${event.name}">;`);
   }
   if (data.length > 0 && meta.length === 0) {
-    return format(`type ${event.name} = LedgerEvent<"${event.name}",Required<{${data.join("")}}>>`);
+    return format(`type ${event.name} = LedgerEvent<"${event.name}",Required<{${data.join("")}}>>;`);
   }
   if (data.length === 0 && meta.length > 0) {
-    return format(`type ${event.name} = LedgerEvent<"${event.name}",{},Required<{${meta.join("")}}>>`);
+    return format(`type ${event.name} = LedgerEvent<"${event.name}",{},Required<{${meta.join("")}}>>;`);
   }
   if (data.length > 0 && meta.length > 0) {
     return format(
-      `type ${event.name} = LedgerEvent<"${event.name}",Required<{${data.join("")}}>,Required<{${meta.join("")}}>>`
+      `type ${event.name} = LedgerEvent<"${event.name}",Required<{${data.join("")}}>,Required<{${meta.join("")}}>>;`
     );
   }
   return "";
 }
 
-export function getEventRecordCache(events: string[]): string {
+export function getEventNamesRecord(events: string[]): string {
   if (events.length === 0) {
     return "";
   }
   return `type EventRecord = ${events.map((name) => `LedgerEventRecord<${name}>`).join(" | ")};`;
 }
 
-export function getTypeCache(name: string, fields: NodeTypeFields): string {
+export function getFieldsType(name: string, fields: NodeTypeFields): string {
   return `type ${name} = {${getFields(fields)}};`;
 }
 
-export function getInterfaceCache(name: string, fields: NodeTypeFields): string {
+export function getFieldsInterface(name: string, fields: NodeTypeFields): string {
   return `interface ${name} {${getFields(fields)}};`;
 }
 
@@ -54,12 +54,6 @@ function getFieldsArray(fields: NodeTypeFields): string[] {
   return result;
 }
 
-export type NodeTypeFields = [string, string][];
-
-export type NodeTypeCache = {
-  cache: string;
-};
-
 export async function getPosition(type: string): Promise<{ x: number; y: number }> {
   const nodes = await db.collection("nodes").find({ type });
   const maxY = nodes.length ? Math.max(...nodes.map((n) => n.position.y)) : 100;
@@ -71,3 +65,5 @@ export async function getPosition(type: string): Promise<{ x: number; y: number 
       }
     : { x: 100, y: 100 };
 }
+
+export type NodeTypeFields = [string, string][];

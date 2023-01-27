@@ -3,7 +3,7 @@ import { Node } from "reactflow";
 
 import { db } from "~services/database";
 
-import type { TypeData } from "../../modules/editor/nodes/type/type.node";
+import type { TypeData } from "../../modules/editor/library/nodes/type/type.node";
 
 const primitives: Type[] = [
   { id: 1, type: "primitive", name: "string" },

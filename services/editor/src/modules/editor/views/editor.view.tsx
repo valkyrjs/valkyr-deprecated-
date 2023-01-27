@@ -7,8 +7,9 @@ import { Button } from "~components/button";
 import { ModalPortal } from "~components/modal/view";
 
 import { openLibraryModal } from "../library";
+import { nodeTypes } from "../library/nodes";
 import { Settings } from "../settings/settings.view";
-import { EditorController, nodeTypes } from "./editor.controller";
+import { EditorController } from "./editor.controller";
 
 export const EditorView = EditorController.view(
   ({

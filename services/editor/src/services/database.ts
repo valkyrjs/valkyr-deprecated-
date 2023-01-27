@@ -1,7 +1,7 @@
 import { IndexedDatabase } from "@valkyr/db";
 import { Edge, Node } from "reactflow";
 
-import { Type } from "../modules/editor/nodes/type/type.node";
+import { Type } from "../modules/editor/library/nodes/type/type.node";
 
 export const db = new IndexedDatabase<{
   nodes: Node;

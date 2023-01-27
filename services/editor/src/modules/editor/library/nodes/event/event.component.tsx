@@ -1,5 +1,5 @@
 import { Disclosure } from "@headlessui/react";
-import { Handle, Node, Position } from "reactflow";
+import { Handle, NodeProps, Position } from "reactflow";
 
 import { BlockHeader } from "~components/block-header";
 import { Editable } from "~components/editable";
@@ -52,6 +52,6 @@ export const EventView = EventNodeController.view(({ state: { node, data, meta }
   );
 });
 
-export function EventNode({ id }: Node) {
+export function EventNode({ id }: NodeProps) {
   return <EventView id={id} />;
 }

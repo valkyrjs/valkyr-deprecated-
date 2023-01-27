@@ -4,22 +4,21 @@ import { Node } from "reactflow";
 import { db } from "~services/database";
 
 import { NodeFields } from "../node.fields";
-import { getTypeCache } from "../node.utils";
-import { TypeData } from "./type.node";
+import { EventData } from "./event.node";
 
-export class TypeNodeController extends Controller<
+export class EventNodeController extends Controller<
   {
-    node: Node<TypeData>;
-    data: NodeFields<TypeData>;
+    node: Node<EventData>;
+    data: NodeFields;
+    meta: NodeFields;
   },
   { id: string }
 > {
   async onInit() {
     return {
       node: await this.query(db.collection("nodes"), { where: { id: this.props.id }, limit: 1 }, "node"),
-      data: new NodeFields<TypeData>(this.props.id, "data", (node: Node<TypeData>) => {
-        return getTypeCache(node.data.name, node.data.data);
-      })
+      data: new NodeFields(this.props.id, "data"),
+      meta: new NodeFields(this.props.id, "meta")
     };
   }
 

@@ -3,11 +3,7 @@ import { Controller } from "@valkyr/react";
 import { closeModal } from "~components/modal";
 import { db } from "~services/database";
 
-import { getEventData } from "../nodes/event/event.node";
-import { getPosition } from "../nodes/node.utils";
-import { getReducerData } from "../nodes/reducer/reducer.node";
-import { getStateData } from "../nodes/state/state.node";
-import { getTypeData } from "../nodes/type/type.node";
+import { getNode, NodeType } from "./nodes";
 
 export class LibraryController extends Controller<{
   isOpen: boolean;
@@ -27,6 +23,11 @@ export class LibraryController extends Controller<{
           name: "reducer",
           description: "Reducers do things",
           add: this.#addBlocks(["reducer"])
+        },
+        {
+          name: "validator",
+          description: "Validators validate events",
+          add: this.#addBlocks(["validator"])
         },
         {
           name: "type",
@@ -54,7 +55,7 @@ export class LibraryController extends Controller<{
     };
   }
 
-  #addBlocks(blockTypes: Array<string>): () => void {
+  #addBlocks(blockTypes: Array<NodeType>): () => void {
     return async () => {
       const nodes = [];
       for (const blockType of blockTypes) {
@@ -63,47 +64,6 @@ export class LibraryController extends Controller<{
       db.collection("nodes").insertMany(nodes);
       closeModal();
     };
-  }
-}
-
-async function getNode(type: string) {
-  switch (type) {
-    case "type": {
-      return {
-        type,
-        position: await getPosition(type),
-        dragHandle: ".node-drag-handle",
-        data: getTypeData()
-      };
-    }
-    case "reducer": {
-      return {
-        type,
-        position: await getPosition(type),
-        dragHandle: ".node-drag-handle",
-        data: getReducerData()
-      };
-    }
-    case "state": {
-      return {
-        type,
-        position: await getPosition(type),
-        dragHandle: ".node-drag-handle",
-        data: getStateData()
-      };
-    }
-    case "event":
-    default: {
-      return {
-        type,
-        position: await getPosition(type),
-        dragHandle: ".node-drag-handle",
-        data: getEventData("AccountCreated", [
-          ["email", "p:string"],
-          ["password", "p:string"]
-        ])
-      };
-    }
   }
 }
 
