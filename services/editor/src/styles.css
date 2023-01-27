@@ -55,6 +55,16 @@ body {
       @apply fill-pink;
     }
   }
+
+  .react-flow__edges.react-flow__connectionline {
+    .react-flow__connection {
+      .react-flow__connection-path {
+        @apply stroke-darker-500;
+        @apply stroke-2;
+      }
+    }
+  }
+
   .react-flow__edge {
     .react-flow__edge-path {
       @apply stroke-darker-800;
