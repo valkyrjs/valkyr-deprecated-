@@ -14,7 +14,10 @@ export function getTypeData(): TypeData {
   };
 }
 
-export type Type = Document<TypeData>;
+export type Type = Document<{
+  type: "type";
+  data: TypeData;
+}>;
 
 export type TypeData = {
   name: string;
