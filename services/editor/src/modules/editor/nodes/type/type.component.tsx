@@ -7,7 +7,7 @@ import { TypeFields } from "~components/type-fields";
 
 import { TypeNodeController } from "./type.controller";
 
-export const TypeView = TypeNodeController.view(({ state: { node, data } }) => {
+export const TypeView = TypeNodeController.view(({ state: { node, data }, actions: { onRemove } }) => {
   return (
     <div className="relative">
       <Disclosure defaultOpen={true}>
@@ -15,6 +15,7 @@ export const TypeView = TypeNodeController.view(({ state: { node, data } }) => {
           <div className="bg-darker border rounded-sm text-xs border-darker-800 min-w-[390px] font-mono">
             <BlockHeader
               open={open}
+              onRemove={onRemove}
               color="green"
               symbol="T"
               content={

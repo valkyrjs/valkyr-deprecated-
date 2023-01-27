@@ -22,6 +22,11 @@ export class EventNodeController extends Controller<
       meta: new NodeFields(this.props.id, "meta", getCache)
     };
   }
+
+  async onRemove() {
+    await db.collection("edges").remove({ source: this.props.id });
+    await db.collection("nodes").remove({ id: this.props.id });
+  }
 }
 
 function getCache(node: Node<EventData>): string {

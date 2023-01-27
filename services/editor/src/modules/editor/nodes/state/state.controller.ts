@@ -22,4 +22,9 @@ export class StateNodeController extends Controller<
       })
     };
   }
+
+  async onRemove() {
+    await db.collection("edges").remove({ source: this.props.id });
+    await db.collection("nodes").remove({ id: this.props.id });
+  }
 }

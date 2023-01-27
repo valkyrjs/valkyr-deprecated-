@@ -1,5 +1,5 @@
 import { Controller } from "@valkyr/react";
-import { applyNodeChanges, Connection, Edge, Node, ReactFlowInstance } from "reactflow";
+import { Connection, Edge, Node, NodeChange, ReactFlowInstance } from "reactflow";
 
 import { db } from "~services/database";
 
@@ -41,6 +41,8 @@ export class EditorController extends Controller<{
             break;
           }
         }
+        // TODO: this will resize the view based on elements to ensure everything is visible.
+        // setTimeout(() => this.#instance?.fitView(), 75);
         return {
           nodes: documents
         };
@@ -58,6 +60,22 @@ export class EditorController extends Controller<{
     this.setState("asideOpen", state);
   }
 
+  onNodesChange(changes: NodeChange[]): void {
+    changes.forEach((change) => {
+      if (change.type === "dimensions") {
+        db.collection("nodes").updateOne(
+          { id: change.id },
+          {
+            $set: {
+              width: change?.dimensions?.width,
+              height: change?.dimensions?.height
+            }
+          }
+        );
+      }
+    });
+  }
+
   onNodePositionChanged(_: any, node: Node): void {
     db.collection("nodes")
       .findOne({ id: node.id })
@@ -68,7 +86,9 @@ export class EditorController extends Controller<{
             {
               $set: {
                 position: node.position,
-                positionAbsolute: node.positionAbsolute
+                positionAbsolute: node.positionAbsolute,
+                width: node.width,
+                height: node.height
               }
             }
           );

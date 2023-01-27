@@ -11,7 +11,10 @@ import { Settings } from "../settings/settings.view";
 import { EditorController, nodeTypes } from "./editor.controller";
 
 export const EditorView = EditorController.view(
-  ({ state: { nodes, edges, asideOpen }, actions: { toggleAside, setInstance, onNodePositionChanged, onConnect } }) => {
+  ({
+    state: { nodes, edges, asideOpen },
+    actions: { toggleAside, setInstance, onNodesChange, onNodePositionChanged, onConnect }
+  }) => {
     return (
       <>
         <div className="w-full h-screen text-light bg-back">
@@ -21,6 +24,7 @@ export const EditorView = EditorController.view(
             defaultNodes={nodes}
             defaultEdges={edges}
             nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
             onNodeDragStop={onNodePositionChanged}
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}

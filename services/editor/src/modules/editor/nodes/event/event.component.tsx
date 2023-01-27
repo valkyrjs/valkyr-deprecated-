@@ -7,7 +7,7 @@ import { TypeFields } from "~components/type-fields";
 
 import { EventNodeController } from "./event.controller";
 
-export const EventView = EventNodeController.view(({ state: { node, data, meta } }) => {
+export const EventView = EventNodeController.view(({ state: { node, data, meta }, actions: { onRemove } }) => {
   return (
     <div className="relative">
       <Disclosure defaultOpen={true}>
@@ -15,6 +15,7 @@ export const EventView = EventNodeController.view(({ state: { node, data, meta }
           <div className="bg-darker border rounded-sm text-xs border-darker-800 min-w-[390px] font-mono">
             <BlockHeader
               open={open}
+              onRemove={onRemove}
               color="orange"
               symbol="E"
               content={

@@ -1,24 +1,14 @@
-import { db } from "~services/database";
 import { format } from "~services/prettier";
 
 import { NodeTypeCache, NodeTypeFields } from "../node.utils";
 
-export function addEventNode(): void {
-  db.collection("nodes").insertOne({
-    type: "event",
-    position: { x: 20, y: 80 },
-    dragHandle: ".node-drag-handle",
-    data: getEventData()
-  });
-}
-
-function getEventData(): EventData {
+export function getEventData(name = "EventNamed", data: NodeTypeFields = [["", "p:string"]]): EventData {
   return {
-    name: "Foo",
-    data: [["", "p:string"]],
+    name,
+    data,
     meta: [],
     cache: format(`
-      type FooCreated = LedgerEvent<"FooCreated">;
+      type EventNamed = LedgerEvent<"EventNamed">;
     `)
   };
 }
