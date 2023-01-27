@@ -78,17 +78,21 @@ export class EditorController extends Controller<{
 
   onNodePositionChanged(_: any, node: Node): void {
     db.collection("nodes")
-      .findOne({ id: node.id })
-      .then((current) => {
-        if (nodePositionChanged(current, node) === true) {
+      .findOne({
+        id: node.id,
+        position: node.position,
+        positionAbsolute: node.positionAbsolute
+      })
+      .then((document) => {
+        if (document === undefined) {
           db.collection("nodes").updateOne(
-            { id: node.id },
+            {
+              id: node.id
+            },
             {
               $set: {
                 position: node.position,
-                positionAbsolute: node.positionAbsolute,
-                width: node.width,
-                height: node.height
+                positionAbsolute: node.positionAbsolute
               }
             }
           );
@@ -106,17 +110,4 @@ export class EditorController extends Controller<{
       });
     }
   }
-}
-
-function nodePositionChanged(current: Node | undefined, node: Node): boolean {
-  if (current === undefined) {
-    return true;
-  }
-  if (current.position.x !== node.position.x) {
-    return true;
-  }
-  if (current.position.y !== node.position.y) {
-    return true;
-  }
-  return false;
 }
