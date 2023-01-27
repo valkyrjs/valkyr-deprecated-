@@ -13,9 +13,7 @@ export function Editable({ name, value, onChange, placeholder, ...props }) {
 
   const handleKeyDown = (event) => {
     const { key } = event;
-    const keys = ["Escape", "Tab"];
-    const enterKey = "Enter";
-    const allKeys = [...keys, enterKey];
+    const allKeys = ["Escape"];
     if (allKeys.indexOf(key) > -1) {
       setEditing(false);
     }

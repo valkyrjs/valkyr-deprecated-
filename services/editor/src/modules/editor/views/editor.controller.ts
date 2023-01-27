@@ -63,15 +63,17 @@ export class EditorController extends Controller<{
   onNodesChange(changes: NodeChange[]): void {
     changes.forEach((change) => {
       if (change.type === "dimensions") {
-        db.collection("nodes").updateOne(
-          { id: change.id },
-          {
-            $set: {
-              width: change?.dimensions?.width,
-              height: change?.dimensions?.height
-            }
-          }
-        );
+        const { id, dimensions } = change;
+        if (dimensions) {
+          const { width, height } = dimensions;
+          db.collection("nodes")
+            .findOne({ id, height, width })
+            .then((node) => {
+              if (node === undefined) {
+                db.collection("nodes").updateOne({ id }, { $set: { width, height } });
+              }
+            });
+        }
       }
     });
   }

@@ -14,7 +14,7 @@ type Props = {
 export function TypeFields({ data, addField, setFieldKey, setFieldValue, removeField }: Props) {
   return (
     <section className="p-2 flex flex-col gap-2">
-      <form className="flex flex-col gap-1">
+      <form className="flex flex-col gap-1" onSubmit={(e) => e.preventDefault()}>
         {data.map(([key, value], index) => (
           <div key={index} className="flex flex-row gap-2">
             <UnstyledButton className="text-darker-700 hover:text-darker-600" onClick={removeField(index)}>
