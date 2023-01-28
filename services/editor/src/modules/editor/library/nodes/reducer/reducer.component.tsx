@@ -12,14 +12,14 @@ const ReducerView = ReducerNodeController.view(({ state: { node, model }, action
       <Handle type="target" position={Position.Left} />
       <Disclosure defaultOpen={true}>
         {({ open }) => (
-          <div className="bg-darker border rounded-sm text-xs border-darker-800 min-w-[390px] font-mono">
+          <div className="bg-darker border-darker-800 min-w-[390px] rounded-sm border font-mono text-xs">
             <BlockHeader open={open} color="cyan" symbol="R" content="Reducer" onRemove={onRemove} />
             <Disclosure.Panel>
               <div
-                className="border-b border-b-darker-800"
+                className="border-b-darker-800 border-b"
                 style={{
-                  width: 800,
-                  height: 600
+                  width: 640,
+                  height: 400
                 }}
               >
                 <CodeEditor defaultValue={node.data.value} model={model} onChange={onChange} />
