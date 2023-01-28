@@ -18,7 +18,7 @@ export const EditorView = EditorController.view(
   }) => {
     return (
       <>
-        <div className="w-full h-screen text-light bg-back">
+        <div className="text-light bg-back h-screen w-full">
           <ReactFlow
             id="blocks"
             onInit={setInstance}
