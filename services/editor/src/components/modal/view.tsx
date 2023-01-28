@@ -35,7 +35,7 @@ export const ModalPortal = ModalController.view(({ state: { show, mode, modal },
         leave="transition easy-in duration-95"
         leaveFrom="transform opacity-100"
         leaveTo="transform opacity-0"
-        className="absolute w-full h-screen inset-0  bg-back bg-opacity-90 z-[9996]"
+        className="absolute w-full h-screen inset-0 bg-back bg-opacity-90 z-[9996]"
         onClick={closeModal}
       ></Transition.Child>
       <Transition.Child

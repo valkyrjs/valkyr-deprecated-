@@ -1,13 +1,26 @@
 import { Controller } from "@valkyr/react";
 
-export class SettingsController extends Controller<{
-  isOpen: boolean;
-  types: Type[];
-}> {
+import { db } from "~services/database";
+
+import { Type } from "../library/nodes/type/type.node";
+
+export class SettingsController extends Controller<
+  {
+    types: Type[];
+  },
+  {
+    isOpen: boolean;
+    setClosed: () => void;
+  }
+> {
   async onInit() {
     return {
       isOpen: false,
-      types: []
+      types: await this.query(db.collection("types"), {}, async (documents) => {
+        return {
+          types: documents
+        };
+      })
     };
   }
 
@@ -17,9 +30,3 @@ export class SettingsController extends Controller<{
     };
   }
 }
-
-export type Type = {
-  name: string;
-  description: string;
-  add: () => void;
-};

@@ -1,18 +1,17 @@
-import { Dialog, Menu, Transition } from "@headlessui/react";
-import { DotsThreeVertical, X } from "phosphor-react";
+import { Dialog, Transition } from "@headlessui/react";
+import { X } from "phosphor-react";
 import { Fragment } from "react";
 
 import { UnstyledButton } from "~components/unstyled-button";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import { TypeView } from "../library/nodes/type/type.component";
+import { SettingsController } from "./settings.controller";
 
-export function Settings({ isOpen, setClosed }: { isOpen: boolean; setClosed: any }) {
+export const SettingsView = SettingsController.view(({ state: { types }, props: { isOpen, setClosed } }) => {
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative text-light z-10" onClose={setClosed}>
-        <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+        <div className="pointer-events-none fixed inset-y-0 right-0 flex pl-10 sm:pl-16">
           <Transition.Child
             as={Fragment}
             enter="transform transition ease-in-out duration-500 sm:duration-700"
@@ -22,32 +21,54 @@ export function Settings({ isOpen, setClosed }: { isOpen: boolean; setClosed: an
             leaveFrom="translate-x-0"
             leaveTo="translate-x-full"
           >
-            <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
+            <Dialog.Panel className="pointer-events-auto w-96">
               <div className="flex h-full flex-col overflow-y-scroll bg-darker shadow-xl">
-                <div className="p-6">
+                <div className="pt-6 pb-2 px-2 border-b border-darker-800">
                   <div className="flex items-start justify-between">
                     <Dialog.Title className="text-sm text-light">SETTINGS</Dialog.Title>
                     <div className="ml-3 flex h-7 items-center">
-                      <UnstyledButton onClick={() => setClosed(false)}>
+                      <UnstyledButton onClick={() => setClosed()}>
                         <X className="w-4 h-4 text-darker-700 hover:text-darker-600" />
                       </UnstyledButton>
                     </div>
                   </div>
                 </div>
-                <section>
-                  <header>
-                    <h6>App Settings</h6>
+                <section className="mt-2">
+                  <header className="px-4 py-2 bg-darker-800 hover:bg-darker-600">
+                    <h6 className="uppercase text-sm">Configuration</h6>
                   </header>
-                  <div className="flex flex-col gap-2">
-                    <span>Name</span>
-                    <span>???</span>
+                  <div className="p-6 flex flex-col gap-2 text-xs">
+                    <div className="mb-2">
+                      <header className="tracking-wide text-darker-700">App</header>
+                      <div className="flex flex-col gap-2 font-mono">
+                        <span>Name</span>
+                      </div>
+                    </div>
+                    <div className="mb-2">
+                      <header className="tracking-wide text-darker-700">Administrator</header>
+                      <div className="flex flex-col gap-2 font-mono">
+                        <span>Username</span>
+                        <span>Password</span>
+                      </div>
+                    </div>
+                    <div className="mb-2">
+                      <header className="tracking-wide text-darker-700">Mongo Database</header>
+                      <div className="flex flex-col gap-2 font-mono">
+                        <span>Name</span>
+                        <span>Connection</span>
+                      </div>
+                    </div>
                   </div>
                 </section>
-                <section>
-                  <header>
-                    <h6>Types</h6>
+                <section className="mt-2">
+                  <header className="px-4 py-2 bg-darker-800 hover:bg-darker-600">
+                    <h6 className="uppercase text-sm">Types</h6>
                   </header>
-                  <div className="flex flex-col gap-2"></div>
+                  <div className="p-6 flex flex-col gap-2 text-xs font-mono">
+                    {types.map((type) => (
+                      <TypeView key={type.id} id={type.id} />
+                    ))}
+                  </div>
                 </section>
               </div>
             </Dialog.Panel>
@@ -56,4 +77,4 @@ export function Settings({ isOpen, setClosed }: { isOpen: boolean; setClosed: an
       </Dialog>
     </Transition.Root>
   );
-}
+});
