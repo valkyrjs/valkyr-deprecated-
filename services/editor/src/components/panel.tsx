@@ -2,9 +2,13 @@ import { Disclosure, Transition } from "@headlessui/react";
 import { CaretUp } from "phosphor-react";
 import React from "react";
 
-export function Panel({ title, children }: React.PropsWithChildren<{ title: string }>) {
+export function Panel({
+  title,
+  defaultOpen = false,
+  children
+}: React.PropsWithChildren<{ title: string; defaultOpen: boolean }>) {
   return (
-    <Disclosure as="section">
+    <Disclosure as="section" defaultOpen={defaultOpen}>
       {({ open }) => (
         <>
           <Disclosure.Button

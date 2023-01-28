@@ -54,7 +54,7 @@ export const SettingsView = SettingsController.view(({ state: { types }, props: 
                     </div>
                   </div>
                 </Panel>
-                <Panel title="Types">
+                <Panel title="Types" defaultOpen={true}>
                   {types.map((type) => (
                     <TypeView key={type.id} id={type.id} />
                   ))}
