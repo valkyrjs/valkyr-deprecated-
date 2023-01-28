@@ -2,6 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { X } from "phosphor-react";
 import { Fragment } from "react";
 
+import { Panel } from "~components/panel";
 import { UnstyledButton } from "~components/unstyled-button";
 
 import { TypeView } from "../library/nodes/type/type.component";
@@ -25,7 +26,7 @@ export const SettingsView = SettingsController.view(({ state: { types }, props: 
               <div className="flex h-full flex-col overflow-y-scroll bg-darker shadow-xl">
                 <div className="pt-6 pb-2 px-2 border-b border-darker-800">
                   <div className="flex items-start justify-between">
-                    <Dialog.Title className="text-sm text-light">SETTINGS</Dialog.Title>
+                    <Dialog.Title className="text-sm text-pink">SETTINGS</Dialog.Title>
                     <div className="ml-3 flex h-7 items-center">
                       <UnstyledButton onClick={() => setClosed()}>
                         <X className="w-4 h-4 text-darker-700 hover:text-darker-600" />
@@ -33,43 +34,33 @@ export const SettingsView = SettingsController.view(({ state: { types }, props: 
                     </div>
                   </div>
                 </div>
-                <section className="mt-2">
-                  <header className="px-4 py-2 bg-darker-800 hover:bg-darker-600">
-                    <h6 className="uppercase text-sm">Configuration</h6>
-                  </header>
-                  <div className="p-6 flex flex-col gap-2 text-xs">
-                    <div className="mb-2">
-                      <header className="tracking-wide text-darker-700">App</header>
-                      <div className="flex flex-col gap-2 font-mono">
-                        <span>Name</span>
-                      </div>
-                    </div>
-                    <div className="mb-2">
-                      <header className="tracking-wide text-darker-700">Administrator</header>
-                      <div className="flex flex-col gap-2 font-mono">
-                        <span>Username</span>
-                        <span>Password</span>
-                      </div>
-                    </div>
-                    <div className="mb-2">
-                      <header className="tracking-wide text-darker-700">Mongo Database</header>
-                      <div className="flex flex-col gap-2 font-mono">
-                        <span>Name</span>
-                        <span>Connection</span>
-                      </div>
+                <Panel title="Configuration">
+                  <div className="mb-2">
+                    <header className="tracking-wide text-darker-700">App</header>
+                    <div className="flex flex-col gap-2 font-mono">
+                      <span>Name</span>
                     </div>
                   </div>
-                </section>
-                <section className="mt-2">
-                  <header className="px-4 py-2 bg-darker-800 hover:bg-darker-600">
-                    <h6 className="uppercase text-sm">Types</h6>
-                  </header>
-                  <div className="p-6 flex flex-col gap-2 text-xs font-mono">
-                    {types.map((type) => (
-                      <TypeView key={type.id} id={type.id} />
-                    ))}
+                  <div className="mb-2">
+                    <header className="tracking-wide text-darker-700">Administrator</header>
+                    <div className="flex flex-col gap-2 font-mono">
+                      <span>Username</span>
+                      <span>Password</span>
+                    </div>
                   </div>
-                </section>
+                  <div className="mb-2">
+                    <header className="tracking-wide text-darker-700">Mongo Database</header>
+                    <div className="flex flex-col gap-2 font-mono">
+                      <span>Name</span>
+                      <span>Connection</span>
+                    </div>
+                  </div>
+                </Panel>
+                <Panel title="Types">
+                  {types.map((type) => (
+                    <TypeView key={type.id} id={type.id} />
+                  ))}
+                </Panel>
               </div>
             </Dialog.Panel>
           </Transition.Child>
