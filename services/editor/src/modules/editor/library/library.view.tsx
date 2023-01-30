@@ -6,19 +6,19 @@ import { LibraryController } from "./library.controller";
 export const LibraryModal = LibraryController.view(({ state: { blocks, templates } }) => {
   return (
     <Modal title="Library">
-      <div className="w-[50rem] h-[80vh] flex flex-row gap-0">
-        <div className="w-44 h-full">
+      <div className="flex h-[80vh] w-[50rem] flex-row gap-0">
+        <div className="h-full w-44">
           <h6 className="text-xs">Blocks</h6>
         </div>
-        <div className="w-full min-h-full flex flex-col gap-6">
+        <div className="flex min-h-full w-full flex-col gap-6">
           <div className="grid grid-flow-row-dense grid-cols-3 gap-3">
             {blocks.map((block) => (
               <div
                 key={block.name}
-                className="relative transition-all duration-200 hover:scale-105 hover:border-darker-500 w-full h-36 border rounded border-darker-800 bg-darker-800  text-light flex flex-col justify-start items-start gap-2 p-2"
+                className="hover:border-darker-500 border-darker-800 bg-darker-800 text-light relative flex h-36 w-full flex-col items-start justify-start  gap-2 rounded border p-2 transition-all duration-200 hover:scale-105"
               >
                 <h6 className="text-sm uppercase">{block.name}</h6>
-                <p className="text-xs text-light-200">{block.description}</p>
+                <p className="text-light-200 text-xs">{block.description}</p>
                 <UnstyledButton className="absolute inset-0" onClick={block.add}></UnstyledButton>
               </div>
             ))}
@@ -27,10 +27,10 @@ export const LibraryModal = LibraryController.view(({ state: { blocks, templates
             {templates.map((block) => (
               <div
                 key={block.name}
-                className="relative transition-all duration-200 hover:scale-105 hover:border-darker-500 w-full h-36 border rounded border-darker-800 bg-darker-800  text-light flex flex-col justify-start items-start gap-2 p-2"
+                className="hover:border-darker-500 border-darker-800 bg-darker-800 text-light relative flex h-36 w-full flex-col items-start justify-start  gap-2 rounded border p-2 transition-all duration-200 hover:scale-105"
               >
                 <h6 className="text-sm uppercase">{block.name}</h6>
-                <p className="text-xs text-light-200">{block.description}</p>
+                <p className="text-light-200 text-xs">{block.description}</p>
                 <UnstyledButton className="absolute inset-0" onClick={block.add}></UnstyledButton>
               </div>
             ))}

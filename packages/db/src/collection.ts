@@ -7,7 +7,8 @@ import { observe, observeOne } from "./observe";
 import {
   ChangeEvent,
   Document,
-  InsertResult,
+  InsertManyResult,
+  InsertOneResult,
   Options,
   PartialDocument,
   RemoveResult,
@@ -34,11 +35,11 @@ export class Collection<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  async insertOne(document: PartialDocument<D>): Promise<InsertResult> {
+  async insertOne(document: PartialDocument<D>): Promise<InsertOneResult> {
     return this.storage.resolve().then((storage) => storage.insertOne(document));
   }
 
-  async insertMany(documents: PartialDocument<D>[]): Promise<InsertResult> {
+  async insertMany(documents: PartialDocument<D>[]): Promise<InsertManyResult> {
     return this.storage.resolve().then((storage) => storage.insertMany(documents));
   }
 

@@ -1,9 +1,8 @@
 import { Controller } from "@valkyr/react";
-import { Node } from "reactflow";
 
 import { db } from "~services/database";
 
-import type { TypeData } from "../../modules/editor/library/nodes/type/type.node";
+import { TypeBlock } from "../../modules/editor/library/blocks/type/type.collection";
 
 const primitives: Type[] = [
   { id: 1, type: "primitive", name: "string" },
@@ -30,19 +29,19 @@ export class SelectController extends Controller<
   }
 
   async #queryTypes() {
-    const nodes = await this.query(db.collection("nodes"), { where: { type: "type" } }, async (nodes) => ({
-      types: this.#getTypes(nodes)
+    const types = await this.query(db.collection("types"), {}, async (types) => ({
+      types: this.#getTypes(types)
     }));
-    return this.#getTypes(nodes);
+    return this.#getTypes(types);
   }
 
-  #getTypes(nodes: Node<TypeData>[]): Type[] {
+  #getTypes(blocks: TypeBlock[]): Type[] {
     return [
       ...primitives,
-      ...nodes.map<Type>((node) => ({
-        id: node.id,
+      ...blocks.map<Type>((block) => ({
+        id: block.id,
         type: "custom",
-        name: node.data.name
+        name: block.name
       }))
     ];
   }

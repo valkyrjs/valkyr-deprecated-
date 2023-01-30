@@ -1,11 +1,12 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { CaretDoubleRight, Plus, X } from "phosphor-react";
+import { CaretDoubleRight, Plus } from "phosphor-react";
 import { Fragment } from "react";
 
 import { Button } from "~components/button";
 import { Panel } from "~components/panel";
 
-import { TypeView } from "../library/nodes/type/type.component";
+import { createTypeBlock } from "../library/blocks/type/type.collection";
+import { TypeBlock } from "../library/blocks/type/type.component";
 import { SettingsController } from "./settings.controller";
 
 export const SettingsView = SettingsController.view(({ state: { types }, props: { isOpen, setClosed } }) => {
@@ -27,7 +28,7 @@ export const SettingsView = SettingsController.view(({ state: { types }, props: 
                 <div className="border-darker-700 bg-darker-800 border-b p-3">
                   <div className="flex items-center justify-between gap-6">
                     <Dialog.Title className="text-pink text-sm">SETTINGS</Dialog.Title>
-                    <Button variant="primary" outline type="button" onClick={() => setClosed()}>
+                    <Button variant="primary" outline type="button" onClick={setClosed}>
                       <CaretDoubleRight size={16} />
                     </Button>
                   </div>
@@ -56,10 +57,10 @@ export const SettingsView = SettingsController.view(({ state: { types }, props: 
                 </Panel>
                 <Panel title="Types" defaultOpen={true}>
                   {types.map((type) => (
-                    <TypeView key={type.id} id={type.id} />
+                    <TypeBlock key={type.id} id={type.id} />
                   ))}
                   <div className="flex w-full flex-row justify-center">
-                    <Button variant="primary" outline type="button" onClick={() => alert("add a type??")}>
+                    <Button variant="primary" outline type="button" onClick={createTypeBlock}>
                       <Plus size={12}></Plus>
                       new type
                     </Button>

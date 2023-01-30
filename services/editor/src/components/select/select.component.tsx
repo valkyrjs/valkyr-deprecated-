@@ -9,10 +9,10 @@ export const Select = SelectController.view(({ state: { types, selected }, actio
     <Listbox value={selected} onChange={setSelected}>
       {({ open }) => (
         <div className="relative">
-          <Listbox.Button className="relative w-44 cursor-default rounded border border-darker-800 bg-transparent py-1 pl-1.5 pr-10 text-left shadow-sm focus:border-darker-600 hover:border-darker-700">
+          <Listbox.Button className="border-darker-800 focus:border-darker-600 hover:border-darker-700 relative w-44 cursor-default rounded border bg-transparent py-1 pl-1.5 pr-10 text-left shadow-sm">
             <span className="block truncate">{selected?.name}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-              <CaretDown className="h-5 w-5 text-darker-700 hover:text-darker-600" aria-hidden="true" />
+              <CaretDown className="text-darker-700 hover:text-darker-600 h-5 w-5" aria-hidden="true" />
             </span>
           </Listbox.Button>
           <Transition
@@ -22,7 +22,7 @@ export const Select = SelectController.view(({ state: { types, selected }, actio
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Listbox.Options className="absolute border border-darker-800 z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-darker-800 py-1 text-base shadow-lg  sm:text-sm">
+            <Listbox.Options className="border-darker-800 bg-darker-800 absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border py-1 text-base shadow-lg  sm:text-sm">
               {types.map((t) => (
                 <Listbox.Option
                   key={t.id}

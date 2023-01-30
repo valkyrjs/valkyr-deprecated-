@@ -318,7 +318,7 @@ importers:
       react: ^18.2.0
       react-dom: ^18.2.0
       react-table: ^7.8.0
-      reactflow: ^11.4.2
+      reactflow: ^11.5.2
       rxjs: ^7.8.0
       style-loader: ^3.3.1
       tailwind-dracula: 1.1.0
@@ -342,7 +342,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-table: 7.8.0_react@18.2.0
-      reactflow: 11.4.2_biqbaboplfbrettd7655fr4n2y
+      reactflow: 11.5.2_biqbaboplfbrettd7655fr4n2y
       rxjs: 7.8.0
       tailwind-scrollbar-hide: 1.1.7
       tailwindcss-fluid-type: 2.0.3_tailwindcss@3.2.4
@@ -2122,13 +2122,13 @@ packages:
       node-gyp-build: 4.6.0
     dev: true
 
-  /@reactflow/background/11.1.2_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-A/Hfah+l9C7mzZ4IG2Kw9phOTLUPIie2zRFE59EXEwHUmSS91SPaFE464ydclj1Y4+OEYZb7cTiaHiKEzp3OkA==}
+  /@reactflow/background/11.1.4_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-WIlbrSyfOujLPoytGnLStbVSAwZWga+RfPARz0HycqJdvbp1u9VAH8DYn+GdoFOpU0wXScDMYce/WoV3EHz1Ag==}
     peerDependencies:
       react: '>=17'
       react-dom: '>=17'
     dependencies:
-      '@reactflow/core': 11.4.2_biqbaboplfbrettd7655fr4n2y
+      '@reactflow/core': 11.5.1_biqbaboplfbrettd7655fr4n2y
       classcat: 5.0.4
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -2137,13 +2137,13 @@ packages:
       - immer
     dev: false
 
-  /@reactflow/controls/11.1.2_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-XyZuMOxSmqYnH+MpRxMiZS8uCdPqaWg4Ju4Sv4B1WW6ae5YsgqG9MGgHF1mOc63BhK6gchRtxV9mW+EJoB+6Pg==}
+  /@reactflow/controls/11.1.4_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-wZkZaUJ/yy6op3787HLQiTtwaNpo1e/+XIGovqBEGlFnB0JT+9pDgxAl8M+BCpGbdubMDHYJ0ePBpdSYo7OC4A==}
     peerDependencies:
       react: '>=17'
       react-dom: '>=17'
     dependencies:
-      '@reactflow/core': 11.4.2_biqbaboplfbrettd7655fr4n2y
+      '@reactflow/core': 11.5.1_biqbaboplfbrettd7655fr4n2y
       classcat: 5.0.4
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -2151,8 +2151,8 @@ packages:
       - immer
     dev: false
 
-  /@reactflow/core/11.4.2_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-JVKFNJ3LTVyQXkZCnk5X5bGo01k4uCyYLlenkCEHL7HZ65v9k6WjD+tY4mdO/t1LIZ18t3j7wlhEhvTrjupN9Q==}
+  /@reactflow/core/11.5.1_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-63pXpKNW5YHk8hOWpt7RaftSn7g92BvCCGpsUUaRDDuHvxmcqmMKPrAFkBPVc5JJ+Wubx4drThYJizgVP/j9/w==}
     peerDependencies:
       react: '>=17'
       react-dom: '>=17'
@@ -2172,13 +2172,13 @@ packages:
       - immer
     dev: false
 
-  /@reactflow/minimap/11.3.2_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-tdzV+pJqNxfEdLMZIgIBOhdIxM04PWsWUKx9RdZlZBmo+28RV/lVNh77Qu4L74eNuDTn9CrKH3UmRPy9H0LlfQ==}
+  /@reactflow/minimap/11.3.4_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-z7hce7LYibJ9Vjx2kZQM55GDy3jraKdmh7FGh4GpuntPkoHQXjl1ZrceVfkopLy3XERZ4a1WAJjPal8+vMoY9A==}
     peerDependencies:
       react: '>=17'
       react-dom: '>=17'
     dependencies:
-      '@reactflow/core': 11.4.2_biqbaboplfbrettd7655fr4n2y
+      '@reactflow/core': 11.5.1_biqbaboplfbrettd7655fr4n2y
       '@types/d3-selection': 3.0.4
       '@types/d3-zoom': 3.0.2
       classcat: 5.0.4
@@ -2191,13 +2191,13 @@ packages:
       - immer
     dev: false
 
-  /@reactflow/node-toolbar/1.1.2_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-zzG+s5jY9F1VbBh0na71AuarlQi8BHnkbd6mUCWJf50DPnmk05sEdurky7C9oNccm7wxEYBirBLyW4+1vnn4Nw==}
+  /@reactflow/node-toolbar/1.1.4_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-2+jJ+YwwEOwXzGhYSoVIpHjeqkxd07GcTvKnlx/9VlOExvcCYX6YviO1hcsSmmkUJUc/aWyOhS3olNKxfQtkBQ==}
     peerDependencies:
       react: '>=17'
       react-dom: '>=17'
     dependencies:
-      '@reactflow/core': 11.4.2_biqbaboplfbrettd7655fr4n2y
+      '@reactflow/core': 11.5.1_biqbaboplfbrettd7655fr4n2y
       classcat: 5.0.4
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -7637,17 +7637,17 @@ packages:
     dependencies:
       loose-envify: 1.4.0
 
-  /reactflow/11.4.2_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-kedccI6S/+/Fj+MFqEqb5bUncyTsr5DTxeAG5TZ6QB6wwNEE6KG3UFsqRaa1wbOtKnEWwOOupq0fDPE1ePUAZQ==}
+  /reactflow/11.5.2_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-3vTRiFnH6bKTeWOuDG8ZLgnKaC9uaEezm/va2qoIum/DbnGN/Fw16BFCCQ9yeYyTVMyYax+jmzz0VgNVFJlVAw==}
     peerDependencies:
       react: '>=17'
       react-dom: '>=17'
     dependencies:
-      '@reactflow/background': 11.1.2_biqbaboplfbrettd7655fr4n2y
-      '@reactflow/controls': 11.1.2_biqbaboplfbrettd7655fr4n2y
-      '@reactflow/core': 11.4.2_biqbaboplfbrettd7655fr4n2y
-      '@reactflow/minimap': 11.3.2_biqbaboplfbrettd7655fr4n2y
-      '@reactflow/node-toolbar': 1.1.2_biqbaboplfbrettd7655fr4n2y
+      '@reactflow/background': 11.1.4_biqbaboplfbrettd7655fr4n2y
+      '@reactflow/controls': 11.1.4_biqbaboplfbrettd7655fr4n2y
+      '@reactflow/core': 11.5.1_biqbaboplfbrettd7655fr4n2y
+      '@reactflow/minimap': 11.3.4_biqbaboplfbrettd7655fr4n2y
+      '@reactflow/node-toolbar': 1.1.4_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     transitivePeerDependencies:

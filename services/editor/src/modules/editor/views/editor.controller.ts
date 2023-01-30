@@ -1,68 +1,21 @@
 import { Controller } from "@valkyr/react";
-import { Connection, Edge, Node, NodeChange, ReactFlowInstance } from "reactflow";
+import { applyNodeChanges, Connection, Edge, Node, NodeChange } from "reactflow";
 
 import { db } from "~services/database";
+
+import { addReducerEdge } from "../library/blocks/reducer/reducer.collection";
+import type { EditorNode } from "../nodes/node.collection";
 export class EditorController extends Controller<{
-  nodes: Node[];
+  nodes: EditorNode[];
   edges: Edge[];
   asideOpen: boolean;
 }> {
-  #instance?: ReactFlowInstance;
-
   async onInit() {
     return {
-      nodes: await this.query(db.collection("nodes"), {}, async (documents, changed, type) => {
-        switch (type) {
-          case "insertOne":
-          case "insertMany": {
-            this.#instance?.addNodes(changed);
-            break;
-          }
-          case "updateOne":
-          case "updateMany": {
-            this.#instance?.setNodes(documents);
-            break;
-          }
-          case "remove": {
-            this.#instance?.deleteElements({ nodes: changed });
-            break;
-          }
-        }
-        // TODO: this will resize the view based on elements to ensure everything is visible.
-        // setTimeout(() => this.#instance?.fitView(), 75);
-        return {
-          nodes: documents
-        };
-      }),
-      edges: await this.query(db.collection("edges"), {}, async (documents, changed, type) => {
-        switch (type) {
-          case "insertOne":
-          case "insertMany": {
-            this.#instance?.addEdges(changed);
-            break;
-          }
-          case "updateOne":
-          case "updateMany": {
-            this.#instance?.setEdges(documents);
-            break;
-          }
-          case "remove": {
-            this.#instance?.deleteElements({ edges: changed });
-            break;
-          }
-        }
-        // TODO: this will resize the view based on elements to ensure everything is visible.
-        // setTimeout(() => this.#instance?.fitView(), 75);
-        return {
-          edges: documents
-        };
-      }),
+      nodes: await this.query(db.collection("nodes"), {}, "nodes"),
+      edges: await this.query(db.collection("edges"), {}, "edges"),
       asideOpen: false
     };
-  }
-
-  setInstance(instance: ReactFlowInstance) {
-    this.#instance = instance;
   }
 
   toggleAside(state: boolean) {
@@ -70,6 +23,7 @@ export class EditorController extends Controller<{
   }
 
   onNodesChange(changes: NodeChange[]): void {
+    this.setState("nodes", applyNodeChanges(changes, this.state.nodes));
     changes.forEach((change) => {
       if (change.type === "dimensions") {
         const { id, dimensions } = change;
@@ -111,9 +65,32 @@ export class EditorController extends Controller<{
       });
   }
 
-  onConnect(connection: Connection): void {
+  async onConnect(connection: Connection): Promise<void> {
     const { source, target } = connection;
-    if (source !== null && target !== null) {
+
+    if (source === null || target === null) {
+      return;
+    }
+
+    const sourceNode = await db.collection("nodes").findById(source);
+    const targetNode = await db.collection("nodes").findById(target);
+
+    if (sourceNode === undefined || targetNode === undefined) {
+      return;
+    }
+
+    let connected = false;
+    switch (targetNode.type) {
+      case "reducer": {
+        const result = await addReducerEdge({ type: sourceNode.type, id: sourceNode.data.id }, targetNode.data.id);
+        if (result === true) {
+          connected = true;
+        }
+        break;
+      }
+    }
+
+    if (connected) {
       db.collection("edges").insertOne({
         id: `reactflow__edge-${source}-${target}`,
         source,

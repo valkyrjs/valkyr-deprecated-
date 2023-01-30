@@ -7,8 +7,11 @@ import {
   addOptions,
   Document,
   DuplicateDocumentError,
+  getInsertManyResult,
+  getInsertOneResult,
   Index,
-  InsertResult,
+  InsertManyResult,
+  InsertOneResult,
   Options,
   PartialDocument,
   RemoveResult,
@@ -61,7 +64,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    |--------------------------------------------------------------------------------
    */
 
-  async insertOne(data: PartialDocument<D>): Promise<InsertResult> {
+  async insertOne(data: PartialDocument<D>): Promise<InsertOneResult> {
     const t0 = performance.now();
     const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
     if (await this.has(document.id)) {
@@ -74,10 +77,10 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
 
     this.#cache.flush();
 
-    return new InsertResult([document]);
+    return getInsertOneResult(document);
   }
 
-  async insertMany(data: PartialDocument<D>[]): Promise<InsertResult> {
+  async insertMany(data: PartialDocument<D>[]): Promise<InsertManyResult> {
     const documents: D[] = [];
 
     const t0 = performance.now();
@@ -99,7 +102,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
 
     this.#cache.flush();
 
-    return new InsertResult(documents);
+    return getInsertManyResult(documents);
   }
 
   /*

@@ -1,5 +1,4 @@
 import { Disclosure } from "@headlessui/react";
-import { NodeProps } from "reactflow";
 
 import { BlockHeader } from "~components/block-header";
 import { Editable } from "~components/editable";
@@ -7,28 +6,29 @@ import { TypeFields } from "~components/type-fields";
 
 import { TypeNodeController } from "./type.controller";
 
-export const TypeView = TypeNodeController.view(({ state: { node, data }, actions: { onRemove } }) => {
+export const TypeBlock = TypeNodeController.view(({ state: { block, data }, actions: { setName, onRemove } }) => {
+  if (block === undefined) {
+    return <div>404 Block Not Found</div>;
+  }
   return (
     <div className="relative">
       <Disclosure defaultOpen={true}>
         {({ open }) => (
-          <div className="bg-darker border rounded-sm text-xs border-darker-800 min-w-[390px] font-mono">
+          <div className="bg-darker border-darker-800 min-w-[390px] rounded-sm border font-mono text-xs">
             <BlockHeader
               open={open}
               onRemove={onRemove}
               color="green"
               symbol="T"
-              content={
-                <Editable value={node.data.name} onChange={data.name} name="name" placeholder="Add event name" />
-              }
+              content={<Editable value={block.name} onChange={setName} name="name" placeholder="Add type name" />}
             />
             <Disclosure.Panel>
               <TypeFields
-                data={node.data.data}
-                addField={data.add}
-                setFieldKey={data.setKey}
-                setFieldValue={data.setValue}
-                removeField={data.del}
+                data={block.data}
+                addField={data.addField}
+                setFieldKey={data.setFieldKey}
+                setFieldValue={data.setFieldValue}
+                removeField={data.removeField}
               />
             </Disclosure.Panel>
           </div>
@@ -37,7 +37,3 @@ export const TypeView = TypeNodeController.view(({ state: { node, data }, action
     </div>
   );
 });
-
-export function TypeNode({ id }: NodeProps) {
-  return <TypeView id={id} />;
-}

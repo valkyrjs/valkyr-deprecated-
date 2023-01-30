@@ -7,23 +7,22 @@ import { Button } from "~components/button";
 import { ModalPortal } from "~components/modal/view";
 
 import { openLibraryModal } from "../library";
-import { nodeTypes } from "../library/nodes";
+import { nodeTypes } from "../nodes";
 import { SettingsView } from "../settings/settings.view";
 import { EditorController } from "./editor.controller";
 
 export const EditorView = EditorController.view(
   ({
     state: { nodes, edges, asideOpen },
-    actions: { toggleAside, setInstance, onNodesChange, onNodePositionChanged, onConnect }
+    actions: { toggleAside, onNodesChange, onNodePositionChanged, onConnect }
   }) => {
     return (
       <>
         <div className="text-light bg-back h-screen w-full">
           <ReactFlow
             id="blocks"
-            onInit={setInstance}
-            defaultNodes={nodes}
-            defaultEdges={edges}
+            nodes={nodes}
+            edges={edges}
             nodeTypes={nodeTypes}
             onNodesChange={onNodesChange}
             onNodeDragStop={onNodePositionChanged}

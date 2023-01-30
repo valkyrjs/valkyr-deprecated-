@@ -20,7 +20,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-table": "^7.8.0",
-    "reactflow": "^11.4.2",
+    "reactflow": "^11.5.2",
     "rxjs": "^7.8.0",
     "tailwind-scrollbar-hide": "^1.1.7",
     "tailwindcss-fluid-type": "2.0.3"

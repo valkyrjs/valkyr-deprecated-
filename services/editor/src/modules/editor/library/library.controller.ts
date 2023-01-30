@@ -1,9 +1,8 @@
 import { Controller } from "@valkyr/react";
 
 import { closeModal } from "~components/modal";
-import { db } from "~services/database";
 
-import { getNode, NodeType } from "./nodes";
+import { addBlock, BlockType as Type } from "./blocks";
 
 export class LibraryController extends Controller<{
   isOpen: boolean;
@@ -23,11 +22,6 @@ export class LibraryController extends Controller<{
           name: "reducer",
           description: "Reducers do things",
           add: this.#addBlocks(["reducer"])
-        },
-        {
-          name: "validator",
-          description: "Validators validate events",
-          add: this.#addBlocks(["validator"])
         },
         {
           name: "type",
@@ -55,20 +49,18 @@ export class LibraryController extends Controller<{
     };
   }
 
-  #addBlocks(blockTypes: Array<NodeType>): () => void {
+  #addBlocks(blockTypes: Array<Type>): () => void {
     return async () => {
-      const nodes = [];
       for (const blockType of blockTypes) {
-        nodes.push(await getNode(blockType));
+        addBlock(blockType);
       }
-      db.collection("nodes").insertMany(nodes);
       closeModal();
     };
   }
 }
 
 export type BlockType = {
-  name: string;
+  name: Type;
   description: string;
   add: () => void;
 };

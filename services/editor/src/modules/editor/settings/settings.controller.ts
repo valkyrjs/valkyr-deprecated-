@@ -2,11 +2,11 @@ import { Controller } from "@valkyr/react";
 
 import { db } from "~services/database";
 
-import { Type } from "../library/nodes/type/type.node";
+import { TypeBlock } from "../library/blocks/type/type.collection";
 
 export class SettingsController extends Controller<
   {
-    types: Type[];
+    types: TypeBlock[];
   },
   {
     isOpen: boolean;
@@ -16,17 +16,7 @@ export class SettingsController extends Controller<
   async onInit() {
     return {
       isOpen: false,
-      types: await this.query(db.collection("types"), {}, async (documents) => {
-        return {
-          types: documents
-        };
-      })
-    };
-  }
-
-  #addType(add: () => void): () => void {
-    return () => {
-      add();
+      types: await this.query(db.collection("types"), {}, "types")
     };
   }
 }
