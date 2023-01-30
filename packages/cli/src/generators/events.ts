@@ -22,7 +22,7 @@ export function generateEvents(events: EventEntry[], modules: ModuleEntry[]): st
     ].join("\n"),
     {
       parser: "typescript",
-      printWidth: 120,
+      printWidth: 80,
       trailingComma: "none"
     }
   );

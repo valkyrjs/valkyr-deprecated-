@@ -32,7 +32,7 @@ export const SettingsView = SettingsController.view(({ state: { types }, props: 
                     </Button>
                   </div>
                 </div>
-                <Panel title="Configuration">
+                <Panel title="Configuration" defaultOpen={true}>
                   <div className="mb-2">
                     <header className="text-darker-700 tracking-wide">App</header>
                     <div className="flex flex-col gap-2 font-mono">
