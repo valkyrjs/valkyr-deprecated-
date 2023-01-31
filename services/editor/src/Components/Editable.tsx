@@ -1,4 +1,3 @@
-import { PencilSimple } from "phosphor-react";
 import { DetailedHTMLProps, InputHTMLAttributes, useEffect, useRef, useState } from "react";
 
 type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;

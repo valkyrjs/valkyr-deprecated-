@@ -6,7 +6,7 @@ export function StateNode({ data: { id } }: NodeProps) {
   return (
     <div className="relative">
       <StateBlock id={id} />
-      <Handle type="source" position={Position.Right} />
+      <Handle type="source" className="state-output-handle" position={Position.Right} />
     </div>
   );
 }

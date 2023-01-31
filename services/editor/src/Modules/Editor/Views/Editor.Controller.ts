@@ -94,6 +94,7 @@ export class EditorController extends Controller<{
     if (connected) {
       db.collection("edges").insertOne({
         id: `reactflow__edge-${source}-${target}`,
+        animated: true,
         source,
         target
       });

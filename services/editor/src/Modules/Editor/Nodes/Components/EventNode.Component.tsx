@@ -6,7 +6,7 @@ export function EventNode({ data: { id } }: NodeProps) {
   return (
     <div className="relative">
       <EventBlock id={id} />
-      <Handle type="source" position={Position.Right} />
+      <Handle type="source" className="event-output-handle" position={Position.Right} />
     </div>
   );
 }

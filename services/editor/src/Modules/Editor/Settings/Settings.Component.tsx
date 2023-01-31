@@ -64,7 +64,7 @@ export const Settings = SettingsController.view(({ state: { types }, props: { is
                   <div className="mt-6 flex w-full flex-row justify-end px-2">
                     <Button variant="primary" outline type="button" onClick={createTypeBlock}>
                       <Plus size={12}></Plus>
-                      new type
+                      <span>type</span>
                     </Button>
                   </div>
                 </Panel>
