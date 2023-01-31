@@ -13,11 +13,11 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
   #errors: FormErrors<Inputs> = {};
   #elements: Record<string, HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement> = {};
 
-  #onChange: OnChangeCallback<Inputs>;
-  #onProcessing: OnProcessingCallback;
-  #onError: OnErrorCallback<Inputs>;
-  #onSubmit: OnSubmitCallback<Inputs>;
-  #onResponse: OnResponseCallback<unknown, unknown>;
+  #onChange?: OnChangeCallback<Inputs>;
+  #onProcessing?: OnProcessingCallback;
+  #onError?: OnErrorCallback<Inputs>;
+  #onSubmit?: OnSubmitCallback<Inputs>;
+  #onResponse?: OnResponseCallback<any, any>;
 
   /*
    |--------------------------------------------------------------------------------
@@ -165,9 +165,9 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
   reset() {
     for (const key in this.inputs) {
       const value = this.#defaults[key];
-      this.inputs[key] = value;
+      (this.inputs as any)[key] = value;
       if (this.#elements[key] !== undefined) {
-        this.#elements[key].value = value;
+        (this.#elements as any)[key].value = value;
       }
     }
   }

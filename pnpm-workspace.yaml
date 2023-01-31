@@ -1,5 +1,4 @@
 packages:
-  - "docs"
   - "packages/*"
   - "services/*"
   - "templates/*"
