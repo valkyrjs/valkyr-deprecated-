@@ -1,6 +1,6 @@
-import { users } from "../mocks";
 import { Collection } from "../src/collection";
 import { MemoryStorage } from "../src/databases/memory.storage";
+import { users } from "./Users.Mock";
 
 /*
  |--------------------------------------------------------------------------------

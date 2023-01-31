@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "local": "npm uninstall -g && npm run build && npm i -g",
-    "build": "tsc",
+    "build": "tsc -b ./tsconfig.build.json",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
   },

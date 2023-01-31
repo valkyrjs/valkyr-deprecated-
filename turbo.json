@@ -8,7 +8,7 @@
       "cache": false
     },
     "build": {
-      "inputs": ["tsconfig.json", "tsconfig.build.json", "**/src/**", "src/**"],
+      "inputs": ["tsconfig.json", "tsconfig.build.json", "src/**"],
       "outputs": ["dist/**"]
     },
     "test": {

@@ -1,7 +1,7 @@
-import { users } from "../mocks";
 import { Collection } from "../src/collection";
 import { MemoryStorage } from "../src/databases/memory.storage";
 import { RemoveResult } from "../src/storage/operators/remove";
+import { users } from "./Users.Mock";
 
 /*
  |--------------------------------------------------------------------------------
