@@ -1,4 +1,4 @@
-import { TestRole } from "./Mocks/TestRole";
+import { TestRole } from "./TestRole.Mock";
 
 /*
  |--------------------------------------------------------------------------------

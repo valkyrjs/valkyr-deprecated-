@@ -1,4 +1,4 @@
-import { Event, EventToRecord, makeEventFactory, makeReducer } from "../src";
+import { Event, EventToRecord, makeEvent, makeReducer } from "../src";
 
 export type State = {
   title: string;
@@ -40,9 +40,9 @@ export const reducer = makeReducer<State, FooEvent>(
  */
 
 export const events = {
-  created: makeEventFactory<Created>("FooCreated"),
+  created: makeEvent<Created>("FooCreated"),
   member: {
-    added: makeEventFactory<MemberAdded>("FooMemberAdded")
+    added: makeEvent<MemberAdded>("FooMemberAdded")
   }
 };
 

@@ -9,7 +9,7 @@ import { createTypeBlock } from "../Library/Blocks/Type/Type.Collection";
 import { TypeBlock } from "../Library/Blocks/Type/Type.Component";
 import { SettingsController } from "./Settings.Controller";
 
-export const SettingsView = SettingsController.view(({ state: { types }, props: { isOpen, setClosed } }) => {
+export const Settings = SettingsController.view(({ state: { types }, props: { isOpen, setClosed } }) => {
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="text-light relative z-10" onClose={setClosed}>

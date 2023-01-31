@@ -1,8 +1,11 @@
 {
   "extends": "@valkyr/typescript",
   "compilerOptions": {
+    "lib": ["ES2022", "dom", "dom.iterable"],
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "rootDir": "./",
     "outDir": "./dist",
-    "rootDir": "./src",
-    "skipLibCheck": true
-  }
+  },
+  "include": ["./src"]
 }

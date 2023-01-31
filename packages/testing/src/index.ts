@@ -1,2 +1,2 @@
 export * from "./containers/mongodb.container";
-export * from "./nestjs/testing.module";
+export * from "./utils/wait-for-expect";

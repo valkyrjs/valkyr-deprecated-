@@ -8,7 +8,7 @@ import { ModalPortal } from "~Components/Modal";
 
 import { openLibraryModal } from "../Library";
 import { nodeTypes } from "../Nodes";
-import { SettingsView } from "../Settings/settings.view";
+import { Settings } from "../Settings/Settings.Component";
 import { EditorController } from "./Editor.Controller";
 
 export const EditorView = EditorController.view(
@@ -43,7 +43,7 @@ export const EditorView = EditorController.view(
             <Controls showInteractive={false} />
             <Background />
           </ReactFlow>
-          <SettingsView isOpen={asideOpen} setClosed={() => toggleAside(false)} />
+          <Settings isOpen={asideOpen} setClosed={() => toggleAside(false)} />
         </div>
         <ModalPortal />
       </>

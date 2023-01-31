@@ -1,17 +1,15 @@
 import { MethodNotFoundError } from "../src/errors";
-import { JsonRpcNotification } from "../src/notification";
-import { JsonRpcRequest } from "../src/request";
-import { JsonRpcErrorResponse, JsonRpcSuccessResponse } from "../src/response";
+import { Notification } from "../src/notification";
+import { Request } from "../src/request";
+import { ErrorResponse, SuccessResponse } from "../src/response";
 
 const methods = new Map<string, (...args: any[]) => Promise<any>>();
 
+async function inject<Result = unknown>(request: Request): Promise<SuccessResponse<Result> | ErrorResponse>;
+async function inject(request: Notification): Promise<void>;
 async function inject<Result = unknown>(
-  request: JsonRpcRequest
-): Promise<JsonRpcSuccessResponse<Result> | JsonRpcErrorResponse>;
-async function inject(request: JsonRpcNotification): Promise<void>;
-async function inject<Result = unknown>(
-  request: JsonRpcRequest | JsonRpcNotification
-): Promise<JsonRpcSuccessResponse<Result> | JsonRpcErrorResponse | void> {
+  request: Request | Notification
+): Promise<SuccessResponse<Result> | ErrorResponse | void> {
   const handle = methods.get(request.method);
   if ("id" in request) {
     if (handle === undefined) {

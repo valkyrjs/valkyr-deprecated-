@@ -30,6 +30,7 @@
     "*.events.ts": "lib",
     "*.method.ts": "makefile",
     "*.methods.ts": "makefile",
+    "*.mock.ts": "hardhat",
     "*.entity.ts": "database",
     "*.form.ts": "log",
     "*.gateway.ts": "parcel",
@@ -40,7 +41,7 @@
     "*.validator.ts": "key",
     "*.component.tsx": "virtual",
     "*.modal.tsx": "opam",
-    "*.view.tsx": "virtual"
+    "*.view.tsx": "virtual",
   },
   "cSpell.words": [
     "birthdayresearch",

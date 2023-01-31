@@ -6,9 +6,12 @@ export function observeOne(
   collection: Collection,
   criteria: Criteria,
   onChange: (document: Document | undefined) => void
-): () => void {
+): {
+  unsubscribe: () => void;
+} {
   collection.findOne(criteria).then(onChange);
-  return collection.observable.change.subscribe(({ type, data }) => {
+
+  const subscription = collection.observable.change.subscribe(({ type, data }) => {
     switch (type) {
       case "insertOne":
       case "updateOne": {
@@ -27,5 +30,11 @@ export function observeOne(
         break;
       }
     }
-  }).unsubscribe;
+  });
+
+  return {
+    unsubscribe: () => {
+      subscription.unsubscribe();
+    }
+  };
 }

@@ -4,9 +4,9 @@ import { BlockHeader } from "~Components/BlockHeader";
 import { Editable } from "~Components/Editable";
 import { TypeFields } from "~Components/TypeFields";
 
-import { TypeNodeController } from "./Type.Controller";
+import { TypeBlockController } from "./Type.Controller";
 
-export const TypeBlock = TypeNodeController.view(({ state: { block, data }, actions: { setName, onRemove } }) => {
+export const TypeBlock = TypeBlockController.view(({ state: { block, data }, actions: { setName, onRemove } }) => {
   if (block === undefined) {
     return <div>404 Block Not Found</div>;
   }

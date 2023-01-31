@@ -2,7 +2,6 @@ import { Subject } from "rxjs";
 
 import { MemoryStorage } from "./adapters/memory.storage";
 import { Job, Payload, Storage } from "./storage";
-import { getUUID } from "./uuid";
 import { Worker } from "./worker";
 
 export class Queue<W extends Worker> {
@@ -50,7 +49,10 @@ export class Queue<W extends Worker> {
     return this.status === status;
   }
 
-  push({ id = getUUID(), type, payload }: { id?: string; type: W["type"]; payload: Payload<W> }, attempts = 0): string {
+  push(
+    { id = crypto.randomUUID(), type, payload }: { id?: string; type: W["type"]; payload: Payload<W> },
+    attempts = 0
+  ): string {
     const worker = this.hasWorker(type);
     if (worker === undefined) {
       throw new Error(`Queue Exception: Cannot push job, no worker registered for type ${type}`);

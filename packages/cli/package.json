@@ -10,12 +10,7 @@
     "local": "npm uninstall -g && npm run build && npm i -g",
     "build": "tsc",
     "flush": "npm run clean && rm -rf ./node_modules",
-    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo",
-    "lint": "eslint .",
-    "test": "jest"
-  },
-  "jest": {
-    "preset": "@valkyr/jest"
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
   },
   "dependencies": {
     "@commander-js/extra-typings": "^10.0.1",

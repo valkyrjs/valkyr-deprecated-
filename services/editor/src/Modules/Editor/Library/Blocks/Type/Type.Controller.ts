@@ -5,7 +5,7 @@ import { db } from "~Services/Database";
 import { BlockFields } from "../../Utilities/BlockFields";
 import { TypeBlock } from "./Type.Collection";
 
-export class TypeNodeController extends Controller<
+export class TypeBlockController extends Controller<
   {
     block?: TypeBlock;
     data: BlockFields;

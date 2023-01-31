@@ -1,14 +1,14 @@
-import { JsonRpcNotification } from "../src/notification";
-import { JsonRpcProvider } from "../src/provider";
-import { JsonRpcRequest } from "../src/request";
-import { JsonRpcErrorResponse, JsonRpcSuccessResponse } from "../src/response";
+import { Notification } from "../src/notification";
+import { Provider } from "../src/provider";
+import { Request } from "../src/request";
+import { ErrorResponse, SuccessResponse } from "../src/response";
 import { consumer } from "./consumer.mock";
 
-async function notify(message: JsonRpcNotification): Promise<void> {
+async function notify(message: Notification): Promise<void> {
   await consumer.inject(message);
 }
 
-async function send<Result = unknown>(message: JsonRpcRequest): Promise<JsonRpcSuccessResponse<Result>> {
+async function send<Result = unknown>(message: Request): Promise<SuccessResponse<Result>> {
   const response = await consumer.inject<Result>(message);
   if ("error" in response) {
     throw response.error;
@@ -16,13 +16,11 @@ async function send<Result = unknown>(message: JsonRpcRequest): Promise<JsonRpcS
   return response.result as any;
 }
 
-async function batch(
-  _: Array<JsonRpcRequest | JsonRpcNotification>
-): Promise<Array<JsonRpcSuccessResponse | JsonRpcErrorResponse>> {
+async function batch(_: Array<Request | Notification>): Promise<Array<SuccessResponse | ErrorResponse>> {
   return [];
 }
 
-export const provider: JsonRpcProvider = {
+export const provider: Provider = {
   notify,
   send,
   batch
