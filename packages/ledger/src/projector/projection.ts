@@ -2,15 +2,15 @@ import type { EventRecord } from "../event";
 import type { ProjectionFilter } from "./filters";
 import type { Projector } from "./projector";
 
-export class Projection<Event extends EventRecord> {
-  #projector: Projector;
+export class Projection<Record extends EventRecord> {
+  #projector: Projector<Record>;
   #type: Event["type"];
-  #handle: ProjectionEventHandler<Event>;
+  #handle: ProjectionEventHandler<Record>;
   #filter: ProjectionFilter;
 
   #listener?: () => void;
 
-  constructor(projector: Projector, { type, handler, filter }: ProjectionOptions<Event>) {
+  constructor(projector: Projector<Record>, { type, handler, filter }: ProjectionOptions<Record>) {
     this.#projector = projector;
     this.#type = type;
     this.#handle = handler;
@@ -50,7 +50,7 @@ export class Projection<Event extends EventRecord> {
   start() {
     this.#listener = this.#projector.addEventListener(this.#type as string, async (event, state) => {
       if (this.isValid(state)) {
-        await this.#handle(event as Event);
+        await this.#handle(event as Record);
       }
     });
   }
@@ -70,9 +70,9 @@ export class Projection<Event extends EventRecord> {
  |--------------------------------------------------------------------------------
  */
 
-type ProjectionOptions<Event extends EventRecord> = {
-  type: Event["type"];
-  handler: ProjectionEventHandler<Event>;
+type ProjectionOptions<Record extends EventRecord> = {
+  type: Record["type"];
+  handler: ProjectionEventHandler<Record>;
   filter: ProjectionFilter;
 };
 
@@ -81,9 +81,9 @@ export type ProjectionState = {
   outdated: boolean;
 };
 
-export type ProjectionHandler<Event extends EventRecord = EventRecord> = (
-  event: Event,
+export type ProjectionHandler<Record extends EventRecord = EventRecord> = (
+  eventRecord: Record,
   state: ProjectionState
 ) => Promise<void>;
 
-export type ProjectionEventHandler<Event extends EventRecord = EventRecord> = (event: Event) => Promise<void>;
+export type ProjectionEventHandler<Record extends EventRecord> = (eventRecord: Record) => Promise<void>;

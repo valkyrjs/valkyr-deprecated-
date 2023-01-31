@@ -19,7 +19,7 @@ export class IndexedStorage<W extends Worker> implements Storage<W> {
   }
 
   async init() {
-    this.#db = await openDB(`valkyr:queue:${this.name}`, 1, {
+    this.#db = await openDB(this.name, 1, {
       upgrade: (db: IDBPDatabase) => {
         for (const name of stores) {
           const store = db.createObjectStore(name, { keyPath: "id" });

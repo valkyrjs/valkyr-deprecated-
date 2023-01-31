@@ -1,0 +1,9 @@
+{
+  "extends": "@valkyr/typescript",
+  "compilerOptions": {
+    "lib": ["ES2022", "dom", "dom.iterable"],
+    "rootDir": "./",
+    "outDir": "./dist",
+  },
+  "include": ["./src"]
+}

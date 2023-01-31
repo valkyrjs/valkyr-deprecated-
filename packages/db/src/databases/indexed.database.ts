@@ -5,26 +5,25 @@ import { Document } from "../storage";
 import { IndexedDbStorage } from "./indexed.storage";
 import { Registrars } from "./registrars";
 
+function log() {}
+
 type StringRecord<T> = { [x: string]: T };
 
+type Options = {
+  name: string;
+  version?: number;
+  registrars: Registrars[];
+  log?: (message: string) => void;
+};
+
 export class IndexedDatabase<T extends StringRecord<Document>> {
-  readonly #registrars: Registrars[] = [];
   readonly #collections = new Map<keyof T, Collection<T[keyof T]>>();
+  readonly #db: Promise<IDBPDatabase<unknown>>;
 
-  #db?: IDBPDatabase;
-
-  constructor(readonly name: string, readonly version = 1, readonly log = (_: string) => {}) {}
-
-  /*
-   |--------------------------------------------------------------------------------
-   | Bootstrap
-   |--------------------------------------------------------------------------------
-   */
-
-  async start(): Promise<void> {
-    this.#db = await openDB(this.name, this.version, {
+  constructor(readonly options: Options) {
+    this.#db = openDB(options.name, options.version ?? 1, {
       upgrade: (db: IDBPDatabase) => {
-        for (const { name, indexes = [] } of this.#registrars) {
+        for (const { name, indexes = [] } of options.registrars) {
           const store = db.createObjectStore(name as string, { keyPath: "id" });
           store.createIndex("id", "id", { unique: true });
           for (const [keyPath, options] of indexes) {
@@ -33,21 +32,9 @@ export class IndexedDatabase<T extends StringRecord<Document>> {
         }
       }
     });
-    for (const { name } of this.#registrars) {
-      this.#collections.set(name, new Collection(name, new IndexedDbStorage(name, this.#db, this.log)));
+    for (const { name } of options.registrars) {
+      this.#collections.set(name, new Collection(name, new IndexedDbStorage(name, this.#db, options.log ?? log)));
     }
-  }
-
-  /**
-   * Register a new collection.
-   *
-   * @param registrars - Collections to register.
-   */
-  register(registrars: Registrars[]): this {
-    for (const registrar of registrars) {
-      this.#registrars.push(registrar);
-    }
-    return this;
   }
 
   /*
@@ -71,7 +58,7 @@ export class IndexedDatabase<T extends StringRecord<Document>> {
    */
 
   async export(name: string, options?: { offset?: string; limit?: number }): Promise<any[]> {
-    return this.#db?.getAll(name, options?.offset, options?.limit) ?? [];
+    return (await this.#db).getAll(name, options?.offset, options?.limit) ?? [];
   }
 
   async flush() {
@@ -81,6 +68,6 @@ export class IndexedDatabase<T extends StringRecord<Document>> {
   }
 
   close() {
-    this.#db?.close();
+    this.#db.then((db) => db.close());
   }
 }

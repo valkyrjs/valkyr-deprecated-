@@ -9,16 +9,45 @@ import { RolePermission, RolePermissions } from "./RolePermission";
  */
 
 export class Role<Permissions extends RolePermissions = RolePermissions> {
-  readonly id = this.role.id;
-  readonly container = this.role.container;
-  readonly name = this.role.name;
-  readonly settings = this.role.settings;
-  readonly permissions = this.role.permissions;
-  readonly members = Object.freeze(this.role.members);
-
   constructor(readonly role: RoleData<Permissions>) {
     Object.freeze(this);
   }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Accessors
+   |--------------------------------------------------------------------------------
+   */
+
+  get id() {
+    return this.role.id;
+  }
+
+  get container() {
+    return this.role.container;
+  }
+
+  get name() {
+    return this.role.name;
+  }
+
+  get settings() {
+    return this.role.settings;
+  }
+
+  get permissions() {
+    return this.role.permissions;
+  }
+
+  get members() {
+    return Object.freeze(this.role.members);
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Factories
+   |--------------------------------------------------------------------------------
+   */
 
   /**
    * Retrieve role attributes.

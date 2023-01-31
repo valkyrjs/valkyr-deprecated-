@@ -1,0 +1,17 @@
+{
+  "extends": "@valkyr/typescript",
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "~api": [
+        "../../../templates/api/src/api"
+      ],
+      "~generated/*": ["../../../templates/api/src/generated/*"],
+      "~middleware/*": ["./actions/*"],
+      "~services/*": [
+        "../../../templates/api/src/services/*",
+        "./services/*"
+      ]
+    },
+  }
+}

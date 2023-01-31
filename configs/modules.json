@@ -1,0 +1,37 @@
+[
+  {
+    "name": "account",
+    "enabled": true,
+    "jsonrpc": [
+      {
+        "method": "CreateAccount",
+        "params": {
+          "email": "p:string",
+          "password": "p:string"
+        },
+        "result": {
+          "token": "p:string"
+        }
+      },
+      {
+        "method": "Authenticate",
+        "params": {
+          "email": "p:string",
+          "password": "p:string"
+        },
+        "result": {
+          "token": "p:string"
+        }
+      }
+    ],
+    "events": {
+      "alias": "Account",
+      "path": "events/account.events"
+    },
+    "dependencies": {
+      "@valkyr/access": "workspace:*",
+      "bcrypt": "^5.1.0",
+      "jsonwebtoken": "^9.0.0"
+    }
+  }
+]

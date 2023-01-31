@@ -5,6 +5,7 @@
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
+  "type": "commonjs",
   "main": "src/index.ts",
   "files": [
     "dist"
@@ -15,7 +16,7 @@
     "spa"
   ],
   "scripts": {
-    "build": "tsc -b ./tsconfig.build.json",
+    "build": "tsc -b ./tsconfig.json",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo",
     "test": "jest"
@@ -29,7 +30,7 @@
   },
   "devDependencies": {
     "@valkyr/jest": "workspace:*",
-    "fake-indexeddb": "^4.0.1",
-    "wait-for-expect": "^3.0.2"
+    "@valkyr/testing": "workspace:*",
+    "fake-indexeddb": "^4.0.1"
   }
 }

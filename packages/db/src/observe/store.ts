@@ -23,53 +23,47 @@ export class Store {
     return this.storage.find();
   }
 
-  async insertMany(documents: Document[], criteria: Criteria): Promise<boolean> {
-    let matched = false;
+  async insertMany(documents: Document[], criteria: Criteria): Promise<Document[]> {
+    const matched = [];
     for (const document of documents) {
-      const changed = await this.insertOne(document, criteria);
-      if (changed === true) {
-        matched = true;
-      }
+      matched.push(...(await this.insertOne(document, criteria)));
     }
     return matched;
   }
 
-  async insertOne(document: Document, criteria: Criteria): Promise<boolean> {
+  async insertOne(document: Document, criteria: Criteria): Promise<Document[]> {
     if (isMatch(document, criteria)) {
       await this.storage.insertOne(document);
-      return true;
+      return [document];
     }
-    return false;
+    return [];
   }
 
-  async updateMany(documents: Document[], criteria: Criteria): Promise<boolean> {
-    let matched = false;
+  async updateMany(documents: Document[], criteria: Criteria): Promise<Document[]> {
+    const matched = [];
     for (const document of documents) {
-      const changed = await this.updateOne(document, criteria);
-      if (changed === true) {
-        matched = true;
-      }
+      matched.push(...(await this.updateOne(document, criteria)));
     }
     return matched;
   }
 
-  async updateOne(document: Document, criteria: Criteria): Promise<boolean> {
+  async updateOne(document: Document, criteria: Criteria): Promise<Document[]> {
     if (await this.storage.has(document.id)) {
       await this.#updateOrRemove(document, criteria);
-      return true;
+      return [document];
     } else if (isMatch(document, criteria)) {
       await this.storage.insertOne(document);
-      return true;
+      return [document];
     }
-    return false;
+    return [];
   }
 
-  async remove(documents: Document[]): Promise<boolean> {
-    let matched = false;
+  async remove(documents: Document[]): Promise<Document[]> {
+    const matched = [];
     for (const document of documents) {
       if (isMatch(document, { id: document.id })) {
         await this.storage.remove({ id: document.id });
-        matched = true;
+        matched.push(document);
       }
     }
     return matched;

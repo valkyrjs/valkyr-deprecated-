@@ -1,7 +1,7 @@
 import { Query } from "mingo";
 
 import { Collection } from "../collection";
-import { addOptions, Document, Options } from "../storage";
+import { addOptions, ChangeEvent, Document, Options } from "../storage";
 import { Criteria } from "./is-match";
 import { Store } from "./store";
 
@@ -9,7 +9,7 @@ export function observe(
   collection: Collection,
   criteria: Criteria,
   options: Options | undefined,
-  onChange: (documents: Document[]) => void
+  onChange: (documents: Document[], changed: Document[], type: ChangeEvent["type"]) => void
 ): {
   unsubscribe: () => void;
 } {
@@ -18,22 +18,23 @@ export function observe(
   let debounce: NodeJS.Timeout;
 
   collection.find(criteria, options).then(async (documents) => {
-    onChange(await store.resolve(documents));
+    const resolved = await store.resolve(documents);
+    onChange(resolved, resolved, "insertMany");
   });
 
   const subscriptions = [
     collection.observable.flush.subscribe(() => {
       clearTimeout(debounce);
       store.flush();
-      onChange([]);
+      onChange([], [], "remove");
     }),
     collection.observable.change.subscribe(async ({ type, data }) => {
-      const hasChanged = await store[type](data, criteria);
-      if (hasChanged === true) {
+      const changed = await store[type](data, criteria);
+      if (changed.length > 0) {
         clearTimeout(debounce);
         debounce = setTimeout(() => {
           store.getDocuments().then((documents) => {
-            onChange(toQueriedData(documents, options));
+            onChange(toQueriedData(documents, options), changed, type);
           });
         }, 0);
       }

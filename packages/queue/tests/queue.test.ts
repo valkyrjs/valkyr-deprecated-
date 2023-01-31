@@ -1,8 +1,15 @@
-import waitForExpect from "wait-for-expect";
+import { waitForExpect } from "@valkyr/testing";
+import crypto from "crypto";
 
-import { UserWorker } from "../mock/user.worker";
 import { Queue } from "../src";
 import { MemoryStorage } from "../src/adapters/memory.storage";
+import { UserWorker } from "./user-worker.mock";
+
+Object.defineProperty(global, "crypto", {
+  value: {
+    randomUUID: () => crypto.webcrypto.randomUUID()
+  }
+});
 
 const queue = new Queue([new UserWorker()], {
   storage: new MemoryStorage()

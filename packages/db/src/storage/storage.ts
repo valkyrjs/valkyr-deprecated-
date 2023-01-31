@@ -4,7 +4,7 @@ import { Subject } from "rxjs";
 
 import { BroadcastChannel, StorageBroadcast } from "../broadcast";
 import { crypto } from "../crypto";
-import { InsertResult } from "./operators/insert";
+import { InsertManyResult, InsertOneResult } from "./operators/insert";
 import { RemoveResult } from "./operators/remove";
 import { UpdateOperators, UpdateResult } from "./operators/update";
 
@@ -20,6 +20,9 @@ export abstract class Storage<D extends Document = Document> {
 
   constructor(readonly name: string, readonly id = crypto.randomUUID()) {
     this.#channel.onmessage = ({ data }: MessageEvent<StorageBroadcast<D>>) => {
+      if (data.name !== this.name) {
+        return;
+      }
       switch (data.type) {
         case "flush": {
           this.observable.flush.next();
@@ -32,6 +35,14 @@ export abstract class Storage<D extends Document = Document> {
       }
     };
   }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Resolver
+   |--------------------------------------------------------------------------------
+   */
+
+  abstract resolve(): Promise<this>;
 
   /*
    |--------------------------------------------------------------------------------
@@ -64,7 +75,7 @@ export abstract class Storage<D extends Document = Document> {
         break;
       }
     }
-    this.#channel.postMessage({ type, data });
+    this.#channel.postMessage({ name: this.name, type, data });
   }
 
   /*
@@ -75,9 +86,9 @@ export abstract class Storage<D extends Document = Document> {
 
   abstract has(id: string): Promise<boolean>;
 
-  abstract insertOne(document: PartialDocument<D>): Promise<InsertResult>;
+  abstract insertOne(document: PartialDocument<D>): Promise<InsertOneResult>;
 
-  abstract insertMany(documents: PartialDocument<D>[]): Promise<InsertResult>;
+  abstract insertMany(documents: PartialDocument<D>[]): Promise<InsertManyResult>;
 
   abstract findById(id: string): Promise<D | undefined>;
 
@@ -141,7 +152,7 @@ export type PartialDocument<D extends Document> = Omit<D, "id"> & {
 
 type Status = "loading" | "ready";
 
-type ChangeEvent =
+export type ChangeEvent =
   | {
       type: "insertOne" | "updateOne";
       data: Document<any>;

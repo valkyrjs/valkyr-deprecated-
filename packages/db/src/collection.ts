@@ -5,8 +5,10 @@ import { IndexedDbStorage } from "./databases/indexed.storage";
 import { MemoryStorage } from "./databases/memory.storage";
 import { observe, observeOne } from "./observe";
 import {
+  ChangeEvent,
   Document,
-  InsertResult,
+  InsertManyResult,
+  InsertOneResult,
   Options,
   PartialDocument,
   RemoveResult,
@@ -33,28 +35,28 @@ export class Collection<D extends Document = any> {
    |--------------------------------------------------------------------------------
    */
 
-  async insertOne(document: PartialDocument<D>): Promise<InsertResult> {
-    return this.storage.insertOne(document);
+  async insertOne(document: PartialDocument<D>): Promise<InsertOneResult> {
+    return this.storage.resolve().then((storage) => storage.insertOne(document));
   }
 
-  async insertMany(documents: PartialDocument<D>[]): Promise<InsertResult> {
-    return this.storage.insertMany(documents);
+  async insertMany(documents: PartialDocument<D>[]): Promise<InsertManyResult> {
+    return this.storage.resolve().then((storage) => storage.insertMany(documents));
   }
 
   async updateOne(criteria: RawObject, update: UpdateOperators): Promise<UpdateResult> {
-    return this.storage.updateOne(criteria, update);
+    return this.storage.resolve().then((storage) => storage.updateOne(criteria, update));
   }
 
   async updateMany(criteria: RawObject, update: UpdateOperators): Promise<UpdateResult> {
-    return this.storage.updateMany(criteria, update);
+    return this.storage.resolve().then((storage) => storage.updateMany(criteria, update));
   }
 
   async replaceOne(criteria: RawObject, document: D): Promise<UpdateResult> {
-    return this.storage.replace(criteria, document);
+    return this.storage.resolve().then((storage) => storage.replace(criteria, document));
   }
 
   async remove(criteria: RawObject): Promise<RemoveResult> {
-    return this.storage.remove(criteria);
+    return this.storage.resolve().then((storage) => storage.remove(criteria));
   }
 
   /*
@@ -64,21 +66,29 @@ export class Collection<D extends Document = any> {
    */
 
   subscribe(criteria?: RawObject, options?: SubscribeToSingle, next?: (document: D | undefined) => void): Subscription;
-  subscribe(criteria?: RawObject, options?: SubscribeToMany, next?: (documents: D[]) => void): Subscription;
-  subscribe(criteria: RawObject = {}, options?: Options, next?: (value: any) => void): Subscription {
+  subscribe(
+    criteria?: RawObject,
+    options?: SubscribeToMany,
+    next?: (documents: D[], changed: D[], type: ChangeEvent["type"]) => void
+  ): Subscription;
+  subscribe(criteria: RawObject = {}, options?: Options, next?: (...args: any[]) => void): Subscription {
     if (options?.limit === 1) {
-      return this.observeOne(criteria).subscribe({ next });
+      return this.#observeOne(criteria).subscribe({ next });
     }
-    return this.observe(criteria, options).subscribe({ next });
-  }
-
-  observe(criteria: RawObject = {}, options?: Options): Observable<D[]> {
-    return new Observable<D[]>((subscriber) => {
-      return observe(this, criteria, options, (values) => subscriber.next(values as any));
+    return this.#observe(criteria, options).subscribe({
+      next: (value: [D[], D[], ChangeEvent["type"]]) => next?.(...value)
     });
   }
 
-  observeOne(criteria: RawObject = {}): Observable<D | undefined> {
+  #observe(criteria: RawObject = {}, options?: Options): Observable<[D[], D[], ChangeEvent["type"]]> {
+    return new Observable<[D[], D[], ChangeEvent["type"]]>((subscriber) => {
+      return observe(this, criteria, options, (values, changed, type) =>
+        subscriber.next([values, changed, type] as any)
+      );
+    });
+  }
+
+  #observeOne(criteria: RawObject = {}): Observable<D | undefined> {
     return new Observable<D | undefined>((subscriber) => {
       return observeOne(this, criteria, (values) => subscriber.next(values as any));
     });
@@ -94,7 +104,7 @@ export class Collection<D extends Document = any> {
    * Retrieve a record by the document 'id' key.
    */
   async findById(id: string): Promise<D | undefined> {
-    return this.storage.findById(id);
+    return this.storage.resolve().then((storage) => storage.findById(id));
   }
 
   /**
@@ -110,7 +120,7 @@ export class Collection<D extends Document = any> {
    * documents matching the provided criteria and options.
    */
   async find(criteria: RawObject = {}, options?: Options): Promise<D[]> {
-    return this.storage.find(criteria, options);
+    return this.storage.resolve().then((storage) => storage.find(criteria, options));
   }
 
   /**
@@ -118,15 +128,17 @@ export class Collection<D extends Document = any> {
    * the count of all documents found matching the criteria and options.
    */
   async count(criteria?: RawObject): Promise<number> {
-    return this.storage.count(criteria);
+    return this.storage.resolve().then((storage) => storage.count(criteria));
   }
 
   /**
    * Removes all documents from the storage instance.
    */
   flush(): void {
-    this.storage.broadcast("flush");
-    this.storage.flush();
+    this.storage.resolve().then((storage) => {
+      storage.broadcast("flush");
+      storage.flush();
+    });
   }
 }
 

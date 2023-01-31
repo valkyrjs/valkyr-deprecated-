@@ -7,8 +7,11 @@ import {
   addOptions,
   Document,
   DuplicateDocumentError,
+  getInsertManyResult,
+  getInsertOneResult,
   Index,
-  InsertResult,
+  InsertManyResult,
+  InsertOneResult,
   Options,
   PartialDocument,
   RemoveResult,
@@ -23,20 +26,36 @@ const OBJECT_PROTOTYPE = Object.getPrototypeOf({}) as AnyVal;
 const OBJECT_TAG = "[object Object]";
 
 export class IndexedDbStorage<D extends Document = Document> extends Storage<D> {
-  readonly #db: IDBPDatabase;
   readonly #cache = new IndexedCache<D>();
+  readonly #promise: Promise<IDBPDatabase>;
 
-  constructor(name: string, db: IDBPDatabase, readonly log: (message: string) => void) {
+  #db?: IDBPDatabase;
+
+  constructor(name: string, promise: Promise<IDBPDatabase>, readonly log: (message: string) => void) {
     super(name);
-    this.#db = db;
+    this.#promise = promise;
+  }
+
+  async resolve() {
+    if (this.#db === undefined) {
+      this.#db = await this.#promise;
+    }
+    return this;
   }
 
   async has(id: string): Promise<boolean> {
-    const document = await this.#db.getFromIndex(this.name, "id", id);
+    const document = await this.db.getFromIndex(this.name, "id", id);
     if (document !== undefined) {
       return true;
     }
     return false;
+  }
+
+  get db() {
+    if (this.#db === undefined) {
+      throw new Error("Database not initialized");
+    }
+    return this.#db;
   }
 
   /*
@@ -45,28 +64,28 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    |--------------------------------------------------------------------------------
    */
 
-  async insertOne(data: PartialDocument<D>): Promise<InsertResult> {
+  async insertOne(data: PartialDocument<D>): Promise<InsertOneResult> {
     const t0 = performance.now();
     const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
     if (await this.has(document.id)) {
       throw new DuplicateDocumentError(document, this);
     }
-    await this.#db.transaction(this.name, "readwrite", { durability: "relaxed" }).store.add(document);
+    await this.db.transaction(this.name, "readwrite", { durability: "relaxed" }).store.add(document);
 
     this.broadcast("insertOne", document);
     this.log(`@valkyr/db > 1 ${this.name} inserted in ${(performance.now() - t0).toFixed(2)} milliseconds`);
 
     this.#cache.flush();
 
-    return new InsertResult([document]);
+    return getInsertOneResult(document);
   }
 
-  async insertMany(data: PartialDocument<D>[]): Promise<InsertResult> {
+  async insertMany(data: PartialDocument<D>[]): Promise<InsertManyResult> {
     const documents: D[] = [];
 
     const t0 = performance.now();
 
-    const tx = this.#db.transaction(this.name, "readwrite", { durability: "relaxed" });
+    const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
     await Promise.all(
       data.map((data) => {
         const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
@@ -83,7 +102,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
 
     this.#cache.flush();
 
-    return new InsertResult(documents);
+    return getInsertManyResult(documents);
   }
 
   /*
@@ -93,7 +112,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    */
 
   async findById(id: string): Promise<D | undefined> {
-    return this.#db.getFromIndex(this.name, "id", id);
+    return this.db.getFromIndex(this.name, "id", id);
   }
 
   async find(criteria: RawObject, options: Options = {}): Promise<D[]> {
@@ -128,7 +147,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    * nested indexing in indexeddb.
    */
   #resolveIndexes(criteria: any): { index?: { [key: string]: any } } {
-    const indexNames = this.#db.transaction(this.name, "readonly").store.indexNames;
+    const indexNames = this.db.transaction(this.name, "readonly").store.indexNames;
     const index: { [key: string]: any } = {};
     for (const key in criteria) {
       if (indexNames.contains(key) === true) {
@@ -156,12 +175,12 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
       return this.#getAllByIndex(index);
     }
     if (range !== undefined) {
-      return this.#db.getAll(this.name, IDBKeyRange.bound(range.from, range.to));
+      return this.db.getAll(this.name, IDBKeyRange.bound(range.from, range.to));
     }
     if (offset !== undefined) {
       return this.#getAllByOffset(offset.value, offset.direction, limit);
     }
-    return this.#db.getAll(this.name, undefined, limit);
+    return this.db.getAll(this.name, undefined, limit);
   }
 
   async #getAllByIndex(index: Index) {
@@ -170,11 +189,11 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
       const value = index[key];
       if (Array.isArray(value)) {
         for (const idx of value) {
-          const values = await this.#db.getAllFromIndex(this.name, key, idx);
+          const values = await this.db.getAllFromIndex(this.name, key, idx);
           result = new Set([...result, ...values]);
         }
       } else {
-        const values = await this.#db.getAllFromIndex(this.name, key, value);
+        const values = await this.db.getAllFromIndex(this.name, key, value);
         result = new Set([...result, ...values]);
       }
     }
@@ -183,17 +202,17 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
 
   async #getAllByOffset(value: string, direction: 1 | -1, limit?: number) {
     if (direction === 1) {
-      return this.#db.getAll(this.name, IDBKeyRange.lowerBound(value), limit);
+      return this.db.getAll(this.name, IDBKeyRange.lowerBound(value), limit);
     }
     return this.#getAllByDescOffset(value, limit);
   }
 
   async #getAllByDescOffset(value: string, limit?: number) {
     if (limit === undefined) {
-      return this.#db.getAll(this.name, IDBKeyRange.upperBound(value));
+      return this.db.getAll(this.name, IDBKeyRange.upperBound(value));
     }
     const result = [];
-    let cursor = await this.#db
+    let cursor = await this.db
       .transaction(this.name, "readonly")
       .store.openCursor(IDBKeyRange.upperBound(value), "prev");
     for (let i = 0; i < limit; i++) {
@@ -230,7 +249,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     let modifiedCount = 0;
 
     const t0 = performance.now();
-    const tx = this.#db.transaction(this.name, "readwrite", { durability: "relaxed" });
+    const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
     await Promise.all(
       ids.map((id) =>
         tx.store.get(id).then((current) => {
@@ -266,7 +285,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     const documents: D[] = [];
     const count = ids.length;
 
-    const tx = this.#db.transaction(this.name, "readwrite", { durability: "relaxed" });
+    const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
     await Promise.all(
       ids.map((id) => {
         const next = { ...document, id };
@@ -286,7 +305,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
 
   async #update(id: string, criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
     const t0 = performance.now();
-    const tx = this.#db.transaction(this.name, "readwrite", { durability: "relaxed" });
+    const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
 
     const current = await tx.store.get(id);
     if (current === undefined) {
@@ -320,7 +339,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     const t0 = performance.now();
 
     const documents = await this.find(criteria);
-    const tx = this.#db.transaction(this.name, "readwrite");
+    const tx = this.db.transaction(this.name, "readwrite");
 
     await Promise.all(documents.map((data) => tx.store.delete(data.id)));
     await tx.done;
@@ -345,7 +364,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     if (criteria !== undefined) {
       return (await this.find(criteria)).length;
     }
-    return this.#db.count(this.name);
+    return this.db.count(this.name);
   }
 
   /*
@@ -355,7 +374,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    */
 
   async flush(): Promise<void> {
-    await this.#db.clear(this.name);
+    await this.db.clear(this.name);
     this.#cache.flush();
   }
 }

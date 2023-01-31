@@ -1,0 +1,26 @@
+{
+  "name": "@valkyr/event-store",
+  "version": "0.0.0",
+  "description": "A full stack event store solution for @valkyr/db and mongodb.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.json",
+    "flush": "npm run clean && rm -rf ./node_modules",
+    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
+  },
+  "dependencies": {
+    "@valkyr/ledger": "workspace:*",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "@valkyr/db": "workspace:*",
+    "@valkyr/jest": "workspace:*",
+    "mongodb": "^4.13.0"
+  }
+}

@@ -17,7 +17,7 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
     if (parent === undefined) {
       throw new Error(`ControllerRoutes Exception: Template route for ${templateId} was not found`);
     }
-    for (const route of parent.children) {
+    for (const route of parent.children ?? []) {
       this.routes.push(route.path);
     }
   }
@@ -34,7 +34,10 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
   }
 
   async #setComponent(resolved: Router["resolved"], next: NextHandler<S, R>) {
-    this.controller.setState(await this.router.getRender(resolved).then(next));
+    const result = await this.router.getRender(resolved);
+    if (result !== undefined) {
+      this.controller.setState(next(result));
+    }
   }
 
   async #preload() {

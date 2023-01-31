@@ -1,8 +1,8 @@
-import type { Collection, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
+import type { ChangeEvent, Collection, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
 import type { Observable, Subject, Subscription } from "rxjs";
 
 import { ControllerRefs } from "./controller.refs";
-import { ControllerClass, ReactComponent } from "./controller.types";
+import { ControllerClass, ReactComponent, ReservedPropertyMembers } from "./controller.types";
 import { makeControllerView, ViewOptions } from "./controller.view";
 import { Debounce } from "./debounce";
 
@@ -39,7 +39,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    * @param state    - Default state to assign to controller.
    * @param pushData - Push data handler method.
    */
-  constructor(readonly view: ReactComponent<any, any>, readonly setView: Function) {
+  constructor(readonly view: ReactComponent<Props, any>, readonly setView: Function) {
     this.query = this.query.bind(this);
     this.subscribe = this.subscribe.bind(this);
     this.setState = this.setState.bind(this);
@@ -57,7 +57,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    * @param component - Component to render.
    * @param options   - View options.
    */
-  static view<T extends ControllerClass, Props = InstanceType<T>["props"]>(
+  static view<T extends ControllerClass, Props extends {} = InstanceType<T>["props"]>(
     this: T,
     component: ReactComponent<Props, T>,
     options?: Partial<ViewOptions<Props>>
@@ -71,7 +71,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    * @param component - Component to render.
    * @param setView   - Method to provide a resolved view component.
    */
-  static make<T extends ControllerClass, Props = InstanceType<T>["props"]>(
+  static make<T extends ControllerClass, Props extends {} = InstanceType<T>["props"]>(
     this: T,
     component: ReactComponent<Props, T>,
     setView: Function
@@ -157,6 +157,16 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    |--------------------------------------------------------------------------------
    */
 
+  /**
+   * Executes a query on a given collection and returns the initial result. A
+   * subsequent internal subscription is also created, which automatically updates
+   * the controller state when changes are made to the data in which the query
+   * subscribes.
+   *
+   * @param collection - Collection to query.
+   * @param query      - Query to execute.
+   * @param options    - Query options.
+   */
   query<C extends Collection, K extends keyof State>(
     collection: C,
     query: QuerySingle,
@@ -165,12 +175,18 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
   query<C extends Collection, K extends keyof State>(
     collection: C,
     query: QueryMany,
-    next: K | ((value: CollectionType<C>[]) => Promise<Partial<State>>)
+    next:
+      | K
+      | ((
+          documents: CollectionType<C>[],
+          changed: CollectionType<C>[],
+          type: ChangeEvent["type"]
+        ) => Promise<Partial<State>>)
   ): Promise<CollectionType<C>[]>;
   query<C extends Collection, K extends keyof State>(
     collection: C,
     query: Query = {} as Query,
-    next: K | ((value: CollectionType<C>[] | CollectionType<C> | undefined) => Promise<Partial<State>>)
+    next: K | ((...args: any[]) => Promise<Partial<State>>)
   ) {
     let resolved = false;
     this.subscriptions.get(collection)?.unsubscribe();
@@ -178,16 +194,16 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
       const { where, ...options } = query;
       this.subscriptions.set(
         collection.name,
-        collection.subscribe(where, options, (value: any) => {
+        collection.subscribe(where, options, (...args: any[]) => {
           if (this.#isStateKey(next)) {
             if (resolved === true) {
-              this.setState(next, value);
+              this.setState(next, args[0]);
             }
           } else {
-            (next as any)(value).then(this.setState);
+            (next as any)(...args).then(this.setState);
           }
           setTimeout(() => {
-            resolve(value);
+            resolve(args[0]);
             resolved = true;
           }, 0);
         })
@@ -223,7 +239,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
         if (this.#isStateKey(next)) {
           this.setState(next, value);
         } else {
-          (next as any)(value).then((state) => {
+          (next as any)(value).then((state: State) => {
             if (state !== undefined) {
               this.setState(state);
             }
@@ -295,7 +311,7 @@ export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}
    *
    * @returns List of actions.
    */
-  toActions(): unknown {
+  toActions(): Omit<this, ReservedPropertyMembers> {
     const actions: any = {};
     for (const name of Object.getOwnPropertyNames(this.constructor.prototype)) {
       if (name !== "constructor" && name !== "resolve") {

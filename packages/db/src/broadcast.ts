@@ -8,13 +8,16 @@ export const BroadcastChannel =
 
 export type StorageBroadcast<Document> =
   | {
+      name: string;
       type: "insertOne" | "updateOne";
       data: Document;
     }
   | {
+      name: string;
       type: "insertMany" | "updateMany" | "remove";
       data: Document[];
     }
   | {
+      name: string;
       type: "flush";
     };

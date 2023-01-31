@@ -1,0 +1,128 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  min-height: 100vh;
+  min-width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
+#app,
+.react-flow {
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+#blocks,
+#settings {
+  .react-flow__handle-right {
+    @apply top-1/2;
+    @apply -translate-y-1/2;
+    @apply h-full;
+    @apply -right-5;
+    @apply w-5;
+    @apply rounded-none;
+    @apply rounded-r-md;
+    @apply border-0;
+  }
+  .react-flow__handle-left {
+    @apply top-1/2;
+    @apply -translate-y-1/2;
+    @apply h-full;
+    @apply -left-5;
+    @apply w-5;
+    @apply rounded-none;
+    @apply rounded-l-md;
+    @apply border-0;
+  }
+  .react-flow__handle {
+    @apply bg-darker-800;
+    &:hover {
+      @apply bg-darker-600;
+    }
+  }
+  .react-flow__controls {
+    @apply flex flex-col gap-2;
+  }
+  .react-flow__controls-button {
+    @apply bg-transparent;
+    @apply text-pink;
+    @apply border border-pink rounded border-solid border-opacity-50 hover:bg-pink hover:bg-opacity-20;
+    > svg {
+      @apply fill-pink;
+    }
+  }
+
+  .react-flow__edges.react-flow__connectionline {
+    .react-flow__connection {
+      .react-flow__connection-path {
+        @apply stroke-darker-500;
+        @apply stroke-2;
+      }
+    }
+  }
+
+  .react-flow__edge {
+    .react-flow__edge-path {
+      @apply stroke-darker-800;
+      @apply stroke-2;
+    }
+    &:hover {
+      .react-flow__edge-path {
+        @apply stroke-darker-600;
+      }
+    }
+  }
+
+  form {
+    .form-actions {
+      @apply flex justify-between items-center mt-2;
+      button {
+        @apply delay-75;
+      }
+    }
+    .form-control {
+      @apply flex flex-col gap-1 justify-center items-start;
+      label {
+        @apply block;
+        @apply text-xs;
+        @apply text-darker-600;
+        &.checkbox {
+          @apply flex gap-3 items-center justify-start;
+        }
+      }
+      &.compact {
+        input {
+          @apply px-0;
+          @apply py-1;
+        }
+      }
+      select,
+      input {
+        @apply rounded;
+        @apply shadow-sm;
+        @apply w-full;
+        @apply px-1.5;
+        @apply py-1;
+        @apply placeholder-darker-600;
+        @apply border;
+        @apply border-darker-800;
+        @apply text-left;
+        @apply focus:ring;
+        @apply focus:outline-none;
+        @apply bg-transparent;
+        @apply text-light;
+        @apply focus:ring-0;
+        @apply focus:border-darker-600 hover:border-darker-700;
+        @apply transition-colors;
+        &[type="checkbox"] {
+          @apply bg-darker-600 border border-darker-400 h-5 w-5 rounded;
+        }
+      }
+    }
+  }
+}

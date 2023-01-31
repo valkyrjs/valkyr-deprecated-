@@ -1,0 +1,22 @@
+{
+  "extends": "@valkyr/typescript",
+  "compilerOptions": {
+    "types": ["webpack-env"],
+
+    "lib": ["ES2022", "dom", "dom.iterable"],
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "jsx": "react-jsx",
+    
+    "paths": {
+      "~Components/*": ["./src/Components/*"],
+      "~Middleware/*": ["./src/Middleware/*"],
+      "~Services/*": ["./src/Services/*"],
+      "~Stores/*": ["./src/Stores/*"],
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ]
+}

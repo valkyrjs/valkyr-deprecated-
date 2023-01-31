@@ -6,7 +6,10 @@ import {
   addOptions,
   Document,
   DuplicateDocumentError,
-  InsertResult,
+  getInsertManyResult,
+  getInsertOneResult,
+  InsertManyResult,
+  InsertOneResult,
   Options,
   PartialDocument,
   RemoveResult,
@@ -19,21 +22,25 @@ import {
 export class MemoryStorage<D extends Document = Document> extends Storage<D> {
   readonly #documents = new Map<string, D>();
 
+  async resolve() {
+    return this;
+  }
+
   async has(id: string): Promise<boolean> {
     return this.#documents.has(id);
   }
 
-  async insertOne(data: PartialDocument<D>): Promise<InsertResult> {
+  async insertOne(data: PartialDocument<D>): Promise<InsertOneResult> {
     const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
     if (await this.has(document.id)) {
       throw new DuplicateDocumentError(document, this);
     }
     this.#documents.set(document.id, document);
     this.broadcast("insertOne", document);
-    return new InsertResult([document.id]);
+    return getInsertOneResult(document);
   }
 
-  async insertMany(documents: PartialDocument<D>[]): Promise<InsertResult> {
+  async insertMany(documents: PartialDocument<D>[]): Promise<InsertManyResult> {
     const result: D[] = [];
     for (const data of documents) {
       const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
@@ -43,7 +50,7 @@ export class MemoryStorage<D extends Document = Document> extends Storage<D> {
 
     this.broadcast("insertMany", result);
 
-    return new InsertResult(result);
+    return getInsertManyResult(result);
   }
 
   async findById(id: string): Promise<D | undefined> {

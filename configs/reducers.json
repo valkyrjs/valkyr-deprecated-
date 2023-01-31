@@ -1,0 +1,55 @@
+[
+  {
+    "type": "realm",
+    "state": {
+      "id": "",
+      "name": "",
+      "color": "",
+      "icon": "",
+      "members": [],
+      "owner": "",
+      "archived": false
+    },
+    "events": [
+      {
+        "type": "RealmCreated",
+        "$set": [
+          ["id", "stream"],
+          ["name", "data.name"],
+          ["color", "data.color"],
+          ["icon", "data.icon"],
+          ["members", "data.members"],
+          ["owner", "meta.auditor"],
+          ["archived", false]
+        ]
+      },
+      {
+        "type": "RealmMemberAdded",
+        "$set": [
+          ["members", { "$push": "data" }]
+        ]
+      },
+      {
+        "type": "RealmMemberArchived",
+        "$set": [
+          ["members", {
+            "$set": {
+              "filter": {
+                "id": "data.id"
+              },
+              "map": [
+                ["archived", true]
+              ]
+            }
+          }]
+        ]
+      },
+      {
+        "type": "RealmArchived",
+        "$set": [
+          ["archived", true]
+        ]
+      }
+    ]
+  }
+]

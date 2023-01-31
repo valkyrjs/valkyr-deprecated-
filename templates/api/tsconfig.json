@@ -1,0 +1,11 @@
+{
+  "extends": "@valkyr/typescript",
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "~api": ["./api"],
+      "~generated/*": ["./generated/*"],
+      "~services/*": ["./services/*"]
+    }
+  }
+}
