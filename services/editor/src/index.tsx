@@ -1,12 +1,12 @@
-import "./styles.css";
-import "./modules";
-import "./monaco";
+import "./Styles/index.css";
+import "./Modules";
+import "./Monaco";
 
 import { createElement, ReactElement, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import { config } from "./config";
-import { router } from "./services/router";
+import { config } from "./Config";
+import { router } from "./Services/Router";
 
 const app = createRoot(document.getElementById("app")!);
 

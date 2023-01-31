@@ -29,10 +29,10 @@ const config = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
     alias: {
-      "~components": path.resolve(__dirname, "../src/components"),
-      "~middleware": path.resolve(__dirname, "../src/middleware"),
-      "~services": path.resolve(__dirname, "../src/services"),
-      "~stores": path.resolve(__dirname, "../src/stores")
+      "~Components": path.resolve(__dirname, "../src/Components"),
+      "~Middleware": path.resolve(__dirname, "../src/Middleware"),
+      "~Services": path.resolve(__dirname, "../src/Services"),
+      "~Stores": path.resolve(__dirname, "../src/Stores")
     }
   },
 

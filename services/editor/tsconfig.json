@@ -9,10 +9,10 @@
     "jsx": "react-jsx",
     
     "paths": {
-      "~components/*": ["./src/components/*"],
-      "~middleware/*": ["./src/middleware/*"],
-      "~services/*": ["./src/services/*"],
-      "~stores/*": ["./src/stores/*"],
+      "~Components/*": ["./src/Components/*"],
+      "~Middleware/*": ["./src/Middleware/*"],
+      "~Services/*": ["./src/Services/*"],
+      "~Stores/*": ["./src/Stores/*"],
     }
   },
   "include": [
