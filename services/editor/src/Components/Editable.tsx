@@ -1,10 +1,12 @@
 import { DetailedHTMLProps, InputHTMLAttributes, useEffect, useRef, useState } from "react";
 
-type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
+  onChange(value: string): void;
+};
 
 export function Editable({ name, value, onChange, placeholder, ...props }: Props) {
   const [isEditing, setEditing] = useState(false);
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (inputRef && inputRef.current && isEditing === true) {
@@ -31,7 +33,11 @@ export function Editable({ name, value, onChange, placeholder, ...props }: Props
             className="border-darker-700 text-light focus:shadow-outline m-0 w-full border bg-transparent py-1 px-1.5 leading-tight shadow focus:outline-none"
             placeholder={placeholder}
             defaultValue={value}
-            onBlur={onChange}
+            onBlur={(event) => {
+              if (event.target.value !== value) {
+                onChange(event.target.value);
+              }
+            }}
           />
         </div>
       ) : (

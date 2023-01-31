@@ -6,9 +6,7 @@ import { NodeType } from "./Node.Types";
 
 export type EditorNode = Node<{
   id: string;
-}> & {
-  type: NodeType;
-};
+}>;
 
 /*
  |--------------------------------------------------------------------------------

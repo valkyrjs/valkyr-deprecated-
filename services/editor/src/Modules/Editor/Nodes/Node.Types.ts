@@ -1,5 +1,5 @@
 export type ConnectionParams = {
-  type: NodeType;
+  type: string;
   id: string;
 };
 

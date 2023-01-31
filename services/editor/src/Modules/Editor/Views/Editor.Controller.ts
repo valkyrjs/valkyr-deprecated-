@@ -1,10 +1,15 @@
 import { Controller } from "@valkyr/react";
-import { applyNodeChanges, Connection, Edge, Node, NodeChange } from "reactflow";
+import { addEdge, applyNodeChanges, Connection, Edge, Node, NodeChange } from "reactflow";
 
 import { db } from "~Services/Database";
 
-import { addReducerEdge } from "../Library/Blocks/Reducer/Reducer.Collection";
+import { edges } from "../Edges/Edge.Utilities";
+import { addReducerEdge } from "../Edges/Reducer.Edge";
 import type { EditorNode } from "../Nodes/Node.Collection";
+
+const edgeOptions = {
+  animated: true
+};
 
 export class EditorController extends Controller<{
   nodes: EditorNode[];
@@ -12,11 +17,37 @@ export class EditorController extends Controller<{
   asideOpen: boolean;
 }> {
   async onInit() {
+    this.#subscriberToEdges();
     return {
       nodes: await this.query(db.collection("nodes"), {}, "nodes"),
-      edges: await this.query(db.collection("edges"), {}, "edges"),
+      edges: [],
       asideOpen: false
     };
+  }
+
+  #subscriberToEdges() {
+    this.subscribe(edges, async (action) => {
+      switch (action.type) {
+        case "add": {
+          return this.setState(
+            "edges",
+            addEdge(
+              {
+                ...action.edge,
+                ...edgeOptions
+              },
+              this.state.edges
+            )
+          );
+        }
+        case "remove": {
+          return this.setState(
+            "edges",
+            this.state.edges.filter((edge) => edge.id !== action.id)
+          );
+        }
+      }
+    });
   }
 
   toggleAside(state: boolean) {
@@ -76,28 +107,20 @@ export class EditorController extends Controller<{
     const sourceNode = await db.collection("nodes").findById(source);
     const targetNode = await db.collection("nodes").findById(target);
 
-    if (sourceNode === undefined || targetNode === undefined) {
+    if (
+      sourceNode === undefined ||
+      targetNode === undefined ||
+      sourceNode.type === undefined ||
+      targetNode.type === undefined
+    ) {
       return;
     }
 
-    let connected = false;
     switch (targetNode.type) {
       case "reducer": {
-        const result = await addReducerEdge({ type: sourceNode.type, id: sourceNode.data.id }, targetNode.data.id);
-        if (result === true) {
-          connected = true;
-        }
+        await addReducerEdge({ type: sourceNode.type, id: sourceNode.data.id }, targetNode.data.id);
         break;
       }
-    }
-
-    if (connected) {
-      db.collection("edges").insertOne({
-        id: `reactflow__edge-${source}-${target}`,
-        animated: true,
-        source,
-        target
-      });
     }
   }
 }

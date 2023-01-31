@@ -6,6 +6,7 @@ import ReactFlow, { Background, Controls, Panel } from "reactflow";
 import { Button } from "~Components/Button";
 import { ModalPortal } from "~Components/Modal";
 
+import { edgeTypes } from "../Edges";
 import { openLibraryModal } from "../Library";
 import { nodeTypes } from "../Nodes";
 import { Settings } from "../Settings/Settings.Component";
@@ -24,6 +25,7 @@ export const EditorView = EditorController.view(
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             onNodesChange={onNodesChange}
             onNodeDragStop={onNodePositionChanged}
             onConnect={onConnect}

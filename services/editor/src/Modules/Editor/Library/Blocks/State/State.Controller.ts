@@ -19,11 +19,11 @@ export class StateNodeController extends Controller<
     };
   }
 
-  setName(e: any) {
+  setName(name: string) {
     db.collection("states").updateOne(
       { id: this.props.id },
       {
-        $set: { name: e.target.value }
+        $set: { name }
       }
     );
   }

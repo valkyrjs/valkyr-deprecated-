@@ -21,11 +21,11 @@ export class EventBlockController extends Controller<
     };
   }
 
-  setName(e: any) {
+  setName(name: string) {
     db.collection("events").updateOne(
       { id: this.props.id },
       {
-        $set: { name: e.target.value }
+        $set: { name }
       }
     );
   }

@@ -17,5 +17,6 @@ module.exports = {
   },
   plugins: [
     require("tailwind-dracula")(),
-  ]
+  ],
+  important: true
 };
