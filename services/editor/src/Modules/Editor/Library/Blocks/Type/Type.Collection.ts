@@ -17,7 +17,7 @@ export type TypeBlock = Document<{
 
 export async function createTypeBlock(): Promise<void> {
   const result = await db.collection("types").insertOne({
-    name: "Foo",
+    name: "",
     data: [["", "p:string"]]
   });
   if (result.acknowledged === false) {

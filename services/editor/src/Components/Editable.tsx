@@ -40,10 +40,9 @@ export function Editable({ name, value, onChange, placeholder, ...props }: Props
           className={`text-light hover:shadow-outline flex w-full items-center justify-between whitespace-pre-wrap rounded border border-transparent py-1 px-1.5 leading-tight`}
           onClick={() => setEditing(true)}
         >
-          <span className={`${value ? "text-light" : "text-light-200"}`}>
+          <span className={`${value ? "text-light" : "text-darker-200"}`}>
             {value || placeholder || "Editable content"}
           </span>
-          <PencilSimple size={10} className="text-darker-700 hover:text-darker-600" />
         </div>
       )}
     </section>

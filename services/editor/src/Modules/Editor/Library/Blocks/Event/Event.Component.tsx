@@ -24,7 +24,7 @@ export const EventBlock = EventBlockController.view(
                 content={<Editable value={block.name} onChange={setName} name="name" placeholder="Add event name" />}
               />
               <Disclosure.Panel>
-                <div className="text-darker-700 border-b-darker-800 flex w-full items-center justify-between gap-2 border-b py-1 px-2">
+                <div className="text-darker-400 border-b-darker-800 flex w-full items-center justify-between gap-2 border-b py-1 px-2">
                   Data
                 </div>
                 <TypeFields
@@ -34,7 +34,7 @@ export const EventBlock = EventBlockController.view(
                   setFieldValue={data.setFieldValue}
                   removeField={data.removeField}
                 />
-                <div className="text-darker-700 border-b-darker-800 border-t-darker-800 flex w-full items-center justify-between gap-2 border-b border-t py-1 px-2">
+                <div className="text-darker-400 border-b-darker-800 border-t-darker-800 flex w-full items-center justify-between gap-2 border-b border-t py-1 px-2">
                   Meta
                 </div>
                 <TypeFields

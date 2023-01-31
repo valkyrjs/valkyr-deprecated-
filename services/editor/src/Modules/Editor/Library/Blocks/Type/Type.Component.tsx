@@ -14,9 +14,10 @@ export const TypeBlock = TypeBlockController.view(({ state: { block, data }, act
     <div className="relative">
       <Disclosure defaultOpen={true}>
         {({ open }) => (
-          <div className="bg-darker border-darker-800 min-w-[390px] rounded-sm border font-mono text-xs">
+          <div className="bg-darker border-darker-800 w-full rounded-sm border font-mono text-xs">
             <BlockHeader
               open={open}
+              draggable={false}
               onRemove={onRemove}
               color="green"
               symbol="T"

@@ -13,7 +13,7 @@ export const Settings = SettingsController.view(({ state: { types }, props: { is
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="text-light relative z-10" onClose={setClosed}>
-        <div className="pointer-events-none fixed inset-y-0 right-0 flex pl-10 sm:pl-16">
+        <div id="settings" className="pointer-events-none fixed inset-y-0 right-0 flex pl-10 sm:pl-16">
           <Transition.Child
             as={Fragment}
             enter="transform transition ease-in-out duration-500 sm:duration-700"
@@ -34,24 +34,26 @@ export const Settings = SettingsController.view(({ state: { types }, props: { is
                   </div>
                 </div>
                 <Panel title="Configuration" defaultOpen={true}>
-                  <div className="mb-2">
-                    <header className="text-darker-700 tracking-wide">App</header>
-                    <div className="flex flex-col gap-2 font-mono">
-                      <span>Name</span>
+                  <div className="flex w-full flex-col gap-2 p-6 text-sm">
+                    <div className="mb-2">
+                      <header className="text-darker-700 tracking-wide">App</header>
+                      <div className="flex flex-col gap-2 font-mono">
+                        <span>Name</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="mb-2">
-                    <header className="text-darker-700 tracking-wide">Administrator</header>
-                    <div className="flex flex-col gap-2 font-mono">
-                      <span>Username</span>
-                      <span>Password</span>
+                    <div className="mb-2">
+                      <header className="text-darker-700 tracking-wide">Administrator</header>
+                      <div className="flex flex-col gap-2 font-mono">
+                        <span>Username</span>
+                        <span>Password</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="mb-2">
-                    <header className="text-darker-700 tracking-wide">Mongo Database</header>
-                    <div className="flex flex-col gap-2 font-mono">
-                      <span>Name</span>
-                      <span>Connection</span>
+                    <div className="mb-2">
+                      <header className="text-darker-700 tracking-wide">Mongo Database</header>
+                      <div className="flex flex-col gap-2 font-mono">
+                        <span>Name</span>
+                        <span>Connection</span>
+                      </div>
                     </div>
                   </div>
                 </Panel>
@@ -59,7 +61,7 @@ export const Settings = SettingsController.view(({ state: { types }, props: { is
                   {types.map((type) => (
                     <TypeBlock key={type.id} id={type.id} />
                   ))}
-                  <div className="flex w-full flex-row justify-center">
+                  <div className="mt-6 flex w-full flex-row justify-end px-2">
                     <Button variant="primary" outline type="button" onClick={createTypeBlock}>
                       <Plus size={12}></Plus>
                       new type

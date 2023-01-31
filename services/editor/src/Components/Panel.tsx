@@ -28,7 +28,7 @@ export function Panel({ title, defaultOpen = false, children }: Props) {
             leaveFrom="transform scale-y-100"
             leaveTo="transform scale-y-0"
           >
-            <Disclosure.Panel as="div" className="flex w-full flex-col gap-2 p-6 text-sm" static>
+            <Disclosure.Panel as="div" className="relative" static>
               {children}
             </Disclosure.Panel>
           </Transition>

@@ -18,7 +18,7 @@ export function TypeFields({ data, addField, setFieldKey, setFieldValue, removeF
       <form className="flex flex-col gap-1" onSubmit={(e) => e.preventDefault()}>
         {data.map(([key, value], index) => (
           <div key={index} className="flex flex-row gap-2">
-            <UnstyledButton className="text-darker-700 hover:text-darker-600" onClick={removeField(index)}>
+            <UnstyledButton className="text-darker-400 hover:text-red-300" onClick={removeField(index)}>
               <XSquare size={16} />
             </UnstyledButton>
             <div className="form-control">
@@ -31,7 +31,10 @@ export function TypeFields({ data, addField, setFieldKey, setFieldValue, removeF
         ))}
       </form>
       <div className="form-actions">
-        <UnstyledButton className="flex w-full items-center justify-start text-xs" onClick={addField}>
+        <UnstyledButton
+          className="text-darker-500 hover:text-yellow flex w-full items-center justify-start text-xs"
+          onClick={addField}
+        >
           <Plus size={8} /> more
         </UnstyledButton>
       </div>

@@ -8,13 +8,15 @@ export function BlockHeader({
   color,
   symbol,
   content,
-  onRemove
+  onRemove,
+  draggable = true
 }: {
   open: boolean;
   color: string;
   symbol: string;
   content: string | JSX.Element;
   onRemove?: () => void;
+  draggable?: boolean;
 }) {
   return (
     <header
@@ -23,16 +25,18 @@ export function BlockHeader({
       } py-1 px-2`}
       style={{ height: 35 }}
     >
-      <div className="text-darker-400 hover:text-darker-200 flex h-full items-center">
-        <div className="node-drag-handle absolute" style={{ top: 0, left: 0, width: 35, height: 35 }}></div>
-        <DotsSixVertical size={16} />
-      </div>
+      {draggable && (
+        <div className="text-darker-400 hover:text-darker-200 flex h-full items-center">
+          <div className="node-drag-handle absolute top-0 left-0 h-9 w-9"></div>
+          <DotsSixVertical size={16} />
+        </div>
+      )}
       <div className={`border ${getColor(color)} flex h-5 w-5 items-center justify-center rounded`}>{symbol}</div>
       <div className="w-full">{content}</div>
-      <Disclosure.Button className="text-darker-400 w-7">
+      <Disclosure.Button className="text-darker-400 hover:text-cyan w-7">
         {open ? <Eye size={16} /> : <EyeClosed size={16} />}
       </Disclosure.Button>
-      <UnstyledButton className="text-darker-700 hover:text-darker-600" onClick={onRemove}>
+      <UnstyledButton className="text-darker-400 hover:text-red-300" onClick={onRemove}>
         <XSquare size={16} />
       </UnstyledButton>
     </header>
