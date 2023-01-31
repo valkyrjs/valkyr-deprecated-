@@ -22,7 +22,7 @@ export function BlockHeader({
     <header
       className={`text-darker-700 flex w-full items-center justify-between gap-2 ${
         open && "border-b-darker-800 border-b"
-      } h-9 pl-2 pr-9`}
+      } h-9 pl-2 pr-2`}
       style={{ height: 35 }}
     >
       {draggable && (
