@@ -25,7 +25,7 @@ export class ReducerNodeController extends Controller<{}, EdgeProps> {
   #handleState(state?: string) {
     if (state !== undefined && this.#state === undefined) {
       addEdge(state, this.props.id, {
-        stroke: stateStrokeColor,
+        sourceType: "state",
         onRemove: this.#removeState
       });
       this.#state = state;
@@ -36,7 +36,7 @@ export class ReducerNodeController extends Controller<{}, EdgeProps> {
     }
     if (state !== undefined && this.#state !== undefined && state !== this.#state) {
       addEdge(state, this.props.id, {
-        stroke: stateStrokeColor,
+        sourceType: "state",
         onRemove: this.#removeState
       });
       removeEdge(this.#state, this.props.id);
@@ -49,7 +49,7 @@ export class ReducerNodeController extends Controller<{}, EdgeProps> {
     const remove = this.#events.filter((event) => !events.includes(event));
     for (const event of add) {
       addEdge(event, this.props.id, {
-        stroke: eventStrokeColor,
+        sourceType: "event",
         onRemove: () => {
           db.collection("reducers").updateOne({ id: this.props.data.id }, { $pull: { events: event } });
         }

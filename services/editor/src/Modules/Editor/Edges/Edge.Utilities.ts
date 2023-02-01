@@ -2,6 +2,8 @@ import { Subject } from "rxjs";
 
 import { db } from "~Services/Database";
 
+import { BlockType } from "../Library/Blocks";
+
 export const edges = new Subject<EdgeAction>();
 
 export function addEdge(source: string, target: string, data: EdgeData = {}) {
@@ -44,6 +46,6 @@ type EdgeAction =
     };
 
 type EdgeData = {
-  stroke?: string;
+  sourceType?: BlockType;
   onRemove?: () => void;
 };
