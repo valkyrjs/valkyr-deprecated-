@@ -23,7 +23,7 @@
     "name": "@valkyr",
     "input": {
       "adapter": "fs",
-      "location": "./configs"
+      "location": "./generated"
     },
     "output": {
       "api": "./templates/api/src/generated",
