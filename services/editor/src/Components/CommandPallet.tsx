@@ -1,5 +1,5 @@
 import { Combobox, Dialog, Transition } from "@headlessui/react";
-import { FilePlus, Folder, FolderPlus, Hash, MagnifyingGlass, Tag } from "phosphor-react";
+import { Folder, MagnifyingGlass } from "phosphor-react";
 import { Fragment, useState } from "react";
 
 const projects = [
@@ -15,11 +15,11 @@ const quickActions = [
   { name: "Add new Projection...", icon: "text-green border-green", shortcut: "P", url: "#" }
 ];
 
-function classNames(...classes) {
+function classNames(...classes: (string | boolean)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function CommandPallete() {
+export function CommandPallet() {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(true);
 
@@ -56,7 +56,7 @@ export function CommandPallete() {
             leaveTo="opacity-0 scale-95"
           >
             <Dialog.Panel className="bg-darker mx-auto max-w-2xl transform divide-y divide-gray-500 divide-opacity-20 overflow-hidden rounded-xl shadow-2xl transition-all">
-              <Combobox onChange={(item) => (window.location = item.url)}>
+              <Combobox onChange={(item: any) => (window.location = item.url)}>
                 <div className="relative">
                   <MagnifyingGlass
                     className="pointer-events-none absolute top-3.5 left-4 h-5 w-5 text-gray-500"
