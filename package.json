@@ -1,24 +1,23 @@
 {
   "name": "valkyr",
   "version": "0.0.0",
-  "description": "A collection of TypeScript tools and libraries for Valkyr developers to build event sourced real time applications.",
-  "repository": "kodemon/valkyr",
-  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "private": true,
+  "repository": "https://github.com/cmdo/valkyr",
+  "bugs": "https://github.com/cmdo/valkyr/issues",
   "license": "MIT",
   "files": [],
   "scripts": {
-    "build": "turbo build",
-    "flush": "turbo flush",
-    "clean": "turbo clean",
+    "prepare": "husky install",
+    "build": "turbo run build",
+    "flush": "turbo run flush",
+    "clean": "turbo run clean",
+    "lint": "turbo run lint -- --fix",
+    "test": "turbo run test",
     "cli": "npm run local --prefix packages/cli",
     "api": "npm start --prefix services/api",
     "app": "npm start --prefix services/app",
     "editor": "npm start --prefix services/editor",
-    "docs": "npm run write --prefix docs",
-    "lint": "eslint ./packages --ext .ts --fix",
-    "test": "turbo test",
-    "publish": "node ./scripts/publish.js",
-    "docs:write": "npm i --prefix docs && npm run write --prefix docs"
+    "publish": "node ./scripts/publish.js"
   },
   "valkyr": {
     "name": "@valkyr",
@@ -31,24 +30,16 @@
       "app": "./templates/app/src/generated"
     }
   },
-  "dependencies": {
-    "reflect-metadata": "^0.1.13"
-  },
   "devDependencies": {
-    "@types/node": "18.11.18",
-    "@typescript-eslint/eslint-plugin": "5.38.0",
-    "@typescript-eslint/parser": "5.38.0",
+    "@valkyr/prettier": "workspace:*",
+    "@valkyr/eslint-config": "workspace:*",
     "@valkyr/typescript": "workspace:*",
-    "eslint": "8.24.0",
-    "eslint-config-prettier": "8.5.0",
-    "eslint-plugin-prettier": "4.2.1",
-    "eslint-plugin-simple-import-sort": "8.0.0",
-    "husky": "8.0.1",
-    "prettier": "2.7.1",
-    "prettier-plugin-tailwindcss": "0.2.2",
-    "process": "0.11.10",
-    "turbo": "1.5.5",
-    "ts-jest": "29.0.2",
-    "ts-node": "10.9.1"
-  }
+    "turbo": "1.5.5"
+  },
+  "lint-staged": {
+    "*": [
+      "prettier --write --ignore-unknown"
+    ]
+  },
+  "prettier": "@valkyr/prettier"
 }

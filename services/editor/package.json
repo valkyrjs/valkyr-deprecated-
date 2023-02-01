@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "description": "Visual editor building data solutions for @valkyr projects",
   "scripts": {
+    "flush": "npm run clean && rm -rf ./node_modules ./.turbo",
+    "clean": "rm -rf dist",
+    "lint": "eslint ./src",
     "start": "webpack serve --port 3000 --config ./webpack/config.js"
   },
   "author": "",
@@ -46,5 +49,21 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": [
+      "@valkyr"
+    ]
+  },
+  "lint-staged": {
+    "*": [
+      "prettier --write --ignore-unknown"
+    ],
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ]
   }
 }

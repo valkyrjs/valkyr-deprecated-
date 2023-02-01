@@ -51,12 +51,14 @@
     "kodemon",
     "mingo",
     "nestjs",
+    "pannable",
     "pino",
     "quicktype",
     "reactflow",
     "rfdc",
     "tailwindcss",
     "tsbuildinfo",
-    "valkyr"
+    "valkyr",
+    "zoomable"
   ]
 }
