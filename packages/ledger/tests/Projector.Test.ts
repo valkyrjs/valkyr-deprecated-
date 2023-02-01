@@ -1,5 +1,5 @@
 import { createEventRecord, Projector } from "../src";
-import { events } from "./event.mock";
+import { events } from "./Event.Mock";
 
 /*
  |--------------------------------------------------------------------------------

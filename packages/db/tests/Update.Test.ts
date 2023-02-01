@@ -1,6 +1,5 @@
-import { Collection } from "../src/collection";
-import { MemoryStorage } from "../src/databases/memory.storage";
-import { Document } from "../src/storage";
+import { Collection, Document } from "../src";
+import { MemoryStorage } from "../src/Databases/MemoryDb.Storage";
 
 /**
  * @see https://www.mongodb.com/docs/manual/reference/operator/update-field/#field-update-operators

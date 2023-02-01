@@ -1,7 +1,7 @@
-import { MethodNotFoundError } from "../src/errors";
-import { Notification } from "../src/notification";
-import { Request } from "../src/request";
-import { ErrorResponse, SuccessResponse } from "../src/response";
+import { MethodNotFoundError } from "../src/Errors";
+import { Notification } from "../src/Notification";
+import { Request } from "../src/Request";
+import { ErrorResponse, SuccessResponse } from "../src/Response";
 
 const methods = new Map<string, (...args: any[]) => Promise<any>>();
 

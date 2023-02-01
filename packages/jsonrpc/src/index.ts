@@ -1,5 +1,5 @@
 export * from "./Errors";
-export * from "./Notifications";
+export * from "./Notification";
 export * from "./Provider";
 export * from "./Request";
 export * from "./Response";

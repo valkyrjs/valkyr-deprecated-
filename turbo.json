@@ -12,7 +12,7 @@
       "outputs": ["dist/**"]
     },
     "test": {
-      "cache": false
+      "inputs": ["src/**", "tests/**"]
     },
     "lint": {
       "outputs": []

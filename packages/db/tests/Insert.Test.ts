@@ -1,5 +1,5 @@
 import { Collection, DuplicateDocumentError } from "../src";
-import { MemoryStorage } from "../src/databases/memory.storage";
+import { MemoryStorage } from "../src/Databases/MemoryDb.Storage";
 import { users } from "./Users.Mock";
 
 /*

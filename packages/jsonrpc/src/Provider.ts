@@ -1,4 +1,4 @@
-import { Notification } from "./Notifications";
+import { Notification } from "./Notification";
 import { Request } from "./Request";
 import { ErrorResponse, SuccessResponse } from "./Response";
 

@@ -2,8 +2,8 @@ import { waitForExpect } from "@valkyr/testing";
 import crypto from "crypto";
 
 import { Queue } from "../src";
-import { MemoryStorage } from "../src/adapters/memory.storage";
-import { UserWorker } from "./user-worker.mock";
+import { MemoryStorage } from "../src/Adapters/MemoryStorage";
+import { UserWorker } from "./UserWorker.Mock";
 
 Object.defineProperty(global, "crypto", {
   value: {

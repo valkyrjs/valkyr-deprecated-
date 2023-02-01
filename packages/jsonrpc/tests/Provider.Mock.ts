@@ -1,8 +1,8 @@
-import { Notification } from "../src/notification";
-import { Provider } from "../src/provider";
-import { Request } from "../src/request";
-import { ErrorResponse, SuccessResponse } from "../src/response";
-import { consumer } from "./consumer.mock";
+import { Notification } from "../src/Notification";
+import { Provider } from "../src/Provider";
+import { Request } from "../src/Request";
+import { ErrorResponse, SuccessResponse } from "../src/Response";
+import { consumer } from "./Consumer.Mock";
 
 async function notify(message: Notification): Promise<void> {
   await consumer.inject(message);
