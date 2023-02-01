@@ -1,7 +1,7 @@
 import "reactflow/dist/style.css";
 
 import { CaretDoubleLeft, Plus } from "phosphor-react";
-import ReactFlow, { Background, Controls, Panel } from "reactflow";
+import ReactFlow, { Background, Controls, MiniMap, Panel } from "reactflow";
 
 import { Button } from "~Components/Button";
 import { ModalPortal } from "~Components/Modal";
@@ -31,6 +31,16 @@ export const EditorView = EditorController.view(
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
           >
+            <MiniMap
+              position="bottom-right"
+              zoomable
+              pannable
+              nodeColor="#282a36"
+              nodeStrokeColor="#373a4d"
+              nodeStrokeWidth={2}
+              maskColor="#ff79c610"
+              className="border-pink rounded border bg-[#414652]"
+            />
             <Panel position="top-left">
               <Button variant="primary" outline type="button" onClick={openLibraryModal}>
                 <Plus size={10} />
