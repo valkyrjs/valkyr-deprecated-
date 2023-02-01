@@ -11,9 +11,19 @@ export const ReducerNode = ReducerNodeController.view(
   }) => {
     return (
       <div className="relative">
-        <Handle type="target" position={Position.Left} />
+        <Handle
+          type="target"
+          id="events"
+          className="event-output-handle h-6 bg-orange-600/75 hover:bg-orange-600"
+          position={Position.Left}
+        />
         <ReducerBlock id={id} />
-        <Handle type="source" position={Position.Right} />
+        <Handle
+          type="target"
+          id="state"
+          className="state-output-handle h-6 bg-pink-600/75 hover:bg-pink-600"
+          position={Position.Right}
+        />
       </div>
     );
   }

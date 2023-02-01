@@ -21,10 +21,18 @@ export class ReducerNodeController extends Controller<{}, EdgeProps> {
 
   #handleState(state?: string) {
     if (state !== undefined && this.#state === undefined) {
-      addEdge(state, this.props.id, {
-        sourceType: "state",
-        onRemove: this.#removeState
-      });
+      addEdge(
+        {
+          source: state,
+          sourceHandle: "reducer",
+          target: this.props.id,
+          targetHandle: "state"
+        },
+        {
+          sourceType: "state",
+          onRemove: this.#removeState
+        }
+      );
       this.#state = state;
     }
     if (state === undefined && this.#state !== undefined) {
@@ -32,10 +40,18 @@ export class ReducerNodeController extends Controller<{}, EdgeProps> {
       this.#state = undefined;
     }
     if (state !== undefined && this.#state !== undefined && state !== this.#state) {
-      addEdge(state, this.props.id, {
-        sourceType: "state",
-        onRemove: this.#removeState
-      });
+      addEdge(
+        {
+          source: state,
+          sourceHandle: "reducer",
+          target: this.props.id,
+          targetHandle: "state"
+        },
+        {
+          sourceType: "state",
+          onRemove: this.#removeState
+        }
+      );
       removeEdge(this.#state, this.props.id);
       this.#state = state;
     }
@@ -45,12 +61,19 @@ export class ReducerNodeController extends Controller<{}, EdgeProps> {
     const add = events.filter((event) => !this.#events.includes(event));
     const remove = this.#events.filter((event) => !events.includes(event));
     for (const event of add) {
-      addEdge(event, this.props.id, {
-        sourceType: "event",
-        onRemove: () => {
-          db.collection("reducers").updateOne({ id: this.props.data.id }, { $pull: { events: event } });
+      addEdge(
+        {
+          source: event,
+          target: this.props.id,
+          targetHandle: "events"
+        },
+        {
+          sourceType: "event",
+          onRemove: () => {
+            db.collection("reducers").updateOne({ id: this.props.data.id }, { $pull: { events: event } });
+          }
         }
-      });
+      );
       this.#events.push(event);
     }
     for (const event of remove) {

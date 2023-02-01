@@ -72,7 +72,7 @@ export class ReducerNodeController extends Controller<
     return format(`
       ${events.map((event) => getEventDataTypes(event)).join("\n")}
       ${getEventNamesRecord(events.map((event) => event.name))}
-      ${state ? getFieldsType(state.name, state.data) : "type State {};"}
+      ${state ? getFieldsType(state.name, state.data) : "type State = {};"}
     `);
   }
 }

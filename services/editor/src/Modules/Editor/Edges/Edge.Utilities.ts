@@ -1,3 +1,4 @@
+import { Edge } from "reactflow";
 import { Subject } from "rxjs";
 
 import { db } from "~Services/Database";
@@ -6,18 +7,18 @@ import { BlockType } from "../Library/Blocks";
 
 export const edges = new Subject<EdgeAction>();
 
-export function addEdge(source: string, target: string, data: EdgeData = {}) {
+export function addEdge(edge: Omit<Edge<EdgeData>, "id">, data: EdgeData = {}) {
   db.collection("nodes")
-    .findOne({ "data.id": source })
+    .findOne({ "data.id": edge.source })
     .then((node) => {
       if (node !== undefined) {
         edges.next({
           type: "add",
           edge: {
-            id: `${source}-${target}`,
-            type: "block",
+            ...edge,
+            id: `${node.id}-${edge.target}`,
             source: node.id,
-            target,
+            type: "block",
             data
           }
         });
@@ -32,13 +33,7 @@ export function removeEdge(source: string, target: string) {
 type EdgeAction =
   | {
       type: "add";
-      edge: {
-        id: string;
-        type: string;
-        source: string;
-        target: string;
-        data: EdgeData;
-      };
+      edge: Edge<EdgeData>;
     }
   | {
       type: "remove";

@@ -14,7 +14,11 @@ export type ReducerBlock = Document<{
 
 const defaultCode = format(`
   async function reduce(state: State, event: EventRecord): Promise<State> {
-    // write your reducer logic here ...
+    switch (event.type) {
+      default: {
+        return state;
+      }
+    }
   };
 `);
 
