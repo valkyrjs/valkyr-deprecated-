@@ -18,7 +18,6 @@ export type StateBlock = Document<{
 
 export async function createStateBlock({ name = "", data = [["name", "p:string"]] }: StateBlock): Promise<string> {
   const result = await db.collection("states").insertOne({ name, data });
-
   if (result.acknowledged === false) {
     throw new Error("Failed to create state block");
   }

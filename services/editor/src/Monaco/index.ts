@@ -1,8 +1,14 @@
 import * as monaco from "monaco-editor";
+import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
+import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
+import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
+import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
+import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
+import { getFieldsType } from "../Modules/Editor/Library/Utilities/BlockFields";
 import { getLedgerModel } from "./Ledger";
 
 const packages = ["mongodb"];
@@ -36,20 +42,20 @@ for (const pkg of packages) {
  */
 
 self.MonacoEnvironment = {
-  getWorkerUrl: function (_moduleId: any, label: string) {
+  getWorker(_, label) {
     if (label === "json") {
-      return "./json.worker.bundle.js";
+      return new jsonWorker();
     }
     if (label === "css" || label === "scss" || label === "less") {
-      return "./css.worker.bundle.js";
+      return new cssWorker();
     }
     if (label === "html" || label === "handlebars" || label === "razor") {
-      return "./html.worker.bundle.js";
+      return new htmlWorker();
     }
     if (label === "typescript" || label === "javascript") {
-      return "./ts.worker.bundle.js";
+      return new tsWorker();
     }
-    return "./editor.worker.bundle.js";
+    return new editorWorker();
   }
 };
 
@@ -63,10 +69,10 @@ monaco.editor.createModel(getLedgerModel(), "typescript");
 
 const typeModel = monaco.editor.createModel("", "typescript");
 
-db.collection("nodes").subscribe({ type: "type" }, {}, (nodes) => {
+db.collection("types").subscribe({}, {}, (types) => {
   typeModel.setValue(
     format(`
-        ${nodes.map((node) => node.data.cache).join("\n")}
+        ${types.map((type) => getFieldsType(type.name, type.data)).join("\n")}
       `)
   );
 });

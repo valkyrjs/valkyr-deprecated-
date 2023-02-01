@@ -8,7 +8,7 @@ import { createRoot } from "react-dom/client";
 import { config } from "./Config";
 import { router } from "./Services/Router";
 
-const app = createRoot(document.getElementById("app")!);
+const app = createRoot(document.getElementById("root") as HTMLElement);
 
 /*
  |--------------------------------------------------------------------------------

@@ -11,13 +11,15 @@
 
     "declaration": true,
     "sourceMap": true,
-    
+
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "useUnknownInCatchVariables": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "exclude": ["node_modules", "tests", "dist"]
 }

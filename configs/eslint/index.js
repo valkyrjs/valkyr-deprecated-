@@ -52,7 +52,7 @@ module.exports = {
       }
     },
     {
-      files: ["types.d.ts", "main.ts", "index.ts", "index.tsx"],
+      files: ["types.d.ts", "main.ts", "main.tsx", "index.ts", "index.tsx"],
       rules: {
         "check-file/filename-naming-convention": ["off"]
       }

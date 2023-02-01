@@ -3,7 +3,7 @@ import { Controller } from "@valkyr/react";
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
-import { getFieldsInterface } from "../../Utilities/BlockFields";
+import { getFieldsType } from "../../Utilities/BlockFields";
 import { EventBlock, getEventDataTypes, getEventNamesRecord } from "../Event/Event.Collection";
 import { StateBlock } from "../State/State.Collection";
 import { ReducerBlock } from "./Reducer.Collection";
@@ -72,7 +72,7 @@ export class ReducerNodeController extends Controller<
     return format(`
       ${events.map((event) => getEventDataTypes(event)).join("\n")}
       ${getEventNamesRecord(events.map((event) => event.name))}
-      ${state ? getFieldsInterface("State", state.data) : "interface State {};"}
+      ${state ? getFieldsType(state.name, state.data) : "type State {};"}
     `);
   }
 }
