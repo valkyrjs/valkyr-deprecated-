@@ -9,7 +9,7 @@
   "scripts": {
     "prepare": "husky install",
     "build": "turbo run build",
-    "flush": "turbo run flush",
+    "flush": "turbo run flush && rm -rf ./node_modules",
     "clean": "turbo run clean",
     "lint": "turbo run lint -- --fix",
     "test": "turbo run test",
