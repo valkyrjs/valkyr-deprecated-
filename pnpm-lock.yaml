@@ -77,7 +77,6 @@ importers:
     specifiers:
       '@commander-js/extra-typings': ^10.0.1
       '@types/fs-extra': ^11.0.1
-      '@valkyr/jest': workspace:*
       commander: ^10.0.0
       fs-extra: ^11.1.0
       prettier: ^2.8.3
@@ -88,7 +87,6 @@ importers:
       prettier: 2.8.3
     devDependencies:
       '@types/fs-extra': 11.0.1
-      '@valkyr/jest': link:../../configs/jest
 
   packages/db:
     specifiers:

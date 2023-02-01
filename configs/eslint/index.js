@@ -1,9 +1,8 @@
 module.exports = {
   plugins: ["simple-import-sort", "check-file"],
   extends: ["prettier", "plugin:anti-trojan-source/recommended"],
-  ignorePatterns: ["dist"],
+  ignorePatterns: ["dist", "tests", "mocks"],
   rules: {
-
     // ### Import
 
     "no-restricted-imports": [
@@ -12,10 +11,10 @@ module.exports = {
         patterns: [
           {
             group: ["*/src"],
-            message: "Do not directly import packages from the src/ directory.",
-          },
-        ],
-      },
+            message: "Do not directly import packages from the src/ directory."
+          }
+        ]
+      }
     ],
 
     // ### Simple Import Sort
@@ -28,38 +27,35 @@ module.exports = {
     "check-file/filename-naming-convention": [
       "error",
       {
-        "src/**/*.{tsx,ts}": "PASCAL_CASE",
+        "src/**/*.{tsx,ts}": "PASCAL_CASE"
       },
       {
-        ignoreMiddleExtensions: true,
-      },
-    ],
+        ignoreMiddleExtensions: true
+      }
+    ]
   },
   overrides: [
     {
       files: ["*.ts", "*.tsx"],
       parser: "@typescript-eslint/parser",
-      extends: [
-        "plugin:@typescript-eslint/recommended",
-        "plugin:prettier/recommended"
-      ],
+      extends: ["plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
       rules: {
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-use-before-define": "off",
-        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+        "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/prefer-arrow-callback": "off",
         "@typescript-eslint/ban-types": "off"
       }
     },
     {
-      files: ["types.d.ts", "index.ts", "index.tsx"],
+      files: ["types.d.ts", "main.ts", "index.ts", "index.tsx"],
       rules: {
-        "check-file/filename-naming-convention": ["off"],
-      },
+        "check-file/filename-naming-convention": ["off"]
+      }
     }
   ]
 };
