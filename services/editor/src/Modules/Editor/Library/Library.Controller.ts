@@ -67,29 +67,20 @@ export class LibraryController extends Controller<{
       closeModal();
     };
   }
-
-  #buildTemplateAdd(insertions: BlockInsertion[]): () => void {
-    return async () => {
-      for (const insert of insertions) {
-        await addBlock(insert.type, insert.defaults);
-      }
-      closeModal();
-    };
-  }
 }
 
-export type BlockInsertion = {
+type BlockInsertion = {
   type: BlockType;
   defaults: any;
 };
 
-export type Block = {
+type Block = {
   type: BlockType;
   description: string;
   add: () => void;
 };
 
-export type Template = {
+type Template = {
   name: string;
   description: string;
   add: () => void;
