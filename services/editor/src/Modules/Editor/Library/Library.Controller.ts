@@ -2,11 +2,11 @@ import { Controller } from "@valkyr/react";
 
 import { closeModal } from "~Components/Modal";
 
-import { addBlock, BlockType as Type } from "./Blocks";
+import { addBlock, BlockType } from "./Blocks";
 
 export class LibraryController extends Controller<{
   isOpen: boolean;
-  blocks: BlockType[];
+  blocks: Block[];
   templates: Template[];
 }> {
   async onInit() {
@@ -14,53 +14,77 @@ export class LibraryController extends Controller<{
       isOpen: false,
       blocks: [
         {
-          name: "event",
+          type: "event",
           description: "Events are things...",
-          add: this.#addBlocks(["event"])
+          add: this.#buildAdd([
+            { type: "event", defaults: { name: "TaskAdded", data: [["name", "p:string"]], meta: [] } }
+          ])
         },
         {
-          name: "reducer",
+          type: "reducer",
           description: "Reducers do things",
-          add: this.#addBlocks(["reducer"])
+          add: this.#buildAdd([{ type: "reducer", defaults: { name: "TaskReducer" } }])
         },
         {
-          name: "type",
+          type: "type",
           description: "Types are things...",
-          add: this.#addBlocks(["type"])
+          add: this.#buildAdd([{ type: "type", defaults: { name: "TaskState", data: [["done", "p:string"]] } }])
         },
         {
-          name: "state",
+          type: "state",
           description: "State are things...",
-          add: this.#addBlocks(["state"])
+          add: this.#buildAdd([{ type: "state", defaults: { name: "Task", data: [["name", "p:string"]] } }])
         }
       ],
       templates: [
         {
-          name: "Basic Setup",
-          description: "State, Reducer, 3 Event blocks",
-          add: this.#addBlocks(["state", "type", "reducer", "event", "event", "event"])
-        },
-        {
-          name: "Storytime",
-          description: "A full application",
-          add: this.#addBlocks(["state", "type", "reducer", "event", "event", "event"])
+          name: "Simple ToDo",
+          description: "Obligatory Todo Sample",
+          add: async () => {
+            const e1 = await addBlock("event", { name: "TaskAdded", data: [["name", "p:string"]], meta: [] });
+            const e2 = await addBlock("event", { name: "TaskStateChanged", data: [["state", "p:boolean"]], meta: [] });
+            const e3 = await addBlock("event", { name: "TaskDeleted", data: [], meta: [] });
+            const s1 = await addBlock("state", {
+              name: "Task",
+              data: [
+                ["name", "p:string"],
+                ["state", "p:string"]
+              ]
+            });
+            await addBlock("reducer", { name: "TaskReducer", events: [e1, e2, e3], state: s1 });
+            closeModal();
+          }
         }
       ]
     };
   }
 
-  #addBlocks(blockTypes: Array<Type>): () => void {
+  #buildAdd(insertions: BlockInsertion[]): () => void {
     return async () => {
-      for (const blockType of blockTypes) {
-        addBlock(blockType);
+      for (const insert of insertions) {
+        await addBlock(insert.type, insert.defaults);
+      }
+      closeModal();
+    };
+  }
+
+  #buildTemplateAdd(insertions: BlockInsertion[]): () => void {
+    return async () => {
+      for (const insert of insertions) {
+        await addBlock(insert.type, insert.defaults);
       }
       closeModal();
     };
   }
 }
 
-export type BlockType = {
-  name: Type;
+export type BlockInsertion = {
+  type: BlockType;
+  defaults: any;
+};
+
+export type Block = {
+  type: BlockType;
   description: string;
   add: () => void;
 };

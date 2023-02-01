@@ -15,12 +15,10 @@ export type TypeBlock = Document<{
  |--------------------------------------------------------------------------------
  */
 
-export async function createTypeBlock(): Promise<void> {
-  const result = await db.collection("types").insertOne({
-    name: "",
-    data: [["", "p:string"]]
-  });
+export async function createTypeBlock({ name = "", data = [["name", "p:string"]] }: TypeBlock): Promise<string> {
+  const result = await db.collection("types").insertOne({ name, data });
   if (result.acknowledged === false) {
     throw new Error("Failed to create type block");
   }
+  return result.insertedId;
 }

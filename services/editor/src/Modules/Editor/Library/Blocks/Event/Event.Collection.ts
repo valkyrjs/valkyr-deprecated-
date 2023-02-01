@@ -18,16 +18,13 @@ export type EventBlock = Document<{
  |--------------------------------------------------------------------------------
  */
 
-export async function createEventBlock() {
-  const result = await db.collection("events").insertOne({
-    name: "FooCreated",
-    data: [["", "p:string"]],
-    meta: []
-  });
+export async function createEventBlock({ name = "", data = [], meta = [] }: EventBlock): Promise<string> {
+  const result = await db.collection("events").insertOne({ name, data, meta });
   if (result.acknowledged === false) {
     throw new Error("Failed to create event block");
   }
   await addEditorNode("event", result.insertedId);
+  return result.insertedId;
 }
 
 /*

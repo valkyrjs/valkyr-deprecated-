@@ -16,13 +16,12 @@ export type StateBlock = Document<{
  |--------------------------------------------------------------------------------
  */
 
-export async function createStateBlock(): Promise<void> {
-  const result = await db.collection("states").insertOne({
-    name: "Foo",
-    data: [["", "p:string"]]
-  });
+export async function createStateBlock({ name = "", data = [["name", "p:string"]] }: StateBlock): Promise<string> {
+  const result = await db.collection("states").insertOne({ name, data });
+
   if (result.acknowledged === false) {
     throw new Error("Failed to create state block");
   }
   await addEditorNode("state", result.insertedId);
+  return result.insertedId;
 }

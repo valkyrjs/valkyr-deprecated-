@@ -24,10 +24,16 @@ const defaultCode = format(`
  |--------------------------------------------------------------------------------
  */
 
-export async function createReducerBlock(name = "Reducer", code = defaultCode) {
-  const result = await db.collection("reducers").insertOne({ name, code, events: [] });
+export async function createReducerBlock({
+  name = "Reducer",
+  code = defaultCode,
+  events = [],
+  state
+}: ReducerBlock): Promise<string> {
+  const result = await db.collection("reducers").insertOne({ name, code, events, state });
   if (result.acknowledged === false) {
     throw new Error("Failed to create reducer block");
   }
   await addEditorNode("reducer", result.insertedId);
+  return result.insertedId;
 }

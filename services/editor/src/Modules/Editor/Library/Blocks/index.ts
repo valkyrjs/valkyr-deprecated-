@@ -5,19 +5,19 @@ import { createTypeBlock } from "./Type/Type.Collection";
 
 export type BlockType = "type" | "event" | "state" | "reducer";
 
-export async function addBlock(type: BlockType): Promise<void> {
+export async function addBlock(type: BlockType, data: any): Promise<string> {
   switch (type) {
     case "type": {
-      return createTypeBlock();
+      return createTypeBlock(data);
     }
     case "event": {
-      return createEventBlock();
+      return createEventBlock(data);
     }
     case "state": {
-      return createStateBlock();
+      return createStateBlock(data);
     }
     case "reducer": {
-      return createReducerBlock();
+      return createReducerBlock(data);
     }
     default: {
       throw new Error(`Unknown node type: ${type}`);

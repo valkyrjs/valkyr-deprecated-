@@ -5,9 +5,6 @@ import { db } from "~Services/Database";
 
 import { addEdge, removeEdge } from "../../Edges/Edge.Utilities";
 
-const stateStrokeColor = "stroke-pink-600";
-const eventStrokeColor = "stroke-orange-600";
-
 export class ReducerNodeController extends Controller<{}, EdgeProps> {
   #state?: string;
   #events: string[] = [];
