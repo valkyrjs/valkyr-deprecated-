@@ -2,7 +2,7 @@ import { Document } from "@valkyr/db";
 
 import { db } from "~Services/Database";
 
-import { BlockField } from "../../Utilities/BlockFields";
+import { BlockField } from "../BlockFields";
 
 export type TypeBlock = Document<{
   name: string;

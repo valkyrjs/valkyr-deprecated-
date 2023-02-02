@@ -116,13 +116,6 @@ export class EditorController extends Controller<{
       return;
     }
 
-    console.log({
-      sourceNode,
-      targetNode,
-      source,
-      target
-    });
-
     switch (targetNode.type) {
       case "reducer": {
         await addReducerEdge({ type: sourceNode.type, id: sourceNode.data.id }, targetNode.data.id);

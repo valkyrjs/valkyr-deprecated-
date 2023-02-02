@@ -3,7 +3,7 @@ import { Controller } from "@valkyr/react";
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
-import { getFieldsType } from "../../Utilities/BlockFields";
+import { getFieldsType } from "../BlockFields";
 import { EventBlock, getEventDataTypes, getEventNamesRecord } from "../Event/Event.Collection";
 import { StateBlock } from "../State/State.Collection";
 import { ReducerBlock } from "./Reducer.Collection";

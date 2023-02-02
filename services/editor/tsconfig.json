@@ -8,6 +8,7 @@
     "esModuleInterop": false,
 
     "paths": {
+      "~Blocks/*": ["./src/Blocks/*"],
       "~Components/*": ["./src/Components/*"],
       "~Middleware/*": ["./src/Middleware/*"],
       "~Services/*": ["./src/Services/*"],

@@ -3,8 +3,7 @@ import { Document } from "@valkyr/db";
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
-import { addEditorNode } from "../../../Nodes/Node.Collection";
-import { BlockField, getFieldsArray } from "../../Utilities/BlockFields";
+import { BlockField, getFieldsArray } from "../BlockFields";
 
 export type EventBlock = Document<{
   name: string;
@@ -23,7 +22,6 @@ export async function createEventBlock({ name = "", data = [], meta = [] }: Even
   if (result.acknowledged === false) {
     throw new Error("Failed to create event block");
   }
-  await addEditorNode("event", result.insertedId);
   return result.insertedId;
 }
 

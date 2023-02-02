@@ -2,7 +2,7 @@ import { Controller } from "@valkyr/react";
 
 import { db } from "~Services/Database";
 
-import { BlockFields } from "../../Utilities/BlockFields";
+import { BlockFields } from "../BlockFields";
 import { TypeBlock } from "./Type.Collection";
 
 export class TypeBlockController extends Controller<

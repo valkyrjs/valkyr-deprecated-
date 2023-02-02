@@ -2,7 +2,7 @@ import { Controller } from "@valkyr/react";
 
 import { db } from "~Services/Database";
 
-import { BlockFields } from "../../Utilities/BlockFields";
+import { BlockFields } from "../BlockFields";
 import { EventBlock } from "./Event.Collection";
 
 export class EventBlockController extends Controller<

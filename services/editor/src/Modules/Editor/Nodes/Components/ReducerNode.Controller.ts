@@ -1,11 +1,11 @@
 import { Controller } from "@valkyr/react";
-import { EdgeProps } from "reactflow";
+import { NodeProps } from "reactflow";
 
 import { db } from "~Services/Database";
 
 import { addEdge, removeEdge } from "../../Edges/Edge.Utilities";
 
-export class ReducerNodeController extends Controller<{}, EdgeProps> {
+export class ReducerNodeController extends Controller<{}, NodeProps> {
   #state?: string;
   #events: string[] = [];
 

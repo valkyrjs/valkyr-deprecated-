@@ -1,7 +1,7 @@
 import { Controller } from "@valkyr/react";
 
-import { TypeBlock } from "../../Modules/Editor/Library/Blocks/Type/Type.Collection";
 import { db } from "../../Services/Database";
+import { TypeBlock } from "../Blocks/Type/Type.Collection";
 
 const primitives: Type[] = [
   { id: 1, type: "primitive", name: "string" },

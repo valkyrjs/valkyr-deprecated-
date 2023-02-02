@@ -1,8 +1,7 @@
 import { Controller } from "@valkyr/react";
 
+import { TypeBlock } from "~Blocks/Type/Type.Collection";
 import { db } from "~Services/Database";
-
-import { TypeBlock } from "../Library/Blocks/Type/Type.Collection";
 
 export class SettingsController extends Controller<
   {

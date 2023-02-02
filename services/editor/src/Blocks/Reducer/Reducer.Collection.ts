@@ -3,8 +3,6 @@ import { Document } from "@valkyr/db";
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
-import { addEditorNode } from "../../../Nodes/Node.Collection";
-
 export type ReducerBlock = Document<{
   name: string;
   code: string;
@@ -38,6 +36,5 @@ export async function createReducerBlock({
   if (result.acknowledged === false) {
     throw new Error("Failed to create reducer block");
   }
-  await addEditorNode("reducer", result.insertedId);
   return result.insertedId;
 }

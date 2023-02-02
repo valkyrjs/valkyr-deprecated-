@@ -5,10 +5,10 @@ import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 
+import { getFieldsType } from "~Blocks/BlockFields";
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
-import { getFieldsType } from "../Modules/Editor/Library/Utilities/BlockFields";
 import { getLedgerModel } from "./Ledger";
 
 const packages = ["mongodb"];

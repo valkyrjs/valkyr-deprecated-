@@ -2,11 +2,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import { CaretDoubleRight, Plus } from "phosphor-react";
 import { Fragment } from "react";
 
+import { createTypeBlock } from "~Blocks/Type/Type.Collection";
+import { TypeBlock } from "~Blocks/Type/Type.Component";
 import { Button } from "~Components/Button";
 import { Panel } from "~Components/Panel";
 
-import { createTypeBlock } from "../Library/Blocks/Type/Type.Collection";
-import { TypeBlock } from "../Library/Blocks/Type/Type.Component";
 import { SettingsController } from "./Settings.Controller";
 
 export const Settings = SettingsController.view(({ state: { types }, props: { isOpen, setClosed } }) => {

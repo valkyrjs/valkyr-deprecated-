@@ -1,6 +1,7 @@
 import { Handle, Position } from "reactflow";
 
-import { ReducerBlock } from "../../Library/Blocks/Reducer/Reducer.Component";
+import { ReducerBlock } from "~Blocks/Reducer/Reducer.Component";
+
 import { ReducerNodeController } from "./ReducerNode.Controller";
 
 export const ReducerNode = ReducerNodeController.view(

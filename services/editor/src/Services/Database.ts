@@ -1,10 +1,10 @@
 import { IndexedDatabase } from "@valkyr/db";
 import type { Edge } from "reactflow";
 
-import type { EventBlock } from "../Modules/Editor/Library/Blocks/Event/Event.Collection";
-import type { ReducerBlock } from "../Modules/Editor/Library/Blocks/Reducer/Reducer.Collection";
-import type { StateBlock } from "../Modules/Editor/Library/Blocks/State/State.Collection";
-import type { TypeBlock } from "../Modules/Editor/Library/Blocks/Type/Type.Collection";
+import type { EventBlock } from "../Components/Blocks/Event/Event.Collection";
+import type { ReducerBlock } from "../Components/Blocks/Reducer/Reducer.Collection";
+import type { StateBlock } from "../Components/Blocks/State/State.Collection";
+import type { TypeBlock } from "../Components/Blocks/Type/Type.Collection";
 import type { EditorNode } from "../Modules/Editor/Nodes/Node.Collection";
 
 export type Collections = {

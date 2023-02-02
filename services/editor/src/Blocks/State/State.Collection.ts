@@ -2,8 +2,7 @@ import { Document } from "@valkyr/db";
 
 import { db } from "~Services/Database";
 
-import { addEditorNode } from "../../../Nodes/Node.Collection";
-import { BlockField } from "../../Utilities/BlockFields";
+import { BlockField } from "../BlockFields";
 
 export type StateBlock = Document<{
   name: string;
@@ -21,6 +20,5 @@ export async function createStateBlock({ name = "", data = [["name", "p:string"]
   if (result.acknowledged === false) {
     throw new Error("Failed to create state block");
   }
-  await addEditorNode("state", result.insertedId);
   return result.insertedId;
 }

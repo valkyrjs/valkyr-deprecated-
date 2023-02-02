@@ -2,7 +2,7 @@ import { Controller } from "@valkyr/react";
 
 import { db } from "~Services/Database";
 
-import { BlockFields } from "../../Utilities/BlockFields";
+import { BlockFields } from "../BlockFields";
 import { StateBlock } from "./State.Collection";
 
 export class StateNodeController extends Controller<

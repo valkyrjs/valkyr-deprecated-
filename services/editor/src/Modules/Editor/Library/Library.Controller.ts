@@ -1,8 +1,11 @@
 import { Controller } from "@valkyr/react";
 
+import { addBlock, BlockType } from "~Blocks/Utilities";
 import { closeModal } from "~Components/Modal";
 
-import { addBlock, BlockType } from "./Blocks";
+import { nodeTypes } from "../Nodes";
+import { addEditorNode } from "../Nodes/Node.Collection";
+import { NodeType } from "../Nodes/Node.Types";
 
 export class LibraryController extends Controller<{
   isOpen: boolean;
@@ -62,7 +65,10 @@ export class LibraryController extends Controller<{
   #buildAdd(insertions: BlockInsertion[]): () => void {
     return async () => {
       for (const insert of insertions) {
-        await addBlock(insert.type, insert.defaults);
+        const blockId = await addBlock(insert.type, insert.defaults);
+        if ((nodeTypes as any)[insert.type] !== undefined) {
+          addEditorNode(insert.type as NodeType, blockId);
+        }
       }
       closeModal();
     };
