@@ -105,7 +105,7 @@ export const CommandPalette = CommandPaletteController.view(
               </Combobox.Options>
             )}
 
-            {query !== "" && filteredBlocks.length === 0 && (
+            {query !== "" && blocks.length === 0 && (
               <div className="py-14 px-6 text-center sm:px-14">
                 <Folder className="mx-auto h-6 w-6 text-gray-500" aria-hidden="true" />
                 <p className="mt-4 text-sm text-gray-200">No blocks found, try again.</p>

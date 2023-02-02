@@ -2,7 +2,6 @@ import { Controller } from "@valkyr/react";
 
 import { addBlock, BlockType } from "~Blocks/Utilities";
 import { closeModal } from "~Components/Modal";
-import { db } from "~Services/Database";
 
 import { nodeTypes } from "../Nodes";
 import { addEditorNode } from "../Nodes/Node.Collection";
