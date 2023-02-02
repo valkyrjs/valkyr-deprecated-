@@ -1,7 +1,8 @@
 import { Controller } from "@valkyr/react";
 
+import { TypeBlock } from "~Blocks/Block.Collection";
+
 import { db } from "../../Services/Database";
-import { TypeBlock } from "../Blocks/Type/Type.Collection";
 
 const primitives: Type[] = [
   { id: 1, type: "primitive", name: "string" },
@@ -28,7 +29,7 @@ export class SelectController extends Controller<
   }
 
   async #queryTypes() {
-    const types = await this.query(db.collection("types"), {}, async (types) => ({
+    const types = await this.query(db.collection<TypeBlock>("blocks"), {}, async (types) => ({
       types: this.#getTypes(types)
     }));
     return this.#getTypes(types);

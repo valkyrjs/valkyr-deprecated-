@@ -1,7 +1,7 @@
 import { Edge } from "reactflow";
 import { Subject } from "rxjs";
 
-import { BlockType } from "~Blocks/Utilities";
+import { BlockType } from "~Blocks/Block.Collection";
 import { db } from "~Services/Database";
 
 export const edges = new Subject<EdgeAction>();

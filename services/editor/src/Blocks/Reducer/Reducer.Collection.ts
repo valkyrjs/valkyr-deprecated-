@@ -1,16 +1,9 @@
-import { Document } from "@valkyr/db";
-
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
-export type ReducerBlock = Document<{
-  name: string;
-  code: string;
-  events: string[];
-  state?: string;
-}>;
+import { ReducerBlock } from "../Block.Collection";
 
-const defaultCode = format(`
+const defaultValue = format(`
   async function reduce(state: State, event: EventRecord): Promise<State> {
     switch (event.type) {
       default: {
@@ -28,11 +21,11 @@ const defaultCode = format(`
 
 export async function createReducerBlock({
   name = "Reducer",
-  code = defaultCode,
+  value = defaultValue,
   events = [],
   state
 }: ReducerBlock): Promise<string> {
-  const result = await db.collection("reducers").insertOne({ name, code, events, state });
+  const result = await db.collection<ReducerBlock>("blocks").insertOne({ type: "reducer", name, value, events, state });
   if (result.acknowledged === false) {
     throw new Error("Failed to create reducer block");
   }

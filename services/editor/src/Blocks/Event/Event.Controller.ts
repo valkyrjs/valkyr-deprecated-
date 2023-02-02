@@ -1,9 +1,9 @@
 import { Controller } from "@valkyr/react";
 
+import { EventBlock } from "~Blocks/Block.Collection";
 import { db } from "~Services/Database";
 
 import { BlockFields } from "../BlockFields";
-import { EventBlock } from "./Event.Collection";
 
 export class EventBlockController extends Controller<
   {
@@ -15,14 +15,14 @@ export class EventBlockController extends Controller<
 > {
   async onInit() {
     return {
-      block: await this.query(db.collection("events"), { where: { id: this.props.id }, limit: 1 }, "block"),
-      data: new BlockFields("events", this.props.id, "data"),
-      meta: new BlockFields("events", this.props.id, "meta")
+      block: await this.query(db.collection<EventBlock>("blocks"), { where: { id: this.props.id }, limit: 1 }, "block"),
+      data: new BlockFields("blocks", this.props.id, "data"),
+      meta: new BlockFields("blocks", this.props.id, "meta")
     };
   }
 
   setName(name: string) {
-    db.collection("events").updateOne(
+    db.collection("blocks").updateOne(
       { id: this.props.id },
       {
         $set: { name }

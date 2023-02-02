@@ -1,12 +1,11 @@
 import { Controller } from "@valkyr/react";
 
+import { EventBlock, ReducerBlock, StateBlock } from "~Blocks/Block.Collection";
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
 import { getFieldsType } from "../BlockFields";
-import { EventBlock, getEventDataTypes, getEventNamesRecord } from "../Event/Event.Collection";
-import { StateBlock } from "../State/State.Collection";
-import { ReducerBlock } from "./Reducer.Collection";
+import { getEventDataTypes, getEventNamesRecord } from "../Event/Event.Collection";
 
 export class ReducerNodeController extends Controller<
   {
@@ -21,7 +20,7 @@ export class ReducerNodeController extends Controller<
 > {
   async onInit() {
     const block = await this.query(
-      db.collection("reducers"),
+      db.collection<ReducerBlock>("blocks"),
       { where: { id: this.props.id }, limit: 1 },
       async (block) => {
         if (block === undefined) {
@@ -46,21 +45,21 @@ export class ReducerNodeController extends Controller<
     if (id === undefined) {
       return undefined;
     }
-    return this.query(db.collection("states"), { where: { id }, limit: 1 }, async (state) => ({
+    return this.query(db.collection<StateBlock>("blocks"), { where: { id }, limit: 1 }, async (state) => ({
       state,
       model: this.#getModel(state, this.state.events)
     }));
   }
 
   async #queryEvents(ids: string[]) {
-    return this.query(db.collection("events"), { where: { id: { $in: ids } } }, async (events) => ({
+    return this.query(db.collection<EventBlock>("blocks"), { where: { id: { $in: ids } } }, async (events) => ({
       events,
       model: this.#getModel(this.state.state, events)
     }));
   }
 
   onChange(code: string) {
-    db.collection("reducers").updateOne({ id: this.props.id }, { $set: { code } });
+    db.collection<ReducerBlock>("blocks").updateOne({ id: this.props.id }, { $set: { code } });
   }
 
   async onRemove() {

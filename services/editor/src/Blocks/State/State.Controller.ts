@@ -1,9 +1,9 @@
 import { Controller } from "@valkyr/react";
 
+import { StateBlock } from "~Blocks/Block.Collection";
 import { db } from "~Services/Database";
 
 import { BlockFields } from "../BlockFields";
-import { StateBlock } from "./State.Collection";
 
 export class StateNodeController extends Controller<
   {
@@ -14,13 +14,13 @@ export class StateNodeController extends Controller<
 > {
   async onInit() {
     return {
-      block: await this.query(db.collection("states"), { where: { id: this.props.id }, limit: 1 }, "block"),
-      data: new BlockFields("states", this.props.id, "data")
+      block: await this.query(db.collection<StateBlock>("blocks"), { where: { id: this.props.id }, limit: 1 }, "block"),
+      data: new BlockFields("blocks", this.props.id, "data")
     };
   }
 
   setName(name: string) {
-    db.collection("states").updateOne(
+    db.collection("blocks").updateOne(
       { id: this.props.id },
       {
         $set: { name }

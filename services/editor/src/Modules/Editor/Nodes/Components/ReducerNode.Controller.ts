@@ -1,6 +1,7 @@
 import { Controller } from "@valkyr/react";
 import { NodeProps } from "reactflow";
 
+import { ReducerBlock } from "~Blocks/Block.Collection";
 import { db } from "~Services/Database";
 
 import { addEdge, removeEdge } from "../../Edges/Edge.Utilities";
@@ -12,7 +13,7 @@ export class ReducerNodeController extends Controller<{}, NodeProps> {
   async onInit() {
     this.subscriptions.set(
       "reducers",
-      db.collection("reducers").subscribe({ id: this.props.data.id }, { limit: 1 }, (reducer) => {
+      db.collection<ReducerBlock>("blocks").subscribe({ id: this.props.data.id }, { limit: 1 }, (reducer) => {
         this.#handleState(reducer?.state);
         this.#handleEvents(reducer?.events ?? []);
       })
@@ -70,7 +71,7 @@ export class ReducerNodeController extends Controller<{}, NodeProps> {
         {
           sourceType: "event",
           onRemove: () => {
-            db.collection("reducers").updateOne({ id: this.props.data.id }, { $pull: { events: event } });
+            db.collection<ReducerBlock>("blocks").updateOne({ id: this.props.data.id }, { $pull: { events: event } });
           }
         }
       );
@@ -83,6 +84,6 @@ export class ReducerNodeController extends Controller<{}, NodeProps> {
   }
 
   #removeState = () => {
-    db.collection("reducers").updateOne({ id: this.props.data.id }, { $set: { state: undefined } });
+    db.collection<ReducerBlock>("blocks").updateOne({ id: this.props.data.id }, { $set: { state: undefined } });
   };
 }

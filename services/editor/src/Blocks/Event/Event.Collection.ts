@@ -1,15 +1,8 @@
-import { Document } from "@valkyr/db";
-
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
-import { BlockField, getFieldsArray } from "../BlockFields";
-
-export type EventBlock = Document<{
-  name: string;
-  data: BlockField[];
-  meta: BlockField[];
-}>;
+import { EventBlock } from "../Block.Collection";
+import { getFieldsArray } from "../BlockFields";
 
 /*
  |--------------------------------------------------------------------------------
@@ -18,7 +11,7 @@ export type EventBlock = Document<{
  */
 
 export async function createEventBlock({ name = "", data = [], meta = [] }: EventBlock): Promise<string> {
-  const result = await db.collection("events").insertOne({ name, data, meta });
+  const result = await db.collection<EventBlock>("blocks").insertOne({ type: "event", name, data, meta });
   if (result.acknowledged === false) {
     throw new Error("Failed to create event block");
   }

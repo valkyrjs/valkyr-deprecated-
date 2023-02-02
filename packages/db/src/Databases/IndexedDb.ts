@@ -43,12 +43,12 @@ export class IndexedDatabase<T extends StringRecord<Document>> {
    |--------------------------------------------------------------------------------
    */
 
-  collection<Name extends keyof T>(name: Name): Collection<T[Name]> {
+  collection<D extends T[Name], Name extends keyof T = keyof T>(name: Name): Collection<D> {
     const collection = this.#collections.get(name);
     if (collection === undefined) {
       throw new Error(`Collection '${name as string}' not found`);
     }
-    return collection as Collection<T[Name]>;
+    return collection as Collection<D>;
   }
 
   /*

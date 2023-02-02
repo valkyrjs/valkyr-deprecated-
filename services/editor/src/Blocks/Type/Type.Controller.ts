@@ -1,9 +1,9 @@
 import { Controller } from "@valkyr/react";
 
+import { TypeBlock } from "~Blocks/Block.Collection";
 import { db } from "~Services/Database";
 
 import { BlockFields } from "../BlockFields";
-import { TypeBlock } from "./Type.Collection";
 
 export class TypeBlockController extends Controller<
   {
@@ -14,13 +14,13 @@ export class TypeBlockController extends Controller<
 > {
   async onInit() {
     return {
-      block: await this.query(db.collection("types"), { where: { id: this.props.id }, limit: 1 }, "block"),
-      data: new BlockFields("types", this.props.id, "data")
+      block: await this.query(db.collection<TypeBlock>("blocks"), { where: { id: this.props.id }, limit: 1 }, "block"),
+      data: new BlockFields("blocks", this.props.id, "data")
     };
   }
 
   setName(name: string) {
-    db.collection("types").updateOne(
+    db.collection("blocks").updateOne(
       { id: this.props.id },
       {
         $set: { name }
@@ -29,6 +29,6 @@ export class TypeBlockController extends Controller<
   }
 
   async onRemove() {
-    await db.collection("types").remove({ id: this.props.id });
+    await db.collection("blocks").remove({ id: this.props.id });
   }
 }

@@ -1,13 +1,6 @@
-import { Document } from "@valkyr/db";
-
 import { db } from "~Services/Database";
 
-import { BlockField } from "../BlockFields";
-
-export type TypeBlock = Document<{
-  name: string;
-  data: BlockField[];
-}>;
+import { TypeBlock } from "../Block.Collection";
 
 /*
  |--------------------------------------------------------------------------------
@@ -16,7 +9,7 @@ export type TypeBlock = Document<{
  */
 
 export async function createTypeBlock({ name = "", data = [["name", "p:string"]] }: TypeBlock): Promise<string> {
-  const result = await db.collection("types").insertOne({ name, data });
+  const result = await db.collection<TypeBlock>("blocks").insertOne({ type: "type", name, data });
   if (result.acknowledged === false) {
     throw new Error("Failed to create type block");
   }

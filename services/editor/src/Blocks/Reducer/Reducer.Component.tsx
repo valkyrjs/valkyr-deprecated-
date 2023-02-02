@@ -30,7 +30,7 @@ export const ReducerBlock = ReducerNodeController.view(
                     height: 400
                   }}
                 >
-                  <CodeEditor defaultValue={block.code} model={model} onChange={onChange} />
+                  <CodeEditor defaultValue={block.value} model={model} onChange={onChange} />
                 </div>
               </Disclosure.Panel>
             </div>

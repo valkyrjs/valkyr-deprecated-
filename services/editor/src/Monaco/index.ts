@@ -5,6 +5,7 @@ import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 
+import { TypeBlock } from "~Blocks/Block.Collection";
 import { getFieldsType } from "~Blocks/BlockFields";
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
@@ -69,7 +70,7 @@ monaco.editor.createModel(getLedgerModel(), "typescript");
 
 const typeModel = monaco.editor.createModel("", "typescript");
 
-db.collection("types").subscribe({}, {}, (types) => {
+db.collection("blocks").subscribe<TypeBlock>({ type: "type" }, {}, (types) => {
   typeModel.setValue(
     format(`
         ${types.map((type) => getFieldsType(type.name, type.data)).join("\n")}

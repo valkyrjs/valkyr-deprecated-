@@ -1,3 +1,4 @@
+import { ReducerBlock } from "~Blocks/Block.Collection";
 import { db } from "~Services/Database";
 
 import { ConnectionParams } from "../Nodes/Node.Types";
@@ -5,7 +6,7 @@ import { ConnectionParams } from "../Nodes/Node.Types";
 export async function addReducerEdge(from: ConnectionParams, id: string): Promise<boolean> {
   switch (from.type) {
     case "event": {
-      const result = await db.collection("reducers").updateOne(
+      const result = await db.collection<ReducerBlock>("blocks").updateOne(
         { id },
         {
           $push: {
@@ -19,7 +20,7 @@ export async function addReducerEdge(from: ConnectionParams, id: string): Promis
       return true;
     }
     case "state": {
-      const result = await db.collection("reducers").updateOne(
+      const result = await db.collection<ReducerBlock>("blocks").updateOne(
         { id },
         {
           $set: {

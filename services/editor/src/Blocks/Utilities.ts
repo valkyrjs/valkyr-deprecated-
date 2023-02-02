@@ -1,9 +1,8 @@
+import { BlockType } from "./Block.Collection";
 import { createEventBlock } from "./Event/Event.Collection";
 import { createReducerBlock } from "./Reducer/Reducer.Collection";
 import { createStateBlock } from "./State/State.Collection";
 import { createTypeBlock } from "./Type/Type.Collection";
-
-export type BlockType = "type" | "event" | "state" | "reducer";
 
 export async function addBlock(type: BlockType, data: any): Promise<string> {
   switch (type) {
