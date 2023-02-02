@@ -6,6 +6,7 @@ import ReactFlow, { Background, Controls, MiniMap, Panel } from "reactflow";
 import { Button } from "~Components/Button";
 import { ModalPortal } from "~Components/Modal";
 
+import { openCommandPalette } from "../CommandPalette";
 import { edgeTypes } from "../Edges";
 import { openLibraryModal } from "../Library";
 import { nodeTypes } from "../Nodes";
@@ -46,13 +47,17 @@ export const EditorView = EditorController.view(
                 <Plus size={10} />
                 block
               </Button>
+              <Button variant="primary" outline type="button" onClick={openCommandPalette}>
+                <Plus size={10} />
+                commands
+              </Button>
             </Panel>
             <Panel position="top-right">
               <Button variant="primary" outline type="button" onClick={() => toggleAside(true)}>
                 <CaretDoubleLeft size={16} />
               </Button>
             </Panel>
-            <Controls showInteractive={false} />
+            <Controls showInteractive={false}></Controls>
             <Background />
           </ReactFlow>
           <Settings isOpen={asideOpen} setClosed={() => toggleAside(false)} />
