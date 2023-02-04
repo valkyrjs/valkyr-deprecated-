@@ -8,7 +8,11 @@ export function EventNode({ data: { id } }: NodeProps) {
       <EventBlock id={id} />
       <Handle
         type="source"
-        className="event-output-handle bg-orange-600/75 hover:bg-orange-600"
+        className="h-3 w-2 bg-orange-600"
+        style={{
+          zIndex: 1,
+          right: -7
+        }}
         position={Position.Right}
       />
     </div>

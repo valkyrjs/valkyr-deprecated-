@@ -4,86 +4,40 @@ import { NodeProps } from "reactflow";
 import { ReducerBlock } from "~Blocks/Block.Collection";
 import { db } from "~Services/Database";
 
-import { addEdge, removeEdge } from "../../Edges/Edge.Utilities";
+import { ConnectionManager } from "../../Edges/ConnectionManager";
 
 export class ReducerNodeController extends Controller<{}, NodeProps> {
-  #state?: string;
-  #events: string[] = [];
+  #connectionManager = new ConnectionManager();
 
   async onInit() {
     this.subscriptions.set(
       "reducers",
-      db.collection<ReducerBlock>("blocks").subscribe({ id: this.props.data.id }, { limit: 1 }, (reducer) => {
-        this.#handleState(reducer?.state);
-        this.#handleEvents(reducer?.events ?? []);
-      })
+      db.collection<ReducerBlock>("blocks").subscribe({ id: this.props.data.id }, { limit: 1 }, this.#connect)
     );
   }
 
-  #handleState(state?: string) {
-    if (state !== undefined && this.#state === undefined) {
-      addEdge(
-        {
-          source: state,
-          sourceHandle: "reducer",
-          target: this.props.id,
-          targetHandle: "state"
-        },
-        {
-          sourceType: "state",
-          onRemove: this.#removeState
-        }
-      );
-      this.#state = state;
+  #connect = async (reducer?: ReducerBlock) => {
+    if (reducer === undefined) {
+      return this.#connectionManager.destroy();
     }
-    if (state === undefined && this.#state !== undefined) {
-      removeEdge(this.#state, this.props.id);
-      this.#state = undefined;
-    }
-    if (state !== undefined && this.#state !== undefined && state !== this.#state) {
-      addEdge(
-        {
-          source: state,
-          sourceHandle: "reducer",
-          target: this.props.id,
-          targetHandle: "state"
-        },
-        {
-          sourceType: "state",
-          onRemove: this.#removeState
-        }
-      );
-      removeEdge(this.#state, this.props.id);
-      this.#state = state;
-    }
-  }
+    await this.#connectionManager.load({
+      root: reducer.id,
+      inputs: {
+        blockIds: reducer.events,
+        onRemove: this.#removeEvent
+      },
+      outputs: {
+        blockIds: reducer.state ? [reducer.state] : [],
+        onRemove: this.#removeState
+      }
+    });
+  };
 
-  #handleEvents(events: string[]) {
-    const add = events.filter((event) => !this.#events.includes(event));
-    const remove = this.#events.filter((event) => !events.includes(event));
-    for (const event of add) {
-      addEdge(
-        {
-          source: event,
-          target: this.props.id,
-          targetHandle: "events"
-        },
-        {
-          sourceType: "event",
-          onRemove: () => {
-            db.collection<ReducerBlock>("blocks").updateOne({ id: this.props.data.id }, { $pull: { events: event } });
-          }
-        }
-      );
-      this.#events.push(event);
-    }
-    for (const event of remove) {
-      removeEdge(event, this.props.id);
-      this.#events = this.#events.filter((id) => id !== event);
-    }
-  }
+  #removeEvent = (id: string) => {
+    db.collection("blocks").updateOne({ id: this.props.data.id }, { $pull: { events: id } });
+  };
 
   #removeState = () => {
-    db.collection<ReducerBlock>("blocks").updateOne({ id: this.props.data.id }, { $set: { state: undefined } });
+    db.collection("blocks").updateOne({ id: this.props.data.id }, { $unset: { state: "" } });
   };
 }

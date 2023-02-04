@@ -36,6 +36,16 @@ export function getColors(sourceType: BlockType) {
         borderHover: "hover:border-orange-400"
       };
     }
+    case "reducer": {
+      return {
+        stroke: "stroke-cyan-600",
+        strokeHover: "hover:stroke-cyan-400",
+        bg: "bg-cyan-600",
+        bgHover: "hover:bg-cyan-400",
+        border: "border-cyan-600",
+        borderHover: "hover:border-cyan-400"
+      };
+    }
     case "state": {
       return {
         stroke: "stroke-pink-600",

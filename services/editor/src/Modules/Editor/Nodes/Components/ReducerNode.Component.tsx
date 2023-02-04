@@ -15,14 +15,22 @@ export const ReducerNode = ReducerNodeController.view(
         <Handle
           type="target"
           id="events"
-          className="event-output-handle h-6 bg-orange-600/75 hover:bg-orange-600"
+          className="h-3 w-2 bg-orange-600"
+          style={{
+            zIndex: 1,
+            left: -7
+          }}
           position={Position.Left}
         />
         <ReducerBlock id={id} />
         <Handle
-          type="target"
-          id="state"
-          className="state-output-handle h-6 bg-pink-600/75 hover:bg-pink-600"
+          type="source"
+          id="reducer"
+          className="h-3 w-2 bg-cyan-600"
+          style={{
+            zIndex: 1,
+            right: -7
+          }}
           position={Position.Right}
         />
       </div>
