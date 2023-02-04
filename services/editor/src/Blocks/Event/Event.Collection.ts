@@ -1,3 +1,5 @@
+import * as monaco from "monaco-editor";
+
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
@@ -16,6 +18,30 @@ export async function createEventBlock({ name = "", data = [], meta = [] }: Even
     throw new Error("Failed to create event block");
   }
   return result.insertedId;
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Monaco
+ |--------------------------------------------------------------------------------
+ */
+
+const models: monaco.editor.ITextModel[] = [];
+
+db.collection<EventBlock>("blocks").subscribe({ type: "event" }, {}, (events) => {
+  flushEventModels();
+  for (const event of events) {
+    models.push(monaco.editor.createModel(getEventDataTypes(event), "typescript"));
+  }
+});
+
+function flushEventModels() {
+  if (models.length > 0) {
+    const model = models.pop();
+    if (model !== undefined) {
+      model.dispose();
+    }
+  }
 }
 
 /*
@@ -48,5 +74,5 @@ export function getEventNamesRecord(events: string[]): string {
   if (events.length === 0) {
     return "";
   }
-  return `type EventRecord = ${events.map((name) => `LedgerEventRecord<${name}>`).join(" | ")};`;
+  return `${events.map((name) => `LedgerEventRecord<${name}>`).join(" | ")};`;
 }

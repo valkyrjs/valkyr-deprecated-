@@ -1,3 +1,6 @@
+import * as monaco from "monaco-editor";
+
+import { getFieldsType } from "~Blocks/BlockFields";
 import { db } from "~Services/Database";
 
 import { StateBlock } from "../Block.Collection";
@@ -14,4 +17,28 @@ export async function createStateBlock({ name = "", data = [["name", "p:string"]
     throw new Error("Failed to create state block");
   }
   return result.insertedId;
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Monaco
+ |--------------------------------------------------------------------------------
+ */
+
+const models: monaco.editor.ITextModel[] = [];
+
+db.collection<StateBlock>("blocks").subscribe({ type: "state" }, {}, (states) => {
+  flushStateModels();
+  for (const state of states) {
+    models.push(monaco.editor.createModel(getFieldsType(state.name, state.data), "typescript"));
+  }
+});
+
+function flushStateModels() {
+  if (models.length > 0) {
+    const model = models.pop();
+    if (model !== undefined) {
+      model.dispose();
+    }
+  }
 }
