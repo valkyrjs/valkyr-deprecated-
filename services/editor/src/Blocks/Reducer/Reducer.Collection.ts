@@ -74,6 +74,7 @@ function flushReducerModels() {
     const model = models.pop();
     if (model !== undefined) {
       model.dispose();
+      flushReducerModels();
     }
   }
 }

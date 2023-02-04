@@ -40,6 +40,7 @@ function flushEventModels() {
     const model = models.pop();
     if (model !== undefined) {
       model.dispose();
+      flushEventModels();
     }
   }
 }

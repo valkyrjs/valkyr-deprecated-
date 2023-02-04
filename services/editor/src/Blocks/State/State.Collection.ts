@@ -39,6 +39,7 @@ function flushStateModels() {
     const model = models.pop();
     if (model !== undefined) {
       model.dispose();
+      flushStateModels();
     }
   }
 }
