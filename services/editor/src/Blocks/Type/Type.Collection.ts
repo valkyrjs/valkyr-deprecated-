@@ -1,3 +1,4 @@
+import { ModelManager } from "~Blocks/Model.Manager";
 import { db } from "~Services/Database";
 
 import { TypeBlock } from "../Block.Collection";
@@ -8,10 +9,25 @@ import { TypeBlock } from "../Block.Collection";
  |--------------------------------------------------------------------------------
  */
 
-export async function createTypeBlock({ name = "", data = [["name", "p:string"]] }: TypeBlock): Promise<string> {
-  const result = await db.collection<TypeBlock>("blocks").insertOne({ type: "type", name, data });
+export async function createTypeBlock({ name = "" }: Partial<TypeBlock> = {}): Promise<string> {
+  const result = await db.collection<TypeBlock>("blocks").insertOne({ type: "type", name, value: "" });
   if (result.acknowledged === false) {
     throw new Error("Failed to create type block");
   }
   return result.insertedId;
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Monaco
+ |--------------------------------------------------------------------------------
+ */
+
+const models = new ModelManager();
+
+db.collection<TypeBlock>("blocks").subscribe({ type: "type" }, {}, (types) => {
+  models.flush();
+  for (const type of types) {
+    models.add(type.value);
+  }
+});

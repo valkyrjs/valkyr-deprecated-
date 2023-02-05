@@ -301,7 +301,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
   }
 
   async #update(id: string, criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
-    const logger = new UpdateLog(this.name, { id, criteria, operators });
+    const logger = new UpdateLog(this.name, { criteria, operators });
 
     const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
 

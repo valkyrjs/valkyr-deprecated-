@@ -14,21 +14,15 @@ export class TypeBlockController extends Controller<
 > {
   async onInit() {
     return {
-      block: await this.query(db.collection<TypeBlock>("blocks"), { where: { id: this.props.id }, limit: 1 }, "block"),
-      data: new BlockFields("blocks", this.props.id, "data")
+      block: await this.query(db.collection<TypeBlock>("blocks"), { where: { id: this.props.id }, limit: 1 }, "block")
     };
   }
 
-  setName(name: string) {
-    db.collection("blocks").updateOne(
-      { id: this.props.id },
-      {
-        $set: { name }
-      }
-    );
+  onChange(value: string) {
+    db.collection<TypeBlock>("blocks").updateOne({ id: this.props.id }, { $set: { value } });
   }
 
   async onRemove() {
-    await db.collection("blocks").remove({ id: this.props.id });
+    await db.collection("nodes").remove({ id: this.props.id });
   }
 }

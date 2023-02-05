@@ -1,8 +1,6 @@
 import { Controller } from "@valkyr/react";
 
-import { TypeBlock } from "~Blocks/Block.Collection";
-
-import { db } from "../../Services/Database";
+import { getTypes } from "~Blocks/Model.Manager";
 
 const primitives: Type[] = [
   { id: 1, type: "primitive", name: "string" },
@@ -21,27 +19,20 @@ export class SelectController extends Controller<
   }
 > {
   async onInit() {
-    const types = await this.#queryTypes();
+    const types = await this.#getTypes();
     return {
       types,
       selected: types.find((type) => getTypeValue(type) === this.props.selected) ?? types[0]
     };
   }
 
-  async #queryTypes() {
-    const types = await this.query(db.collection<TypeBlock>("blocks"), {}, async (types) => ({
-      types: this.#getTypes(types)
-    }));
-    return this.#getTypes(types);
-  }
-
-  #getTypes(blocks: TypeBlock[]): Type[] {
+  #getTypes(): Type[] {
     return [
       ...primitives,
-      ...blocks.map<Type>((block) => ({
-        id: block.id,
+      ...getTypes().map<Type>((name) => ({
+        id: name,
         type: "custom",
-        name: block.name
+        name
       }))
     ];
   }

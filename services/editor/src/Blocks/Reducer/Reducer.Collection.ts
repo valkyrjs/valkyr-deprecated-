@@ -1,6 +1,5 @@
-import * as monaco from "monaco-editor";
-
 import { getEventNamesRecord } from "~Blocks/Event/Event.Collection";
+import { ModelManager } from "~Blocks/Model.Manager";
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
@@ -38,10 +37,10 @@ export async function createReducerBlock({ value = defaultValue, events = [], st
  |--------------------------------------------------------------------------------
  */
 
-const models: monaco.editor.ITextModel[] = [];
+const models = new ModelManager();
 
 db.collection<ReducerBlock>("blocks").subscribe({ type: "reducer" }, {}, (reducers) => {
-  flushReducerModels();
+  models.flush();
   for (const reducer of reducers) {
     registerReducerInterface(reducer);
   }
@@ -54,27 +53,12 @@ async function registerReducerInterface(reducer: ReducerBlock): Promise<void> {
   }
   const events = await db.collection<EventBlock>("blocks").find({ id: { $in: reducer.events } });
   const eventNames = events.map((event) => event.name);
-  models.push(
-    monaco.editor.createModel(
-      format(`
-        interface Reducers {
-          ${state.name}: {
-            State: ${state.name};
-            Event: ${eventNames.length === 0 ? "never" : getEventNamesRecord(eventNames)}
-          }
-        }
-      `),
-      "typescript"
-    )
-  );
-}
-
-function flushReducerModels() {
-  if (models.length > 0) {
-    const model = models.pop();
-    if (model !== undefined) {
-      model.dispose();
-      flushReducerModels();
+  models.add(`
+    interface Reducers {
+      ${state.name}: {
+        State: ${state.name};
+        Event: ${eventNames.length === 0 ? "never" : getEventNamesRecord(eventNames)}
+      }
     }
-  }
+  `);
 }

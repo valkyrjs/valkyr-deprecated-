@@ -1,15 +1,23 @@
-abstract class LogEvent {
-  readonly startedAt = performance.now();
-
+class Performance {
+  startedAt = performance.now();
   endedAt?: number;
-  duration?: string;
+  duration?: number;
+
+  result() {
+    this.endedAt = performance.now();
+    this.duration = Number((this.endedAt - this.startedAt).toFixed(2));
+  }
+}
+
+abstract class LogEvent {
+  readonly performance = new Performance();
+
   data?: Record<string, any>;
 
   constructor(readonly collection: string, readonly query?: Record<string, any>) {}
 
   result(data?: Record<string, any>): this {
-    this.endedAt = performance.now();
-    this.duration = (this.endedAt - this.startedAt).toFixed(2);
+    this.performance.result();
     this.data = data;
     return this;
   }
@@ -52,9 +60,7 @@ export type DBLogger = (event: DBLogEvent) => void;
 export type DBLogEvent = {
   type: DBLogEventType;
   collection: string;
-  startedAt: number;
-  endedAt?: number;
-  duration?: string;
+  performance: Performance;
   message?: string;
 };
 

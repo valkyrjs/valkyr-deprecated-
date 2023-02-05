@@ -15,7 +15,7 @@ export class SettingsController extends Controller<
   async onInit() {
     return {
       isOpen: false,
-      types: await this.query(db.collection<TypeBlock>("blocks"), {}, "types")
+      types: await this.query(db.collection<TypeBlock>("blocks"), { where: { type: "type" } }, "types")
     };
   }
 }

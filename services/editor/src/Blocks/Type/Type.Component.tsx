@@ -1,12 +1,11 @@
 import { Disclosure } from "@headlessui/react";
 
 import { BlockHeader } from "~Components/BlockHeader";
-import { Editable } from "~Components/Editable";
-import { TypeFields } from "~Components/TypeFields";
+import { CodeEditor } from "~Components/CodeEditor";
 
 import { TypeBlockController } from "./Type.Controller";
 
-export const TypeBlock = TypeBlockController.view(({ state: { block, data }, actions: { setName, onRemove } }) => {
+export const TypeBlock = TypeBlockController.view(({ state: { block }, actions: { onChange, onRemove } }) => {
   if (block === undefined) {
     return <div>404 Block Not Found</div>;
   }
@@ -21,16 +20,17 @@ export const TypeBlock = TypeBlockController.view(({ state: { block, data }, act
               onRemove={onRemove}
               color="green"
               symbol="T"
-              content={<Editable value={block.name} onChange={setName} name="name" placeholder="Add type name" />}
+              content={block.name}
             />
             <Disclosure.Panel>
-              <TypeFields
-                data={block.data}
-                addField={data.addField}
-                setFieldKey={data.setFieldKey}
-                setFieldValue={data.setFieldValue}
-                removeField={data.removeField}
-              />
+              <div
+                className="border-b-darker-800 border-b"
+                style={{
+                  height: 200
+                }}
+              >
+                <CodeEditor defaultValue={block.value} onChange={onChange} />
+              </div>
             </Disclosure.Panel>
           </div>
         )}

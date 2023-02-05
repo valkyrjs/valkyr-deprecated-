@@ -23,7 +23,7 @@ export type Block = Document<
       }
     | {
         type: "type";
-        data: BlockField[];
+        value: string;
       }
   )
 >;

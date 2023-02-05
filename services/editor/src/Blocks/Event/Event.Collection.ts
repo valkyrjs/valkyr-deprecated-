@@ -1,5 +1,4 @@
-import * as monaco from "monaco-editor";
-
+import { ModelManager } from "~Blocks/Model.Manager";
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
@@ -26,24 +25,14 @@ export async function createEventBlock({ name = "", data = [], meta = [] }: Even
  |--------------------------------------------------------------------------------
  */
 
-const models: monaco.editor.ITextModel[] = [];
+const models = new ModelManager();
 
 db.collection<EventBlock>("blocks").subscribe({ type: "event" }, {}, (events) => {
-  flushEventModels();
+  models.flush();
   for (const event of events) {
-    models.push(monaco.editor.createModel(getEventDataTypes(event), "typescript"));
+    models.add(getEventDataTypes(event));
   }
 });
-
-function flushEventModels() {
-  if (models.length > 0) {
-    const model = models.pop();
-    if (model !== undefined) {
-      model.dispose();
-      flushEventModels();
-    }
-  }
-}
 
 /*
  |--------------------------------------------------------------------------------

@@ -1,6 +1,5 @@
-import * as monaco from "monaco-editor";
-
 import { getFieldsType } from "~Blocks/BlockFields";
+import { ModelManager } from "~Blocks/Model.Manager";
 import { db } from "~Services/Database";
 
 import { StateBlock } from "../Block.Collection";
@@ -25,21 +24,11 @@ export async function createStateBlock({ name = "", data = [["name", "p:string"]
  |--------------------------------------------------------------------------------
  */
 
-const models: monaco.editor.ITextModel[] = [];
+const models = new ModelManager();
 
 db.collection<StateBlock>("blocks").subscribe({ type: "state" }, {}, (states) => {
-  flushStateModels();
+  models.flush();
   for (const state of states) {
-    models.push(monaco.editor.createModel(getFieldsType(state.name, state.data), "typescript"));
+    models.add(getFieldsType(state.name, state.data));
   }
 });
-
-function flushStateModels() {
-  if (models.length > 0) {
-    const model = models.pop();
-    if (model !== undefined) {
-      model.dispose();
-      flushStateModels();
-    }
-  }
-}
