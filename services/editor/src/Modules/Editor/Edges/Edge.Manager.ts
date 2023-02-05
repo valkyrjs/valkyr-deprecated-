@@ -5,7 +5,7 @@ import { db } from "~Services/Database";
 
 export const edges = new Subject<EdgeAction>();
 
-export class ConnectionManager {
+export class EdgeManager {
   #sourceNode?: Node;
   #inputNodes: Node[] = [];
   #outputNodes: Node[] = [];

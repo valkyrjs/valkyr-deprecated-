@@ -4,10 +4,10 @@ import { NodeProps } from "reactflow";
 import { ReducerBlock } from "~Blocks/Block.Collection";
 import { db } from "~Services/Database";
 
-import { ConnectionManager } from "../../Edges/ConnectionManager";
+import { EdgeManager } from "../../Edges/Edge.Manager";
 
 export class ReducerNodeController extends Controller<{}, NodeProps> {
-  #connectionManager = new ConnectionManager();
+  #edgeManager = new EdgeManager();
 
   async onInit() {
     this.subscriptions.set(
@@ -18,9 +18,9 @@ export class ReducerNodeController extends Controller<{}, NodeProps> {
 
   #connect = async (reducer?: ReducerBlock) => {
     if (reducer === undefined) {
-      return this.#connectionManager.destroy();
+      return this.#edgeManager.destroy();
     }
-    await this.#connectionManager.load({
+    await this.#edgeManager.load({
       root: reducer.id,
       inputs: {
         blockIds: reducer.events,

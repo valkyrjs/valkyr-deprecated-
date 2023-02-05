@@ -3,7 +3,7 @@ import { addEdge, applyNodeChanges, Connection, Edge, Node, NodeChange } from "r
 
 import { db } from "~Services/Database";
 
-import { edges } from "../Edges/ConnectionManager";
+import { edges } from "../Edges/Edge.Manager";
 import type { EditorNode } from "../Nodes/Node.Collection";
 import { setNodeConnection } from "../Nodes/Utilities/Node.Connect";
 import { setNodeDimensions } from "../Nodes/Utilities/Node.Dimensions";
