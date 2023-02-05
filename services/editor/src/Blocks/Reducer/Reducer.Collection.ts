@@ -7,13 +7,13 @@ import { format } from "~Services/Prettier";
 import { EventBlock, ReducerBlock, StateBlock } from "../Block.Collection";
 
 const defaultValue = format(`
-  async function reduce(state: State, event: EventRecord): Promise<State> {
+  api.reducer("State", (state, event) => {
     switch (event.type) {
       default: {
         return state;
       }
     }
-  };
+  });
 `);
 
 /*
