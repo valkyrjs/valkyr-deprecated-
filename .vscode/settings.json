@@ -60,6 +60,7 @@
     "tailwindcss",
     "tsbuildinfo",
     "valkyr",
+    "viewports",
     "zoomable"
   ]
 }

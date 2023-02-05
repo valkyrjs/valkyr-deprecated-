@@ -1,5 +1,5 @@
-import { IndexedDatabase } from "@valkyr/db";
-import type { Edge } from "reactflow";
+import { Document, IndexedDatabase } from "@valkyr/db";
+import type { Edge, Viewport } from "reactflow";
 
 import type { Block } from "~Blocks/Block.Collection";
 
@@ -7,6 +7,7 @@ import type { EditorNode } from "../Modules/Editor/Nodes/Node.Collection";
 
 export type Collections = {
   blocks: Block;
+  viewports: Document<Viewport>;
   nodes: EditorNode;
   edges: Edge;
 };
@@ -18,6 +19,9 @@ export const db = new IndexedDatabase<Collections>({
     {
       name: "blocks",
       indexes: [["type"], ["name", { unique: true }]]
+    },
+    {
+      name: "viewports"
     },
     {
       name: "nodes",

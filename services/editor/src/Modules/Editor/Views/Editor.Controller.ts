@@ -1,5 +1,5 @@
 import { Controller } from "@valkyr/react";
-import { addEdge, applyNodeChanges, Connection, Edge, Node, NodeChange } from "reactflow";
+import { addEdge, applyNodeChanges, Connection, Edge, Node, NodeChange, Viewport } from "reactflow";
 
 import { db } from "~Services/Database";
 
@@ -14,6 +14,7 @@ const edgeOptions = {
 };
 
 export class EditorController extends Controller<{
+  viewport?: Viewport;
   nodes: EditorNode[];
   edges: Edge[];
   asideOpen: boolean;
@@ -21,6 +22,7 @@ export class EditorController extends Controller<{
   async onInit() {
     this.#subscriberToEdges();
     return {
+      viewport: await db.collection("viewports").findOne({ id: "blocks" }),
       nodes: await this.query(db.collection("nodes"), {}, "nodes"),
       edges: [],
       asideOpen: false
@@ -73,6 +75,18 @@ export class EditorController extends Controller<{
 
   onNodePositionChanged(_: any, node: Node): void {
     setNodePosition(node);
+  }
+
+  onViewportChanged(_: any, viewport: Viewport): void {
+    db.collection("viewports")
+      .findOne({ id: "blocks" })
+      .then((document) => {
+        if (document === undefined) {
+          db.collection("viewports").insertOne({ id: "blocks", ...viewport });
+        } else {
+          db.collection("viewports").updateOne({ id: "blocks" }, { $set: viewport });
+        }
+      });
   }
 
   async onConnect(connection: Connection): Promise<void> {

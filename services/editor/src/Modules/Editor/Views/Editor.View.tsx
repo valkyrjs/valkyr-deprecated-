@@ -15,20 +15,22 @@ import { EditorController } from "./Editor.Controller";
 
 export const EditorView = EditorController.view(
   ({
-    state: { nodes, edges, asideOpen },
-    actions: { toggleAside, onNodesChange, onNodePositionChanged, onConnect }
+    state: { viewport, nodes, edges, asideOpen },
+    actions: { toggleAside, onNodesChange, onNodePositionChanged, onViewportChanged, onConnect }
   }) => {
     return (
       <>
         <div className="text-light bg-back h-screen w-full">
           <ReactFlow
             id="blocks"
+            defaultViewport={viewport}
             nodes={nodes}
             edges={edges}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             onNodesChange={onNodesChange}
             onNodeDragStop={onNodePositionChanged}
+            onMoveEnd={onViewportChanged}
             onConnect={onConnect}
             proOptions={{ hideAttribution: true }}
           >
