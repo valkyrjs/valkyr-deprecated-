@@ -10,8 +10,8 @@ export function StateNode({ data: { id } }: NodeProps) {
         id="state"
         className="h-3 w-2 bg-cyan-600"
         style={{
-          zIndex: 1,
-          left: -7
+          left: -7,
+          top: 50
         }}
         position={Position.Left}
       />
@@ -21,8 +21,8 @@ export function StateNode({ data: { id } }: NodeProps) {
         id="state"
         className="h-3 w-2 bg-pink-600"
         style={{
-          zIndex: 1,
-          right: -7
+          right: -7,
+          top: 50
         }}
         position={Position.Right}
       />

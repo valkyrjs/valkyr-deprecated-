@@ -4,10 +4,12 @@ import { NodeProps } from "reactflow";
 import { EventNode } from "./Components/EventNode.Component";
 import { ReducerNode } from "./Components/ReducerNode.Component";
 import { StateNode } from "./Components/StateNode.Component";
+import { ValidatorNode } from "./Components/ValidatorNode.Component";
 import { NodeType } from "./Utilities/Node.Types";
 
 export const nodeTypes: Record<NodeType, ComponentType<NodeProps>> = {
   event: EventNode,
   state: StateNode,
-  reducer: ReducerNode
+  reducer: ReducerNode,
+  validator: ValidatorNode
 };

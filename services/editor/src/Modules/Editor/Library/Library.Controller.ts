@@ -21,23 +21,28 @@ export class LibraryController extends Controller<{
           type: "event",
           description: "Events are things...",
           add: this.#buildAdd([
-            { type: "event", defaults: { name: "TaskAdded", data: [["name", "p:string"]], meta: [] } }
+            { type: "event", defaults: { name: "EventName", data: [["name", "p:string"]], meta: [] } }
           ])
         },
         {
           type: "reducer",
           description: "Reducers do things",
-          add: this.#buildAdd([{ type: "reducer", defaults: { name: "TaskReducer" } }])
+          add: this.#buildAdd([{ type: "reducer" }])
+        },
+        {
+          type: "validator",
+          description: "Validators validate things",
+          add: this.#buildAdd([{ type: "validator" }])
         },
         {
           type: "type",
           description: "Types are things...",
-          add: this.#buildAdd([{ type: "type", defaults: { name: "TaskState", data: [["done", "p:string"]] } }])
+          add: this.#buildAdd([{ type: "type" }])
         },
         {
           type: "state",
           description: "State are things...",
-          add: this.#buildAdd([{ type: "state", defaults: { name: "Task", data: [["name", "p:string"]] } }])
+          add: this.#buildAdd([{ type: "state", defaults: { name: "StateName", data: [["name", "p:string"]] } }])
         }
       ],
       templates: [
@@ -78,7 +83,7 @@ export class LibraryController extends Controller<{
 
 type BlockInsertion = {
   type: BlockType;
-  defaults: any;
+  defaults?: any;
 };
 
 type Block = {

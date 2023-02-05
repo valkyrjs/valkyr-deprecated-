@@ -23,15 +23,30 @@ export class ReducerNodeController extends Controller<{}, NodeProps> {
     await this.#edgeManager.load({
       root: reducer.id,
       inputs: {
-        blockIds: reducer.events,
+        blockIds: this.#getInputBlockIds(reducer.events),
         onRemove: this.#removeEvent
       },
       outputs: {
-        blockIds: reducer.state ? [reducer.state] : [],
+        blockIds: this.#getOutputBlockIds(reducer.state),
         onRemove: this.#removeState
       }
     });
   };
+
+  #getInputBlockIds(eventIds: string[]) {
+    const blockIds: Record<string, "events"> = {};
+    for (const eventId of eventIds) {
+      blockIds[eventId] = "events";
+    }
+    return blockIds;
+  }
+
+  #getOutputBlockIds(stateId?: string) {
+    if (stateId === undefined) {
+      return {};
+    }
+    return { [stateId]: "state" };
+  }
 
   #removeEvent = (id: string) => {
     db.collection("blocks").updateOne({ id: this.props.data.id }, { $pull: { events: id } });

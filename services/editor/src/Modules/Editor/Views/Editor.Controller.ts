@@ -90,10 +90,13 @@ export class EditorController extends Controller<{
   }
 
   async onConnect(connection: Connection): Promise<void> {
-    const { source, target } = connection;
+    const { source, sourceHandle, target, targetHandle } = connection;
     if (source === null || target === null) {
       return;
     }
-    setNodeConnection(source, target);
+    setNodeConnection(
+      { nodeId: source, handle: sourceHandle || undefined },
+      { nodeId: target, handle: targetHandle || undefined }
+    );
   }
 }

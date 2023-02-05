@@ -1,10 +1,10 @@
 import { Handle, Position } from "reactflow";
 
-import { ReducerBlock } from "~Blocks/Reducer/Reducer.Component";
+import { ValidatorBlock } from "~Blocks/Validator/Validator.Component";
 
-import { ReducerNodeController } from "./ReducerNode.Controller";
+import { ValidatorNodeController } from "./ValidatorNode.Controller";
 
-export const ReducerNode = ReducerNodeController.view(
+export const ValidatorNode = ValidatorNodeController.view(
   ({
     props: {
       data: { id }
@@ -14,7 +14,7 @@ export const ReducerNode = ReducerNodeController.view(
       <div className="relative">
         <Handle
           type="target"
-          id="events"
+          id="event"
           className="h-3 w-2 bg-orange-600"
           style={{
             left: -7,
@@ -22,17 +22,17 @@ export const ReducerNode = ReducerNodeController.view(
           }}
           position={Position.Left}
         />
-        <ReducerBlock id={id} />
         <Handle
-          type="source"
-          id="reducer"
-          className="h-3 w-2 bg-cyan-600"
+          type="target"
+          id="context"
+          className="h-3 w-2 bg-pink-600"
           style={{
-            right: -7,
-            top: 50
+            left: -7,
+            top: 70
           }}
-          position={Position.Right}
+          position={Position.Left}
         />
+        <ValidatorBlock id={id} />
       </div>
     );
   }

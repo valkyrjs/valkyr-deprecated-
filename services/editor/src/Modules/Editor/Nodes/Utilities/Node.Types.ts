@@ -3,4 +3,4 @@ export type ConnectionParams = {
   id: string;
 };
 
-export type NodeType = "event" | "state" | "reducer";
+export type NodeType = "event" | "state" | "reducer" | "validator";

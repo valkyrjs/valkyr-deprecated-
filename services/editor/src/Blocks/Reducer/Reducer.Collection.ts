@@ -21,7 +21,11 @@ const defaultValue = format(`
  |--------------------------------------------------------------------------------
  */
 
-export async function createReducerBlock({ value = defaultValue, events = [], state }: ReducerBlock): Promise<string> {
+export async function createReducerBlock({
+  value = defaultValue,
+  events = [],
+  state
+}: Partial<ReducerBlock> = {}): Promise<string> {
   const result = await db
     .collection<ReducerBlock>("blocks")
     .insertOne({ type: "reducer", name: crypto.randomUUID(), value, events, state });

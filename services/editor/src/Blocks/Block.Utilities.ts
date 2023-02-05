@@ -3,6 +3,7 @@ import { createEventBlock } from "./Event/Event.Collection";
 import { createReducerBlock } from "./Reducer/Reducer.Collection";
 import { createStateBlock } from "./State/State.Collection";
 import { createTypeBlock } from "./Type/Type.Collection";
+import { createValidatorBlock } from "./Validator/Validator.Collection";
 
 export async function addBlock(type: BlockType, data: any): Promise<string> {
   switch (type) {
@@ -17,6 +18,9 @@ export async function addBlock(type: BlockType, data: any): Promise<string> {
     }
     case "reducer": {
       return createReducerBlock(data);
+    }
+    case "validator": {
+      return createValidatorBlock(data);
     }
     default: {
       throw new Error(`Unknown node type: ${type}`);
@@ -36,6 +40,7 @@ export function getColors(sourceType: BlockType) {
         borderHover: "hover:border-orange-400"
       };
     }
+    case "validator":
     case "reducer": {
       return {
         stroke: "stroke-cyan-600",

@@ -93,22 +93,56 @@ const eventRecord = `
   };
 `;
 
+const validator = `
+  class Validator<Record extends EventRecord> {
+    constructor();
+
+    /**
+     * Validate a event before its committed to the event store. Throwing an error results
+     * in invalidation, otherwise the event is committed.
+     *
+     * @param record - Event record to validate.
+     */
+    validate(record: Record): Promise<boolean>;
+
+    /**
+     * Register a validation handler for a specific event type used to validate the event
+     * before its committed to the event store. Throwing an error results in invalidation,
+     * otherwise the event is committed.
+     *
+     * @param type    - Event type to register the validation handler for.
+     * @param handler - Validation handler to register.
+     *
+     * @returns function to unregister the validation handler.
+     */
+    on<T extends Record["type"], R extends Record = Extract<Record, {
+        type: T;
+    }>>(type: T, handler: ValidationHandler<R>): () => void;
+
+    /**
+     * Unregister a validation handler for a specific event type.
+     *
+     * @param type    - Event type to unregister the validation handler for.
+     * @param handler - Validation handler to unregister.
+     */
+    off<T extends Record["type"], R extends Record = Extract<Record, {
+        type: T;
+    }>>(type: T, handler: ValidationHandler<R>): void;
+  }
+
+  type ValidationHandler<Record extends EventRecord> = (record: Record, context: Contexts[Record["type"]]) => Promise<void>;
+`;
+
 const empty = `
   type Empty = Record<string, never>;
 `;
 
 export function getLedgerModel(): string {
   return `
-    ${ledger.event}
-    ${ledger.eventStatus}
-    ${ledger.eventRecord}
-    ${ledger.empty}
+    ${event}
+    ${eventStatus}
+    ${eventRecord}
+    ${validator}
+    ${empty}
   `;
 }
-
-export const ledger = {
-  event,
-  eventStatus,
-  eventRecord,
-  empty
-};

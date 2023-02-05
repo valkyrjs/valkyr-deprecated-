@@ -10,8 +10,8 @@ export function EventNode({ data: { id } }: NodeProps) {
         type="source"
         className="h-3 w-2 bg-orange-600"
         style={{
-          zIndex: 1,
-          right: -7
+          right: -7,
+          top: 50
         }}
         position={Position.Right}
       />

@@ -40,8 +40,12 @@ export class EdgeManager {
   async load(settings: ConnectionSettings) {
     this.destroy();
     await this.#setRootBlock(settings.root);
-    await this.#setInputBlocks(settings.inputs.blockIds, settings.inputs.onRemove);
-    await this.#setOutputBlocks(settings.outputs.blockIds, settings.outputs.onRemove);
+    if (settings.inputs !== undefined) {
+      await this.#setInputBlocks(settings.inputs.blockIds, settings.inputs.onRemove);
+    }
+    if (settings.outputs !== undefined) {
+      await this.#setOutputBlocks(settings.outputs.blockIds, settings.outputs.onRemove);
+    }
   }
 
   async #setRootBlock(blockId: string): Promise<this> {
@@ -53,20 +57,20 @@ export class EdgeManager {
     return this;
   }
 
-  async #setInputBlocks(blockIds: string[], onRemove: OnRemove): Promise<this> {
-    this.#inputNodes = await db.collection("nodes").find({ "data.id": { $in: blockIds } });
+  async #setInputBlocks(blockIds: BlockIds, onRemove: OnRemove): Promise<this> {
+    this.#inputNodes = await db.collection("nodes").find({ "data.id": { $in: Object.keys(blockIds) } });
     for (const node of this.#inputNodes) {
-      this.#addEdge(node, this.sourceNode, () => {
+      this.#addEdge(node, this.sourceNode, blockIds[node.data.id], () => {
         onRemove(node.data.id);
       });
     }
     return this;
   }
 
-  async #setOutputBlocks(blockIds: string[], onRemove: OnRemove): Promise<this> {
-    this.#outputNodes = await db.collection("nodes").find({ "data.id": { $in: blockIds } });
+  async #setOutputBlocks(blockIds: BlockIds, onRemove: OnRemove): Promise<this> {
+    this.#outputNodes = await db.collection("nodes").find({ "data.id": { $in: Object.keys(blockIds) } });
     for (const node of this.#outputNodes) {
-      this.#addEdge(this.sourceNode, node, () => {
+      this.#addEdge(this.sourceNode, node, blockIds[node.data.id], () => {
         onRemove(node.data.id);
       });
     }
@@ -79,13 +83,14 @@ export class EdgeManager {
    |--------------------------------------------------------------------------------
    */
 
-  async #addEdge(sourceNode: Node, targetNode: Node, onRemove: () => void) {
+  async #addEdge(sourceNode: Node, targetNode: Node, targetHandle: string | undefined, onRemove: () => void) {
     edges.next({
       type: "add",
       edge: {
         id: `${sourceNode.id}-${targetNode.id}`,
         source: sourceNode.id,
         target: targetNode.id,
+        targetHandle,
         type: "block",
         data: {
           sourceType: sourceNode.type,
@@ -135,13 +140,15 @@ type EdgeData = {
 
 type ConnectionSettings = {
   root: string;
-  inputs: Connections;
-  outputs: Connections;
+  inputs?: Connections;
+  outputs?: Connections;
 };
 
 type Connections = {
-  blockIds: string[];
+  blockIds: BlockIds;
   onRemove: OnRemove;
 };
+
+type BlockIds = Record<string, string | undefined>;
 
 type OnRemove = (id: string) => Promise<void> | void;

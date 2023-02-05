@@ -29,8 +29,13 @@ const models = new ModelManager();
 
 db.collection<EventBlock>("blocks").subscribe({ type: "event" }, {}, (events) => {
   models.flush();
+  const eventNames: string[] = [];
   for (const event of events) {
     models.add(getEventDataTypes(event));
+    eventNames.push(event.name);
+  }
+  if (eventNames.length > 0) {
+    models.add(`type EventRecord = ${getEventNamesRecord(eventNames)}`);
   }
 });
 
