@@ -3,6 +3,7 @@ import { Query } from "mingo";
 import type { AnyVal, RawObject } from "mingo/types";
 
 import { crypto } from "../Crypto";
+import { DBLogger, InsertLog, QueryLog, RemoveLog, ReplaceLog, UpdateLog } from "../Logger";
 import {
   addOptions,
   Document,
@@ -31,7 +32,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
 
   #db?: IDBPDatabase;
 
-  constructor(name: string, promise: Promise<IDBPDatabase>, readonly log: (message: string) => void) {
+  constructor(name: string, promise: Promise<IDBPDatabase>, readonly log: DBLogger) {
     super(name);
     this.#promise = promise;
   }
@@ -65,7 +66,8 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    */
 
   async insertOne(data: PartialDocument<D>): Promise<InsertOneResult> {
-    const t0 = performance.now();
+    const logger = new InsertLog(this.name);
+
     const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
     if (await this.has(document.id)) {
       throw new DuplicateDocumentError(document, this);
@@ -73,17 +75,17 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     await this.db.transaction(this.name, "readwrite", { durability: "relaxed" }).store.add(document);
 
     this.broadcast("insertOne", document);
-    this.log(`@valkyr/db > 1 ${this.name} inserted in ${(performance.now() - t0).toFixed(2)} milliseconds`);
-
     this.#cache.flush();
+
+    this.log(logger.result());
 
     return getInsertOneResult(document);
   }
 
   async insertMany(data: PartialDocument<D>[]): Promise<InsertManyResult> {
-    const documents: D[] = [];
+    const logger = new InsertLog(this.name);
 
-    const t0 = performance.now();
+    const documents: D[] = [];
 
     const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
     await Promise.all(
@@ -96,11 +98,9 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     await tx.done;
 
     this.broadcast("insertMany", documents);
-    this.log(
-      `@valkyr/db > ${documents.length} ${this.name} inserted in ${(performance.now() - t0).toFixed(2)} milliseconds`
-    );
-
     this.#cache.flush();
+
+    this.log(logger.result());
 
     return getInsertManyResult(documents);
   }
@@ -116,16 +116,12 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
   }
 
   async find(criteria: RawObject, options: Options = {}): Promise<D[]> {
-    const hashCode = this.#cache.hash(criteria, options);
+    const logger = new QueryLog(this.name, { criteria, options });
 
-    const t0 = performance.now();
+    const hashCode = this.#cache.hash(criteria, options);
     const cached = this.#cache.get(hashCode);
     if (cached !== undefined) {
-      this.log(
-        `@valkyr/db > ${cached.length} [cached] ${this.name} found in ${(performance.now() - t0).toFixed(
-          2
-        )} milliseconds`
-      );
+      this.log(logger.result({ cached: true }));
       return cached;
     }
 
@@ -134,11 +130,12 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     if (options !== undefined) {
       cursor = addOptions(cursor, options);
     }
+
     const documents = cursor.all() as D[];
-    this.log(
-      `@valkyr/db > ${documents.length} ${this.name} found in ${(performance.now() - t0).toFixed(2)} milliseconds`
-    );
     this.#cache.set(this.#cache.hash(criteria, options), documents);
+
+    this.log(logger.result());
+
     return documents;
   }
 
@@ -243,12 +240,13 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
   }
 
   async updateMany(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
+    const logger = new UpdateLog(this.name, { criteria, operators });
+
     const ids = await this.find(criteria).then((data) => data.map((d) => d.id));
 
     const documents: D[] = [];
     let modifiedCount = 0;
 
-    const t0 = performance.now();
     const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
     await Promise.all(
       ids.map((id) =>
@@ -268,18 +266,17 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
 
     await tx.done;
 
-    this.log(
-      `@valkyr/db > ${modifiedCount} ${this.name} updated in ${(performance.now() - t0).toFixed(2)} milliseconds`
-    );
     this.broadcast("updateMany", documents);
-
     this.#cache.flush();
+
+    this.log(logger.result());
 
     return new UpdateResult(ids.length, modifiedCount);
   }
 
   async replace(criteria: RawObject, document: D): Promise<UpdateResult> {
-    const t0 = performance.now();
+    const logger = new ReplaceLog(this.name, document);
+
     const ids = await this.find(criteria).then((data) => data.map((d) => d.id));
 
     const documents: D[] = [];
@@ -296,15 +293,16 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     await tx.done;
 
     this.broadcast("updateMany", documents);
-    this.log(`@valkyr/db > ${count} ${this.name} replaced in ${(performance.now() - t0).toFixed(2)} milliseconds`);
-
     this.#cache.flush();
+
+    this.log(logger.result({ count }));
 
     return new UpdateResult(count, count);
   }
 
   async #update(id: string, criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
-    const t0 = performance.now();
+    const logger = new UpdateLog(this.name, { id, criteria, operators });
+
     const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
 
     const current = await tx.store.get(id);
@@ -321,7 +319,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
 
     if (modified === true) {
       this.broadcast("updateOne", document);
-      this.log(`@valkyr/db > 1 ${this.name} updated in ${(performance.now() - t0).toFixed(2)} milliseconds`);
+      this.log(logger.result());
       this.#cache.flush();
       return new UpdateResult(1, 1);
     }
@@ -336,7 +334,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    */
 
   async remove(criteria: RawObject): Promise<RemoveResult> {
-    const t0 = performance.now();
+    const logger = new RemoveLog(this.name, { criteria });
 
     const documents = await this.find(criteria);
     const tx = this.db.transaction(this.name, "readwrite");
@@ -345,11 +343,9 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     await tx.done;
 
     this.broadcast("remove", documents);
-    this.log(
-      `@valkyr/db > ${documents.length} ${this.name} removed in ${(performance.now() - t0).toFixed(2)} milliseconds`
-    );
-
     this.#cache.flush();
+
+    this.log(logger.result({ count: documents.length }));
 
     return new RemoveResult(documents.length);
   }

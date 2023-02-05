@@ -48,6 +48,7 @@
     "fastify",
     "headlessui",
     "IDBP",
+    "indexeddb",
     "kodemon",
     "mingo",
     "nestjs",

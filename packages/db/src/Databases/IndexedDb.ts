@@ -1,6 +1,7 @@
 import { IDBPDatabase, openDB } from "idb/with-async-ittr";
 
 import { Collection } from "../Collection";
+import { DBLogger } from "../Logger";
 import { Document } from "../Storage";
 import { IndexedDbStorage } from "./IndexedDb.Storage";
 import { Registrars } from "./Registrars";
@@ -13,7 +14,7 @@ type Options = {
   name: string;
   version?: number;
   registrars: Registrars[];
-  log?: (message: string) => void;
+  log?: DBLogger;
 };
 
 export class IndexedDatabase<T extends StringRecord<Document>> {

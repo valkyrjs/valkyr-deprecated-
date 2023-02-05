@@ -5,7 +5,7 @@ import { closeModal } from "~Components/Modal";
 
 import { nodeTypes } from "../Nodes";
 import { addEditorNode } from "../Nodes/Node.Collection";
-import { NodeType } from "../Nodes/Node.Types";
+import { NodeType } from "../Nodes/Utilities/Node.Types";
 
 export class LibraryController extends Controller<{
   isOpen: boolean;

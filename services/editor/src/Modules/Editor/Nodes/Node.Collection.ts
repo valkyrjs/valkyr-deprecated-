@@ -2,7 +2,7 @@ import { Node } from "reactflow";
 
 import { db } from "~Services/Database";
 
-import { NodeType } from "./Node.Types";
+import { NodeType } from "./Utilities/Node.Types";
 
 export type EditorNode = Node<{
   id: string;

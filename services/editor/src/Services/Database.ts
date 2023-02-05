@@ -28,7 +28,11 @@ export const db = new IndexedDatabase<Collections>({
       indexes: [["type"]]
     }
   ],
-  log: console.log
+  log: (event) => {
+    if (event.type !== "query") {
+      console.log(event);
+    }
+  }
 });
 
 /*
