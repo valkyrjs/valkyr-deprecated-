@@ -1,9 +1,9 @@
 import { Disclosure } from "@headlessui/react";
 
-import { BlockHeader } from "~Components/BlockHeader";
 import { CodeEditor } from "~Components/CodeEditor";
 
 import { ReducerNodeController } from "./Reducer.Controller";
+import { ReducerHeader } from "./ReducerHeader.Component";
 
 export const ReducerBlock = ReducerNodeController.view(({ state: { block }, actions: { onChange, onRemove } }) => {
   if (block === undefined) {
@@ -14,7 +14,7 @@ export const ReducerBlock = ReducerNodeController.view(({ state: { block }, acti
       <Disclosure defaultOpen={true}>
         {({ open }) => (
           <div className="bg-darker border-darker-800 min-w-[390px] rounded-sm border font-mono text-xs">
-            <BlockHeader open={open} color="cyan" symbol="R" content={"Reducer"} onRemove={onRemove} />
+            <ReducerHeader stateId={block.state} open={open} onRemove={onRemove} />
             <Disclosure.Panel>
               <div
                 className="border-b-darker-800 border-b"
