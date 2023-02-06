@@ -51,8 +51,11 @@ export class LibraryController extends Controller<{
           description: "Obligatory Todo Sample",
           add: async () => {
             const e1 = await addBlock("event", { name: "TaskAdded", data: [["name", "p:string"]], meta: [] });
+            await addEditorNode("event", e1);
             const e2 = await addBlock("event", { name: "TaskStateChanged", data: [["state", "p:boolean"]], meta: [] });
+            await addEditorNode("event", e2);
             const e3 = await addBlock("event", { name: "TaskDeleted", data: [], meta: [] });
+            await addEditorNode("event", e3);
             const s1 = await addBlock("state", {
               name: "Task",
               data: [
@@ -60,7 +63,9 @@ export class LibraryController extends Controller<{
                 ["state", "p:string"]
               ]
             });
-            await addBlock("reducer", { name: "TaskReducer", events: [e1, e2, e3], state: s1 });
+            await addEditorNode("state", s1);
+            const r1 = await addBlock("reducer", { name: "TaskReducer", events: [e1, e2, e3], state: s1 });
+            await addEditorNode("reducer", r1);
             closeModal();
           }
         }
