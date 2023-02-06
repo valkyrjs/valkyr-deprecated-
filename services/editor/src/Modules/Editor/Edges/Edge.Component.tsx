@@ -50,7 +50,7 @@ export function BlockEdge({
         className="edgebutton-foreignobject flex flex-row items-center justify-center"
         requiredExtensions="http://www.w3.org/1999/xhtml"
       >
-        <div className="hidden group-hover:block">
+        <div className="scale-0 transition-all duration-200 group-hover:scale-100">
           <button
             className={`edgebutton ${colors.bg} ${colors.bgHover} ${colors.border} ${colors.borderHover} flex h-6 w-6 flex-row items-center justify-center rounded-full border text-white`}
             onClick={() => data.onRemove?.()}
