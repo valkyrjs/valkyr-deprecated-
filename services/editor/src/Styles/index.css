@@ -66,15 +66,12 @@ body {
     }
   }
 
-  .react-flow__edge {
-    .react-flow__edge-path {
-      @apply stroke-darker-800;
-      @apply stroke-2;
-    }
-    &:hover {
-      .react-flow__edge-path {
-        @apply stroke-darker-600;
-      }
+  .react-flow__edge-path {
+    &.react-flow__edge-path_hitarea {
+      @apply stroke-transparent;
+      @apply animate-none;
+      stroke-dasharray: none;
+      stroke-width: 50;      
     }
   }
 

@@ -27,7 +27,14 @@ export function BlockEdge({
   });
   const colors = getColors(data.sourceType);
   return (
-    <>
+    <g className="group">
+      <path
+        id={`${id}-hitarea`}
+        style={style}
+        className={`react-flow__edge-path react-flow__edge-path_hitarea`}
+        d={edgePath}
+        markerEnd={markerEnd}
+      />
       <path
         id={id}
         style={style}
@@ -43,7 +50,7 @@ export function BlockEdge({
         className="edgebutton-foreignobject flex flex-row items-center justify-center"
         requiredExtensions="http://www.w3.org/1999/xhtml"
       >
-        <div>
+        <div className="hidden group-hover:block">
           <button
             className={`edgebutton ${colors.bg} ${colors.bgHover} ${colors.border} ${colors.borderHover} flex h-6 w-6 flex-row items-center justify-center rounded-full border text-white`}
             onClick={() => data.onRemove?.()}
@@ -52,6 +59,6 @@ export function BlockEdge({
           </button>
         </div>
       </foreignObject>
-    </>
+    </g>
   );
 }
