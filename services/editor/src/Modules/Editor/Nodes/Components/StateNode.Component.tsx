@@ -5,27 +5,13 @@ import { StateBlock } from "~Blocks/State/State.Component";
 export function StateNode({ data: { id } }: NodeProps) {
   return (
     <div className="relative">
-      <Handle
-        type="target"
-        id="state"
-        className="h-3 w-2 bg-cyan-600"
-        style={{
-          left: -7,
-          top: 50
-        }}
-        position={Position.Left}
-      />
+      <div className="absolute top-1/2 -left-2 flex h-9 -translate-y-1/2 flex-col justify-center gap-1">
+        <Handle type="target" id="state" className="h-3 w-2 bg-cyan-600" position={Position.Left} />
+      </div>
       <StateBlock id={id} />
-      <Handle
-        type="source"
-        id="state"
-        className="h-3 w-2 bg-pink-600"
-        style={{
-          right: -7,
-          top: 50
-        }}
-        position={Position.Right}
-      />
+      <div className="absolute top-1/2 -right-2 flex h-9 -translate-y-1/2 flex-col justify-center gap-1">
+        <Handle type="source" id="state" className="h-3 w-2 bg-pink-600" position={Position.Right} />
+      </div>
     </div>
   );
 }

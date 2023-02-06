@@ -20,21 +20,19 @@ body {
 #blocks,
 #settings {
   .react-flow__handle-right {
-    @apply top-1/2;
-    @apply -translate-y-1/2;
-    @apply h-full;
-    @apply -right-5;
-    @apply w-5;
+    @apply relative;
+    @apply top-auto;
+    @apply right-auto;
+    @apply transform-none;
     @apply rounded-none;
     @apply rounded-r-md;
     @apply border-0;
   }
   .react-flow__handle-left {
-    @apply top-1/2;
-    @apply -translate-y-1/2;
-    @apply h-full;
-    @apply -left-5;
-    @apply w-5;
+    @apply relative;
+    @apply top-auto;
+    @apply left-auto;
+    @apply transform-none;
     @apply rounded-none;
     @apply rounded-l-md;
     @apply border-0;
