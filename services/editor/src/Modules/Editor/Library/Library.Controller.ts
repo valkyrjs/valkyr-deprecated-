@@ -11,6 +11,7 @@ import { NodeType } from "../Nodes/Utilities/Node.Types";
 export class LibraryController extends Controller<{
   isOpen: boolean;
   blocks: Block[];
+  services: Block[];
   templates: Template[];
 }> {
   async onInit() {
@@ -43,6 +44,13 @@ export class LibraryController extends Controller<{
           type: "state",
           description: "State are things...",
           add: this.#buildAdd([{ type: "state", defaults: { name: "StateName", data: [["name", "p:string"]] } }])
+        }
+      ],
+      services: [
+        {
+          type: "database",
+          description: "Database store stuff...",
+          add: this.#buildAdd([{ type: "database" }])
         }
       ],
       templates: [

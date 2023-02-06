@@ -1,8 +1,9 @@
 import { ModelManager } from "~Blocks/Model.Manager";
+import { toCamelCase } from "~Services/Casing";
 import { db } from "~Services/Database";
 import { format } from "~Services/Prettier";
 
-import { BlockContext, EventBlock, ValidatorBlock } from "../Block.Collection";
+import { EventBlock, ValidatorBlock } from "../Block.Collection";
 
 const defaultValue = format(`
   api.validator.on("Event", async (event, context) => {
@@ -56,10 +57,11 @@ async function registerValidatorContextInterface(validator: ValidatorBlock): Pro
   `);
 }
 
-async function getValidatorContext(contexts: BlockContext[]): Promise<string> {
+async function getValidatorContext(contexts: string[]): Promise<string> {
+  const blocks = await db.collection("blocks").find({ id: { $in: contexts } });
   const output: string[] = [];
-  for (const { key, value } of contexts) {
-    output.push(`${key}: ${value};`);
+  for (const { name } of blocks) {
+    output.push(`${toCamelCase(name)}: ${name};`);
   }
   return output.join("\n");
 }

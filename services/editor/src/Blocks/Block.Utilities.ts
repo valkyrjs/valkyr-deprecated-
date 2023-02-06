@@ -1,4 +1,5 @@
 import { BlockType } from "./Block.Collection";
+import { createDatabaseBlock } from "./Database/Database.Collection";
 import { createEventBlock } from "./Event/Event.Collection";
 import { createReducerBlock } from "./Reducer/Reducer.Collection";
 import { createStateBlock } from "./State/State.Collection";
@@ -7,6 +8,9 @@ import { createValidatorBlock } from "./Validator/Validator.Collection";
 
 export async function addBlock(type: BlockType, data: any): Promise<string> {
   switch (type) {
+    case "database": {
+      return createDatabaseBlock(data);
+    }
     case "type": {
       return createTypeBlock(data);
     }
@@ -30,6 +34,16 @@ export async function addBlock(type: BlockType, data: any): Promise<string> {
 
 export function getColors(sourceType: BlockType) {
   switch (sourceType) {
+    case "database": {
+      return {
+        stroke: "stroke-green-600",
+        strokeHover: "hover:stroke-green-400",
+        bg: "bg-green-600",
+        bgHover: "hover:bg-green-400",
+        border: "border-green-600",
+        borderHover: "hover:border-green-400"
+      };
+    }
     case "event": {
       return {
         stroke: "stroke-orange-600",

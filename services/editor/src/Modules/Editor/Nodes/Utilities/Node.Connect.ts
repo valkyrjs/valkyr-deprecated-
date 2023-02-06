@@ -89,11 +89,7 @@ async function connectValidatorContext(sourceNode: Node, targetNode: Node): Prom
     { id: targetNode.data.id },
     {
       $push: {
-        context: {
-          blockId: sourceNode.data.id,
-          key: sourceNode.type,
-          value: block.name
-        }
+        context: sourceNode.data.id
       }
     }
   );

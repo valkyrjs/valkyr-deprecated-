@@ -7,6 +7,10 @@ export type Block = Document<
     name: string;
   } & (
     | {
+        type: "database";
+        config: DatabaseConfig;
+      }
+    | {
         type: "event";
         data: BlockField[];
         meta: BlockField[];
@@ -25,7 +29,7 @@ export type Block = Document<
         type: "validator";
         value: string;
         event?: string;
-        context: BlockContext[];
+        context: string[];
       }
     | {
         type: "type";
@@ -34,17 +38,17 @@ export type Block = Document<
   )
 >;
 
-export type BlockContext = {
-  blockId: string;
-  key: string;
-  value: string;
-  settings?: Record<string, any>;
-};
-
 export type BlockType = Block["type"];
 
+export type DatabaseBlock = Extract<Block, { type: "database" }>;
 export type EventBlock = Extract<Block, { type: "event" }>;
 export type ReducerBlock = Extract<Block, { type: "reducer" }>;
 export type StateBlock = Extract<Block, { type: "state" }>;
 export type ValidatorBlock = Extract<Block, { type: "validator" }>;
 export type TypeBlock = Extract<Block, { type: "type" }>;
+
+export type DatabaseConfig = {
+  provider: "mongo";
+  database: string;
+  endpoint: string;
+};

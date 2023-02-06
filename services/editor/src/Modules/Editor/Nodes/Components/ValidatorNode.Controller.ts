@@ -21,7 +21,7 @@ export class ValidatorNodeController extends Controller<{}, NodeProps> {
       return this.#edgeManager.destroy();
     }
     const blockIds: Record<string, "context" | "event"> = {};
-    for (const { blockId } of validator.context) {
+    for (const blockId of validator.context) {
       blockIds[blockId] = "context";
     }
     if (validator.event !== undefined) {
@@ -31,7 +31,16 @@ export class ValidatorNodeController extends Controller<{}, NodeProps> {
       root: validator.id,
       inputs: {
         blockIds,
-        onRemove: () => {}
+        onRemove: (blockId, nodeType) => {
+          if (nodeType === "event") {
+            db.collection<ValidatorBlock>("blocks").updateOne({ id: validator.id }, { $unset: { event: undefined } });
+          } else {
+            db.collection<ValidatorBlock>("blocks").updateOne(
+              { id: validator.id },
+              { $pull: { context: { blockId } } }
+            );
+          }
+        }
       }
     });
   };

@@ -61,7 +61,7 @@ export class EdgeManager {
     this.#inputNodes = await db.collection("nodes").find({ "data.id": { $in: Object.keys(blockIds) } });
     for (const node of this.#inputNodes) {
       this.#addEdge(node, this.sourceNode, blockIds[node.data.id], () => {
-        onRemove(node.data.id);
+        onRemove(node.data.id, node.type);
       });
     }
     return this;
@@ -71,7 +71,7 @@ export class EdgeManager {
     this.#outputNodes = await db.collection("nodes").find({ "data.id": { $in: Object.keys(blockIds) } });
     for (const node of this.#outputNodes) {
       this.#addEdge(this.sourceNode, node, blockIds[node.data.id], () => {
-        onRemove(node.data.id);
+        onRemove(node.data.id, node.type);
       });
     }
     return this;
@@ -151,4 +151,4 @@ type Connections = {
 
 type BlockIds = Record<string, string | undefined>;
 
-type OnRemove = (id: string) => Promise<void> | void;
+type OnRemove = (blockId: string, nodeType?: string) => Promise<void> | void;
