@@ -1,9 +1,12 @@
 import { Node } from "reactflow";
 
 import { EventBlock, ReducerBlock, ValidatorBlock } from "~Blocks/Block.Collection";
+import { addEdge } from "~ReactFlow/Data/Edge.Collection";
 import { db } from "~Services/Database";
 
-type Connection = {
+import { NodeType } from "./Node.Types";
+
+export type Connection = {
   nodeId: string;
   handle?: string;
 };
@@ -23,29 +26,40 @@ export async function setNodeConnection(source: Connection, target: Connection):
 
   switch (targetNode.type) {
     case "reducer": {
-      return connectReducerEvent(sourceNode, targetNode);
+      await connectReducerEvent(source, sourceNode, target, targetNode);
+      break;
     }
     case "state": {
-      return connectStateReducer(sourceNode, targetNode);
+      await connectStateReducer(sourceNode, targetNode);
+      break;
     }
     case "validator": {
       if (target.handle === "event") {
-        return connectValidatorEvent(sourceNode, targetNode);
+        await connectValidatorEvent(sourceNode, targetNode);
+        break;
       }
       if (target.handle === "context") {
-        return connectValidatorContext(sourceNode, targetNode);
+        await connectValidatorContext(sourceNode, targetNode);
+        break;
       }
       throw new Error(`No handler found for validator handle ${target.handle}`);
     }
   }
+
+  await addEdge(sourceNode.type as NodeType, source, target);
 }
 
-async function connectReducerEvent(sourceNode: Node, targetNode: Node): Promise<void> {
+async function connectReducerEvent(
+  source: Connection,
+  sourceNode: Node,
+  target: Connection,
+  targetNode: Node
+): Promise<void> {
   console.log({ connect: "eventToReducer", sourceNode, targetNode });
   if (sourceNode.type !== "event") {
     throw new Error("Source node is not an event");
   }
-  await db.collection<ReducerBlock>("blocks").updateOne(
+  const result = await db.collection<ReducerBlock>("blocks").updateOne(
     { id: targetNode.data.blockId },
     {
       $push: {
@@ -53,6 +67,9 @@ async function connectReducerEvent(sourceNode: Node, targetNode: Node): Promise<
       }
     }
   );
+  if (result.matched > 0 && result.modified > 0) {
+    await addEdge("event", source, target);
+  }
 }
 
 async function connectStateReducer(sourceNode: Node, targetNode: Node): Promise<void> {

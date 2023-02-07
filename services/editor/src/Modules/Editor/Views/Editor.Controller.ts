@@ -1,17 +1,11 @@
 import { Controller } from "@valkyr/react";
-import { addEdge, applyNodeChanges, Connection, Edge, Node, NodeChange, Viewport } from "reactflow";
+import { applyNodeChanges, Connection, Edge, Node, NodeChange, Viewport } from "reactflow";
 
 import { NodeDocument } from "~ReactFlow/Data/Node.Collection";
 import { setNodeConnection } from "~ReactFlow/Nodes/Node.Connect";
 import { setNodeDimensions } from "~ReactFlow/Nodes/Node.Dimensions";
 import { setNodePosition } from "~ReactFlow/Nodes/Node.Position";
 import { db } from "~Services/Database";
-
-import { edges } from "../../../ReactFlow/Edges/Edge.Manager";
-
-const edgeOptions = {
-  animated: true
-};
 
 export class EditorController extends Controller<{
   viewport?: Viewport;
@@ -20,38 +14,12 @@ export class EditorController extends Controller<{
   asideOpen: boolean;
 }> {
   async onInit() {
-    this.#subscriberToEdges();
     return {
       viewport: await db.collection("viewports").findOne({ id: "blocks" }),
       nodes: await this.query(db.collection("nodes"), {}, "nodes"),
-      edges: [],
+      edges: await this.query(db.collection("edges"), {}, "edges"),
       asideOpen: false
     };
-  }
-
-  #subscriberToEdges() {
-    this.subscribe(edges, async (action) => {
-      switch (action.type) {
-        case "add": {
-          return this.setState(
-            "edges",
-            addEdge(
-              {
-                ...action.edge,
-                ...edgeOptions
-              },
-              this.state.edges
-            )
-          );
-        }
-        case "remove": {
-          return this.setState(
-            "edges",
-            this.state.edges.filter((edge) => edge.id !== action.id)
-          );
-        }
-      }
-    });
   }
 
   toggleAside(state: boolean) {
