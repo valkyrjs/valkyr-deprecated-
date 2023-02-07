@@ -11,8 +11,8 @@
       "~Blocks/*": ["./src/Blocks/*"],
       "~Components/*": ["./src/Components/*"],
       "~Middleware/*": ["./src/Middleware/*"],
-      "~Services/*": ["./src/Services/*"],
-      "~Stores/*": ["./src/Stores/*"]
+      "~ReactFlow/*": ["./src/ReactFlow/*"],
+      "~Services/*": ["./src/Services/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

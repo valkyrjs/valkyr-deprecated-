@@ -1,16 +1,9 @@
-import { Document, IndexedDatabase } from "@valkyr/db";
-import type { Edge, Viewport } from "reactflow";
+import { IndexedDatabase } from "@valkyr/db";
 
-import type { Block } from "~Blocks/Block.Collection";
-
-import type { EditorNode } from "../Modules/Editor/Nodes/Node.Collection";
-
-export type Collections = {
-  blocks: Block;
-  viewports: Document<Viewport>;
-  nodes: EditorNode;
-  edges: Edge;
-};
+import type { BlockDocument } from "~Blocks/Block.Collection";
+import type { EdgeDocument } from "~ReactFlow/Data/Edge.Collection";
+import type { NodeDocument } from "~ReactFlow/Data/Node.Collection";
+import type { ViewportDocument } from "~ReactFlow/Data/Viewport.Collection";
 
 export const db = new IndexedDatabase<Collections>({
   name: "valkyr:editor",
@@ -38,6 +31,19 @@ export const db = new IndexedDatabase<Collections>({
     }
   }
 });
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type Collections = {
+  blocks: BlockDocument;
+  viewports: ViewportDocument;
+  nodes: NodeDocument;
+  edges: EdgeDocument;
+};
 
 /*
  |--------------------------------------------------------------------------------

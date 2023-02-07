@@ -4,12 +4,12 @@ import { CaretDoubleLeft, Plus } from "phosphor-react";
 import ReactFlow, { Background, Controls, MiniMap, Panel } from "reactflow";
 
 import { Button } from "~Components/Button";
+import { openLibraryModal } from "~Components/Library";
 import { ModalPortal } from "~Components/Modal";
+import { edgeTypes } from "~ReactFlow/Edges/Edge.Types";
+import { nodeTypes } from "~ReactFlow/Nodes/Node.Types";
 
 import { openCommandPalette } from "../CommandPalette";
-import { edgeTypes } from "../Edges";
-import { openLibraryModal } from "../Library";
-import { nodeTypes } from "../Nodes";
 import { Settings } from "../Settings/Settings.Component";
 import { EditorController } from "./Editor.Controller";
 

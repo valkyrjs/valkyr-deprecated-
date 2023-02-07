@@ -1,13 +1,13 @@
 import { Controller } from "@valkyr/react";
 import { addEdge, applyNodeChanges, Connection, Edge, Node, NodeChange, Viewport } from "reactflow";
 
+import { NodeDocument } from "~ReactFlow/Data/Node.Collection";
+import { setNodeConnection } from "~ReactFlow/Nodes/Node.Connect";
+import { setNodeDimensions } from "~ReactFlow/Nodes/Node.Dimensions";
+import { setNodePosition } from "~ReactFlow/Nodes/Node.Position";
 import { db } from "~Services/Database";
 
-import { edges } from "../Edges/Edge.Manager";
-import type { EditorNode } from "../Nodes/Node.Collection";
-import { setNodeConnection } from "../Nodes/Utilities/Node.Connect";
-import { setNodeDimensions } from "../Nodes/Utilities/Node.Dimensions";
-import { setNodePosition } from "../Nodes/Utilities/Node.Position";
+import { edges } from "../../../ReactFlow/Edges/Edge.Manager";
 
 const edgeOptions = {
   animated: true
@@ -15,7 +15,7 @@ const edgeOptions = {
 
 export class EditorController extends Controller<{
   viewport?: Viewport;
-  nodes: EditorNode[];
+  nodes: NodeDocument[];
   edges: Edge[];
   asideOpen: boolean;
 }> {

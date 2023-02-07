@@ -1,6 +1,6 @@
 import { Controller } from "@valkyr/react";
 
-import { getTypes } from "~Blocks/Model.Manager";
+import { getTypes } from "~Blocks/Block.Models";
 
 const primitives: Type[] = [
   { id: 1, type: "primitive", name: "string" },

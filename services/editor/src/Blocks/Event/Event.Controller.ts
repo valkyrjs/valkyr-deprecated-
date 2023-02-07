@@ -1,9 +1,10 @@
 import { Controller } from "@valkyr/react";
 
 import { EventBlock } from "~Blocks/Block.Collection";
+import { addNode } from "~ReactFlow/Data/Node.Collection";
 import { db } from "~Services/Database";
 
-import { BlockFields } from "../BlockFields";
+import { BlockFields } from "../Block.Fields";
 
 export class EventBlockController extends Controller<
   {
@@ -30,8 +31,11 @@ export class EventBlockController extends Controller<
     );
   }
 
-  async onRemove() {
-    await db.collection("edges").remove({ source: this.props.id });
-    await db.collection("nodes").remove({ id: this.props.id });
+  onCopy() {
+    addNode("event", this.props.id);
+  }
+
+  onRemove() {
+    db.collection("nodes").remove({ "data.blockId": this.props.id });
   }
 }

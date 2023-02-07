@@ -1,23 +1,19 @@
 import { Disclosure } from "@headlessui/react";
-import { DotsSixVertical, Eye, EyeClosed, XSquare } from "phosphor-react";
+import { Copy, DotsSixVertical, Eye, EyeClosed, XSquare } from "phosphor-react";
 
 import { UnstyledButton } from "./UnstyledButton";
 
-export function BlockHeader({
-  open,
-  color,
-  symbol,
-  content,
-  onRemove,
-  draggable = true
-}: {
+type Props = {
   open: boolean;
   color: string;
   symbol: string;
   content: string | JSX.Element;
+  onCopy?: () => void;
   onRemove?: () => void;
   draggable?: boolean;
-}) {
+};
+
+export function BlockHeader({ open, color, symbol, content, onCopy, onRemove, draggable = true }: Props) {
   return (
     <header
       className={`text-darker-700 flex w-full items-center justify-between gap-2 ${
@@ -36,6 +32,9 @@ export function BlockHeader({
       <Disclosure.Button className="text-darker-400 hover:text-cyan w-7">
         {open ? <Eye size={16} /> : <EyeClosed size={16} />}
       </Disclosure.Button>
+      <UnstyledButton className="text-darker-400 hover:text-yellow-300" onClick={onCopy}>
+        <Copy size={16} />
+      </UnstyledButton>
       <UnstyledButton className="text-darker-400 hover:text-red-300" onClick={onRemove}>
         <XSquare size={16} />
       </UnstyledButton>

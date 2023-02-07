@@ -2,8 +2,8 @@ import { Disclosure } from "@headlessui/react";
 
 import { CodeEditor } from "~Components/CodeEditor";
 
+import { ReducerHeader } from "./Components/ReducerHeader.Component";
 import { ReducerNodeController } from "./Reducer.Controller";
-import { ReducerHeader } from "./ReducerHeader.Component";
 
 export const ReducerBlock = ReducerNodeController.view(({ state: { block }, actions: { onChange, onRemove } }) => {
   if (block === undefined) {

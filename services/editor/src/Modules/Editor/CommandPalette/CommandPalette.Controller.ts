@@ -1,12 +1,9 @@
 import { Controller } from "@valkyr/react";
 
-import { BlockType } from "~Blocks/Block.Collection";
-import { addBlock } from "~Blocks/Block.Utilities";
+import { addBlock, BlockType } from "~Blocks/Block.Collection";
 import { closeModal } from "~Components/Modal";
-
-import { nodeTypes } from "../Nodes";
-import { addEditorNode } from "../Nodes/Node.Collection";
-import { NodeType } from "../Nodes/Utilities/Node.Types";
+import { addNode } from "~ReactFlow/Data/Node.Collection";
+import { NodeType, nodeTypes } from "~ReactFlow/Nodes/Node.Types";
 
 export class CommandPaletteController extends Controller<{
   isOpen: boolean;
@@ -60,8 +57,8 @@ export class CommandPaletteController extends Controller<{
     return async () => {
       for (const insert of insertions) {
         const blockId = await addBlock(insert.type, insert.defaults);
-        if ((nodeTypes as any)[insert.type] !== undefined) {
-          addEditorNode(insert.type as NodeType, blockId);
+        if (nodeTypes[insert.type] !== undefined) {
+          addNode(insert.type as NodeType, blockId);
         }
       }
       closeModal();

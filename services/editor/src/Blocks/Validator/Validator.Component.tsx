@@ -2,8 +2,8 @@ import { Disclosure } from "@headlessui/react";
 
 import { CodeEditor } from "~Components/CodeEditor";
 
+import { ValidatorHeader } from "./Components/ValidatorHeader.Component";
 import { ValidatorController } from "./Validator.Controller";
-import { ValidatorHeader } from "./ValidatorHeader.Component";
 
 export const ValidatorBlock = ValidatorController.view(({ state: { block }, actions: { onChange, onRemove } }) => {
   if (block === undefined) {

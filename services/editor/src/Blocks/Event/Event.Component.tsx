@@ -7,7 +7,7 @@ import { TypeFields } from "~Components/TypeFields";
 import { EventBlockController } from "./Event.Controller";
 
 export const EventBlock = EventBlockController.view(
-  ({ state: { block, data, meta }, actions: { setName, onRemove } }) => {
+  ({ state: { block, data, meta }, actions: { setName, onCopy, onRemove } }) => {
     if (block === undefined) {
       return <div>404 Block Not Found</div>;
     }
@@ -18,6 +18,7 @@ export const EventBlock = EventBlockController.view(
             <div className="bg-darker border-darker-800 min-w-[390px] rounded-sm border font-mono text-xs">
               <BlockHeader
                 open={open}
+                onCopy={onCopy}
                 onRemove={onRemove}
                 color="orange"
                 symbol="E"

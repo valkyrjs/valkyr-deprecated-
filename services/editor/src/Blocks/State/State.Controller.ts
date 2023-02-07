@@ -3,7 +3,7 @@ import { Controller } from "@valkyr/react";
 import { StateBlock } from "~Blocks/Block.Collection";
 import { db } from "~Services/Database";
 
-import { BlockFields } from "../BlockFields";
+import { BlockFields } from "../Block.Fields";
 
 export class StateNodeController extends Controller<
   {
