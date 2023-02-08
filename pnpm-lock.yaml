@@ -308,6 +308,8 @@ importers:
       dotenv-webpack: 8.0.1
       html-webpack-plugin: ^5.5.0
       monaco-editor: ^0.34.1
+      monaco-editor-auto-typings: 0.4.3
+      path-browserify: 1.0.1
       phosphor-react: 1.4.1
       postcss: ^8.4.21
       postcss-cli: ^10.1.0
@@ -335,6 +337,8 @@ importers:
       '@valkyr/react': link:../../packages/react
       '@valkyr/router': link:../../packages/router
       monaco-editor: 0.34.1
+      monaco-editor-auto-typings: 0.4.3_monaco-editor@0.34.1
+      path-browserify: 1.0.1
       phosphor-react: 1.4.1_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -4308,7 +4312,7 @@ packages:
       webpack: ^4 || ^5
     dependencies:
       dotenv-defaults: 2.0.2
-      webpack: 5.75.0
+      webpack: 5.75.0_webpack-cli@5.0.1
     dev: true
 
   /dotenv/16.0.3:
@@ -5428,7 +5432,7 @@ packages:
       lodash: 4.17.21
       pretty-error: 4.0.0
       tapable: 2.2.1
-      webpack: 5.75.0
+      webpack: 5.75.0_webpack-cli@5.0.1
     dev: true
 
   /htmlparser2/6.1.0:
@@ -6764,6 +6768,14 @@ packages:
       obliterator: 2.0.4
     dev: false
 
+  /monaco-editor-auto-typings/0.4.3_monaco-editor@0.34.1:
+    resolution: {integrity: sha512-7lpiWHkg8eX2DRJGApaFq1wGn95Ute3Xv4PLz36qFyTytzz86irjxwMl00JnOOGX/R0eUbfuudbEtkQh2VK9Gg==}
+    peerDependencies:
+      monaco-editor: '*'
+    dependencies:
+      monaco-editor: 0.34.1
+    dev: false
+
   /monaco-editor/0.34.1:
     resolution: {integrity: sha512-FKc80TyiMaruhJKKPz5SpJPIjL+dflGvz4CpuThaPMc94AyN7SeC9HQ8hrvaxX7EyHdJcUY5i4D0gNyJj1vSZQ==}
 
@@ -7139,6 +7151,10 @@ packages:
       no-case: 3.0.4
       tslib: 2.4.1
     dev: true
+
+  /path-browserify/1.0.1:
+    resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
+    dev: false
 
   /path-exists/4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
@@ -8424,7 +8440,7 @@ packages:
     peerDependencies:
       webpack: ^5.0.0
     dependencies:
-      webpack: 5.75.0
+      webpack: 5.75.0_webpack-cli@5.0.1
     dev: true
 
   /supports-color/5.5.0:
@@ -8700,7 +8716,7 @@ packages:
       micromatch: 4.0.5
       semver: 7.3.8
       typescript: 4.9.4
-      webpack: 5.75.0
+      webpack: 5.75.0_webpack-cli@5.0.1
     dev: true
 
   /ts-node-dev/2.0.0_awa2wsr5thmg3i7jqycphctjfq:
