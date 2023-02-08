@@ -8,7 +8,8 @@ import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker"
 import { getApiModel } from "./Api";
 import { getLedgerModel } from "./Ledger";
 
-const packages = ["mongodb"];
+const packages = ["mongodb", "bson"];
+const nodeLibs = ["stream", "tls"];
 
 // validation settings
 monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
@@ -23,7 +24,17 @@ monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
 });
 
 for (const pkg of packages) {
-  fetch(`http://localhost:3000/${pkg}.d.ts`, { method: "GET" })
+  fetch(`http://localhost:3000/node_modules/${pkg}/${pkg}.d.ts`, { method: "GET" })
+    .then((res) => res.text())
+    .then((value) => {
+      const libUri = `ts:${pkg}.d.ts`;
+      monaco.languages.typescript.javascriptDefaults.addExtraLib(value, libUri);
+      monaco.editor.createModel(value, "typescript", monaco.Uri.parse(libUri));
+    });
+}
+
+for (const pkg of nodeLibs) {
+  fetch(`http://localhost:3000/node_modules/%40types/node/${pkg}.d.ts`, { method: "GET" })
     .then((res) => res.text())
     .then((value) => {
       const libUri = `ts:${pkg}.d.ts`;

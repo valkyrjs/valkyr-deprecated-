@@ -18,8 +18,10 @@
     "@valkyr/db": "workspace:*",
     "@valkyr/react": "workspace:*",
     "@valkyr/router": "workspace:*",
+    "bson": "5.0.0",
     "monaco-editor": "^0.34.1",
     "monaco-editor-auto-typings": "0.4.3",
+    "mongodb": "5.0.1",
     "path-browserify": "1.0.1",
     "phosphor-react": "1.4.1",
     "react": "^18.2.0",
@@ -31,6 +33,7 @@
     "tailwindcss-fluid-type": "2.0.3"
   },
   "devDependencies": {
+    "@types/node": "18.13.0",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
     "@vitejs/plugin-react": "^3.0.1",
