@@ -69,30 +69,17 @@ export type TypeBlock = Extract<BlockDocument, { type: "type" }>;
  |--------------------------------------------------------------------------------
  */
 
+const blocks: Record<BlockType, (data: any) => Promise<string>> = {
+  database: createDatabaseBlock,
+  event: createEventBlock,
+  reducer: createReducerBlock,
+  state: createStateBlock,
+  validator: createValidatorBlock,
+  type: createTypeBlock
+};
+
 export async function addBlock(type: BlockType, data: any): Promise<string> {
-  switch (type) {
-    case "database": {
-      return createDatabaseBlock(data);
-    }
-    case "type": {
-      return createTypeBlock(data);
-    }
-    case "event": {
-      return createEventBlock(data);
-    }
-    case "state": {
-      return createStateBlock(data);
-    }
-    case "reducer": {
-      return createReducerBlock(data);
-    }
-    case "validator": {
-      return createValidatorBlock(data);
-    }
-    default: {
-      throw new Error(`Unknown node type: ${type}`);
-    }
-  }
+  return blocks[type](data);
 }
 
 /*
