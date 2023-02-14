@@ -126,6 +126,12 @@ importers:
       '@valkyr/jest': link:../../configs/jest
       mongodb: 4.13.0
 
+  packages/inverse:
+    specifiers:
+      '@valkyr/jest': workspace:*
+    devDependencies:
+      '@valkyr/jest': link:../../configs/jest
+
   packages/jsonrpc:
     specifiers:
       '@valkyr/jest': workspace:*
