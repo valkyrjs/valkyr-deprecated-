@@ -2,6 +2,7 @@ import "./Styles/index.css";
 import "./Modules";
 import "./Monaco";
 
+import { getPackageByName, getPackageFile, getPackageFiles, getPackages, resolvePackage } from "@valkyr/monaco";
 import { createElement, ReactElement, StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
@@ -52,3 +53,29 @@ function handleError(err: any): ReactElement {
     </div>
   );
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Testing
+ |--------------------------------------------------------------------------------
+ */
+
+declare global {
+  interface Window {
+    pkm: {
+      resolve: typeof resolvePackage;
+      packages: typeof getPackages;
+      package: typeof getPackageByName;
+      files: typeof getPackageFiles;
+      file: typeof getPackageFile;
+    };
+  }
+}
+
+window.pkm = {
+  resolve: resolvePackage,
+  packages: getPackages,
+  package: getPackageByName,
+  files: getPackageFiles,
+  file: getPackageFile
+};

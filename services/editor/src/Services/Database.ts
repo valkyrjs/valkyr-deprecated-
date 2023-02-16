@@ -24,12 +24,7 @@ export const db = new IndexedDatabase<Collections>({
       name: "edges",
       indexes: [["type"]]
     }
-  ],
-  log: (event) => {
-    if (event.type !== "query") {
-      console.log(event);
-    }
-  }
+  ]
 });
 
 /*

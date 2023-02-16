@@ -59,6 +59,7 @@
     "headlessui",
     "IDBP",
     "indexeddb",
+    "inmemory",
     "kodemon",
     "mingo",
     "nestjs",

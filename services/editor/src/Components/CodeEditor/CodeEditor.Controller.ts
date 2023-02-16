@@ -1,6 +1,5 @@
 import { Controller } from "@valkyr/react";
 import * as monaco from "monaco-editor";
-import { AutoTypings, LocalStorageCache } from "monaco-editor-auto-typings";
 
 export class CodeEditorController extends Controller<
   {
@@ -38,13 +37,6 @@ export class CodeEditorController extends Controller<
               enabled: false
             }
           });
-
-          await AutoTypings.create(this.#editor, {
-            sourceCache: new LocalStorageCache(),
-            packageRecursionDepth: 5,
-            fileRecursionDepth: 20
-          });
-
           let timeout: any;
           this.#editor.onDidChangeModelContent(() => {
             clearTimeout(timeout);

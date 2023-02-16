@@ -144,6 +144,17 @@ importers:
     devDependencies:
       '@valkyr/jest': link:../../configs/jest
 
+  packages/monaco:
+    specifiers:
+      '@valkyr/db': workspace:*
+      '@valkyr/jest': workspace:*
+      monaco-editor: ^0.35.0
+    dependencies:
+      '@valkyr/db': link:../db
+    devDependencies:
+      '@valkyr/jest': link:../../configs/jest
+      monaco-editor: 0.35.0
+
   packages/queue:
     specifiers:
       '@valkyr/jest': workspace:*
@@ -307,6 +318,7 @@ importers:
       '@types/react': 18.0.27
       '@types/react-dom': 18.0.10
       '@valkyr/db': workspace:*
+      '@valkyr/monaco': workspace:*
       '@valkyr/react': workspace:*
       '@valkyr/router': workspace:*
       '@vitejs/plugin-react': ^3.0.1
@@ -315,8 +327,7 @@ importers:
       css-loader: 6.7.3
       dotenv-webpack: 8.0.1
       html-webpack-plugin: ^5.5.0
-      monaco-editor: ^0.34.1
-      monaco-editor-auto-typings: 0.4.3
+      monaco-editor: ^0.35.0
       mongodb: 5.0.1
       path-browserify: 1.0.1
       phosphor-react: 1.4.1
@@ -343,11 +354,11 @@ importers:
       '@tailwindcss/aspect-ratio': 0.4.2_tailwindcss@3.2.4
       '@tailwindcss/typography': 0.5.9_tailwindcss@3.2.4
       '@valkyr/db': link:../../packages/db
+      '@valkyr/monaco': link:../../packages/monaco
       '@valkyr/react': link:../../packages/react
       '@valkyr/router': link:../../packages/router
       bson: 5.0.0
-      monaco-editor: 0.34.1
-      monaco-editor-auto-typings: 0.4.3_monaco-editor@0.34.1
+      monaco-editor: 0.35.0
       mongodb: 5.0.1
       path-browserify: 1.0.1
       phosphor-react: 1.4.1_react@18.2.0
@@ -376,7 +387,7 @@ importers:
       tailwindcss: 3.2.4_postcss@8.4.21
       ts-loader: 9.4.2_3fkjkrd3audxnith3e7fo4fnxi
       vite: 4.0.4_@types+node@18.13.0
-      vite-plugin-monaco-editor: 1.1.0_monaco-editor@0.34.1
+      vite-plugin-monaco-editor: 1.1.0_monaco-editor@0.35.0
       vite-tsconfig-paths: 4.0.5_typescript@4.9.4
 
   templates/api:
@@ -6789,16 +6800,8 @@ packages:
       obliterator: 2.0.4
     dev: false
 
-  /monaco-editor-auto-typings/0.4.3_monaco-editor@0.34.1:
-    resolution: {integrity: sha512-7lpiWHkg8eX2DRJGApaFq1wGn95Ute3Xv4PLz36qFyTytzz86irjxwMl00JnOOGX/R0eUbfuudbEtkQh2VK9Gg==}
-    peerDependencies:
-      monaco-editor: '*'
-    dependencies:
-      monaco-editor: 0.34.1
-    dev: false
-
-  /monaco-editor/0.34.1:
-    resolution: {integrity: sha512-FKc80TyiMaruhJKKPz5SpJPIjL+dflGvz4CpuThaPMc94AyN7SeC9HQ8hrvaxX7EyHdJcUY5i4D0gNyJj1vSZQ==}
+  /monaco-editor/0.35.0:
+    resolution: {integrity: sha512-BJfkAZ0EJ7JgrgWzqjfBNP9hPSS8NlfECEDMEIIiozV2UaPq22yeuOjgbd3TwMh3anH0krWZirXZfn8KUSxiOA==}
 
   /mongodb-connection-string-url/2.6.0:
     resolution: {integrity: sha512-WvTZlI9ab0QYtTYnuMLgobULWhokRjtC7db9LtcVfJ+Hsnyr5eo6ZtNAt3Ly24XZScGMelOcGtm7lSn0332tPQ==}
@@ -9092,12 +9095,12 @@ packages:
     engines: {node: '>= 0.8'}
     dev: true
 
-  /vite-plugin-monaco-editor/1.1.0_monaco-editor@0.34.1:
+  /vite-plugin-monaco-editor/1.1.0_monaco-editor@0.35.0:
     resolution: {integrity: sha512-IvtUqZotrRoVqwT0PBBDIZPNraya3BxN/bfcNfnxZ5rkJiGcNtO5eAOWWSgT7zullIAEqQwxMU83yL9J5k7gww==}
     peerDependencies:
       monaco-editor: '>=0.33.0'
     dependencies:
-      monaco-editor: 0.34.1
+      monaco-editor: 0.35.0
     dev: true
 
   /vite-tsconfig-paths/4.0.5_typescript@4.9.4:

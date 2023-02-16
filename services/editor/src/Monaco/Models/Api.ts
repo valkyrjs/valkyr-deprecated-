@@ -1,8 +1,10 @@
-export function getApiModel(): string {
-  return `
-    interface Reducers {}
+import * as monaco from "monaco-editor";
 
-    interface Contexts {}
+import { format } from "~Services/Prettier";
+
+monaco.editor.createModel(
+  format(`
+    interface Reducers {}
 
     class api {
       /**
@@ -19,5 +21,6 @@ export function getApiModel(): string {
         ) => Reducers[Name]["State"]
       ): void {}
     }
-  `;
-}
+  `),
+  "typescript"
+);
