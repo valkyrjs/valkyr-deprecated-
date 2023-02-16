@@ -1,10 +1,10 @@
 import { db, File, Package } from "../Database";
+import { getNpmPackageFiles } from "./Npm";
 import { isNativePackage } from "./Package.Native";
-import { resolveUnpkgFile, resolveUnpkgMeta } from "./Unpkg";
-import { parsePackageJson } from "./Unpkg.Json";
+import { PackageJSON, parsePackageJson } from "./Unpkg.Json";
 
-const FILE_IMPORT_EXPORT_SEARCH = /^(import|export)\s+.*?from\s+["'](.+?)["'];$/gm;
-const IMPORT_EXPORT_REGEX = /^(import|export)\s+.*?from\s+["'](.+?)["'];$/;
+// const FILE_IMPORT_EXPORT_SEARCH = /^(import|export)\s+.*?from\s+["'](.+?)["'];$/gm;
+// const IMPORT_EXPORT_REGEX = /^(import|export)\s+.*?from\s+["'](.+?)["'];$/;
 
 const resolving = new Set<string>();
 
@@ -14,22 +14,33 @@ const resolving = new Set<string>();
  |--------------------------------------------------------------------------------
  */
 
-export async function resolvePackage(name: string, version = "latest"): Promise<void> {
+export async function resolvePackage(name: string, version?: string): Promise<void> {
   if ((await isResolvable(name)) === false) {
     return; // package is already resolved
   }
   resolving.add(name);
 
-  const meta = await resolveUnpkgMeta(name, version);
+  let pkg: PackageJSON | undefined;
 
-  for (const filePath of getTypeFiles(meta.files, Array.from)) {
-    const path = removeRelativePath(filePath);
-    const body = await resolveUnpkgFile(name, path, version);
-    await db.collection("files").insertOne({ name, path, body });
-    await resolvePackageFile(body);
+  try {
+    const files = await getNpmPackageFiles(name, version);
+    for (const { path, body } of files) {
+      if (path === "package.json") {
+        pkg = parsePackageJson(body);
+        await db.collection("packages").insertOne(pkg);
+      } else {
+        await db.collection("files").insertOne({ name, path, body });
+      }
+    }
+  } catch (err) {
+    console.log(err);
   }
 
-  await db.collection("packages").insertOne(parsePackageJson(await resolveUnpkgFile(name, "package.json", version)));
+  // if (pkg !== undefined && pkg.dependencies !== undefined) {
+  //   for (const dep in pkg.dependencies) {
+  //     await resolvePackage(dep);
+  //   }
+  // }
 }
 
 export async function getPackages(): Promise<Package[]> {
@@ -54,43 +65,25 @@ export async function getPackageFile(path: string): Promise<File | undefined> {
  |--------------------------------------------------------------------------------
  */
 
-async function resolvePackageFile(file: string): Promise<void> {
-  const result = file.match(FILE_IMPORT_EXPORT_SEARCH);
-  if (result === null) {
-    return;
-  }
-  for (const line of result) {
-    const matched = line.match(IMPORT_EXPORT_REGEX);
-    const name = matched?.[2];
-    if (name !== undefined && name.startsWith(".") === false) {
-      await resolvePackage(name);
-    }
-  }
-}
+// async function resolvePackageFile(file: string): Promise<void> {
+//   const result = file.match(FILE_IMPORT_EXPORT_SEARCH);
+//   if (result === null) {
+//     return;
+//   }
+//   for (const line of result) {
+//     const matched = line.match(IMPORT_EXPORT_REGEX);
+//     const name = matched?.[2];
+//     if (name !== undefined && name.startsWith(".") === false) {
+//       await resolvePackage(name);
+//     }
+//   }
+// }
 
 /*
  |--------------------------------------------------------------------------------
  | Utilities
  |--------------------------------------------------------------------------------
  */
-
-function removeRelativePath(path: string) {
-  return path.replace(/^\.\//, "");
-}
-
-function getTypeFiles(files: MetaEntry[]): Set<string>;
-function getTypeFiles(files: MetaEntry[], parseResult: Function): string[];
-function getTypeFiles(files: MetaEntry[], parseResult?: Function): string[] | Set<string> {
-  let resolved = new Set<string>();
-  for (const file of files) {
-    if (file.type === "directory") {
-      resolved = new Set([...resolved, ...getTypeFiles(file.files)]);
-    } else if (file.path.endsWith(".d.ts")) {
-      resolved.add(file.path);
-    }
-  }
-  return parseResult !== undefined ? parseResult(resolved) : resolved;
-}
 
 async function isResolvable(name: string): Promise<boolean> {
   if (isNativePackage(name) === true) {
@@ -104,15 +97,3 @@ async function isResolvable(name: string): Promise<boolean> {
   }
   return true;
 }
-
-/*
- |--------------------------------------------------------------------------------
- | Types
- |--------------------------------------------------------------------------------
- */
-
-type MetaEntry = {
-  path: string;
-  type: "directory" | "file";
-  files: MetaEntry[];
-};

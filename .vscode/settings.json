@@ -63,6 +63,7 @@
     "kodemon",
     "mingo",
     "nestjs",
+    "pako",
     "pannable",
     "pino",
     "quicktype",
@@ -70,6 +71,7 @@
     "rfdc",
     "tailwindcss",
     "tsbuildinfo",
+    "untar",
     "valkyr",
     "viewports",
     "zoomable"

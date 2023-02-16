@@ -36,9 +36,11 @@
     ]
   },
   "dependencies": {
-    "@valkyr/db": "workspace:*"
+    "@valkyr/db": "workspace:*",
+    "pako": "^2.1.0"
   },
   "devDependencies": {
+    "@types/pako": "^2.0.0",
     "@valkyr/jest": "workspace:*",
     "monaco-editor": "^0.35.0"
   }

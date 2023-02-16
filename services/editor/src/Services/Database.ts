@@ -1,4 +1,4 @@
-import { IndexedDatabase } from "@valkyr/db";
+import { Document, IndexedDatabase } from "@valkyr/db";
 
 import type { BlockDocument } from "~Blocks/Block.Collection";
 import type { EdgeDocument } from "~ReactFlow/Data/Edge.Collection";
@@ -14,15 +14,19 @@ export const db = new IndexedDatabase<Collections>({
       indexes: [["type"], ["name", { unique: true }]]
     },
     {
-      name: "viewports"
+      name: "code",
+      indexes: [["name", { unique: true }]]
+    },
+    {
+      name: "edges",
+      indexes: [["type"]]
     },
     {
       name: "nodes",
       indexes: [["type"]]
     },
     {
-      name: "edges",
-      indexes: [["type"]]
+      name: "viewports"
     }
   ]
 });
@@ -35,10 +39,16 @@ export const db = new IndexedDatabase<Collections>({
 
 export type Collections = {
   blocks: BlockDocument;
-  viewports: ViewportDocument;
-  nodes: NodeDocument;
+  code: CodeDocument;
   edges: EdgeDocument;
+  nodes: NodeDocument;
+  viewports: ViewportDocument;
 };
+
+export type CodeDocument = Document<{
+  name: string;
+  value: string;
+}>;
 
 /*
  |--------------------------------------------------------------------------------
