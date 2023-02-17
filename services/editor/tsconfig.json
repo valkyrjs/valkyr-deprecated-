@@ -8,9 +8,10 @@
     "esModuleInterop": false,
 
     "paths": {
-      "~Blocks/*": ["./src/Blocks/*"],
       "~Components/*": ["./src/Components/*"],
+      "~Library/*": ["./src/Library/*"],
       "~Middleware/*": ["./src/Middleware/*"],
+      "~Modules/*": ["./src/Modules/*"],
       "~ReactFlow/*": ["./src/ReactFlow/*"],
       "~Services/*": ["./src/Services/*"]
     }

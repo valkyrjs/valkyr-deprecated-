@@ -1,6 +1,5 @@
 import { Node } from "reactflow";
 
-import { EventBlock, ReducerBlock, ValidatorBlock } from "~Blocks/Block.Collection";
 import { addEdge } from "~ReactFlow/Data/Edge.Collection";
 import { db } from "~Services/Database";
 
@@ -56,6 +55,7 @@ async function connectReducerEvent(
   targetNode: Node
 ): Promise<void> {
   console.log({ connect: "eventToReducer", sourceNode, targetNode });
+  /*
   if (sourceNode.type !== "event") {
     throw new Error("Source node is not an event");
   }
@@ -70,10 +70,12 @@ async function connectReducerEvent(
   if (result.matched > 0 && result.modified > 0) {
     await addEdge("event", source, target);
   }
+  */
 }
 
 async function connectStateReducer(sourceNode: Node, targetNode: Node): Promise<void> {
   console.log({ connect: "reducerToState", sourceNode, targetNode });
+  /*
   if (sourceNode.type !== "reducer") {
     throw new Error("Source node is not a reducer");
   }
@@ -85,10 +87,12 @@ async function connectStateReducer(sourceNode: Node, targetNode: Node): Promise<
       }
     }
   );
+  */
 }
 
 async function connectValidatorEvent(sourceNode: Node, targetNode: Node): Promise<void> {
   console.log({ connect: "eventToValidator", sourceNode, targetNode });
+  /*
   const event = await db.collection<EventBlock>("blocks").findOne({ id: sourceNode.data.blockId });
   if (event === undefined) {
     throw new Error(`Unable to connect validator event, '${sourceNode.data.blockId}' not found`);
@@ -96,10 +100,12 @@ async function connectValidatorEvent(sourceNode: Node, targetNode: Node): Promis
   await db
     .collection<ValidatorBlock>("blocks")
     .updateOne({ id: targetNode.data.blockId }, { $set: { event: event.id } });
+  */
 }
 
 async function connectValidatorContext(sourceNode: Node, targetNode: Node): Promise<void> {
   console.log({ connect: "contextToValidator", sourceNode, targetNode });
+  /*
   const block = await db.collection<ReducerBlock>("blocks").findOne({ id: sourceNode.data.blockId });
   if (block === undefined) {
     throw new Error(`Unable to connect validator context, '${sourceNode.data.blockId}' not found`);
@@ -112,4 +118,5 @@ async function connectValidatorContext(sourceNode: Node, targetNode: Node): Prom
       }
     }
   );
+  */
 }

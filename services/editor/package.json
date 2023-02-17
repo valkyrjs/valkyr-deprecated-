@@ -20,6 +20,7 @@
     "@valkyr/react": "workspace:*",
     "@valkyr/router": "workspace:*",
     "bson": "5.0.0",
+    "joi": "17.7.1",
     "monaco-editor": "^0.35.0",
     "mongodb": "5.0.1",
     "path-browserify": "1.0.1",

@@ -27,6 +27,8 @@ export class IndexedDatabase<T extends StringRecord<Document>> {
         for (const { name, indexes = [] } of options.registrars) {
           const store = db.createObjectStore(name as string, { keyPath: "id" });
           store.createIndex("id", "id", { unique: true });
+          store.createIndex("$meta.createdAt", "$meta.createdAt", { unique: false });
+          store.createIndex("$meta.updatedAt", "$meta.updatedAt", { unique: false });
           for (const [keyPath, options] of indexes) {
             store.createIndex(keyPath, keyPath, options);
           }

@@ -35,6 +35,9 @@
       "eslint --fix"
     ]
   },
+  "dependencies": {
+    "@valkyr/time": "workspace:*"
+  },
   "devDependencies": {
     "@valkyr/jest": "workspace:*"
   }

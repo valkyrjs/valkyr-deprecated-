@@ -1,11 +1,8 @@
-import { DatabaseNode } from "~Blocks/Database";
-import { EventNode } from "~Blocks/Event";
-import { ReducerNode } from "~Blocks/Reducer";
-import { StateNode } from "~Blocks/State";
-import { ValidatorNode } from "~Blocks/Validator";
+import { EventNode } from "~Modules/Event";
+import { ReducerNode, StateNode } from "~Modules/Reducer";
+import { ValidatorNode } from "~Modules/Validator";
 
 export const nodeTypes = {
-  database: DatabaseNode,
   event: EventNode,
   state: StateNode,
   reducer: ReducerNode,

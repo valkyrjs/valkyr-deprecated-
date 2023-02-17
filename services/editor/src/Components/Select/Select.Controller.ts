@@ -1,6 +1,6 @@
 import { Controller } from "@valkyr/react";
 
-import { getTypes } from "~Blocks/Block.Models";
+import { getTypes } from "~Modules/Type";
 
 const primitives: Type[] = [
   { id: 1, type: "primitive", name: "string" },
@@ -29,11 +29,13 @@ export class SelectController extends Controller<
   #getTypes(): Type[] {
     return [
       ...primitives,
-      ...getTypes().map<Type>((name) => ({
-        id: name,
-        type: "custom",
-        name
-      }))
+      ...getTypes()
+        .map<Type>((name) => ({
+          id: name,
+          type: "custom",
+          name
+        }))
+        .sort((a, b) => a.name.localeCompare(b.name))
     ];
   }
 

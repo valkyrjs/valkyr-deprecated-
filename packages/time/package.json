@@ -1,0 +1,41 @@
+{
+  "name": "@valkyr/time",
+  "version": "0.0.0",
+  "description": "Hybrid logical clock utilities.",
+  "repository": "kodemon/valkyr",
+  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "license": "MIT",
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b ./tsconfig.build.json",
+    "flush": "npm run clean && rm -rf ./node_modules",
+    "clean": "rm -rf ./.turbo ./dist",
+    "lint": "eslint .",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "@valkyr/jest"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": [
+      "@valkyr"
+    ]
+  },
+  "lint-staged": {
+    "*": [
+      "prettier --write --ignore-unknown"
+    ],
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ]
+  },
+  "devDependencies": {
+    "@valkyr/jest": "workspace:*"
+  }
+}

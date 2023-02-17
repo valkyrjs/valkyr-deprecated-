@@ -1,6 +1,4 @@
-import JoiRoot from "joi";
-
-export const Joi = JoiRoot;
+import type Joi from "joi";
 
 export abstract class Form<Inputs extends Record<string, any> = {}> {
   abstract readonly schema: ReturnType<typeof Joi.object>;
@@ -114,8 +112,10 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
   register<Key extends keyof Inputs>(name: Key) {
     return {
       name,
-      ref: (element: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) => {
-        this.#elements[name as string] = element;
+      ref: (element: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null) => {
+        if (element !== null) {
+          this.#elements[name as string] = element;
+        }
       },
       defaultValue: this.get(name),
       onChange: ({ target: { value } }: any) => {
@@ -191,6 +191,7 @@ export abstract class Form<Inputs extends Record<string, any> = {}> {
       }
     }
     this.#onProcessing?.(false);
+    this.reset();
   }
 
   validate(name?: keyof Inputs) {

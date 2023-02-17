@@ -1,6 +1,7 @@
 import "./Styles/index.css";
 import "./Modules";
-import "./Monaco";
+import "./Library/Monaco";
+import "./Seed";
 
 import { getPackageByName, getPackageFile, getPackageFiles, getPackages, resolvePackage } from "@valkyr/monaco";
 import { createElement, ReactElement, StrictMode } from "react";

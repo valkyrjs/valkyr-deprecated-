@@ -92,6 +92,7 @@ importers:
     specifiers:
       '@valkyr/jest': workspace:*
       '@valkyr/security': workspace:*
+      '@valkyr/time': workspace:*
       fake-indexeddb: ^4.0.1
       fast-equals: 4.0.3
       idb: ^7.1.1
@@ -101,6 +102,7 @@ importers:
       type-fest: ^3.5.0
     dependencies:
       '@valkyr/security': link:../security
+      '@valkyr/time': link:../time
       fast-equals: 4.0.3
       idb: 7.1.1
       mingo: 6.2.1
@@ -141,6 +143,9 @@ importers:
   packages/ledger:
     specifiers:
       '@valkyr/jest': workspace:*
+      '@valkyr/time': workspace:*
+    dependencies:
+      '@valkyr/time': link:../time
     devDependencies:
       '@valkyr/jest': link:../../configs/jest
 
@@ -176,19 +181,19 @@ importers:
 
   packages/react:
     specifiers:
-      '@types/react': 18.0.26
+      '@types/react': 18.0.28
       '@valkyr/db': workspace:*
       '@valkyr/router': workspace:*
       fast-equals: 4.0.3
-      joi: 17.7.0
+      joi: 17.7.1
       react: 18.2.0
       rxjs: 7.8.0
     dependencies:
       fast-equals: 4.0.3
-      joi: 17.7.0
+      joi: 17.7.1
       rxjs: 7.8.0
     devDependencies:
-      '@types/react': 18.0.26
+      '@types/react': 18.0.28
       '@valkyr/db': link:../db
       '@valkyr/router': link:../router
       react: 18.2.0
@@ -226,6 +231,12 @@ importers:
     devDependencies:
       '@valkyr/jest': link:../../configs/jest
       mongodb-memory-server: 8.11.4
+
+  packages/time:
+    specifiers:
+      '@valkyr/jest': workspace:*
+    devDependencies:
+      '@valkyr/jest': link:../../configs/jest
 
   services/api:
     specifiers:
@@ -331,6 +342,7 @@ importers:
       css-loader: 6.7.3
       dotenv-webpack: 8.0.1
       html-webpack-plugin: ^5.5.0
+      joi: 17.7.1
       monaco-editor: ^0.35.0
       mongodb: 5.0.1
       path-browserify: 1.0.1
@@ -362,6 +374,7 @@ importers:
       '@valkyr/react': link:../../packages/react
       '@valkyr/router': link:../../packages/router
       bson: 5.0.0
+      joi: 17.7.1
       monaco-editor: 0.35.0
       mongodb: 5.0.1
       path-browserify: 1.0.1
@@ -2696,13 +2709,13 @@ packages:
   /@types/react-dom/18.0.10:
     resolution: {integrity: sha512-E42GW/JA4Qv15wQdqJq8DL4JhNpB3prJgjgapN3qJT9K2zO5IIAQh4VXvCEDupoqAwnz0cY4RlXeC/ajX5SFHg==}
     dependencies:
-      '@types/react': 18.0.27
+      '@types/react': 18.0.28
     dev: true
 
   /@types/react-dom/18.0.9:
     resolution: {integrity: sha512-qnVvHxASt/H7i+XG1U1xMiY5t+IHcPGUK7TDMDzom08xa7e86eCeKOiLZezwCKVxJn6NEiiy2ekgX8aQssjIKg==}
     dependencies:
-      '@types/react': 18.0.26
+      '@types/react': 18.0.28
     dev: true
 
   /@types/react/18.0.25:
@@ -2713,16 +2726,16 @@ packages:
       csstype: 3.1.1
     dev: true
 
-  /@types/react/18.0.26:
-    resolution: {integrity: sha512-hCR3PJQsAIXyxhTNSiDFY//LhnMZWpNNr5etoCqx/iUfGc5gXWtQR2Phl908jVR6uPXacojQWTg4qRpkxTuGug==}
+  /@types/react/18.0.27:
+    resolution: {integrity: sha512-3vtRKHgVxu3Jp9t718R9BuzoD4NcQ8YJ5XRzsSKxNDiDonD2MXIT1TmSkenxuCycZJoQT5d2vE8LwWJxBC1gmA==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.1
     dev: true
 
-  /@types/react/18.0.27:
-    resolution: {integrity: sha512-3vtRKHgVxu3Jp9t718R9BuzoD4NcQ8YJ5XRzsSKxNDiDonD2MXIT1TmSkenxuCycZJoQT5d2vE8LwWJxBC1gmA==}
+  /@types/react/18.0.28:
+    resolution: {integrity: sha512-RD0ivG1kEztNBdoAK7lekI9M+azSnitIn85h4iOiaLjaTrMjzslhaqCGaI4IyCJ1RljWiLCEu4jyrLLgqxBTew==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
@@ -6359,8 +6372,8 @@ packages:
       - ts-node
     dev: false
 
-  /joi/17.7.0:
-    resolution: {integrity: sha512-1/ugc8djfn93rTE3WRKdCzGGt/EtiYKxITMO4Wiv6q5JL1gl9ePt4kBsl1S499nbosspfctIQTpYIhSmHA3WAg==}
+  /joi/17.7.1:
+    resolution: {integrity: sha512-teoLhIvWE298R6AeJywcjR4sX2hHjB3/xJX4qPjg+gTg+c0mzUDsziYlqPmLomq9gVsfaMcgPaGc7VxtD/9StA==}
     dependencies:
       '@hapi/hoek': 9.3.0
       '@hapi/topo': 5.1.0

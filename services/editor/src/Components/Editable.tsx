@@ -1,7 +1,7 @@
 import { DetailedHTMLProps, InputHTMLAttributes, useEffect, useRef, useState } from "react";
 
-type Props = DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
-  onChange(value: string): void;
+type Props = Omit<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, "onChange"> & {
+  onChange(value: string): Promise<void>;
 };
 
 export function Editable({ name, value, onChange, placeholder, ...props }: Props) {

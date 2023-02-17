@@ -1,9 +1,6 @@
 import { Controller } from "@valkyr/react";
 
-import { addBlock, BlockType } from "~Blocks/Block.Collection";
 import { closeModal } from "~Components/Modal";
-import { addNode } from "~ReactFlow/Data/Node.Collection";
-import { NodeType, nodeTypes } from "~ReactFlow/Nodes/Node.Types";
 
 export class CommandPaletteController extends Controller<{
   isOpen: boolean;
@@ -53,26 +50,26 @@ export class CommandPaletteController extends Controller<{
     this.setState("query", query);
   }
 
-  #buildAdd(insertions: BlockInsertion[]): () => void {
+  #buildAdd(_: BlockInsertion[]): () => void {
     return async () => {
-      for (const insert of insertions) {
-        const blockId = await addBlock(insert.type, insert.defaults);
-        if (nodeTypes[insert.type] !== undefined) {
-          addNode(insert.type as NodeType, blockId);
-        }
-      }
+      // for (const insert of insertions) {
+      //   const blockId = await addBlock(insert.type, insert.defaults);
+      //   if (nodeTypes[insert.type] !== undefined) {
+      //     addNode(insert.type as NodeType, blockId);
+      //   }
+      // }
       closeModal();
     };
   }
 }
 
 type BlockInsertion = {
-  type: BlockType;
+  type: string;
   defaults: any;
 };
 
 type Action = {
-  name: BlockType;
+  name: string;
   description: string;
   icon: string;
   shortcut: string;

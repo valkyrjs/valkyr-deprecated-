@@ -1,7 +1,7 @@
 import { X } from "phosphor-react";
 import { EdgeProps, getBezierPath } from "reactflow";
 
-import { getColors } from "~Blocks/Block.Colors";
+import { getColors } from "~Library/BlockColors";
 
 const foreignObjectSize = 24;
 

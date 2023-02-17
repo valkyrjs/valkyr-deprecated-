@@ -144,9 +144,16 @@ export function addOptions(cursor: Cursor, options: Options): Cursor {
 
 export type Document<Properties extends RawObject = RawObject> = {
   id: string;
-} & Properties;
+} & Properties & {
+    $meta: DocumentMeta;
+  };
 
-export type PartialDocument<D extends Document> = Omit<D, "id"> & {
+export type DocumentMeta = {
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PartialDocument<D extends Document> = Omit<D, "id" | "$meta"> & {
   id?: string;
 };
 

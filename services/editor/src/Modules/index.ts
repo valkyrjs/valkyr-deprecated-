@@ -3,25 +3,22 @@ import { Route } from "@valkyr/router";
 import { render } from "~Middleware/Render";
 import { router } from "~Services/Router";
 
-import { ApiView, CodeView, ContainerView, DependenciesView, EventsView } from "./Code";
+import { ApiView } from "./Api";
+import { ContainerView } from "./Container";
+import { DependenciesView } from "./Dependency";
 import { EditorView } from "./Editor";
+import { EventsView } from "./Event";
+import { ApplicationTemplate } from "./Layout";
 
 router.register([
   new Route({
-    id: "editor",
-    name: "Editor",
-    path: "/",
-    actions: [render(EditorView)]
-  }),
-  new Route({
-    id: "code",
-    name: "Code",
-    path: "/api",
-    actions: [render(CodeView)],
+    id: "application",
+    actions: [render(ApplicationTemplate)],
     children: [
       new Route({
         id: "api",
         name: "API",
+        path: "/",
         actions: [render(ApiView)]
       }),
       new Route({
@@ -43,5 +40,11 @@ router.register([
         actions: [render(EventsView)]
       })
     ]
+  }),
+  new Route({
+    id: "editor",
+    name: "Editor",
+    path: "/editor",
+    actions: [render(EditorView)]
   })
 ]);

@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "@valkyr/security": "workspace:*",
+    "@valkyr/time": "workspace:*",
     "fast-equals": "4.0.3",
     "idb": "^7.1.1",
     "mingo": "6.2.1",

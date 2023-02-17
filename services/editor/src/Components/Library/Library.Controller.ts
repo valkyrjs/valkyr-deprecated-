@@ -1,9 +1,6 @@
 import { Controller } from "@valkyr/react";
 
-import { addBlock, BlockType } from "~Blocks/Block.Collection";
 import { closeModal } from "~Components/Modal";
-import { addNode } from "~ReactFlow/Data/Node.Collection";
-import { nodeTypes } from "~ReactFlow/Nodes/Node.Types";
 
 export class LibraryController extends Controller<{
   isOpen: boolean;
@@ -55,6 +52,7 @@ export class LibraryController extends Controller<{
           name: "Simple ToDo",
           description: "Obligatory Todo Sample",
           add: async () => {
+            /*
             const e1 = await addBlock("event", { name: "TaskAdded", data: [["name", "p:string"]], meta: [] });
             await addNode("event", e1);
             const e2 = await addBlock("event", { name: "TaskStateChanged", data: [["state", "p:boolean"]], meta: [] });
@@ -71,6 +69,7 @@ export class LibraryController extends Controller<{
             await addNode("state", s1);
             const r1 = await addBlock("reducer", { name: "TaskReducer", events: [e1, e2, e3], state: s1 });
             await addNode("reducer", r1);
+            */
             closeModal();
           }
         }
@@ -78,26 +77,28 @@ export class LibraryController extends Controller<{
     };
   }
 
-  #buildAdd(insertions: BlockInsertion[]): () => void {
+  #buildAdd(_: BlockInsertion[]): () => void {
     return async () => {
+      /*
       for (const insert of insertions) {
         const blockId = await addBlock(insert.type, insert.defaults);
         if (nodeTypes[insert.type] !== undefined) {
           addNode(insert.type, blockId);
         }
       }
+      */
       closeModal();
     };
   }
 }
 
 type BlockInsertion = {
-  type: BlockType;
+  type: string;
   defaults?: any;
 };
 
 type Block = {
-  type: BlockType;
+  type: string;
   description: string;
   add: () => void;
 };

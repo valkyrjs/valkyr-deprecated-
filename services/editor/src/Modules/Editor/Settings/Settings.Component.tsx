@@ -1,11 +1,10 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { CaretDoubleRight, Plus } from "phosphor-react";
+import { CaretDoubleRight } from "phosphor-react";
 import { Fragment } from "react";
 
-import { createTypeBlock } from "~Blocks/Type";
-import { TypeBlock } from "~Blocks/Type/Type.Component";
 import { Button } from "~Components/Button";
 import { Panel } from "~Components/Panel";
+import { TypeBlock } from "~Modules/Type";
 
 import { SettingsController } from "./Settings.Controller";
 
@@ -61,19 +60,6 @@ export const Settings = SettingsController.view(({ state: { types }, props: { is
                   {types.map((type) => (
                     <TypeBlock key={type.id} id={type.id} />
                   ))}
-                  <div className="mt-6 flex w-full flex-row justify-end px-2">
-                    <Button
-                      variant="primary"
-                      outline
-                      type="button"
-                      onClick={() => {
-                        createTypeBlock();
-                      }}
-                    >
-                      <Plus size={12}></Plus>
-                      <span>type</span>
-                    </Button>
-                  </div>
                 </Panel>
               </div>
             </Dialog.Panel>

@@ -1,3 +1,4 @@
+import { getLogicalTimestamp } from "@valkyr/time";
 import type { IDBPDatabase } from "idb";
 import { Query } from "mingo";
 import type { AnyVal, RawObject } from "mingo/types";
@@ -7,6 +8,7 @@ import { DBLogger, InsertLog, QueryLog, RemoveLog, ReplaceLog, UpdateLog } from 
 import {
   addOptions,
   Document,
+  DocumentMeta,
   DuplicateDocumentError,
   getInsertManyResult,
   getInsertOneResult,
@@ -68,7 +70,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
   async insertOne(data: PartialDocument<D>): Promise<InsertOneResult> {
     const logger = new InsertLog(this.name);
 
-    const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
+    const document = { ...data, id: data.id ?? crypto.randomUUID(), $meta: getMeta() } as D;
     if (await this.has(document.id)) {
       throw new DuplicateDocumentError(document, this);
     }
@@ -90,7 +92,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
     await Promise.all(
       data.map((data) => {
-        const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
+        const document = { ...data, id: data.id ?? crypto.randomUUID(), $meta: getMeta() } as D;
         documents.push(document);
         return tx.store.add(document);
       })
@@ -313,6 +315,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
 
     const { modified, document } = await update(criteria, operators, current);
     if (modified === true) {
+      document.$meta.updatedAt = Date.now();
       await tx.store.put(document);
     }
     await tx.done;
@@ -387,4 +390,12 @@ export function isObject(v: AnyVal): v is object {
   }
   const proto = Object.getPrototypeOf(v) as AnyVal;
   return (proto === OBJECT_PROTOTYPE || proto === null) && OBJECT_TAG === Object.prototype.toString.call(v);
+}
+
+export function getMeta(): DocumentMeta {
+  const now = getLogicalTimestamp();
+  return {
+    createdAt: now,
+    updatedAt: now
+  };
 }
