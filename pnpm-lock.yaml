@@ -153,7 +153,6 @@ importers:
     specifiers:
       '@types/pako': ^2.0.0
       '@valkyr/db': workspace:*
-      '@valkyr/jest': workspace:*
       monaco-editor: ^0.35.0
       pako: ^2.1.0
     dependencies:
@@ -161,7 +160,6 @@ importers:
       pako: 2.1.0
     devDependencies:
       '@types/pako': 2.0.0
-      '@valkyr/jest': link:../../configs/jest
       monaco-editor: 0.35.0
 
   packages/queue:

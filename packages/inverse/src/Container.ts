@@ -1,54 +1,17 @@
-import { MissingChildContainerError, MissingDependencyError } from "./Errors";
-import type { Filter, JSON, Tokens } from "./Types";
-
 /**
- * A simple dependency injection service using inversion of control principles
- * allowing the developer to program against TypeScript types or interfaces
- * with implementation details injected by service providers.
+ * A simple dependency injection container for TypeScript using string based tokens
+ * to develop against. Gives a single registration point for all dependencies and
+ * throws compilation errors when the contracts provided are not adhered to in the
+ * the application code.
  *
  * @author  Christoffer Rødvik <dev@kodemon.net>
  * @license MIT
  */
-export class Container<T extends Tokens<T>, C extends JSON = JSON> {
-  public readonly providers: Map<keyof T, T[keyof T]> = new Map();
-  public readonly contexts: Map<C, Container<T, C>> = new Map();
+export class Container<T extends Tokens> {
+  #registrars: T;
 
-  /*
-   |--------------------------------------------------------------------------------
-   | Contexts
-   |--------------------------------------------------------------------------------
-   |
-   | A container can have one or more contexts which represents a cloned version of
-   | the parent container. A context container is usually useful for when you want 
-   | different types of the same provider to exist within the same dependency scope
-   | under a unique filterable context.
-   |
-   */
-
-  /**
-   * Create a new container with the given context object. A context is an object
-   * we provide to the .where method used to query the container assigned to the
-   * given context object.
-   *
-   * @param context - Context object used to filter future .where requests.
-   */
-  public createContext(context: C): Container<T, C> {
-    return this.contexts.set(context, new Container<T, C>()).get(context) as Container<T, C>;
-  }
-
-  /**
-   * Create or retrieve a container based on a specific context container.
-   *
-   * @param filter - Method which receives the container context object used to
-   *                 filter the specific container we want to operate on.
-   */
-  public where(filter: Filter<C>): Container<T, C> {
-    for (const context of Array.from(this.contexts.keys())) {
-      if (filter(context)) {
-        return this.contexts.get(context) as Container<T, C>;
-      }
-    }
-    throw new MissingChildContainerError();
+  constructor(registrars: T) {
+    this.#registrars = registrars;
   }
 
   /*
@@ -58,44 +21,171 @@ export class Container<T extends Tokens<T>, C extends JSON = JSON> {
    */
 
   /**
-   * Check if a token has been registered in the singleton or transient map
-   * of the container.
+   * Check if a token has been registered.
    *
    * @param token - Token to verify.
    */
-  public has<K extends keyof T>(token: K): boolean {
-    return this.providers.has(token);
+  has<K extends keyof T>(token: K): boolean {
+    return this.#registrars[token] !== undefined;
   }
 
   /**
-   * Register a transient or singleton provider against the provided token.
-   *
-   * @param token    - Token to register.
-   * @param provider - Provider to register under the given token.
-   */
-  public set<K extends keyof T>(token: K, provider: T[K]): this {
-    this.providers.set(token, provider);
-    return this;
-  }
-
-  /**
-   * Get a transient or singleton provider instance.
+   * Get a registered dependency from the container.
    *
    * @param token - Token to retrieve dependency for.
-   * @param args  - Arguments to pass to a transient provider.
+   * @param args  - Arguments to pass to provider if required.
    */
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  public get<K extends keyof T>(
+  get<K extends keyof T, A extends ProviderArgs<T, K>>(
     token: K,
-    ...args: ConstructorParameters<T[K]>
-  ): T[K] extends Function ? InstanceType<T[K]> : T[K] {
-    const provider = this.providers.get(token);
-    if (!provider) {
-      throw new MissingDependencyError(token);
+    ...args: A
+  ): T[K] extends TransientToken<infer U>
+    ? InstanceType<U>
+    : T[K] extends FactoryToken<infer U>
+    ? ReturnType<U>
+    : T[K] extends SingletonToken<infer U>
+    ? U
+    : T[K] extends ContextToken<infer U, infer C>
+    ? (context: keyof C) => InstanceType<U>
+    : never {
+    const registrar = this.#registrars[token];
+    if (!registrar) {
+      throw new Container.MissingDependencyError(token);
     }
-    if (typeof provider === "function") {
-      return new (provider as any)(...(args as any));
+    switch (registrar.type) {
+      case "transient": {
+        return new registrar.value(...args);
+      }
+      case "factory": {
+        return registrar.value(...args);
+      }
+      case "singleton": {
+        return registrar.value;
+      }
+      case "context": {
+        // @ts-expect-error complex type does not get resolved correctly
+        return (context: string) => new registrar.context[context](...args);
+      }
     }
-    return provider;
   }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Errors
+   |--------------------------------------------------------------------------------
+   */
+
+  static MissingDependencyError = class extends Error {
+    constructor(token: string | number | symbol) {
+      super(`Dependency Violation: Failed to resolve unregistered dependency token: ${token.toString()}`);
+    }
+  };
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Utilities
+ |--------------------------------------------------------------------------------
+ */
+
+export function registerTransient<T extends AbstractClass>(token: string, value: T): TransientToken<T> {
+  return {
+    type: "transient" as const,
+    token,
+    value
+  };
+}
+
+export function registerFactory<T extends Factory>(token: string, value: T): FactoryToken<T> {
+  return {
+    type: "factory" as const,
+    token,
+    value
+  };
+}
+
+export function registerSingleton<T = any>(token: string, value: T): SingletonToken<T> {
+  return {
+    type: "singleton" as const,
+    token,
+    value
+  };
+}
+
+export function registerContext<T extends AbstractClass, C extends Context>(
+  token: string,
+  value: T,
+  context: C
+): ContextToken<T, C> {
+  return {
+    type: "context" as const,
+    token,
+    value,
+    context
+  };
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+type Tokens = {
+  [key: string]: TransientToken | FactoryToken | SingletonToken | ContextToken;
+};
+
+type ProviderArgs<T extends Token, K extends keyof T> = T[K] extends TransientToken<infer U>
+  ? ConstructorParameters<U>
+  : T[K] extends FactoryToken<infer U>
+  ? Parameters<U>
+  : T[K] extends ContextToken<infer U>
+  ? ConstructorParameters<U>
+  : never;
+
+type Token<T extends { value: any; context?: any } = any> = {
+  [key: string]:
+    | {
+        type: "transient" | "singleton" | "factory";
+        value: T["value"];
+      }
+    | {
+        type: "context";
+        value: T["value"];
+        context: T["context"];
+      };
+};
+
+type TransientToken<T extends AbstractClass = any> = {
+  type: "transient";
+  token: string;
+  value: T;
+};
+
+type FactoryToken<T extends Factory = any> = {
+  type: "factory";
+  token: string;
+  value: T;
+};
+
+type SingletonToken<T = any> = {
+  type: "singleton";
+  token: string;
+  value: T;
+};
+
+type ContextToken<T extends AbstractClass = any, C extends Context = any> = {
+  type: "context";
+  token: string;
+  value: T;
+  context: {
+    [K in keyof C]: C[K];
+  };
+};
+
+type AbstractClass = abstract new (...args: any[]) => any;
+
+type ProviderClass = new (...args: any[]) => any;
+
+type Factory = (...args: any[]) => any;
+
+type Context = { [key: string]: ProviderClass };

@@ -1,3 +1,7 @@
+export abstract class Payments {
+  abstract create(customerId: string, currency: Currency, amount: number): Promise<Payment>;
+}
+
 /*
  |--------------------------------------------------------------------------------
  | Types
@@ -16,13 +20,3 @@ export type Payment = {
 export type Status = "created" | "processing" | "failed" | "processed";
 
 export type Currency = "usd" | "eur" | "jpy";
-
-/*
- |--------------------------------------------------------------------------------
- | Service
- |--------------------------------------------------------------------------------
- */
-
-export abstract class Payments {
-  public abstract create(customerId: string, currency: Currency, amount: number): Promise<Payment>;
-}

@@ -1,3 +1,5 @@
+import { getLogicalTimestamp } from "@valkyr/time";
+
 import { clone } from "../src/Clone";
 import { Document } from "../src/Storage";
 
@@ -12,7 +14,11 @@ export const users: UserDocument[] = [
         alias: "Jane"
       }
     ],
-    interests: ["movies", "tv", "sports"]
+    interests: ["movies", "tv", "sports"],
+    $meta: {
+      createdAt: getLogicalTimestamp(),
+      updatedAt: getLogicalTimestamp()
+    }
   },
   {
     id: "user-2",
@@ -24,7 +30,11 @@ export const users: UserDocument[] = [
         alias: "John"
       }
     ],
-    interests: ["movies", "fitness", "dance"]
+    interests: ["movies", "fitness", "dance"],
+    $meta: {
+      createdAt: getLogicalTimestamp(),
+      updatedAt: getLogicalTimestamp()
+    }
   }
 ];
 

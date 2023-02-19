@@ -13,11 +13,7 @@
     "build": "tsc -b ./tsconfig.build.json",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf ./.turbo ./dist",
-    "lint": "eslint .",
-    "test": "jest"
-  },
-  "jest": {
-    "preset": "@valkyr/jest"
+    "lint": "eslint ."
   },
   "eslintConfig": {
     "parserOptions": {
@@ -41,7 +37,6 @@
   },
   "devDependencies": {
     "@types/pako": "^2.0.0",
-    "@valkyr/jest": "workspace:*",
     "monaco-editor": "^0.35.0"
   }
 }
