@@ -12,21 +12,27 @@ for (const pkg of pkgs) {
 
   json.version = version;
 
-  for (const key of json.dependencies) {
-    if (json.dependencies[key].includes("workspace:*")) {
-      json.dependencies[key] = version;
+  if (json.dependencies !== undefined) {
+    for (const key in json.dependencies) {
+      if (json.dependencies[key].includes("workspace:*")) {
+        json.dependencies[key] = version;
+      }
     }
   }
 
-  for (const key of json.devDependencies) {
-    if (json.devDependencies[key].includes("workspace:*")) {
-      json.devDependencies[key] = version;
+  if (json.devDependencies !== undefined) {
+    for (const key in json.devDependencies) {
+      if (json.devDependencies[key].includes("workspace:*")) {
+        json.devDependencies[key] = version;
+      }
     }
   }
 
-  for (const key of json.peerDependencies) {
-    if (json.peerDependencies[key].includes("workspace:*")) {
-      json.peerDependencies[key] = version;
+  if (json.peerDependencies !== undefined) {
+    for (const key in json.peerDependencies) {
+      if (json.peerDependencies[key].includes("workspace:*")) {
+        json.peerDependencies[key] = version;
+      }
     }
   }
 
