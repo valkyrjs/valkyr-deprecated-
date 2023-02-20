@@ -1,6 +1,6 @@
-import { Collection } from "../src/Collection";
-import { MemoryStorage } from "../src/Databases/MemoryDb.Storage";
-import { users } from "./Users.Mock";
+import { Collection } from "../src/Collection.js";
+import { MemoryStorage } from "../src/Databases/MemoryDb.Storage.js";
+import { users } from "./Users.Mock.js";
 
 /*
  |--------------------------------------------------------------------------------

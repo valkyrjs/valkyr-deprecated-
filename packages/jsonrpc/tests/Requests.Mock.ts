@@ -1,7 +1,7 @@
-import { makeNotificationFactory } from "../src/Notification";
-import { makeRequestFactory } from "../src/Request";
-import { consumer } from "./Consumer.Mock";
-import { provider } from "./Provider.Mock";
+import { makeNotificationFactory } from "../src/Notification.js";
+import { makeRequestFactory } from "../src/Request.js";
+import { consumer } from "./Consumer.Mock.js";
+import { provider } from "./Provider.Mock.js";
 
 consumer.methods.set("subtract.positional", async ([a, b]) => {
   return a - b;

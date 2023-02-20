@@ -1,3 +1,3 @@
-export * from "./HLC";
-export * from "./Timestamp";
-export * from "./Utilities";
+export * from "./HLC.js";
+export * from "./Timestamp.js";
+export * from "./Utilities.js";

@@ -1,7 +1,7 @@
-import { crypto } from "../Crypto";
-import { ObserverStorage } from "../Databases/Observer.Storage";
-import { Document, Storage } from "../Storage";
-import { Criteria, isMatch } from "./IsMatch";
+import { crypto } from "../Crypto.js";
+import { ObserverStorage } from "../Databases/Observer.Storage.js";
+import { Document, Storage } from "../Storage/mod.js";
+import { Criteria, isMatch } from "./IsMatch.js";
 
 export class Store {
   private constructor(private storage: Storage) {}

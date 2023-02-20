@@ -1,7 +1,7 @@
-import type { EventRecord } from "../Event/index";
-import { Queue } from "../Queue";
-import { FILTER_ALL, FILTER_CONTINUOUS, FILTER_ONCE } from "./Filters";
-import { Projection, ProjectionEventHandler, ProjectionHandler, ProjectionState } from "./Projection";
+import type { EventRecord } from "../Event/mod.js";
+import { Queue } from "../Queue.js";
+import { FILTER_ALL, FILTER_CONTINUOUS, FILTER_ONCE } from "./Filters.js";
+import { Projection, ProjectionEventHandler, ProjectionHandler, ProjectionState } from "./Projection.js";
 
 export class Projector<Record extends EventRecord> {
   #listeners: Listeners<Record> = {};

@@ -1,5 +1,5 @@
-import type { EventRecord } from "./Event/index";
-import { Queue } from "./Queue";
+import type { EventRecord } from "./Event/mod.js";
+import { Queue } from "./Queue.js";
 
 export class Validator<Record extends EventRecord> {
   #listeners: Listeners<any> = {};

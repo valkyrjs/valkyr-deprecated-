@@ -1,4 +1,4 @@
-import { Event, EventToRecord, makeEvent, makeReducer } from "../src";
+import { Event, EventToRecord, makeEvent, makeReducer } from "../src/index.js";
 
 export type State = {
   title: string;

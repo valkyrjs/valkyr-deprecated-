@@ -1,13 +1,6 @@
-import type { Collection as ValkyrDbCollection } from "@valkyr/db";
-import {
-  createEventRecord,
-  EventRecord,
-  EventStatus,
-  getLogicalTimestamp,
-  Projector,
-  ReduceHandler,
-  Validator
-} from "@valkyr/ledger";
+import type { Collection as ValkyrDbCollection, Document } from "@valkyr/db";
+import { createEventRecord, EventRecord, EventStatus, Projector, ReduceHandler, Validator } from "@valkyr/ledger";
+import { getLogicalTimestamp } from "@valkyr/time";
 import type { Collection as MongoDbCollection } from "mongodb";
 import { Subject } from "rxjs";
 
@@ -15,7 +8,9 @@ export class EventStore<Environment extends "server" | "client", Record extends 
   readonly inserted = new Subject<{ record: Record; hydrated: boolean }>();
 
   constructor(
-    readonly collection: Environment extends "client" ? ValkyrDbCollection<Record> : MongoDbCollection<Record>,
+    readonly collection: Environment extends "client"
+      ? ValkyrDbCollection<Document<Record>>
+      : MongoDbCollection<Record>,
     readonly validator: Validator<Record> = new Validator<Record>(),
     readonly projector: Projector<Record> = new Projector<Record>()
   ) {

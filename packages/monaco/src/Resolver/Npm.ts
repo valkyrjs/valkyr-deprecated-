@@ -1,6 +1,6 @@
 import pako from "pako";
 
-import { untar, UntarFile } from "../Untar";
+import { untar, UntarFile } from "../Untar/mod.js";
 
 /*
  |--------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
-import { Collection } from "../Collection";
-import { Document } from "../Storage";
-import { MemoryStorage } from "./MemoryDb.Storage";
-import { Registrars } from "./Registrars";
+import { Collection } from "../Collection.js";
+import { Document } from "../Storage/mod.js";
+import { MemoryStorage } from "./MemoryDb.Storage.js";
+import { Registrars } from "./Registrars.js";
 
 export class MemoryDatabase<T extends Record<string, Document>> {
   readonly #collections = new Map<keyof T, Collection<T[keyof T]>>();

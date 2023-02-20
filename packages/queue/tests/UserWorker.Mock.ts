@@ -1,4 +1,4 @@
-import { Worker } from "../src";
+import { Worker } from "../src/index.js";
 
 export const completed = new Set<string>();
 export const failed = new Set<string>();

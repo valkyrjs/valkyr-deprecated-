@@ -1,6 +1,6 @@
 import type { RoutedResult, Router } from "@valkyr/router";
 
-import type { Controller, JsonLike } from "./Controller";
+import type { Controller, JsonLike } from "./Controller.js";
 
 export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router> {
   readonly routes: string[] = [];

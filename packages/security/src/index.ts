@@ -2,11 +2,11 @@ import * as Jose from "jose";
 
 export type KeyLike = Jose.KeyLike;
 
-export * from "./AccessKey";
-export * from "./Base64url";
-export * from "./Hash";
-export * from "./KeyPair";
-export * from "./Merkle";
-export * from "./SecretKey";
-export * from "./Signature";
-export * from "./Vault";
+export * from "./AccessKey.js";
+export * from "./Base64url.js";
+export * from "./Hash.js";
+export * from "./KeyPair.js";
+export * from "./Merkle.js";
+export * from "./SecretKey.js";
+export * from "./Signature.js";
+export * from "./Vault.js";

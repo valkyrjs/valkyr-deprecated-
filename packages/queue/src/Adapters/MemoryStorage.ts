@@ -1,5 +1,5 @@
-import { Job, Storage } from "../Storage";
-import { Worker } from "../Worker";
+import { Job, Storage } from "../Storage.js";
+import { Worker } from "../Worker.js";
 
 export class MemoryStorage<W extends Worker> implements Storage<W> {
   #pending: Job<W>[] = [];

@@ -5,7 +5,9 @@
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
-  "main": "./src/EventStore.ts",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -33,6 +35,7 @@
   },
   "dependencies": {
     "@valkyr/ledger": "workspace:*",
+    "@valkyr/time": "workspace:*",
     "rxjs": "^7.8.0"
   },
   "devDependencies": {

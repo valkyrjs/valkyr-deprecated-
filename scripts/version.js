@@ -8,17 +8,27 @@ const version = process.argv[process.argv.indexOf("--version") + 1]
 const pkgs = fs.readdirSync(pkgsDir);
 for (const pkg of pkgs) {
   const pkgDir = path.join(pkgsDir, pkg, "package.json");
-  const json = [];
-  for (const line of fs.readFileSync(pkgDir, "utf-8").split("\n")) {
-    if (line.includes("version")) {
-      json.push(line.replace("0.0.0", version));
-    } else if (line.includes("workspace:*")) {
-      json.push(line.replace("workspace:*", version));
-    } else if (line.includes("main")) {
-      json.push("  \"main\": \"./dist/index.js\",\n  \"types\": \"./dist/index.d.ts\",");
-    } else {
-      json.push(line);
+  const json = JSON.parse(fs.readFileSync(pkgDir, "utf-8"));
+
+  json.version = version;
+
+  for (const key of json.dependencies) {
+    if (json.dependencies[key].includes("workspace:*")) {
+      json.dependencies[key] = version;
     }
   }
-  fs.writeFileSync(pkgDir, json.join("\n"));
+
+  for (const key of json.devDependencies) {
+    if (json.devDependencies[key].includes("workspace:*")) {
+      json.devDependencies[key] = version;
+    }
+  }
+
+  for (const key of json.peerDependencies) {
+    if (json.peerDependencies[key].includes("workspace:*")) {
+      json.peerDependencies[key] = version;
+    }
+  }
+
+  fs.writeFileSync(pkgDir, JSON.stringify(json, null, 2));
 }

@@ -1,4 +1,4 @@
-import type { RawObject } from "mingo/types";
+import type { RawObject } from "mingo/types.js";
 
 export function getPositionalFilter(
   criteria: RawObject,

@@ -1,4 +1,4 @@
-import { RpcError } from "./Errors";
+import { RpcError } from "./Errors.js";
 
 export type Response = {
   /**

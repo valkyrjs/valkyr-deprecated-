@@ -60,9 +60,9 @@ importers:
 
   configs/typescript:
     specifiers:
-      typescript: 4.9.4
+      typescript: beta
     dependencies:
-      typescript: 4.9.4
+      typescript: 5.0.0-beta
 
   packages/access:
     specifiers:
@@ -118,10 +118,12 @@ importers:
       '@valkyr/db': workspace:*
       '@valkyr/jest': workspace:*
       '@valkyr/ledger': workspace:*
+      '@valkyr/time': workspace:*
       mongodb: ^4.13.0
       rxjs: ^7.8.0
     dependencies:
       '@valkyr/ledger': link:../ledger
+      '@valkyr/time': link:../time
       rxjs: 7.8.0
     devDependencies:
       '@valkyr/db': link:../db
@@ -9016,6 +9018,12 @@ packages:
     resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+
+  /typescript/5.0.0-beta:
+    resolution: {integrity: sha512-+SSabbSXG5mtF+QGdV9uXXt9Saq1cSyI6hSG7znhaLoquleJpnmfkwSxFngK9c2fWWi1W/263TuzXQOsIcdjjA==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: false
 
   /typeson-registry/1.0.0-alpha.39:
     resolution: {integrity: sha512-NeGDEquhw+yfwNhguLPcZ9Oj0fzbADiX4R0WxvoY8nGhy98IbzQy1sezjoEFWOywOboj/DWehI+/aUlRVrJnnw==}

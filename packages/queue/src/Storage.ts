@@ -1,4 +1,4 @@
-import type { Worker } from "./Worker";
+import type { Worker } from "./Worker.js";
 
 export interface Storage<W extends Worker> {
   /**

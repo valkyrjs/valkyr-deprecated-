@@ -1,7 +1,7 @@
 import { getLogicalTimestamp } from "@valkyr/time";
 
-import { clone } from "../src/Clone";
-import { Document } from "../src/Storage";
+import { clone } from "../src/Clone.js";
+import { Document } from "../src/Storage/mod.js";
 
 export const users: UserDocument[] = [
   {

@@ -1,7 +1,7 @@
 import { createMemoryHistory } from "history";
 
-import { Route } from "../src/Route";
-import { Router } from "../src/Router";
+import { Route } from "../src/Route.js";
+import { Router } from "../src/Router.js";
 
 const routes: Route[] = [
   new Route({ name: "Test-1", path: "/test-1", actions: [] }),

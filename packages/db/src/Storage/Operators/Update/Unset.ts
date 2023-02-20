@@ -1,6 +1,6 @@
-import { dot } from "../../../Dot";
-import { Document } from "../../Storage";
-import type { UpdateOperators } from "./Update";
+import { dot } from "../../../Dot.js";
+import { Document } from "../../Storage.js";
+import type { UpdateOperators } from "./Update.js";
 
 export function $unset(document: Document, $unset: UpdateOperators["$unset"] = {}): boolean {
   let modified = false;

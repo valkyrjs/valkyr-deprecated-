@@ -1,10 +1,10 @@
 import { deepEqual } from "fast-equals";
 import { Query } from "mingo";
-import type { RawObject } from "mingo/types";
+import type { RawObject } from "mingo/types.js";
 
-import { dot } from "../../../Dot";
-import { Document } from "../../Storage";
-import type { UpdateOperators } from "./Update";
+import { dot } from "../../../Dot.js";
+import { Document } from "../../Storage.js";
+import type { UpdateOperators } from "./Update.js";
 
 export function $push(document: Document, operator: UpdateOperators["$push"] = {}): boolean {
   let modified = false;

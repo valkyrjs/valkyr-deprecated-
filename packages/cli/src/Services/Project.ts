@@ -1,5 +1,6 @@
+import path from "node:path";
+
 import fs from "fs-extra";
-import path from "path";
 
 export function getValkyrConfiguration(): ProjectConfiguration {
   const hasPackage = fs.existsSync(path.join(process.cwd(), "package.json"));

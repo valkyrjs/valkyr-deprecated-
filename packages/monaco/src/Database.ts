@@ -1,6 +1,6 @@
 import { Document, IndexedDatabase } from "@valkyr/db";
 
-import type { PackageJSON } from "./Resolver/Unpkg.Json";
+import type { PackageJSON } from "./Resolver/Unpkg.Json.js";
 
 export const db = new IndexedDatabase<Collections>({
   name: "valkyr:packages",

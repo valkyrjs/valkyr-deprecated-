@@ -1,4 +1,4 @@
-import { hashCodeQuery } from "../src/Hash";
+import { hashCodeQuery } from "../src/Hash.js";
 
 describe("hashCodeQuery", () => {
   it("should produce hash code for query and options", () => {

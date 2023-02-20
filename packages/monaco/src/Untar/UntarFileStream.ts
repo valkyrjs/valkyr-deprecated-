@@ -1,5 +1,5 @@
-import { PaxHeader } from "./PaxHeader";
-import { UntarStream } from "./UntarStream";
+import { PaxHeader } from "./PaxHeader.js";
+import { UntarStream } from "./UntarStream.js";
 
 export class UntarFileStream {
   #stream: UntarStream;

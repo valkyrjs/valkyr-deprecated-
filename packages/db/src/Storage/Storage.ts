@@ -1,12 +1,12 @@
-import { Cursor } from "mingo/cursor";
-import { RawObject } from "mingo/types";
+import { Cursor } from "mingo/cursor.js";
+import { RawObject } from "mingo/types.js";
 import { Subject } from "rxjs";
 
-import { BroadcastChannel, StorageBroadcast } from "../Broadcast";
-import { crypto } from "../Crypto";
-import { InsertManyResult, InsertOneResult } from "./Operators/Insert";
-import { RemoveResult } from "./Operators/Remove";
-import { UpdateOperators, UpdateResult } from "./Operators/Update";
+import { BroadcastChannel, StorageBroadcast } from "../Broadcast.js";
+import { crypto } from "../Crypto.js";
+import { InsertManyResult, InsertOneResult } from "./Operators/Insert/mod.js";
+import { RemoveResult } from "./Operators/Remove/mod.js";
+import { UpdateOperators, UpdateResult } from "./Operators/Update/mod.js";
 
 export abstract class Storage<D extends Document = Document> {
   readonly observable = {

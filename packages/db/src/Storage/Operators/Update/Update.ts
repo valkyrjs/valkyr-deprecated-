@@ -1,12 +1,12 @@
-import type { RawObject } from "mingo/types";
+import type { RawObject } from "mingo/types.js";
 
-import { clone } from "../../../Clone";
-import { Document } from "../../Storage";
-import { $inc } from "./Inc";
-import { $pull } from "./Pull";
-import { $push } from "./Push";
-import { $set } from "./Set";
-import { $unset } from "./Unset";
+import { clone } from "../../../Clone.js";
+import { Document } from "../../Storage.js";
+import { $inc } from "./Inc.js";
+import { $pull } from "./Pull.js";
+import { $push } from "./Push.js";
+import { $set } from "./Set.js";
+import { $unset } from "./Unset.js";
 
 export function update<D extends Document>(criteria: RawObject, operators: UpdateOperators, document: D) {
   const updatedDocument = clone(document);

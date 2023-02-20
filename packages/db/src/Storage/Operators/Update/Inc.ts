@@ -1,12 +1,12 @@
 import { deepEqual } from "fast-equals";
 import { Query } from "mingo";
-import type { RawObject } from "mingo/types";
+import type { RawObject } from "mingo/types.js";
 
-import { clone } from "../../../Clone";
-import { dot } from "../../../Dot";
-import { Document } from "../../Storage";
-import type { UpdateOperators } from "./Update";
-import { getPositionalFilter } from "./Utils";
+import { clone } from "../../../Clone.js";
+import { dot } from "../../../Dot.js";
+import { Document } from "../../Storage.js";
+import type { UpdateOperators } from "./Update.js";
+import { getPositionalFilter } from "./Utils.js";
 
 /**
  * Execute a $inc based operators.

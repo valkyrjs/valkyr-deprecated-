@@ -1,9 +1,9 @@
 import { Query } from "mingo";
 
-import { Collection } from "../Collection";
-import { addOptions, ChangeEvent, Document, Options } from "../Storage";
-import { Criteria } from "./IsMatch";
-import { Store } from "./Store";
+import { Collection } from "../Collection.js";
+import { addOptions, ChangeEvent, Document, Options } from "../Storage/mod.js";
+import { Criteria } from "./IsMatch.js";
+import { Store } from "./Store.js";
 
 export function observe(
   collection: Collection,

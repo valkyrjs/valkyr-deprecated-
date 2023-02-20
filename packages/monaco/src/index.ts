@@ -1,1 +1,1 @@
-export * from "./Resolver/Package";
+export * from "./Resolver/Package.js";

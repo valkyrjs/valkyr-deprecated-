@@ -1,7 +1,7 @@
 import { getLogicalTimestamp } from "@valkyr/time";
 
-import { crypto } from "../Crypto";
-import type { Event } from "./Event";
+import { crypto } from "../Crypto.js";
+import type { Event } from "./Event.js";
 
 export function createEventRecord<E extends Event>(stream: string, event: E): EventRecord<E> {
   const timestamp = getLogicalTimestamp();

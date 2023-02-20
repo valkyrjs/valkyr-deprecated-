@@ -1,10 +1,10 @@
 import { getLogicalTimestamp } from "@valkyr/time";
 import type { IDBPDatabase } from "idb";
 import { Query } from "mingo";
-import type { AnyVal, RawObject } from "mingo/types";
+import type { AnyVal, RawObject } from "mingo/types.js";
 
-import { crypto } from "../Crypto";
-import { DBLogger, InsertLog, QueryLog, RemoveLog, ReplaceLog, UpdateLog } from "../Logger";
+import { crypto } from "../Crypto.js";
+import { DBLogger, InsertLog, QueryLog, RemoveLog, ReplaceLog, UpdateLog } from "../Logger.js";
 import {
   addOptions,
   Document,
@@ -22,8 +22,8 @@ import {
   update,
   UpdateOperators,
   UpdateResult
-} from "../Storage";
-import { IndexedDbCache } from "./IndexedDb.Cache";
+} from "../Storage/mod.js";
+import { IndexedDbCache } from "./IndexedDb.Cache.js";
 
 const OBJECT_PROTOTYPE = Object.getPrototypeOf({}) as AnyVal;
 const OBJECT_TAG = "[object Object]";

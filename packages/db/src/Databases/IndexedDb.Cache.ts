@@ -1,7 +1,7 @@
-import type { RawObject } from "mingo/types";
+import type { RawObject } from "mingo/types.js";
 
-import { hashCodeQuery } from "../Hash";
-import { Document, Options } from "../Storage";
+import { hashCodeQuery } from "../Hash.js";
+import { Document, Options } from "../Storage/mod.js";
 
 export class IndexedDbCache<D extends Document = Document> {
   readonly #cache = new Map<number, string[]>();

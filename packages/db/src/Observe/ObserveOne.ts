@@ -1,6 +1,6 @@
-import { Collection } from "../Collection";
-import type { Document } from "../Storage";
-import { Criteria, isMatch } from "./IsMatch";
+import { Collection } from "../Collection.js";
+import type { Document } from "../Storage/mod.js";
+import { Criteria, isMatch } from "./IsMatch.js";
 
 export function observeOne(
   collection: Collection,

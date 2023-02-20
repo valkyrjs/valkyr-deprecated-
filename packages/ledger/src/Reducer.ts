@@ -1,4 +1,4 @@
-import type { EventRecord } from "./Event/index";
+import type { EventRecord } from "./Event/mod.js";
 
 export function makeReducer<S extends {}, E extends EventRecord>(
   reducer: Reducer<S, E>,

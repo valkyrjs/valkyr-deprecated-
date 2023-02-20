@@ -1,7 +1,7 @@
-import { db, File, Package } from "../Database";
-import { getNpmPackageFiles } from "./Npm";
-import { isNativePackage } from "./Package.Native";
-import { PackageJSON, parsePackageJson } from "./Unpkg.Json";
+import { db, File, Package } from "../Database.js";
+import { getNpmPackageFiles } from "./Npm.js";
+import { isNativePackage } from "./Package.Native.js";
+import { PackageJSON, parsePackageJson } from "./Unpkg.Json.js";
 
 // const FILE_IMPORT_EXPORT_SEARCH = /^(import|export)\s+.*?from\s+["'](.+?)["'];$/gm;
 // const IMPORT_EXPORT_REGEX = /^(import|export)\s+.*?from\s+["'](.+?)["'];$/;

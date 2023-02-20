@@ -1,6 +1,6 @@
-import { Notification } from "./Notification";
-import { Request } from "./Request";
-import { ErrorResponse, SuccessResponse } from "./Response";
+import { Notification } from "./Notification.js";
+import { Request } from "./Request.js";
+import { ErrorResponse, SuccessResponse } from "./Response.js";
 
 export interface Provider {
   /**

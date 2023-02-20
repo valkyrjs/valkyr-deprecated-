@@ -1,6 +1,6 @@
-import { Attributes } from "./Attributes";
-import { clone } from "./Clone";
-import { RolePermission, RolePermissions } from "./RolePermission";
+import { Attributes } from "./Attributes.js";
+import { clone } from "./Clone.js";
+import { RolePermission, RolePermissions } from "./RolePermission.js";
 
 /*
  |--------------------------------------------------------------------------------

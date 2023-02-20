@@ -1,6 +1,6 @@
 import { match, pathToRegexp } from "path-to-regexp";
 
-import { Action } from "./Action";
+import { Action } from "./Action.js";
 
 /*
  |--------------------------------------------------------------------------------

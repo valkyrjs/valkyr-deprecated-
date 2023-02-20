@@ -1,2 +1,2 @@
-export * from "./Containers/MongoDbContainer";
-export * from "./Utilities/WaitForExpect";
+export * from "./Containers/MongoDbContainer.js";
+export * from "./Utilities/WaitForExpect.js";

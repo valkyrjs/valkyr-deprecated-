@@ -1,7 +1,7 @@
 import { Query } from "mingo";
-import { RawObject } from "mingo/types";
+import { RawObject } from "mingo/types.js";
 
-import { crypto } from "../Crypto";
+import { crypto } from "../Crypto.js";
 import {
   addOptions,
   Document,
@@ -17,7 +17,7 @@ import {
   update,
   UpdateOperators,
   UpdateResult
-} from "../Storage";
+} from "../Storage/mod.js";
 
 export class MemoryStorage<D extends Document = Document> extends Storage<D> {
   readonly #documents = new Map<string, D>();

@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 
-import { ControllerRefs } from "./ControllerRefs";
+import { ControllerRefs } from "./ControllerRefs.js";
 
 export type ControllerClass = {
   new (state: any, pushState: Function): any;

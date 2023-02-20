@@ -2,15 +2,15 @@ import type { BrowserHistory, HashHistory, Location, MemoryHistory } from "histo
 import { match } from "path-to-regexp";
 import { Subject, Subscription } from "rxjs";
 
-import { Redirect, RenderProps, response } from "./Action";
+import { Redirect, RenderProps, response } from "./Action.js";
 import {
   ActionRedirected,
   ActionRejectedException,
   RenderActionMissingException,
   RouteNotFoundException
-} from "./Exceptions";
-import { Resolved } from "./Resolved";
-import { Route } from "./Route";
+} from "./Exceptions.js";
+import { Resolved } from "./Resolved.js";
+import { Route } from "./Route.js";
 
 export class Router<Component = unknown> {
   #base: string;

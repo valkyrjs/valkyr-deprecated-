@@ -1,10 +1,10 @@
 import type { ChangeEvent, Collection, SubscribeToMany, SubscribeToSingle, SubscriptionOptions } from "@valkyr/db";
 import type { Observable, Subject, Subscription } from "rxjs";
 
-import { ControllerClass, ReactComponent, ReservedPropertyMembers } from "./Controller.Types";
-import { makeControllerView, ViewOptions } from "./Controller.View";
-import { ControllerRefs } from "./ControllerRefs";
-import { Debounce } from "./Debounce";
+import { ControllerClass, ReactComponent, ReservedPropertyMembers } from "./Controller.Types.js";
+import { makeControllerView, ViewOptions } from "./Controller.View.js";
+import { ControllerRefs } from "./ControllerRefs.js";
+import { Debounce } from "./Debounce.js";
 
 export class Controller<State extends JsonLike = {}, Props extends JsonLike = {}> {
   state: State = {} as State;

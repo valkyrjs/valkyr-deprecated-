@@ -1,4 +1,4 @@
-import { request } from "./Requests.Mock";
+import { request } from "./Requests.Mock.js";
 
 it("should handle rpc call with positional parameters", async () => {
   await expect(request.subtract.positional([42, 23], 1)).resolves.toEqual(19);

@@ -1,5 +1,5 @@
-import { Provider } from "./Provider";
-import { ErrorResponse, SuccessResponse } from "./Response";
+import { Provider } from "./Provider.js";
+import { ErrorResponse, SuccessResponse } from "./Response.js";
 
 /**
  * Create a new JSON RPC 2.0 request factory with the given method and parameter

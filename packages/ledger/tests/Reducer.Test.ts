@@ -1,5 +1,5 @@
-import { createEventRecord } from "../src";
-import { events, reducer } from "./Event.Mock";
+import { createEventRecord } from "../src/index.js";
+import { events, reducer } from "./Event.Mock.js";
 
 /*
  |--------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
-import type { EventRecord } from "../Event/index";
-import type { ProjectionFilter } from "./Filters";
-import type { Projector } from "./Projector";
+import type { EventRecord } from "../Event/mod.js";
+import type { ProjectionFilter } from "./Filters.js";
+import type { Projector } from "./Projector.js";
 
 export class Projection<Record extends EventRecord> {
   #projector: Projector<Record>;

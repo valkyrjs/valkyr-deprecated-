@@ -1,6 +1,6 @@
-import { Collection, DuplicateDocumentError } from "../src";
-import { MemoryStorage } from "../src/Databases/MemoryDb.Storage";
-import { users } from "./Users.Mock";
+import { MemoryStorage } from "../src/Databases/MemoryDb.Storage.js";
+import { Collection, DuplicateDocumentError } from "../src/index.js";
+import { users } from "./Users.Mock.js";
 
 /*
  |--------------------------------------------------------------------------------

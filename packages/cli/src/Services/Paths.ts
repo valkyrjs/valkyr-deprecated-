@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 
 export const ROOT_PATH = path
   .dirname(import.meta.url)

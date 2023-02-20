@@ -1,10 +1,10 @@
 import { IDBPDatabase, openDB } from "idb/with-async-ittr";
 
-import { Collection } from "../Collection";
-import { DBLogger } from "../Logger";
-import { Document } from "../Storage";
-import { IndexedDbStorage } from "./IndexedDb.Storage";
-import { Registrars } from "./Registrars";
+import { Collection } from "../Collection.js";
+import { DBLogger } from "../Logger.js";
+import { Document } from "../Storage/mod.js";
+import { IndexedDbStorage } from "./IndexedDb.Storage.js";
+import { Registrars } from "./Registrars.js";
 
 function log() {}
 

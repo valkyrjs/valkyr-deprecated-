@@ -1,7 +1,7 @@
 import { IDBPDatabase, openDB } from "idb/with-async-ittr";
 
-import { Job, Storage } from "../Storage";
-import { Worker } from "../Worker";
+import { Job, Storage } from "../Storage.js";
+import { Worker } from "../Worker.js";
 
 const stores = ["pending", "failed", "completed"];
 const indexes: [string, IDBIndexParameters?][] = [["id", { unique: true }]];

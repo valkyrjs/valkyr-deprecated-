@@ -23,6 +23,8 @@
   },
   "material-icon-theme.files.associations": {
     "index.ts": "tree",
+    "main.ts": "tree",
+    "mod.ts": "tree",
     "config.ts": "settings",
     "*.access.ts": "key",
     "*.database.ts": "database",

@@ -1,4 +1,4 @@
-import { Role } from "../src/Role";
+import { Role } from "../dist/src/Role.js";
 
 export class TestRole extends Role<TestRolePermissions> {
   static getPermissions({ test }: Partial<TestRole["permissions"]>): TestRole["permissions"] {

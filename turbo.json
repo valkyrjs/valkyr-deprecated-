@@ -9,7 +9,8 @@
     },
     "build": {
       "inputs": ["tsconfig.json", "tsconfig.build.json", "src/**"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "dependsOn": ["^build"]
     },
     "test": {
       "inputs": ["src/**", "tests/**"]

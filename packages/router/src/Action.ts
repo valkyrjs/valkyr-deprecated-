@@ -1,4 +1,4 @@
-import type { Resolved } from "./Resolved";
+import type { Resolved } from "./Resolved.js";
 
 /*
  |--------------------------------------------------------------------------------

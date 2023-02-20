@@ -1,5 +1,5 @@
-import { Provider } from "./Provider";
-import { Params, Request } from "./Request";
+import { Provider } from "./Provider.js";
+import { Params, Request } from "./Request.js";
 
 /**
  * Create a new JSON RPC 2.0 notification factory with the given method and parameter

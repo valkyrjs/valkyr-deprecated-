@@ -1,9 +1,9 @@
-import type { RawObject } from "mingo/types";
+import type { RawObject } from "mingo/types.js";
 import { Observable, Subscription } from "rxjs";
 
-import { IndexedDbStorage } from "./Databases/IndexedDb.Storage";
-import { MemoryStorage } from "./Databases/MemoryDb.Storage";
-import { observe, observeOne } from "./Observe";
+import { IndexedDbStorage } from "./Databases/IndexedDb.Storage.js";
+import { MemoryStorage } from "./Databases/MemoryDb.Storage.js";
+import { observe, observeOne } from "./Observe/mod.js";
 import {
   ChangeEvent,
   Document,
@@ -14,7 +14,7 @@ import {
   RemoveResult,
   UpdateOperators,
   UpdateResult
-} from "./Storage";
+} from "./Storage/mod.js";
 
 /*
  |--------------------------------------------------------------------------------

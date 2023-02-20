@@ -1,7 +1,7 @@
 import { Query } from "mingo";
-import { RawObject } from "mingo/types";
+import { RawObject } from "mingo/types.js";
 
-import { Document } from "../Storage";
+import { Document } from "../Storage/mod.js";
 
 export type Criteria = RawObject | undefined;
 

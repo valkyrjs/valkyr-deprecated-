@@ -1,4 +1,4 @@
-import { UntarFileStream } from "./UntarFileStream";
+import { UntarFileStream } from "./UntarFileStream.js";
 
 export function untar(arrayBuffer: ArrayBuffer): UntarFile[] {
   const files = [];

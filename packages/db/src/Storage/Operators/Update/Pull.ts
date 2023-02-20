@@ -1,10 +1,10 @@
 import { Query } from "mingo";
-import type { RawObject } from "mingo/types";
+import type { RawObject } from "mingo/types.js";
 
-import { dot } from "../../../Dot";
-import { PullUpdateArrayError } from "../../Errors";
-import { Document } from "../../Storage";
-import type { UpdateOperators } from "./Update";
+import { dot } from "../../../Dot.js";
+import { PullUpdateArrayError } from "../../Errors.js";
+import { Document } from "../../Storage.js";
+import type { UpdateOperators } from "./Update.js";
 
 export function $pull(document: Document, operator: UpdateOperators["$pull"] = {}): boolean {
   let modified = false;

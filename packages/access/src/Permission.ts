@@ -1,5 +1,5 @@
-import { Attributes as BaseAttributes } from "./Attributes";
-import type { Value } from "./RolePermission";
+import { Attributes as BaseAttributes } from "./Attributes.js";
+import type { Value } from "./RolePermission.js";
 
 export const PERMISSION_DENIED_MESSAGE = "Permission denied";
 

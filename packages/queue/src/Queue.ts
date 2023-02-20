@@ -1,8 +1,8 @@
 import { Subject } from "rxjs";
 
-import { MemoryStorage } from "./Adapters/MemoryStorage";
-import { Job, Payload, Storage } from "./Storage";
-import { Worker } from "./Worker";
+import { MemoryStorage } from "./Adapters/MemoryStorage.js";
+import { Job, Payload, Storage } from "./Storage.js";
+import { Worker } from "./Worker.js";
 
 export class Queue<W extends Worker> {
   status: Status = "idle";

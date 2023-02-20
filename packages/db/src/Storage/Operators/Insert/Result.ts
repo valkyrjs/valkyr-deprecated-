@@ -1,4 +1,4 @@
-import type { Document } from "../../Storage";
+import type { Document } from "../../Storage.js";
 
 export function getInsertManyResult(documents: Document[]): InsertManyResult {
   return {

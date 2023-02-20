@@ -1,6 +1,6 @@
 import { createMemoryHistory } from "history";
 
-import { Query } from "../src/Query";
+import { Query } from "../src/Query.js";
 
 /*
  |--------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-import type { Empty, Event } from "./Event";
+import type { Empty, Event } from "./Event.js";
 
 export function makeEvent<E extends Event>(type: E["type"]): EventFactory<E> {
   return (data: E["data"] = {}, meta: E["meta"] = {}) => ({ type, data, meta } as E);

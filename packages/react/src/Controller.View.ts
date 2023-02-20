@@ -1,7 +1,7 @@
 import { deepEqual } from "fast-equals";
 import React, { createElement, FunctionComponent, memo, PropsWithChildren, useEffect, useState } from "react";
 
-import type { ControllerClass, ReactComponent } from "./Controller.Types";
+import type { ControllerClass, ReactComponent } from "./Controller.Types.js";
 
 /*
  |--------------------------------------------------------------------------------
