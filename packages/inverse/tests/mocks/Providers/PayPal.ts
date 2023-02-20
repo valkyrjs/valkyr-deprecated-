@@ -1,4 +1,4 @@
-import { Currency, Payment, Payments } from "../Services/Payments";
+import { Currency, Payment, Payments } from "../Services/Payments.js";
 
 export class PayPal extends Payments {
   public async create(customerId: string, currency: Currency, amount: number): Promise<Payment> {

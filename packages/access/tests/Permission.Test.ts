@@ -1,5 +1,5 @@
-import { Attributes } from "../dist/src/Attributes.js";
-import { permissionGranted } from "../dist/src/Permission.js";
+import { Attributes } from "../src/Attributes.js";
+import { permissionGranted } from "../src/Permission.js";
 
 /*
  |--------------------------------------------------------------------------------

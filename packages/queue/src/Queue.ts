@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import { Subject } from "rxjs";
 
 import { MemoryStorage } from "./Adapters/MemoryStorage.js";
@@ -49,10 +50,7 @@ export class Queue<W extends Worker> {
     return this.status === status;
   }
 
-  push(
-    { id = crypto.randomUUID(), type, payload }: { id?: string; type: W["type"]; payload: Payload<W> },
-    attempts = 0
-  ): string {
+  push({ id = nanoid(), type, payload }: { id?: string; type: W["type"]; payload: Payload<W> }, attempts = 0): string {
     const worker = this.hasWorker(type);
     if (worker === undefined) {
       throw new Error(`Queue Exception: Cannot push job, no worker registered for type ${type}`);

@@ -1,8 +1,8 @@
-import { Container, registerContext, registerFactory, registerSingleton, registerTransient } from "../src/Container";
-import { Invoice2Go } from "./mocks/Providers/Invoice2Go";
-import { PayPal } from "./mocks/Providers/PayPal";
-import { Stripe } from "./mocks/Providers/Stripe";
-import { Payments } from "./mocks/Services/Payments";
+import { Container, registerContext, registerFactory, registerSingleton, registerTransient } from "../src/Container.js";
+import { Invoice2Go } from "./mocks/Providers/Invoice2Go.js";
+import { PayPal } from "./mocks/Providers/PayPal.js";
+import { Stripe } from "./mocks/Providers/Stripe.js";
+import { Payments } from "./mocks/Services/Payments.js";
 
 describe("Container", () => {
   it("should register a transient provider", () => {

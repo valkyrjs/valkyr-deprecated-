@@ -1,7 +1,7 @@
 import { Query } from "mingo";
 import { RawObject } from "mingo/types.js";
+import { nanoid } from "nanoid";
 
-import { crypto } from "../Crypto.js";
 import {
   addOptions,
   Document,
@@ -31,7 +31,7 @@ export class MemoryStorage<D extends Document = Document> extends Storage<D> {
   }
 
   async insertOne(data: PartialDocument<D>): Promise<InsertOneResult> {
-    const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
+    const document = { ...data, id: data.id ?? nanoid() } as D;
     if (await this.has(document.id)) {
       throw new DuplicateDocumentError(document, this);
     }
@@ -43,7 +43,7 @@ export class MemoryStorage<D extends Document = Document> extends Storage<D> {
   async insertMany(documents: PartialDocument<D>[]): Promise<InsertManyResult> {
     const result: D[] = [];
     for (const data of documents) {
-      const document = { ...data, id: data.id ?? crypto.randomUUID() } as D;
+      const document = { ...data, id: data.id ?? nanoid() } as D;
       result.push(document);
       this.#documents.set(document.id, document);
     }

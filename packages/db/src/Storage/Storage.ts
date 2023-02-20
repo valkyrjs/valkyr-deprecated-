@@ -1,9 +1,9 @@
 import { Cursor } from "mingo/cursor.js";
 import { RawObject } from "mingo/types.js";
+import { nanoid } from "nanoid";
 import { Subject } from "rxjs";
 
 import { BroadcastChannel, StorageBroadcast } from "../Broadcast.js";
-import { crypto } from "../Crypto.js";
 import { InsertManyResult, InsertOneResult } from "./Operators/Insert/mod.js";
 import { RemoveResult } from "./Operators/Remove/mod.js";
 import { UpdateOperators, UpdateResult } from "./Operators/Update/mod.js";
@@ -18,7 +18,7 @@ export abstract class Storage<D extends Document = Document> {
 
   readonly #channel = new BroadcastChannel(`valkyr:db:${this.name}`);
 
-  constructor(readonly name: string, readonly id = crypto.randomUUID()) {
+  constructor(readonly name: string, readonly id = nanoid()) {
     this.#channel.onmessage = ({ data }: MessageEvent<StorageBroadcast<D>>) => {
       if (data.name !== this.name) {
         return;

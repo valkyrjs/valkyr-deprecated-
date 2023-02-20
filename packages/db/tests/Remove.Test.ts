@@ -1,5 +1,6 @@
+import { Collection } from "../src/Collection.js";
 import { MemoryStorage } from "../src/Databases/MemoryDb.Storage.js";
-import { Collection, RemoveResult } from "../src/index.js";
+import { RemoveResult } from "../src/index.js";
 import { users } from "./Users.Mock.js";
 
 /*

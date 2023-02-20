@@ -1,4 +1,5 @@
-import { crypto } from "../Crypto.js";
+import { nanoid } from "nanoid";
+
 import { ObserverStorage } from "../Databases/Observer.Storage.js";
 import { Document, Storage } from "../Storage/mod.js";
 import { Criteria, isMatch } from "./IsMatch.js";
@@ -7,7 +8,7 @@ export class Store {
   private constructor(private storage: Storage) {}
 
   static create() {
-    return new Store(new ObserverStorage(`observer[${crypto.randomUUID()}]`));
+    return new Store(new ObserverStorage(`observer[${nanoid()}]`));
   }
 
   get destroy() {

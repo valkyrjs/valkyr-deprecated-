@@ -21,7 +21,7 @@
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf ./.turbo ./dist",
     "lint": "eslint .",
-    "test": "jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules pnpm exec jest"
   },
   "jest": {
     "preset": "@valkyr/jest"
@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "idb": "^7.1.1",
+    "nanoid": "^4.0.1",
     "rxjs": "^7.8.0"
   },
   "devDependencies": {

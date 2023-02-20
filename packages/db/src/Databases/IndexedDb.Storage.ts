@@ -2,8 +2,8 @@ import { getLogicalTimestamp } from "@valkyr/time";
 import type { IDBPDatabase } from "idb";
 import { Query } from "mingo";
 import type { AnyVal, RawObject } from "mingo/types.js";
+import { nanoid } from "nanoid";
 
-import { crypto } from "../Crypto.js";
 import { DBLogger, InsertLog, QueryLog, RemoveLog, ReplaceLog, UpdateLog } from "../Logger.js";
 import {
   addOptions,
@@ -70,7 +70,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
   async insertOne(data: PartialDocument<D>): Promise<InsertOneResult> {
     const logger = new InsertLog(this.name);
 
-    const document = { ...data, id: data.id ?? crypto.randomUUID(), $meta: getMeta() } as D;
+    const document = { ...data, id: data.id ?? nanoid(), $meta: getMeta() } as D;
     if (await this.has(document.id)) {
       throw new DuplicateDocumentError(document, this);
     }
@@ -92,7 +92,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
     await Promise.all(
       data.map((data) => {
-        const document = { ...data, id: data.id ?? crypto.randomUUID(), $meta: getMeta() } as D;
+        const document = { ...data, id: data.id ?? nanoid(), $meta: getMeta() } as D;
         documents.push(document);
         return tx.store.add(document);
       })
