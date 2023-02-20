@@ -1,7 +1,7 @@
 module.exports = {
   plugins: ["simple-import-sort", "check-file"],
   extends: ["prettier", "plugin:anti-trojan-source/recommended"],
-  ignorePatterns: ["dist", "tests", "mocks"],
+  ignorePatterns: ["dist"],
   rules: {
     // ### Import
 
@@ -35,6 +35,12 @@ module.exports = {
     ]
   },
   overrides: [
+    {
+      files: ["tests/**/*.ts"],
+      rules: {
+        "no-restricted-imports": "off"
+      }
+    },
     {
       files: ["*.ts", "*.tsx"],
       parser: "@typescript-eslint/parser",
