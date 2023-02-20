@@ -584,7 +584,7 @@ declare const AuthMechanism: Readonly<{
 }>;
 
 /** @public */
-declare type AuthMechanism = typeof AuthMechanism[keyof typeof AuthMechanism];
+declare type AuthMechanism = (typeof AuthMechanism)[keyof typeof AuthMechanism];
 
 /** @public */
 declare interface AuthMechanismProperties extends Document {
@@ -619,7 +619,7 @@ declare const AutoEncryptionLoggerLevel: Readonly<{
 }>;
 
 /** @public */
-declare type AutoEncryptionLoggerLevel = typeof AutoEncryptionLoggerLevel[keyof typeof AutoEncryptionLoggerLevel];
+declare type AutoEncryptionLoggerLevel = (typeof AutoEncryptionLoggerLevel)[keyof typeof AutoEncryptionLoggerLevel];
 
 /** @public */
 declare interface AutoEncryptionOptions {
@@ -815,7 +815,7 @@ declare const BatchType: Readonly<{
 }>;
 
 /** @public */
-declare type BatchType = typeof BatchType[keyof typeof BatchType];
+declare type BatchType = (typeof BatchType)[keyof typeof BatchType];
 
 {
   Binary;
@@ -901,7 +901,7 @@ declare const BSONType: Readonly<{
 }>;
 
 /** @public */
-declare type BSONType = typeof BSONType[keyof typeof BSONType];
+declare type BSONType = (typeof BSONType)[keyof typeof BSONType];
 
 /** @public */
 declare type BSONTypeAlias = keyof typeof BSONType;
@@ -2793,7 +2793,7 @@ declare const Compressor: Readonly<{
 }>;
 
 /** @public */
-declare type Compressor = typeof Compressor[CompressorName];
+declare type Compressor = (typeof Compressor)[CompressorName];
 
 /** @public */
 declare type CompressorName = keyof typeof Compressor;
@@ -3122,7 +3122,7 @@ declare interface CursorCloseOptions {
 }
 
 /** @public */
-declare type CursorFlag = typeof CURSOR_FLAGS[number];
+declare type CursorFlag = (typeof CURSOR_FLAGS)[number];
 
 /** @public */
 declare interface CursorStreamOptions {
@@ -4324,7 +4324,8 @@ declare const GSSAPICanonicalizationValue: Readonly<{
 }>;
 
 /** @public */
-declare type GSSAPICanonicalizationValue = typeof GSSAPICanonicalizationValue[keyof typeof GSSAPICanonicalizationValue];
+declare type GSSAPICanonicalizationValue =
+  (typeof GSSAPICanonicalizationValue)[keyof typeof GSSAPICanonicalizationValue];
 
 /** @public */
 declare interface HedgeOptions {
@@ -4790,7 +4791,7 @@ declare const LoggerLevel: Readonly<{
 }>;
 
 /** @public */
-declare type LoggerLevel = typeof LoggerLevel[keyof typeof LoggerLevel];
+declare type LoggerLevel = (typeof LoggerLevel)[keyof typeof LoggerLevel];
 
 /** @public */
 declare interface LoggerOptions {
@@ -5119,7 +5120,7 @@ declare class MongoClient extends TypedEventEmitter<MongoClientEvents> {
 }
 
 /** @public */
-declare type MongoClientEvents = Pick<TopologyEvents, typeof MONGO_CLIENT_EVENTS[number]> & {
+declare type MongoClientEvents = Pick<TopologyEvents, (typeof MONGO_CLIENT_EVENTS)[number]> & {
   open(mongoClient: MongoClient): void;
 };
 
@@ -5463,7 +5464,7 @@ declare const MongoErrorLabel: Readonly<{
 }>;
 
 /** @public */
-declare type MongoErrorLabel = typeof MongoErrorLabel[keyof typeof MongoErrorLabel];
+declare type MongoErrorLabel = (typeof MongoErrorLabel)[keyof typeof MongoErrorLabel];
 
 /**
  * An error generated when the user attempts to operate
@@ -6034,7 +6035,7 @@ declare const ProfilingLevel: Readonly<{
 }>;
 
 /** @public */
-declare type ProfilingLevel = typeof ProfilingLevel[keyof typeof ProfilingLevel];
+declare type ProfilingLevel = (typeof ProfilingLevel)[keyof typeof ProfilingLevel];
 
 /** @public */
 declare type ProfilingLevelOptions = CommandOperationOptions;
@@ -6168,7 +6169,7 @@ declare const ReadConcernLevel: Readonly<{
 }>;
 
 /** @public */
-declare type ReadConcernLevel = typeof ReadConcernLevel[keyof typeof ReadConcernLevel];
+declare type ReadConcernLevel = (typeof ReadConcernLevel)[keyof typeof ReadConcernLevel];
 
 /** @public */
 declare type ReadConcernLike =
@@ -6284,7 +6285,7 @@ declare const ReadPreferenceMode: Readonly<{
 }>;
 
 /** @public */
-declare type ReadPreferenceMode = typeof ReadPreferenceMode[keyof typeof ReadPreferenceMode];
+declare type ReadPreferenceMode = (typeof ReadPreferenceMode)[keyof typeof ReadPreferenceMode];
 
 /** @public */
 declare interface ReadPreferenceOptions {
@@ -6370,7 +6371,7 @@ declare const ReturnDocument: Readonly<{
 }>;
 
 /** @public */
-declare type ReturnDocument = typeof ReturnDocument[keyof typeof ReturnDocument];
+declare type ReturnDocument = (typeof ReturnDocument)[keyof typeof ReturnDocument];
 
 /** @public */
 declare interface RoleSpecification {
@@ -6439,7 +6440,7 @@ declare const ServerApiVersion: Readonly<{
 }>;
 
 /** @public */
-declare type ServerApiVersion = typeof ServerApiVersion[keyof typeof ServerApiVersion];
+declare type ServerApiVersion = (typeof ServerApiVersion)[keyof typeof ServerApiVersion];
 
 /** @public */
 declare class ServerCapabilities {
@@ -6662,7 +6663,7 @@ declare const ServerType: Readonly<{
 }>;
 
 /** @public */
-declare type ServerType = typeof ServerType[keyof typeof ServerType];
+declare type ServerType = (typeof ServerType)[keyof typeof ServerType];
 
 /** @public */
 declare type SetFields<TSchema> = ({
@@ -6754,18 +6755,18 @@ declare type SupportedNodeConnectionOptions = SupportedTLSConnectionOptions &
   SupportedSocketOptions;
 
 /** @public */
-declare type SupportedSocketOptions = Pick<TcpNetConnectOpts, typeof LEGAL_TCP_SOCKET_OPTIONS[number]>;
+declare type SupportedSocketOptions = Pick<TcpNetConnectOpts, (typeof LEGAL_TCP_SOCKET_OPTIONS)[number]>;
 
 /** @public */
 declare type SupportedTLSConnectionOptions = Pick<
   ConnectionOptions_2,
-  Extract<keyof ConnectionOptions_2, typeof LEGAL_TLS_SOCKET_OPTIONS[number]>
+  Extract<keyof ConnectionOptions_2, (typeof LEGAL_TLS_SOCKET_OPTIONS)[number]>
 >;
 
 /** @public */
 declare type SupportedTLSSocketOptions = Pick<
   TLSSocketOptions,
-  Extract<keyof TLSSocketOptions, typeof LEGAL_TLS_SOCKET_OPTIONS[number]>
+  Extract<keyof TLSSocketOptions, (typeof LEGAL_TLS_SOCKET_OPTIONS)[number]>
 >;
 
 /** @public */
@@ -6933,7 +6934,7 @@ declare const TopologyType: Readonly<{
 }>;
 
 /** @public */
-declare type TopologyType = typeof TopologyType[keyof typeof TopologyType];
+declare type TopologyType = (typeof TopologyType)[keyof typeof TopologyType];
 
 /** @public */
 declare interface TopologyVersion {

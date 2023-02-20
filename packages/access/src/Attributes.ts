@@ -1,4 +1,4 @@
-import { clone } from "./Clone";
+import { clone } from "./Clone.js";
 
 type BitFlags = Record<string, number>;
 

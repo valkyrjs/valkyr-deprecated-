@@ -8,14 +8,16 @@
       "cache": false
     },
     "build": {
-      "inputs": ["tsconfig.json", "tsconfig.build.json", "src/**"],
-      "outputs": ["dist/**"]
+      "inputs": ["src/**", "tsconfig.json", "tsconfig.build.json"],
+      "outputs": ["dist/**"],
+      "dependsOn": ["^build"]
     },
     "test": {
-      "cache": false
+      "inputs": ["src/**", "tests/**"],
+      "dependsOn": ["^build"]
     },
     "lint": {
-      "cache": false
+      "outputs": []
     }
   }
 }

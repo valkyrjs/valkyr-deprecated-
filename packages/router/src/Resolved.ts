@@ -1,8 +1,8 @@
 import { BrowserHistory, HashHistory, MemoryHistory } from "history";
 
-import { Query } from "./Query";
-import { Route } from "./Route";
-import { ValueStore } from "./ValueStore";
+import { Query } from "./Query.js";
+import { Route } from "./Route.js";
+import { ValueStore } from "./ValueStore.js";
 
 export class Resolved {
   readonly params: ValueStore;

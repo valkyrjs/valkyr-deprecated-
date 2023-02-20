@@ -1,4 +1,4 @@
-import { Attributes } from "../src/Attributes";
+import { Attributes } from "../src/Attributes.js";
 
 /*
  |--------------------------------------------------------------------------------

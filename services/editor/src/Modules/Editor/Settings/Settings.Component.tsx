@@ -1,12 +1,11 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { CaretDoubleRight, Plus } from "phosphor-react";
+import { CaretDoubleRight } from "phosphor-react";
 import { Fragment } from "react";
 
 import { Button } from "~Components/Button";
 import { Panel } from "~Components/Panel";
+import { TypeBlock } from "~Modules/Type";
 
-import { createTypeBlock } from "../Library/Blocks/Type/Type.Collection";
-import { TypeBlock } from "../Library/Blocks/Type/Type.Component";
 import { SettingsController } from "./Settings.Controller";
 
 export const Settings = SettingsController.view(({ state: { types }, props: { isOpen, setClosed } }) => {
@@ -16,10 +15,10 @@ export const Settings = SettingsController.view(({ state: { types }, props: { is
         <div id="settings" className="pointer-events-none fixed inset-y-0 right-0 flex pl-10 sm:pl-16">
           <Transition.Child
             as={Fragment}
-            enter="transform transition ease-in-out duration-500 sm:duration-700"
+            enter="transform transition ease-in-out duration-150"
             enterFrom="translate-x-full"
             enterTo="translate-x-0"
-            leave="transform transition ease-in-out duration-500 sm:duration-700"
+            leave="transform transition ease-in-out duration-150"
             leaveFrom="translate-x-0"
             leaveTo="translate-x-full"
           >
@@ -61,12 +60,6 @@ export const Settings = SettingsController.view(({ state: { types }, props: { is
                   {types.map((type) => (
                     <TypeBlock key={type.id} id={type.id} />
                   ))}
-                  <div className="mt-6 flex w-full flex-row justify-end px-2">
-                    <Button variant="primary" outline type="button" onClick={createTypeBlock}>
-                      <Plus size={12}></Plus>
-                      new type
-                    </Button>
-                  </div>
                 </Panel>
               </div>
             </Dialog.Panel>

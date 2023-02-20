@@ -1,6 +1,6 @@
 import type { History } from "history";
 
-import { ValueStore } from "./ValueStore";
+import { ValueStore } from "./ValueStore.js";
 
 export class Query extends ValueStore {
   readonly history: History;

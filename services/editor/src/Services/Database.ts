@@ -1,46 +1,54 @@
-import { IndexedDatabase } from "@valkyr/db";
-import type { Edge } from "reactflow";
+import { Document, IndexedDatabase } from "@valkyr/db";
 
-import type { EventBlock } from "../Modules/Editor/Library/Blocks/Event/Event.Collection";
-import type { ReducerBlock } from "../Modules/Editor/Library/Blocks/Reducer/Reducer.Collection";
-import type { StateBlock } from "../Modules/Editor/Library/Blocks/State/State.Collection";
-import type { TypeBlock } from "../Modules/Editor/Library/Blocks/Type/Type.Collection";
-import type { EditorNode } from "../Modules/Editor/Nodes/Node.Collection";
-
-export type Collections = {
-  events: EventBlock;
-  reducers: ReducerBlock;
-  states: StateBlock;
-  types: TypeBlock;
-  nodes: EditorNode;
-  edges: Edge;
-};
+import type { BlockDocument } from "~Blocks/Block.Collection";
+import type { EdgeDocument } from "~ReactFlow/Data/Edge.Collection";
+import type { NodeDocument } from "~ReactFlow/Data/Node.Collection";
+import type { ViewportDocument } from "~ReactFlow/Data/Viewport.Collection";
 
 export const db = new IndexedDatabase<Collections>({
   name: "valkyr:editor",
   version: 1,
   registrars: [
     {
-      name: "events"
+      name: "blocks",
+      indexes: [["type"], ["name", { unique: true }]]
     },
     {
-      name: "reducers"
+      name: "code",
+      indexes: [["name", { unique: true }]]
     },
     {
-      name: "states"
+      name: "edges",
+      indexes: [["type"]]
     },
     {
-      name: "types"
+      name: "nodes",
+      indexes: [["type"]]
     },
     {
-      name: "nodes"
-    },
-    {
-      name: "edges"
+      name: "viewports"
     }
-  ],
-  log: console.log
+  ]
 });
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
+
+export type Collections = {
+  blocks: BlockDocument;
+  code: CodeDocument;
+  edges: EdgeDocument;
+  nodes: NodeDocument;
+  viewports: ViewportDocument;
+};
+
+export type CodeDocument = Document<{
+  name: string;
+  value: string;
+}>;
 
 /*
  |--------------------------------------------------------------------------------

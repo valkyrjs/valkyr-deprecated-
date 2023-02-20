@@ -1,9 +1,0 @@
-version: "3.5"
-
-services:
-  eventstore:
-    image: eventstore/eventstore
-    command: --insecure
-    ports:
-      - 1113:1113
-      - 2113:2113

@@ -23,9 +23,12 @@
   },
   "material-icon-theme.files.associations": {
     "index.ts": "tree",
+    "main.ts": "tree",
+    "mod.ts": "tree",
     "config.ts": "settings",
     "*.access.ts": "key",
-    "*.collection.ts": "database",
+    "*.database.ts": "database",
+    "*.collection.ts": "mxml",
     "*.controller.ts": "makefile",
     "*.events.ts": "lib",
     "*.method.ts": "makefile",
@@ -43,19 +46,38 @@
     "*.modal.tsx": "opam",
     "*.view.tsx": "virtual",
   },
+  "files.exclude": {
+    "**/.turbo": true,
+    "**/node_modules": true,
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  },
   "cSpell.words": [
     "birthdayresearch",
     "fastify",
+    "headlessui",
     "IDBP",
+    "indexeddb",
+    "inmemory",
     "kodemon",
     "mingo",
     "nestjs",
+    "nvmrc",
+    "pako",
+    "pannable",
     "pino",
     "quicktype",
     "reactflow",
     "rfdc",
     "tailwindcss",
     "tsbuildinfo",
-    "valkyr"
+    "untar",
+    "valkyr",
+    "viewports",
+    "zoomable"
   ]
 }

@@ -1,1 +1,1 @@
-export * from "./editor.module";
+export { EditorView } from "./Views/Editor.View";

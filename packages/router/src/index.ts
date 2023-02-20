@@ -1,7 +1,7 @@
-export type { Action, ActionResponse, Response } from "./Action";
-export { response } from "./Action";
-export { Resolved } from "./Resolved";
-export { Route } from "./Route";
-export type { RoutedResult } from "./Router";
-export { Router } from "./Router";
+export type { Action, ActionResponse, Response } from "./Action.js";
+export { response } from "./Action.js";
+export { Resolved } from "./Resolved.js";
+export { Route } from "./Route.js";
+export type { RoutedResult } from "./Router.js";
+export { Router } from "./Router.js";
 export { createBrowserHistory, createHashHistory, createMemoryHistory } from "history";

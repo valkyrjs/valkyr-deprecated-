@@ -1,8 +1,7 @@
 import { Controller } from "@valkyr/react";
 
+import { TypeBlock } from "~Blocks/Block.Collection";
 import { db } from "~Services/Database";
-
-import { TypeBlock } from "../Library/Blocks/Type/Type.Collection";
 
 export class SettingsController extends Controller<
   {
@@ -16,7 +15,7 @@ export class SettingsController extends Controller<
   async onInit() {
     return {
       isOpen: false,
-      types: await this.query(db.collection("types"), {}, "types")
+      types: await this.query(db.collection<TypeBlock>("blocks"), { where: { type: "type" } }, "types")
     };
   }
 }

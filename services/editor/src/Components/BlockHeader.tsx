@@ -3,26 +3,21 @@ import { DotsSixVertical, Eye, EyeClosed, XSquare } from "phosphor-react";
 
 import { UnstyledButton } from "./UnstyledButton";
 
-export function BlockHeader({
-  open,
-  color,
-  symbol,
-  content,
-  onRemove,
-  draggable = true
-}: {
+type Props = {
   open: boolean;
   color: string;
   symbol: string;
   content: string | JSX.Element;
   onRemove?: () => void;
   draggable?: boolean;
-}) {
+};
+
+export function BlockHeader({ open, color, symbol, content, onRemove, draggable = true }: Props) {
   return (
     <header
       className={`text-darker-700 flex w-full items-center justify-between gap-2 ${
         open && "border-b-darker-800 border-b"
-      } py-1 px-2`}
+      } h-9 pl-2 pr-2`}
       style={{ height: 35 }}
     >
       {draggable && (

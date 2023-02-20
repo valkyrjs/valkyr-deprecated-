@@ -5,7 +5,9 @@
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
-  "main": "src/index.ts",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -16,17 +18,37 @@
   "scripts": {
     "build": "tsc -b ./tsconfig.build.json",
     "flush": "npm run clean && rm -rf ./node_modules",
-    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
+    "clean": "rm -rf ./.turbo ./dist",
+    "lint": "eslint ."
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": [
+      "@valkyr"
+    ]
+  },
+  "lint-staged": {
+    "*": [
+      "prettier --write --ignore-unknown"
+    ],
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "fast-equals": "4.0.3",
-    "joi": "17.7.0",
+    "joi": "17.7.1",
     "rxjs": "7.8.0"
   },
   "devDependencies": {
-    "@types/react": "18.0.26",
+    "@types/react": "18.0.28",
     "@valkyr/db": "workspace:*",
     "@valkyr/router": "workspace:*",
     "react": "18.2.0"
+  },
+  "peerDependencies": {
+    "joi": "17.7.1"
   }
 }

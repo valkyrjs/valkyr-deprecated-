@@ -1,4 +1,4 @@
-import type { Redirect } from "./Action";
+import type { Redirect } from "./Action.js";
 
 /**
  * @classdesc

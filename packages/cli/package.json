@@ -10,7 +10,24 @@
     "local": "npm uninstall -g && npm run build && npm i -g",
     "build": "tsc -b ./tsconfig.build.json",
     "flush": "npm run clean && rm -rf ./node_modules",
-    "clean": "rm -rf .turbo && rm -rf dist && rm -f tsconfig.build.tsbuildinfo"
+    "clean": "rm -rf ./.turbo ./dist",
+    "lint": "eslint ."
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": [
+      "@valkyr"
+    ]
+  },
+  "lint-staged": {
+    "*": [
+      "prettier --write --ignore-unknown"
+    ],
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "@commander-js/extra-typings": "^10.0.1",
@@ -19,7 +36,6 @@
     "prettier": "^2.8.3"
   },
   "devDependencies": {
-    "@types/fs-extra": "^11.0.1",
-    "@valkyr/jest": "workspace:*"
+    "@types/fs-extra": "^11.0.1"
   }
 }

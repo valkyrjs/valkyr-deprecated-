@@ -45,7 +45,7 @@ export const ModalPortal = ModalController.view(({ state: { show, mode, modal },
         leave="transition easy-in duration-95"
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-75"
-        className={`relative z-[9997] ${mode === "full" ? "w-full" : "w-175"} shadow-2xl`}
+        className={`relative z-[9997] ${mode === "full" ? "w-[600px]" : "w-175"} shadow-2xl`}
       >
         {modal}
       </Transition.Child>

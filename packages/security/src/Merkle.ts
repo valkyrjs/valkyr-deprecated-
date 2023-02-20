@@ -1,4 +1,4 @@
-import { generateHash } from "./Hash";
+import { generateHash } from "./Hash.js";
 
 /**
  * Get the merkle root value from given list of values.

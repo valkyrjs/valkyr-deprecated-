@@ -2,8 +2,8 @@
 
 /* eslint-disable simple-import-sort/imports */
 
-import { program } from "./program.js";
+import { program } from "./Program.js";
 
-import "./commands/generate.js";
+import "./Commands/Generate.js";
 
 program.parse(process.argv);

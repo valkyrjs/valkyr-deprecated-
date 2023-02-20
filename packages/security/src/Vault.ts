@@ -1,6 +1,6 @@
 import * as Jose from "jose";
 
-import { ExportedKeyPair, KeyPair } from "./KeyPair";
+import { ExportedKeyPair, KeyPair } from "./KeyPair.js";
 
 export class Vault extends KeyPair {
   static readonly ALG = "ECDH-ES+A256KW";
