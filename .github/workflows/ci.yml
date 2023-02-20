@@ -16,9 +16,9 @@ jobs:
         with:
           version: 7
 
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
         with:
-          node-version: 16
+          node-version-file: ".nvmrc"
           cache: pnpm
 
       - run: pnpm install
@@ -33,9 +33,9 @@ jobs:
         with:
           version: 7
 
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
         with:
-          node-version: 16
+          node-version-file: ".nvmrc"
           cache: pnpm
 
       - run: pnpm install
@@ -50,9 +50,9 @@ jobs:
         with:
           version: 7
 
-      - uses: actions/setup-node@2fddd8803e2f5c9604345a0b591c3020ee971a93
+      - uses: actions/setup-node@64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c
         with:
-          node-version: 16
+          node-version-file: ".nvmrc"
           cache: pnpm
 
       - run: pnpm install
