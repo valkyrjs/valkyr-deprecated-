@@ -5,6 +5,6 @@
     "tsconfig.json"
   ],
   "dependencies": {
-    "typescript": "beta"
+    "typescript": "^4.9.5"
   }
 }

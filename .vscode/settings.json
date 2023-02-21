@@ -73,11 +73,13 @@
     "quicktype",
     "reactflow",
     "rfdc",
+    "Rødvik",
     "tailwindcss",
     "tsbuildinfo",
     "untar",
     "valkyr",
     "viewports",
     "zoomable"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

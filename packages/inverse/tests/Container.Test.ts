@@ -1,12 +1,13 @@
-import { Container, registerContext, registerFactory, registerSingleton, registerTransient } from "../src/Container.js";
+import { InverseContainer } from "../src/Container.js";
+import { inverse } from "../src/Token.js";
 import { Invoice2Go } from "./mocks/Providers/Invoice2Go.js";
 import { PayPal } from "./mocks/Providers/PayPal.js";
 import { Stripe } from "./mocks/Providers/Stripe.js";
 import { Payments } from "./mocks/Services/Payments.js";
 
-describe("Container", () => {
+describe("InverseContainer", () => {
   it("should register a transient provider", () => {
-    const container = new Container({ invoices: registerTransient("invoices", Invoice2Go) });
+    const container = new InverseContainer([inverse.transient("invoices", Invoice2Go)]);
 
     const invoice = container.get("invoices", "abc");
 
@@ -15,11 +16,11 @@ describe("Container", () => {
   });
 
   it("should register a factory provider", () => {
-    const container = new Container({
-      invoices: registerFactory("invoices", function getInvoice2Go(paymentId: string) {
+    const container = new InverseContainer([
+      inverse.factory("invoices", function getInvoice2Go(paymentId: string) {
         return new Invoice2Go(paymentId);
       })
-    });
+    ]);
 
     const invoice = container.get("invoices", "abc");
 
@@ -28,9 +29,7 @@ describe("Container", () => {
   });
 
   it("should register a singleton provider", () => {
-    const container = new Container({
-      invoices: registerSingleton("invoices", new Invoice2Go("abc"))
-    });
+    const container = new InverseContainer([inverse.singleton("invoices", new Invoice2Go("abc"))]);
 
     const invoice = container.get("invoices");
 
@@ -39,17 +38,17 @@ describe("Container", () => {
   });
 
   it("should register a context provider", async () => {
-    const container = new Container({
-      payments: registerContext("payments", Payments, {
+    const container = new InverseContainer([
+      inverse.context("payments", Payments, {
         paypal: PayPal,
         stripe: Stripe
       })
-    });
+    ]);
 
-    const paypalPayment = await container.get("payments")("paypal").create("xyz", "usd", 100);
-    const stripePayment = await container.get("payments")("stripe").create("xyz", "jpy", 15000);
+    const paypal = await container.get("payments")("paypal").create("xyz", "usd", 100);
+    const stripe = await container.get("payments")("stripe").create("xyz", "jpy", 15000);
 
-    expect(paypalPayment).toStrictEqual({
+    expect(paypal).toStrictEqual({
       paymentId: "xyz",
       customerId: "xyz",
       provider: "paypal",
@@ -58,7 +57,7 @@ describe("Container", () => {
       amount: 100
     });
 
-    expect(stripePayment).toStrictEqual({
+    expect(stripe).toStrictEqual({
       paymentId: "xyz",
       customerId: "xyz",
       provider: "stripe",

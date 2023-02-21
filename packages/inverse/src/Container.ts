@@ -1,17 +1,21 @@
+import type { ContextToken, FactoryToken, SingletonToken, Token, TransientToken } from "./Token.js";
+
 /**
  * A simple dependency injection container for TypeScript using string based tokens
  * to develop against. Gives a single registration point for all dependencies and
  * throws compilation errors when the contracts provided are not adhered to in the
  * the application code.
  *
- * @author  Christoffer Rødvik <dev@kodemon.net>
+ * @author  Christoffer Rødvik <hi@kodemon.net>
  * @license MIT
  */
-export class Container<T extends Tokens> {
-  #registrars: T;
+export class InverseContainer<T extends Token[], K extends T[number]["token"]> {
+  #dependencies = new Map<T[number]["token"], T[number]>();
 
-  constructor(registrars: T) {
-    this.#registrars = registrars;
+  constructor(dependencies: T) {
+    for (const dependency of dependencies) {
+      this.#dependencies.set(dependency.token, dependency);
+    }
   }
 
   /*
@@ -25,8 +29,8 @@ export class Container<T extends Tokens> {
    *
    * @param token - Token to verify.
    */
-  has<K extends keyof T>(token: K): boolean {
-    return this.#registrars[token] !== undefined;
+  has(token: K): boolean {
+    return this.#dependencies.has(token);
   }
 
   /**
@@ -35,35 +39,24 @@ export class Container<T extends Tokens> {
    * @param token - Token to retrieve dependency for.
    * @param args  - Arguments to pass to provider if required.
    */
-  get<K extends keyof T, A extends ProviderArgs<T, K>>(
-    token: K,
-    ...args: A
-  ): T[K] extends TransientToken<infer U>
-    ? InstanceType<U>
-    : T[K] extends FactoryToken<infer U>
-    ? ReturnType<U>
-    : T[K] extends SingletonToken<infer U>
-    ? U
-    : T[K] extends ContextToken<infer U, infer C>
-    ? (context: keyof C) => InstanceType<U>
-    : never {
-    const registrar = this.#registrars[token];
-    if (!registrar) {
-      throw new Container.MissingDependencyError(token);
+  get(token: K, ...args: DependencyArgs<T, K>): DependencyResponse<T, K> {
+    const dependency = this.#dependencies.get(token);
+    if (!dependency) {
+      throw new InverseContainer.MissingDependencyError(token);
     }
-    switch (registrar.type) {
+    switch (dependency.type) {
       case "transient": {
-        return new registrar.value(...args);
+        return new dependency.value(...args);
       }
       case "factory": {
-        return registrar.value(...args);
+        return dependency.value(...args);
       }
       case "singleton": {
-        return registrar.value;
+        return dependency.value;
       }
       case "context": {
         // @ts-expect-error complex type does not get resolved correctly
-        return (context: string) => new registrar.context[context](...args);
+        return (context: string) => new dependency.context[context](...args);
       }
     }
   }
@@ -83,109 +76,24 @@ export class Container<T extends Tokens> {
 
 /*
  |--------------------------------------------------------------------------------
- | Utilities
- |--------------------------------------------------------------------------------
- */
-
-export function registerTransient<T extends AbstractClass>(token: string, value: T): TransientToken<T> {
-  return {
-    type: "transient" as const,
-    token,
-    value
-  };
-}
-
-export function registerFactory<T extends Factory>(token: string, value: T): FactoryToken<T> {
-  return {
-    type: "factory" as const,
-    token,
-    value
-  };
-}
-
-export function registerSingleton<T = any>(token: string, value: T): SingletonToken<T> {
-  return {
-    type: "singleton" as const,
-    token,
-    value
-  };
-}
-
-export function registerContext<T extends AbstractClass, C extends Context>(
-  token: string,
-  value: T,
-  context: C
-): ContextToken<T, C> {
-  return {
-    type: "context" as const,
-    token,
-    value,
-    context
-  };
-}
-
-/*
- |--------------------------------------------------------------------------------
  | Types
  |--------------------------------------------------------------------------------
  */
 
-type Tokens = {
-  [key: string]: TransientToken | FactoryToken | SingletonToken | ContextToken;
-};
-
-type ProviderArgs<T extends Token, K extends keyof T> = T[K] extends TransientToken<infer U>
-  ? ConstructorParameters<U>
-  : T[K] extends FactoryToken<infer U>
-  ? Parameters<U>
-  : T[K] extends ContextToken<infer U>
-  ? ConstructorParameters<U>
+type DependencyArgs<T extends Token[], K extends T[number]["token"]> = T[number] extends TransientToken<K, infer V>
+  ? ConstructorParameters<V>
+  : T[number] extends FactoryToken<K, infer V>
+  ? Parameters<V>
+  : T[number] extends ContextToken<K, infer V>
+  ? ConstructorParameters<V>
   : never;
 
-type Token<T extends { value: any; context?: any } = any> = {
-  [key: string]:
-    | {
-        type: "transient" | "singleton" | "factory";
-        value: T["value"];
-      }
-    | {
-        type: "context";
-        value: T["value"];
-        context: T["context"];
-      };
-};
-
-type TransientToken<T extends AbstractClass = any> = {
-  type: "transient";
-  token: string;
-  value: T;
-};
-
-type FactoryToken<T extends Factory = any> = {
-  type: "factory";
-  token: string;
-  value: T;
-};
-
-type SingletonToken<T = any> = {
-  type: "singleton";
-  token: string;
-  value: T;
-};
-
-type ContextToken<T extends AbstractClass = any, C extends Context = any> = {
-  type: "context";
-  token: string;
-  value: T;
-  context: {
-    [K in keyof C]: C[K];
-  };
-};
-
-type AbstractClass = abstract new (...args: any[]) => any;
-
-type ProviderClass = new (...args: any[]) => any;
-
-type Factory = (...args: any[]) => any;
-
-type Context = { [key: string]: ProviderClass };
+type DependencyResponse<T extends Token[], K extends T[number]["token"]> = T[number] extends TransientToken<K, infer V>
+  ? InstanceType<V>
+  : T[number] extends FactoryToken<K, infer V>
+  ? ReturnType<V>
+  : T[number] extends SingletonToken<K, infer V>
+  ? V
+  : T[number] extends ContextToken<K, infer V, infer C>
+  ? (context: keyof C) => InstanceType<V>
+  : never;

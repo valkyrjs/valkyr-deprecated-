@@ -6,7 +6,7 @@
   "bugs": "https://github.com/cmdo/valkyr/issues",
   "license": "MIT",
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky install && chmod ug+x .husky/*",
     "build": "turbo run build",
     "flush": "turbo run flush && rm -rf ./node_modules",
     "clean": "turbo run clean",
