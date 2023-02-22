@@ -1,2 +1,2 @@
-export { InverseContainer } from "./Container.js";
-export { inverse } from "./Token.js";
+export { Container } from "./Container.js";
+export { token } from "./Token.js";
