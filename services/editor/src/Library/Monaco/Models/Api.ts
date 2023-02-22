@@ -21,7 +21,7 @@ monaco.editor.createModel("interface Reducers {};", "typescript");
 
 db.collection("code").subscribe({ name: "api" }, { limit: 1 }, (document) => {
   if (document !== undefined) {
-    setApiModel(document.value);
+    setModel(document.value);
   }
 });
 
@@ -31,7 +31,7 @@ db.collection("code").subscribe({ name: "api" }, { limit: 1 }, (document) => {
  |--------------------------------------------------------------------------------
  */
 
-function setApiModel(value: string): void {
+function setModel(value: string): void {
   if (model !== undefined) {
     return model.setValue(value);
   }

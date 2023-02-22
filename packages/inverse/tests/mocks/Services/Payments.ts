@@ -1,5 +1,5 @@
-export abstract class Payments {
-  abstract create(customerId: string, currency: Currency, amount: number): Promise<Payment>;
+export abstract class Payment {
+  abstract create(customerId: string, currency: Currency, amount: number): Promise<PaymentItem>;
 }
 
 /*
@@ -8,7 +8,7 @@ export abstract class Payments {
  |--------------------------------------------------------------------------------
  */
 
-export type Payment = {
+export type PaymentItem = {
   paymentId: string;
   customerId: string;
   provider: string;

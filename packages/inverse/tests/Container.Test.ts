@@ -1,52 +1,53 @@
-import { InverseContainer } from "../src/Container.js";
-import { inverse } from "../src/Token.js";
+import { Container } from "../src/Container.js";
+import { token } from "../src/Token.js";
 import { Invoice2Go } from "./mocks/Providers/Invoice2Go.js";
 import { PayPal } from "./mocks/Providers/PayPal.js";
 import { Stripe } from "./mocks/Providers/Stripe.js";
-import { Payments } from "./mocks/Services/Payments.js";
+import { Invoice } from "./mocks/Services/Invoice.js";
+import { Payment } from "./mocks/Services/Payments.js";
 
-describe("InverseContainer", () => {
+describe("Container", () => {
   it("should register a transient provider", () => {
-    const container = new InverseContainer([inverse.transient("invoices", Invoice2Go)]);
+    const container = new Container([token.transient(Invoice, Invoice2Go)]);
 
-    const invoice = container.get("invoices", "abc");
+    const invoice = container.get(Invoice, "abc");
 
     expect(invoice).toBeInstanceOf(Invoice2Go);
     expect(invoice.paymentId).toStrictEqual("abc");
   });
 
   it("should register a factory provider", () => {
-    const container = new InverseContainer([
-      inverse.factory("invoices", function getInvoice2Go(paymentId: string) {
+    const container = new Container([
+      token.factory("invoice", function invoice(paymentId: string) {
         return new Invoice2Go(paymentId);
       })
     ]);
 
-    const invoice = container.get("invoices", "abc");
+    const invoice = container.get("invoice", "abc");
 
     expect(invoice).toBeInstanceOf(Invoice2Go);
     expect(invoice.paymentId).toStrictEqual("abc");
   });
 
   it("should register a singleton provider", () => {
-    const container = new InverseContainer([inverse.singleton("invoices", new Invoice2Go("abc"))]);
+    const container = new Container([token.singleton(Invoice, new Invoice2Go("abc"))]);
 
-    const invoice = container.get("invoices");
+    const invoice = container.get(Invoice);
 
     expect(invoice).toBeInstanceOf(Invoice2Go);
     expect(invoice.paymentId).toStrictEqual("abc");
   });
 
   it("should register a context provider", async () => {
-    const container = new InverseContainer([
-      inverse.context("payments", Payments, {
+    const container = new Container([
+      token.context(Payment, {
         paypal: PayPal,
         stripe: Stripe
       })
     ]);
 
-    const paypal = await container.get("payments")("paypal").create("xyz", "usd", 100);
-    const stripe = await container.get("payments")("stripe").create("xyz", "jpy", 15000);
+    const paypal = await container.get(Payment, "paypal").create("xyz", "usd", 100);
+    const stripe = await container.get(Payment, "stripe").create("xyz", "jpy", 15000);
 
     expect(paypal).toStrictEqual({
       paymentId: "xyz",
