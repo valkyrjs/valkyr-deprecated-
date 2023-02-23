@@ -6,6 +6,8 @@ import { PackageJSON, parsePackageJson } from "./Unpkg.Json.js";
 // const FILE_IMPORT_EXPORT_SEARCH = /^(import|export)\s+.*?from\s+["'](.+?)["'];$/gm;
 // const IMPORT_EXPORT_REGEX = /^(import|export)\s+.*?from\s+["'](.+?)["'];$/;
 
+const PACKAGE_DEPTH = 3;
+
 const resolving = new Set<string>();
 
 /*
@@ -14,7 +16,7 @@ const resolving = new Set<string>();
  |--------------------------------------------------------------------------------
  */
 
-export async function resolvePackage(name: string, version?: string): Promise<void> {
+export async function resolvePackage(name: string, version?: string, currentDepth = 0): Promise<void> {
   if ((await isResolvable(name)) === false) {
     return; // package is already resolved
   }
@@ -36,11 +38,13 @@ export async function resolvePackage(name: string, version?: string): Promise<vo
     console.log(err);
   }
 
-  // if (pkg !== undefined && pkg.dependencies !== undefined) {
-  //   for (const dep in pkg.dependencies) {
-  //     await resolvePackage(dep);
-  //   }
-  // }
+  if (currentDepth < PACKAGE_DEPTH) {
+    if (pkg !== undefined && pkg.dependencies !== undefined) {
+      for (const dep in pkg.dependencies) {
+        await resolvePackage(dep, undefined, currentDepth + 1);
+      }
+    }
+  }
 }
 
 export async function getPackages(): Promise<Package[]> {

@@ -1,7 +1,7 @@
-import { Currency, Payment, Payments } from "../Services/Payments.js";
+import { Currency, Payment, PaymentItem } from "../Services/Payments.js";
 
-export class Stripe extends Payments {
-  public async create(customerId: string, currency: Currency, amount: number): Promise<Payment> {
+export class Stripe extends Payment {
+  public async create(customerId: string, currency: Currency, amount: number): Promise<PaymentItem> {
     return {
       paymentId: "xyz",
       customerId,

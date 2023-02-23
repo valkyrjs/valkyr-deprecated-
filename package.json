@@ -15,7 +15,6 @@
     "cli": "npm run local --prefix packages/cli",
     "api": "npm start --prefix services/api",
     "app": "npm start --prefix services/app",
-    "editor": "npm start --prefix services/editor",
     "publish": "node ./scripts/publish.js"
   },
   "valkyr": {

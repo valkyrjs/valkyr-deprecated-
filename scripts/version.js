@@ -1,40 +1,47 @@
-const fs = require("fs");
-const path = require("path");
+const { readdirSync, readFileSync, writeFileSync } = require("node:fs");
+const { resolve, join } = require("node:path");
 
-const root = path.resolve(__dirname, "..");
-const pkgsDir = path.resolve(root, "packages");
-const version = process.argv[process.argv.indexOf("--version") + 1]
+const ROOT_DIR = resolve(__dirname, "..");
+const PKGS_DIR = resolve(ROOT_DIR, "packages");
+const CONF_DIR = resolve(ROOT_DIR, "configs");
 
-const pkgs = fs.readdirSync(pkgsDir);
-for (const pkg of pkgs) {
-  const pkgDir = path.join(pkgsDir, pkg, "package.json");
-  const json = JSON.parse(fs.readFileSync(pkgDir, "utf-8"));
+const version = process.argv[process.argv.indexOf("--version") + 1];
 
-  json.version = version;
+setPackageVersions(PKGS_DIR);
+setPackageVersions(CONF_DIR);
 
-  if (json.dependencies !== undefined) {
-    for (const key in json.dependencies) {
-      if (json.dependencies[key].includes("workspace:*")) {
-        json.dependencies[key] = version;
+function setPackageVersions(rootDir) {
+  const packageDirs = readdirSync(rootDir);
+  for (const packageDir of packageDirs) {
+    const packagePath = join(rootDir, packageDir, "package.json");
+    const packageJson = JSON.parse(readFileSync(packagePath, "utf-8"));
+
+    packageJson.version = version;
+
+    if (packageJson.dependencies !== undefined) {
+      for (const key in packageJson.dependencies) {
+        if (packageJson.dependencies[key].includes("workspace:*")) {
+          packageJson.dependencies[key] = version;
+        }
       }
     }
-  }
 
-  if (json.devDependencies !== undefined) {
-    for (const key in json.devDependencies) {
-      if (json.devDependencies[key].includes("workspace:*")) {
-        json.devDependencies[key] = version;
+    if (packageJson.devDependencies !== undefined) {
+      for (const key in packageJson.devDependencies) {
+        if (packageJson.devDependencies[key].includes("workspace:*")) {
+          packageJson.devDependencies[key] = version;
+        }
       }
     }
-  }
 
-  if (json.peerDependencies !== undefined) {
-    for (const key in json.peerDependencies) {
-      if (json.peerDependencies[key].includes("workspace:*")) {
-        json.peerDependencies[key] = version;
+    if (packageJson.peerDependencies !== undefined) {
+      for (const key in packageJson.peerDependencies) {
+        if (packageJson.peerDependencies[key].includes("workspace:*")) {
+          packageJson.peerDependencies[key] = version;
+        }
       }
     }
-  }
 
-  fs.writeFileSync(pkgDir, JSON.stringify(json, null, 2));
+    writeFileSync(packagePath, JSON.stringify(packageJson, null, 2));
+  }
 }
