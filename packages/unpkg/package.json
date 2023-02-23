@@ -1,7 +1,7 @@
 {
-  "name": "@valkyr/monaco",
+  "name": "@valkyr/unpkg",
   "version": "0.0.0",
-  "description": "A collection of utilities for monaco code editor.",
+  "description": "A browser tool for pulling npm package definitions from npm to @valkyr/db",
   "repository": "kodemon/valkyr",
   "bugs": "https://github.com/kodemon/valkyr/issues",
   "license": "MIT",
