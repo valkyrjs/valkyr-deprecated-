@@ -13,12 +13,16 @@
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true
+  },
   "[html,svg]": {
     "editor.formatOnSaveMode": "file",
     "editor.defaultFormatter": "HookyQR.beautify"
   },
   "material-icon-theme.folders.associations": {
-    "access": "secure",
+    "cerberus": "secure",
     "jsonrpc": "public"
   },
   "material-icon-theme.files.associations": {
@@ -57,7 +61,7 @@
     "**/Thumbs.db": true
   },
   "cSpell.words": [
-    "birthdayresearch",
+    "bindgen",
     "fastify",
     "headlessui",
     "IDBP",
@@ -74,7 +78,10 @@
     "reactflow",
     "rfdc",
     "Rødvik",
+    "signin",
+    "supabase",
     "tailwindcss",
+    "todos",
     "tsbuildinfo",
     "untar",
     "valkyr",

@@ -1,19 +1,21 @@
 {
   "extends": "@valkyr/typescript",
   "compilerOptions": {
-    "types": ["webpack-env"],
-
     "lib": ["ES2022", "dom", "dom.iterable"],
-    "jsx": "react-jsx",
-    
+    "moduleResolution": "Node",
+
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+
+    "esModuleInterop": false,
+
     "paths": {
-      "~components/*": ["./src/components/*"],
-      "~middleware/*": ["./src/middleware/*"],
-      "~services/*": ["./src/services/*"]
+      "~Components/*": ["./src/Components/*"],
+      "~Middleware/*": ["./src/Middleware/*"],
+      "~Modules/*": ["./src/Modules/*"],
+      "~Services/*": ["./src/Services/*"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx"
-  ]
+  "include": ["**/*.ts", "**/*.tsx"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

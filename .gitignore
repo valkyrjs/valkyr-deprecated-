@@ -31,6 +31,11 @@ packages/app
 
 node_modules
 
+# cargo
+
+/target
+Cargo.lock
+
 # dist & pack
 
 .contented

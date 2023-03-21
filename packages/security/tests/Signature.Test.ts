@@ -1,4 +1,4 @@
-import { Signature } from "../src/Signature";
+import { Signature } from "../src/Signature.js";
 
 /*
  |--------------------------------------------------------------------------------

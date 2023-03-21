@@ -13,20 +13,9 @@
     "lint": "turbo run lint -- --fix",
     "test": "turbo run test -- --forceExit",
     "cli": "npm run local --prefix packages/cli",
-    "api": "npm start --prefix services/api",
     "app": "npm start --prefix services/app",
+    "cerberus": "npm run start --prefix services/cerberus",
     "publish": "node ./scripts/publish.js"
-  },
-  "valkyr": {
-    "name": "@valkyr",
-    "input": {
-      "adapter": "fs",
-      "location": "./generated"
-    },
-    "output": {
-      "api": "./templates/api/src/generated",
-      "app": "./templates/app/src/generated"
-    }
   },
   "devDependencies": {
     "@valkyr/prettier": "workspace:*",

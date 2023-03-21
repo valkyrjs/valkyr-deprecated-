@@ -35,4 +35,8 @@ export type EventStatus = {
   outdated: boolean;
 };
 
+export type EventAuditor = {
+  auditor: string;
+};
+
 export type Empty = Record<string, never>;

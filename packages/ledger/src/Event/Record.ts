@@ -3,10 +3,11 @@ import { nanoid } from "nanoid";
 
 import type { Event } from "./Event.js";
 
-export function createEventRecord<E extends Event>(stream: string, event: E): EventRecord<E> {
+export function createEventRecord<E extends Event>(container: string, stream: string, event: E): EventRecord<E> {
   const timestamp = getLogicalTimestamp();
   return {
     id: nanoid(),
+    container,
     stream,
     ...event,
     created: timestamp,
@@ -26,6 +27,12 @@ export type EventRecord<E extends Event = Event> = {
    * _(database)_.
    */
   id: string;
+
+  /**
+   * Identifier representing the container in which many individual streams belongs
+   * and is used for grouping streams together for easier management.
+   */
+  container: string;
 
   /**
    * Identifier representing the stream in which many individual events/transactions
