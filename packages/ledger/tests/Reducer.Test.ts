@@ -7,12 +7,13 @@ import { events, reducer } from "./Event.Mock.js";
  |--------------------------------------------------------------------------------
  */
 
+const containerId = "abc";
 const streamId = "xyz";
 
 const records = [
-  createEventRecord(streamId, events.created({ title: "Bar" })),
-  createEventRecord(streamId, events.member.added({ name: "John Foo" })),
-  createEventRecord(streamId, events.member.added({ name: "Jane Foo" }))
+  createEventRecord(containerId, streamId, events.created({ title: "Bar" })),
+  createEventRecord(containerId, streamId, events.member.added({ name: "John Foo" })),
+  createEventRecord(containerId, streamId, events.member.added({ name: "Jane Foo" }))
 ];
 
 /*

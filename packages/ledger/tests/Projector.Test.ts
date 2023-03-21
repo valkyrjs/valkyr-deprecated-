@@ -47,7 +47,7 @@ describe("Projector", () => {
   for (const test of tests) {
     it(`should project an event with hydrated ${test.hydrated} and outdated ${test.outdated} with expected outcome ${test.outcome}`, async () => {
       const projector = new Projector();
-      const event = createEventRecord("stream-id", events.created({ title: "Foo" }));
+      const event = createEventRecord("container-id", "stream-id", events.created({ title: "Foo" }));
 
       let resolved = false;
 
