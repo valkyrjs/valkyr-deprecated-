@@ -1,3 +1,4 @@
+import { nanoid } from "@valkyr/ledger";
 import { ControllerForm } from "@valkyr/solid";
 import Joi from "joi";
 
@@ -16,7 +17,7 @@ export class WorkspaceForm extends ControllerForm<{
   });
 
   static async submit(form: WorkspaceForm): Promise<string | void> {
-    const workspaceId = crypto.randomUUID();
+    const workspaceId = nanoid();
     await eventStore.push(
       workspaceId,
       workspaceId,

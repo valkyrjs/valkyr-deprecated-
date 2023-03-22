@@ -1,10 +1,10 @@
-import { getLogicalTimestamp } from "@valkyr/time";
 import { nanoid } from "nanoid";
 
+import { getTimestamp } from "../Timestamp.js";
 import type { Event } from "./Event.js";
 
 export function createEventRecord<E extends Event>(container: string, stream: string, event: E): EventRecord<E> {
-  const timestamp = getLogicalTimestamp();
+  const timestamp = getTimestamp();
   return {
     id: nanoid(),
     container,

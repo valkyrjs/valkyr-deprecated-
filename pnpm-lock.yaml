@@ -121,10 +121,8 @@ importers:
   packages/ledger:
     specifiers:
       '@valkyr/jest': workspace:*
-      '@valkyr/time': workspace:*
       nanoid: ^4.0.1
     dependencies:
-      '@valkyr/time': link:../time
       nanoid: 4.0.1
     devDependencies:
       '@valkyr/jest': link:../../configs/jest
@@ -250,7 +248,6 @@ importers:
       '@valkyr/queue': workspace:*
       '@valkyr/router': workspace:*
       '@valkyr/solid': workspace:*
-      '@valkyr/time': workspace:*
       '@vitejs/plugin-react': ^3.0.1
       autoprefixer: ^10.4.13
       css-loader: 6.7.2
@@ -260,6 +257,7 @@ importers:
       postcss-import: ^15.1.0
       postcss-loader: ^7.0.2
       rxjs: ^7.8.0
+      solid-heroicons: ^3.1.1
       solid-icons: ^1.0.4
       solid-js: ^1.4.7
       style-loader: ^3.3.1
@@ -280,9 +278,9 @@ importers:
       '@valkyr/queue': link:../../packages/queue
       '@valkyr/router': link:../../packages/router
       '@valkyr/solid': link:../../packages/solid
-      '@valkyr/time': link:../../packages/time
       joi: 17.7.1
       rxjs: 7.8.0
+      solid-heroicons: 3.1.1_solid-js@1.6.15
       solid-icons: 1.0.4_solid-js@1.6.15
       solid-js: 1.6.15
     devDependencies:
@@ -6500,6 +6498,14 @@ packages:
       ip: 2.0.0
       smart-buffer: 4.2.0
     dev: true
+
+  /solid-heroicons/3.1.1_solid-js@1.6.15:
+    resolution: {integrity: sha512-wfU/SqxqxWxInvfFlKJfCBPnJ94Zq1GQFiFL3M0KwZzT81lSF5yIC4HA/Czp3DYrn+dUumjO0qdrx8Ab3cy2sA==}
+    peerDependencies:
+      solid-js: '>= ^1.2.5'
+    dependencies:
+      solid-js: 1.6.15
+    dev: false
 
   /solid-icons/1.0.4_solid-js@1.6.15:
     resolution: {integrity: sha512-gJTp4in3+OYCs9WvDkSLt4Los2unR3Uoder8wjh15GsfP20xiNOLfPTJllXmn+fI8+k3x7bRYtLGIgWd9fUQug==}

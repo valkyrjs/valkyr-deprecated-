@@ -22,7 +22,13 @@ export const auth = {
   },
 
   get data(): SessionData | undefined {
-    const token = localStorage.getItem("sb-192-auth-token");
+    let token: string | null = null;
+    for (const key in { ...localStorage }) {
+      if (key.includes("-auth-token")) {
+        token = localStorage.getItem(key);
+        break;
+      }
+    }
     if (token === null) {
       return undefined;
     }

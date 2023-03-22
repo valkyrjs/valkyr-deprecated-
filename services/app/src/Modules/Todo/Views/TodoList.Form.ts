@@ -1,3 +1,4 @@
+import { nanoid } from "@valkyr/ledger";
 import { ControllerForm } from "@valkyr/solid";
 import Joi from "joi";
 
@@ -21,7 +22,7 @@ export class TodoListForm extends ControllerForm<{
     }
     await eventStore.push(
       containerId,
-      crypto.randomUUID(),
+      nanoid(),
       todoItemAdded(
         {
           description: form.get("description")

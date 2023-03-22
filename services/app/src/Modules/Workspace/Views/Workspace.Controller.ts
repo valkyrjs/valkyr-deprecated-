@@ -28,7 +28,7 @@ export class WorkspaceController extends Controller<{
   }
 
   async #pullWorkspaces() {
-    const { data: result } = await supabase.from("container_users").select("*").eq("user_id", auth.strictUserId);
+    const { data: result } = await supabase.from("containers").select("*").eq("user_id", auth.strictUserId);
     if (result !== null) {
       await Promise.all(result.map(async ({ container_id }) => this.#resolveWorkspaceEvents(container_id)));
     }

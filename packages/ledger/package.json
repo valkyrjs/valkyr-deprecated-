@@ -38,7 +38,6 @@
     ]
   },
   "dependencies": {
-    "@valkyr/time": "workspace:*",
     "nanoid": "^4.0.1"
   },
   "devDependencies": {

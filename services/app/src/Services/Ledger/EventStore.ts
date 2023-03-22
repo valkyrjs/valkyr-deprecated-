@@ -1,6 +1,13 @@
 import { Collection, Document } from "@valkyr/db";
-import { createEventRecord, EventRecord, EventStatus, Projector, ReduceHandler, Validator } from "@valkyr/ledger";
-import { getLogicalTimestamp } from "@valkyr/time";
+import {
+  createEventRecord,
+  EventRecord,
+  EventStatus,
+  getTimestamp,
+  Projector,
+  ReduceHandler,
+  Validator
+} from "@valkyr/ledger";
 import { Subject } from "rxjs";
 
 import { supabase } from "~Services/Supabase";
@@ -73,7 +80,7 @@ class EventStore<Record extends EventRecord = EventRecord> {
     if (hydrated === true) {
       record = {
         ...record,
-        recorded: getLogicalTimestamp() // set locally recorded timestamp
+        recorded: getTimestamp() // set locally recorded timestamp
       };
     }
 
