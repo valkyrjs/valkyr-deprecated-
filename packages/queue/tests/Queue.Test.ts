@@ -1,8 +1,7 @@
-import { waitForExpect } from "@valkyr/testing";
-
 import { MemoryStorage } from "../src/Adapters/MemoryStorage.js";
 import { Queue } from "../src/index.js";
 import { UserWorker } from "./UserWorker.Mock.js";
+import { waitForExpect } from "./WaitForExpect.js";
 
 const queue = new Queue([new UserWorker()], {
   storage: new MemoryStorage()

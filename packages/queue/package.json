@@ -49,7 +49,6 @@
   },
   "devDependencies": {
     "@valkyr/jest": "workspace:*",
-    "@valkyr/testing": "workspace:*",
     "fake-indexeddb": "^4.0.1"
   }
 }

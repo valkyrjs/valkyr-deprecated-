@@ -1,8 +1,0 @@
-{
-  "extends": "@valkyr/typescript",
-  "compilerOptions": {
-    "rootDir": "./",
-    "outDir": "./dist"
-  },
-  "include": ["./src"]
-}
