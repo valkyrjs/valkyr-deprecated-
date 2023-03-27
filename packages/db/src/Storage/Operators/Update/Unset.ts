@@ -1,4 +1,5 @@
-import { dot } from "../../../Dot.js";
+import * as dot from "dot-prop";
+
 import { Document } from "../../Storage.js";
 import type { UpdateOperators } from "./Update.js";
 

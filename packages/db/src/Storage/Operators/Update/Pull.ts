@@ -1,7 +1,7 @@
+import * as dot from "dot-prop";
 import { Query } from "mingo";
 import type { RawObject } from "mingo/types.js";
 
-import { dot } from "../../../Dot.js";
 import { PullUpdateArrayError } from "../../Errors.js";
 import { Document } from "../../Storage.js";
 import type { UpdateOperators } from "./Update.js";

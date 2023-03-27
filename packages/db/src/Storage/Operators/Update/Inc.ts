@@ -1,9 +1,9 @@
+import * as dot from "dot-prop";
 import { deepEqual } from "fast-equals";
 import { Query } from "mingo";
 import type { RawObject } from "mingo/types.js";
 
 import { clone } from "../../../Clone.js";
-import { dot } from "../../../Dot.js";
 import { Document } from "../../Storage.js";
 import type { UpdateOperators } from "./Update.js";
 import { getPositionalFilter } from "./Utils.js";

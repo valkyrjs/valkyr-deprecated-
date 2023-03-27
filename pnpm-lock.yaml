@@ -69,6 +69,7 @@ importers:
       '@valkyr/jest': workspace:*
       '@valkyr/security': workspace:*
       '@valkyr/time': workspace:*
+      dot-prop: 7.2.0
       fake-indexeddb: ^4.0.1
       fast-equals: 4.0.3
       idb: ^7.1.1
@@ -80,6 +81,7 @@ importers:
     dependencies:
       '@valkyr/security': link:../security
       '@valkyr/time': link:../time
+      dot-prop: 7.2.0
       fast-equals: 4.0.3
       idb: 7.1.1
       mingo: 6.2.1
@@ -2565,6 +2567,13 @@ packages:
     dependencies:
       webidl-conversions: 4.0.2
     dev: true
+
+  /dot-prop/7.2.0:
+    resolution: {integrity: sha512-Ol/IPXUARn9CSbkrdV4VJo7uCy1I3VuSiWCaFSg+8BdUOzF9n3jefIpcgAydvUZbTdEBZs2vEiTiS9m61ssiDA==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dependencies:
+      type-fest: 2.19.0
+    dev: false
 
   /eastasianwidth/0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -5896,6 +5905,11 @@ packages:
   /type-fest/1.4.0:
     resolution: {integrity: sha512-yGSza74xk0UG8k+pLh5oeoYirvIiWo5t0/o3zHHAO2tRDiZcxWP7fywNlXhqb6/r6sWvwi+RsyQMWhVLe4BVuA==}
     engines: {node: '>=10'}
+    dev: false
+
+  /type-fest/2.19.0:
+    resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
+    engines: {node: '>=12.20'}
     dev: false
 
   /type-fest/3.5.2:
