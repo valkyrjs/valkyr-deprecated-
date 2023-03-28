@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://codeclimate.com/github/kodemon/valkyr/maintainability"><img src="https://api.codeclimate.com/v1/badges/d12a6788570bda777116/maintainability" /></a>
+  <a href="https://codeclimate.com/github/cmdo/valkyr/maintainability"><img src="https://api.codeclimate.com/v1/badges/93cd945fb13b935edd46/maintainability" /></a>
 </p>
 
 # Valkyr

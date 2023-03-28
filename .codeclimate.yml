@@ -1,5 +1,10 @@
 version: "2"
 
+plugins:
+  eslint:
+    enabled: true
+    config: configs/eslint/index.js
+
 checks:
   similar-code:
     enabled: true
@@ -17,3 +22,4 @@ exclude_patterns:
   - "**/*.test.ts"
   - "**/*.test.tsx"
   - "**/*.d.ts"
+  - "**/*.js"
