@@ -1,3 +1,7 @@
+/**
+ * Represents a generic event that stores data and metadata.
+ * Used as the base for creating more specific event types.
+ */
 export type Event<Type extends string = string, Data extends {} = Empty, Meta extends {} = Empty> = {
   /**
    * Event identifier describing the intent of the event in a past tense format.

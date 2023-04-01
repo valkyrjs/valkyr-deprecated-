@@ -3,6 +3,16 @@ import { nanoid } from "nanoid";
 import { getTimestamp } from "../Timestamp.js";
 import type { Event } from "./Event.js";
 
+/**
+ * Creates an event record by combining the given event with additional metadata.
+ * The resulting record can be stored in an event store (database).
+ *
+ * @param container - Identifier for the container in which the event stream belongs.
+ * @param stream    - Identifier for the event stream to which the event belongs.
+ * @param event     - The event to record.
+ *
+ * @returns An event record containing the event and additional metadata.
+ */
 export function createEventRecord<E extends Event>(container: string, stream: string, event: E): EventRecord<E> {
   const timestamp = getTimestamp();
   return {

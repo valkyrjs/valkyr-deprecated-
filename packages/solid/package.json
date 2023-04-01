@@ -38,6 +38,7 @@
     ]
   },
   "dependencies": {
+    "@casl/ability": "^6.3.3",
     "@valkyr/eventemitter": "workspace:*",
     "fast-equals": "4.0.3",
     "joi": "17.7.1",
