@@ -65,6 +65,8 @@ describe("Field Update Operators", () => {
         tags: ["coats", "outerwear", "clothing"],
         ratings: [{ by: "Customer007", rating: 4 }]
       });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -123,6 +125,8 @@ describe("Field Update Operators", () => {
         tags: ["coats", "outerwear", "clothing"],
         ratings: [{ by: "Customer007", rating: 4 }]
       });
+
+      collection.storage.destroy();
     });
 
     it("should assign value returned from provided attribute method", async () => {
@@ -150,6 +154,8 @@ describe("Field Update Operators", () => {
         id: "1",
         favorite: true
       });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -209,6 +215,8 @@ describe("Field Update Operators", () => {
         tags: ["coats", "rain gear", "clothing"],
         ratings: [{ by: "Customer007", rating: 2 }]
       });
+
+      collection.storage.destroy();
     });
 
     it("should set elements in arrays with function value assignment", async () => {
@@ -265,6 +273,8 @@ describe("Field Update Operators", () => {
         tags: ["coats", "rain gear", "clothing"],
         ratings: [{ by: "Customer007", rating: 2 }]
       });
+
+      collection.storage.destroy();
     });
   });
 
@@ -323,6 +333,8 @@ describe("Field Update Operators", () => {
           instock: true
         }
       ]);
+
+      collection.storage.destroy();
     });
   });
 });
@@ -387,6 +399,8 @@ describe("Array Update Operators", () => {
           ]
         }
       ]);
+
+      collection.storage.destroy();
     });
 
     /**
@@ -423,6 +437,8 @@ describe("Array Update Operators", () => {
         { id: "2", grades: [88, 90, 92] },
         { id: "3", grades: [85, 100, 90] }
       ]);
+
+      collection.storage.destroy();
     });
 
     /**
@@ -468,6 +484,8 @@ describe("Array Update Operators", () => {
           { grade: 85, mean: 85, std: 8 }
         ]
       });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -522,6 +540,8 @@ describe("Array Update Operators", () => {
           { grade: 90, mean: 85, std: 3 }
         ]
       });
+
+      collection.storage.destroy();
     });
   });
 
@@ -577,6 +597,8 @@ describe("Array Update Operators", () => {
           vegetables: ["broccoli", "zucchini", "onions"]
         }
       ]);
+
+      collection.storage.destroy();
     });
 
     /**
@@ -604,6 +626,8 @@ describe("Array Update Operators", () => {
       });
 
       expect(await collection.findOne({ id: "1" })).toEqual({ id: "1", votes: [3, 5] });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -650,6 +674,8 @@ describe("Array Update Operators", () => {
           ]
         }
       ]);
+
+      collection.storage.destroy();
     });
 
     it("should not remove any elements when using $elemMatch", async () => {
@@ -696,6 +722,8 @@ describe("Array Update Operators", () => {
           ]
         }
       ]);
+
+      collection.storage.destroy();
     });
 
     /**
@@ -795,6 +823,8 @@ describe("Array Update Operators", () => {
           ]
         }
       ]);
+
+      collection.storage.destroy();
     });
   });
 
@@ -822,6 +852,8 @@ describe("Array Update Operators", () => {
       });
 
       expect(await collection.findOne({ id: "1" })).toEqual({ id: "1", scores: [44, 78, 38, 80, 89] });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -857,6 +889,8 @@ describe("Array Update Operators", () => {
         { id: "3", scores: [46, 78, 38, 80, 89, 95] },
         { id: "4", scores: [47, 78, 38, 80, 89, 95] }
       ]);
+
+      collection.storage.destroy();
     });
 
     /**
@@ -887,6 +921,8 @@ describe("Array Update Operators", () => {
       });
 
       expect(await collection.findOne({ id: "1" })).toEqual({ id: "1", name: "Joe", scores: [44, 78, 90, 92, 85] });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -938,6 +974,8 @@ describe("Array Update Operators", () => {
           { wk: 5, score: 8 }
         ]
       });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -966,6 +1004,8 @@ describe("Array Update Operators", () => {
       });
 
       expect(await collection.findById("1")).toEqual({ id: "1", scores: [50, 60, 80, 78, 86] });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -994,6 +1034,8 @@ describe("Array Update Operators", () => {
       });
 
       expect(await collection.findById("2")).toEqual({ id: "2", scores: [89, 90, 100] });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -1022,6 +1064,8 @@ describe("Array Update Operators", () => {
       });
 
       expect(await collection.findById("3")).toEqual({ id: "3", scores: [70, 100, 20] });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -1050,6 +1094,8 @@ describe("Array Update Operators", () => {
       });
 
       expect(await collection.findById("1")).toEqual({ id: "1", scores: [50, 60, 70, 100] });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -1078,6 +1124,8 @@ describe("Array Update Operators", () => {
       });
 
       expect(await collection.findById("2")).toEqual({ id: "2", scores: [50, 60, 20, 30, 70, 100] });
+
+      collection.storage.destroy();
     });
 
     it("should use a negative index to add elements to the array", async () => {
@@ -1103,6 +1151,8 @@ describe("Array Update Operators", () => {
       });
 
       expect(await collection.findById("3")).toEqual({ id: "3", scores: [50, 60, 20, 30, 90, 80, 70, 100] });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -1153,6 +1203,8 @@ describe("Array Update Operators", () => {
           { id: 2, score: 9 }
         ]
       });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -1183,6 +1235,8 @@ describe("Array Update Operators", () => {
       });
 
       expect(await collection.findById("2")).toEqual({ id: "2", tests: [40, 50, 60, 70, 89, 89] });
+
+      collection.storage.destroy();
     });
 
     /**
@@ -1213,6 +1267,8 @@ describe("Array Update Operators", () => {
       });
 
       expect(await collection.findById("3")).toEqual({ id: "3", tests: [100, 89, 70, 20] });
+
+      collection.storage.destroy();
     });
   });
 
@@ -1245,6 +1301,8 @@ describe("Array Update Operators", () => {
         quantity: 8,
         metrics: { orders: 3, ratings: 3.5 }
       });
+
+      collection.storage.destroy();
     });
 
     it("should increment value of an array element with array object", async () => {
@@ -1301,6 +1359,8 @@ describe("Array Update Operators", () => {
           }
         ]
       });
+
+      collection.storage.destroy();
     });
 
     it("should increment value of an array element with array index", async () => {
@@ -1357,6 +1417,8 @@ describe("Array Update Operators", () => {
           }
         ]
       });
+
+      collection.storage.destroy();
     });
   });
 });

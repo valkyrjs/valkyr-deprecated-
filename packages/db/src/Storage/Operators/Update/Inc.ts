@@ -1,5 +1,5 @@
 import * as dot from "dot-prop";
-import type { RawObject } from "mingo/types.js";
+import type { RawObject } from "mingo/types";
 
 import { Document } from "../../Storage.js";
 import type { UpdateOperators } from "./Update.js";

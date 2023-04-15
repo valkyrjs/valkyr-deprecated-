@@ -1,4 +1,4 @@
-import type { RawObject } from "mingo/types.js";
+import type { RawObject } from "mingo/types";
 
 import { clone } from "../../../Clone.js";
 import { Document } from "../../Storage.js";

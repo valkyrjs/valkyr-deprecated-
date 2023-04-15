@@ -19,6 +19,7 @@
     "build": "tsc -b ./tsconfig.build.json",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf ./.turbo ./dist",
+    "ncu": "ncu -u",
     "lint": "eslint ."
   },
   "eslintConfig": {
@@ -38,12 +39,12 @@
     ]
   },
   "dependencies": {
-    "fast-equals": "4.0.3",
-    "joi": "17.7.1",
+    "fast-equals": "5.0.1",
+    "joi": "17.9.1",
     "rxjs": "7.8.0"
   },
   "devDependencies": {
-    "@types/react": "18.0.28",
+    "@types/react": "18.0.35",
     "@valkyr/db": "workspace:*",
     "@valkyr/router": "workspace:*",
     "react": "18.2.0"

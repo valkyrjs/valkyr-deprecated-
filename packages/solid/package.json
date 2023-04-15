@@ -19,6 +19,7 @@
     "build": "tsc -b ./tsconfig.build.json",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf ./.turbo ./dist",
+    "ncu": "ncu -u",
     "lint": "eslint ."
   },
   "eslintConfig": {
@@ -38,16 +39,16 @@
     ]
   },
   "dependencies": {
-    "@casl/ability": "^6.3.3",
+    "@casl/ability": "^6.4.0",
     "@valkyr/eventemitter": "workspace:*",
-    "fast-equals": "4.0.3",
-    "joi": "17.7.1",
+    "fast-equals": "5.0.1",
+    "joi": "17.9.1",
     "rxjs": "7.8.0"
   },
   "devDependencies": {
     "@valkyr/db": "workspace:*",
     "@valkyr/router": "workspace:*",
-    "solid-js": "1.6.15"
+    "solid-js": "1.7.3"
   },
   "peerDependencies": {
     "joi": "17.7.1"

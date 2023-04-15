@@ -12,16 +12,14 @@
     "clean": "turbo run clean",
     "lint": "turbo run lint -- --fix",
     "test": "turbo run test -- --forceExit",
-    "cli": "npm run local --prefix packages/cli",
-    "app": "npm start --prefix services/app",
-    "cerberus": "npm run start --prefix services/cerberus",
+    "ncu": "turbo run ncu",
     "publish": "node ./scripts/publish.js"
   },
   "devDependencies": {
     "@valkyr/prettier": "workspace:*",
     "@valkyr/eslint-config": "workspace:*",
     "@valkyr/typescript": "workspace:*",
-    "turbo": "1.5.5"
+    "turbo": "1.9.1"
   },
   "lint-staged": {
     "*": [

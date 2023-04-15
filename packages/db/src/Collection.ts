@@ -1,4 +1,4 @@
-import type { RawObject } from "mingo/types.js";
+import type { RawObject } from "mingo/types";
 import { Observable, Subscription } from "rxjs";
 
 import { IndexedDbStorage } from "./Databases/IndexedDb.Storage.js";

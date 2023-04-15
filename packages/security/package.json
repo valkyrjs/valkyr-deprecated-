@@ -19,6 +19,7 @@
     "build": "tsc -b ./tsconfig.build.json",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf ./.turbo ./dist",
+    "ncu": "ncu -u",
     "lint": "eslint .",
     "test": "jest"
   },
@@ -43,7 +44,7 @@
   },
   "dependencies": {
     "crypto-js": "^4.1.1",
-    "jose": "^4.11.1"
+    "jose": "^4.14.0"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",

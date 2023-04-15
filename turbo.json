@@ -7,6 +7,9 @@
     "clean": {
       "cache": false
     },
+    "ncu": {
+      "inputs": ["package.json"]
+    },
     "build": {
       "inputs": ["src/**", "tsconfig.json", "tsconfig.build.json"],
       "outputs": ["dist/**"],

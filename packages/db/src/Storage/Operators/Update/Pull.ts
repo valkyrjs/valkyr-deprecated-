@@ -1,6 +1,6 @@
 import * as dot from "dot-prop";
 import { Query } from "mingo";
-import type { RawObject } from "mingo/types.js";
+import type { RawObject } from "mingo/types";
 
 import { PullUpdateArrayError } from "../../Errors.js";
 import { Document } from "../../Storage.js";

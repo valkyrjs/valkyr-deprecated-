@@ -1,7 +1,7 @@
 import * as dot from "dot-prop";
 import { deepEqual } from "fast-equals";
 import { Query } from "mingo";
-import type { RawObject } from "mingo/types.js";
+import type { RawObject } from "mingo/types";
 
 import { clone } from "../../../Clone.js";
 import { Document } from "../../Storage.js";
@@ -19,21 +19,26 @@ export function setPositionalData(
 ): boolean {
   const { filter, path, target } = getPositionalFilter(criteria, key);
 
-  const values = dot.getProperty(document, path);
-  if (values === undefined) {
-    throw new Error("NOT ARRAY");
-  }
-
-  let items: any[];
-  if (typeof filter === "object") {
-    items = getPositionalUpdateQuery(clone(values), key, filter, target, update.object);
-  } else {
-    items = getPositionalUpdate(clone(values), key, filter, target, update.value);
-  }
+  const values = getPropertyValues(document, path);
+  const items =
+    typeof filter === "object"
+      ? getPositionalUpdateQuery(clone(values), key, filter, target, update.object)
+      : getPositionalUpdate(clone(values), key, filter, target, update.value);
 
   dot.setProperty(document, path, items);
 
   return deepEqual(values, items) === false;
+}
+
+function getPropertyValues(document: Document, path: string): string[] {
+  const values = dot.getProperty(document, path);
+  if (values === undefined) {
+    throw new Error("Values is undefined");
+  }
+  if (Array.isArray(values) === false) {
+    throw new Error("Values is not an array");
+  }
+  return values;
 }
 
 export function getPositionalUpdate(

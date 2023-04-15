@@ -1,5 +1,5 @@
 import { Query } from "mingo";
-import { RawObject } from "mingo/types.js";
+import { RawObject } from "mingo/types";
 import { nanoid } from "nanoid";
 
 import {

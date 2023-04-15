@@ -1,4 +1,4 @@
-import type { RawObject } from "mingo/types.js";
+import type { RawObject } from "mingo/types";
 
 import { hashCodeQuery } from "../Hash.js";
 import { Document, Options } from "../Storage/mod.js";

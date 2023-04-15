@@ -1,7 +1,6 @@
-import { getLogicalTimestamp } from "@valkyr/time";
 import type { IDBPDatabase } from "idb";
 import { Query } from "mingo";
-import type { AnyVal, RawObject } from "mingo/types.js";
+import type { AnyVal, RawObject } from "mingo/types";
 import { nanoid } from "nanoid";
 
 import { DBLogger, InsertLog, QueryLog, RemoveLog, ReplaceLog, UpdateLog } from "../Logger.js";
@@ -393,7 +392,7 @@ export function isObject(v: AnyVal): v is object {
 }
 
 export function getMeta(): DocumentMeta {
-  const now = getLogicalTimestamp();
+  const now = Date.now();
   return {
     createdAt: now,
     updatedAt: now

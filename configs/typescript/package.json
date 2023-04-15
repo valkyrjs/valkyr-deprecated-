@@ -4,7 +4,10 @@
   "files": [
     "tsconfig.json"
   ],
+  "scripts": {
+    "ncu": "ncu -u"
+  },
   "dependencies": {
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.4"
   }
 }

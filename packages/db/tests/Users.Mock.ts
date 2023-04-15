@@ -1,9 +1,9 @@
-import { getLogicalTimestamp } from "@valkyr/time";
-
 import { clone } from "../src/Clone.js";
 import { Document } from "../src/Storage/mod.js";
 
-export const users: UserDocument[] = [
+const now = Date.now();
+
+const users: UserDocument[] = [
   {
     id: "user-1",
     name: "John Doe",
@@ -16,8 +16,8 @@ export const users: UserDocument[] = [
     ],
     interests: ["movies", "tv", "sports"],
     $meta: {
-      createdAt: getLogicalTimestamp(),
-      updatedAt: getLogicalTimestamp()
+      createdAt: now,
+      updatedAt: now
     }
   },
   {
@@ -32,8 +32,8 @@ export const users: UserDocument[] = [
     ],
     interests: ["movies", "fitness", "dance"],
     $meta: {
-      createdAt: getLogicalTimestamp(),
-      updatedAt: getLogicalTimestamp()
+      createdAt: now,
+      updatedAt: now
     }
   }
 ];

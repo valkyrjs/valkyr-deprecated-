@@ -34,7 +34,7 @@ export function observe(
         clearTimeout(debounce);
         debounce = setTimeout(() => {
           store.getDocuments().then((documents) => {
-            onChange(toQueriedData(documents, options), changed, type);
+            onChange(applyQueryOptions(documents, options), changed, type);
           });
         }, 0);
       }
@@ -51,7 +51,7 @@ export function observe(
   };
 }
 
-function toQueriedData(documents: Document[], options?: Options): Document[] {
+function applyQueryOptions(documents: Document[], options?: Options): Document[] {
   if (options !== undefined) {
     return addOptions(new Query({}).find(documents), options).all() as Document[];
   }

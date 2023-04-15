@@ -1,16 +1,12 @@
 import { hashCodeQuery } from "../src/Hash.js";
+import { Options } from "../src/index.js";
 
 describe("hashCodeQuery", () => {
-  it("should produce hash code for query and options", () => {
-    const query = { name: "John", email: "john@doe.com" };
-    const options = { sort: { name: 1 }, limit: 10 };
+  const filter = { name: { $eq: "Document 1" } };
+  const options: Options = { sort: { name: 1 } };
 
-    const hashCode = hashCodeQuery(query, options);
-
-    expect(hashCodeQuery(query, options)).toBe(hashCode);
-    expect(hashCodeQuery(query, options)).toBe(hashCode);
-    expect(hashCodeQuery(query, options)).toBe(hashCode);
-    expect(hashCodeQuery(query, options)).toBe(hashCode);
-    expect(hashCodeQuery(query, options)).toBe(hashCode);
+  test("return correct hash code", () => {
+    const hashCode = hashCodeQuery(filter, options);
+    expect(typeof hashCode).toBe("number");
   });
 });

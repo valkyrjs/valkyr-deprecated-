@@ -1,5 +1,5 @@
-import { Cursor } from "mingo/cursor.js";
-import { RawObject } from "mingo/types.js";
+import { Cursor } from "mingo/cursor";
+import { RawObject } from "mingo/types";
 import { nanoid } from "nanoid";
 import { Subject } from "rxjs";
 
@@ -149,8 +149,8 @@ export type Document<Properties extends RawObject = RawObject> = {
   };
 
 export type DocumentMeta = {
-  createdAt: string;
-  updatedAt: string;
+  createdAt: number;
+  updatedAt: number;
 };
 
 export type PartialDocument<D extends Document> = Omit<D, "id" | "$meta"> & {
