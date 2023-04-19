@@ -18,6 +18,7 @@
 
 # Development
 
+.publish
 .turbo
 .docker
 .parcel-cache

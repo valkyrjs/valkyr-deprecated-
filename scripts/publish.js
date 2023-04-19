@@ -1,22 +1,22 @@
-const { spawn } = require("child_process");
-const path = require("path");
-const fs = require("fs");
+const { spawn } = require("node:child_process");
+const { resolve, join } = require("node:path");
+const { readdirSync } = require("node:fs");
 
-const ROOT_DIR = path.resolve(__dirname, "..");
+const ROOT_DIR = resolve(__dirname, "..");
 
-const pkgs = fs.readdirSync(path.join(ROOT_DIR, "packages"));
-const cfgs = fs.readdirSync(path.join(ROOT_DIR, "configs"));
+const packages = readdirSync(join(ROOT_DIR, "packages"));
+const configs = readdirSync(join(ROOT_DIR, "configs"));
 
 async function main() {
-  for (const pkg of pkgs) {
-    await publish(pkg, path.join(ROOT_DIR, "packages", pkg));
+  for (const pkg of packages) {
+    await publish(join(ROOT_DIR, "packages", pkg));
   }
-  for (const cfg of cfgs) {
-    await publish(cfg, path.join(ROOT_DIR, "configs", cfg));
+  for (const cfg of configs) {
+    await publish(join(ROOT_DIR, "configs", cfg));
   }
 }
 
-async function publish(pkg, cwd) {
+async function publish(cwd) {
   const cursor = spawn("npm", ["publish", "--access", "public"], { stdio: "inherit", cwd });
   return new Promise((resolve, reject) => {
     cursor.on("close", resolve);

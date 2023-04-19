@@ -8,7 +8,7 @@
       "cache": false
     },
     "ncu": {
-      "inputs": ["package.json"]
+      "cache": false
     },
     "build": {
       "inputs": ["src/**", "tsconfig.json", "tsconfig.build.json"],
@@ -16,8 +16,7 @@
       "dependsOn": ["^build"]
     },
     "test": {
-      "inputs": ["src/**", "tests/**"],
-      "dependsOn": ["^build"]
+      "inputs": ["src/**", "tests/**"]
     },
     "lint": {
       "outputs": []

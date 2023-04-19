@@ -13,7 +13,8 @@
     "lint": "turbo run lint -- --fix",
     "test": "turbo run test -- --forceExit",
     "ncu": "turbo run ncu",
-    "publish": "node ./scripts/publish.js"
+    "publish": "node ./scripts/publish.js",
+    "local": "node ./scripts/local.js"
   },
   "devDependencies": {
     "@valkyr/prettier": "workspace:*",

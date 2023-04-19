@@ -1,6 +1,5 @@
 import { nanoid } from "nanoid";
 
-import { getTimestamp } from "../Timestamp.js";
 import type { Event } from "./Event.js";
 
 /**
@@ -23,6 +22,10 @@ export function createEventRecord<E extends Event>(container: string, stream: st
     created: timestamp,
     recorded: timestamp
   };
+}
+
+export function getTimestamp(): string {
+  return new Date().toISOString();
 }
 
 /*
@@ -69,8 +72,7 @@ export type EventRecord<E extends Event = Event> = {
   meta: E["meta"];
 
   /**
-   * An immutable logical hybrid clock timestamp representing the wall time when
-   * the event was created.
+   * An immutable iso timestamp representing the wall time when the event was created.
    *
    * This value is used to identify the date of its creation as well as a sorting
    * key when performing reduction logic to generate aggregate state for the stream
@@ -79,9 +81,9 @@ export type EventRecord<E extends Event = Event> = {
   created: string;
 
   /**
-   * A mutable logical hybrid clock timestamps representing the wall time when the
-   * event was recorded to the local **event ledger** _(database)_ as opposed to
-   * when the event was actually created.
+   * A mutable iso timestamps representing the wall time when the event was recorded to
+   * the local **event ledger** _(database)_ as opposed to when the event was actually
+   * created.
    *
    * This value is used when performing event synchronization between two different
    * event ledgers.

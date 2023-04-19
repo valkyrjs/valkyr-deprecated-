@@ -89,12 +89,6 @@ importers:
       fake-indexeddb: 4.0.1
       type-fest: 3.8.0
 
-  packages/eventemitter:
-    specifiers:
-      eventemitter3: ^5.0.0
-    dependencies:
-      eventemitter3: 5.0.0
-
   packages/jsonrpc:
     specifiers:
       '@valkyr/jest': workspace:*
@@ -174,7 +168,6 @@ importers:
     specifiers:
       '@casl/ability': ^6.4.0
       '@valkyr/db': workspace:*
-      '@valkyr/eventemitter': workspace:*
       '@valkyr/router': workspace:*
       fast-equals: 5.0.1
       joi: 17.9.1
@@ -182,7 +175,6 @@ importers:
       solid-js: 1.7.3
     dependencies:
       '@casl/ability': 6.4.0
-      '@valkyr/eventemitter': link:../eventemitter
       fast-equals: 5.0.1
       joi: 17.9.1
       rxjs: 7.8.0
@@ -190,12 +182,6 @@ importers:
       '@valkyr/db': link:../db
       '@valkyr/router': link:../router
       solid-js: 1.7.3
-
-  packages/time:
-    specifiers:
-      '@valkyr/jest': workspace:*
-    devDependencies:
-      '@valkyr/jest': link:../../configs/jest
 
 packages:
 
@@ -2139,10 +2125,6 @@ packages:
   /esutils/2.0.3:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
-    dev: false
-
-  /eventemitter3/5.0.0:
-    resolution: {integrity: sha512-riuVbElZZNXLeLEoprfNYoDSwTBRR44X3mnhdI1YcnENpWTCsTTVZ2zFuqQcpoyqPQIUXdiPEU0ECAq0KQRaHg==}
     dev: false
 
   /execa/5.1.1:

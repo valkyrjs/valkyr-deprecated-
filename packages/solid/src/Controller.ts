@@ -1,4 +1,3 @@
-import { EventEmitter } from "@valkyr/eventemitter";
 import { batch, Component, createComponent } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
 import { createMutable, StoreNode } from "solid-js/store";
@@ -18,13 +17,11 @@ export const controllers: {
   error: () => null
 };
 
-export abstract class Controller<State extends JsonLike = {}, Props extends JsonLike = {}> extends EventEmitter {
+export abstract class Controller<State extends JsonLike = {}, Props extends JsonLike = {}> {
   $lifecycle: StoreNode;
 
   readonly plugins: Plugin[] = [];
   readonly state: State;
-
-  static #defaultLoadingComponent: Component = () => null;
 
   /**
    * Creates a new controller instance with given default state and pushState
@@ -34,14 +31,13 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    * @param pushData - Push data handler method.
    */
   constructor(readonly props: Props = {} as Props) {
-    super();
     this.$lifecycle = createMutable({ loading: true, error: undefined });
     this.state = createMutable<State>({} as State);
     this.setState = this.setState.bind(this);
   }
 
   static setDefaultLoadingComponent(component: Component) {
-    this.#defaultLoadingComponent = component;
+    controllers.loading = component;
   }
 
   /*

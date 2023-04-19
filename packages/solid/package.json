@@ -40,7 +40,6 @@
   },
   "dependencies": {
     "@casl/ability": "^6.4.0",
-    "@valkyr/eventemitter": "workspace:*",
     "fast-equals": "5.0.1",
     "joi": "17.9.1",
     "rxjs": "7.8.0"
