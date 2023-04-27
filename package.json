@@ -17,8 +17,9 @@
     "local": "node ./scripts/local.js"
   },
   "devDependencies": {
-    "@valkyr/prettier": "workspace:*",
+    "@changesets/cli": "^2.26.1",
     "@valkyr/eslint-config": "workspace:*",
+    "@valkyr/prettier": "workspace:*",
     "@valkyr/typescript": "workspace:*",
     "turbo": "1.9.1"
   },
