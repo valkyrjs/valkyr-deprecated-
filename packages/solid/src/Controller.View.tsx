@@ -1,6 +1,9 @@
-import { createComponent, Match, Switch } from "solid-js";
+import { createComponent, Match, onCleanup, Switch } from "solid-js";
 
 export function ControllerView({ $components, controller }: any) {
+  onCleanup(() => {
+    controller.$destroy();
+  });
   return (
     <Switch>
       <Match when={controller.$lifecycle.loading === true}>{createComponent($components.loading, {})}</Match>
