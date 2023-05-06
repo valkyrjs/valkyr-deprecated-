@@ -12,7 +12,7 @@ export class Route {
   readonly id?: string;
   readonly name?: string;
   readonly children?: Route[];
-  readonly actions: Action[];
+  readonly actions: readonly Action[];
 
   #parser!: RegExp;
   #base?: string;

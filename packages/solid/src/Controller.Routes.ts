@@ -1,6 +1,6 @@
 import type { Router } from "@valkyr/router";
 import type { Subscription } from "rxjs";
-import type { Component } from "solid-js";
+import { type Component, createComponent, JSXElement } from "solid-js";
 
 import type { Controller } from "./Controller.js";
 import type { ControllerPlugin, Plugin } from "./Controller.Plugin.js";
@@ -55,10 +55,7 @@ export class ControllerRoutes implements ControllerPlugin {
     this.#subscription = this.router.subscribe(this.#routes, async (resolved) => {
       const result = await this.router.getRender<typeof this.router>(resolved);
       if (result !== undefined) {
-        this.#controller.state.routed = {
-          component: result.component,
-          props: result.props
-        };
+        this.#controller.state.routed = () => createComponent(result.component, result.props);
       }
     });
 
@@ -71,10 +68,7 @@ export class ControllerRoutes implements ControllerPlugin {
         if (resolved !== undefined) {
           const view = await this.router.getRender<typeof this.router>(resolved);
           if (view !== undefined) {
-            this.#controller.state.routed = {
-              component: view.component,
-              props: view.props
-            };
+            this.#controller.state.routed = () => createComponent(view.component, view.props);
           }
         }
       }
@@ -93,10 +87,7 @@ export class ControllerRoutes implements ControllerPlugin {
  */
 
 export type Routed = {
-  routed?: {
-    component: Component;
-    props: any;
-  };
+  routed?: () => JSXElement;
 };
 
 type PluginOptions = {

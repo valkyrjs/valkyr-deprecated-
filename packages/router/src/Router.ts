@@ -20,6 +20,8 @@ export class Router<Component = unknown> {
   #resolved?: Resolved;
   #subscriber = new Subject<Resolved>();
 
+  #parent?: Route;
+
   #render?: (component: Component, props?: RenderProps) => void;
   #error?: (error: ActionRejectedException | RenderActionMissingException | RouteNotFoundException) => void;
   #destroy?: () => void;
@@ -160,7 +162,11 @@ export class Router<Component = unknown> {
             this.#subscriber.next(resolved);
             return this.#execute(route.parent, resolved);
           }
-          return this.#render?.(res.component, res.props);
+          if (this.#parent !== route) {
+            this.#parent = route;
+            return this.#render?.(res.component, res.props);
+          }
+          break;
         }
       }
     }
@@ -332,6 +338,7 @@ export class Router<Component = unknown> {
           return {
             id: resolved.route.id,
             name: resolved.route.name,
+            location: this.location,
             component: res.component,
             props: {
               ...res.props,
@@ -358,6 +365,7 @@ type RoutedHandler = (result: Resolved) => void;
 export type RoutedResult<Router> = {
   id?: string;
   name?: string;
+  location: Location;
   component: RouterComponent<Router>;
   props: RenderProps;
 };
