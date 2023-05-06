@@ -166,7 +166,7 @@ export class Router<Component = unknown> {
             this.#parent = route;
             return this.#render?.(res.component, res.props);
           }
-          break;
+          return;
         }
       }
     }
