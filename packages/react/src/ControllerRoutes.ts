@@ -26,7 +26,7 @@ export class ControllerRoutes<S extends JsonLike = {}, R extends Router = Router
     this.controller.subscriptions.get("$controller.routes")?.unsubscribe();
     this.controller.subscriptions.set(
       "$controller.routes",
-      this.router.subscribe(this.routes, (resolved) => {
+      this.router.subscribeToPaths(this.routes, (resolved) => {
         this.#setComponent(resolved, typeof next === "string" ? (this.controller.setState(next) as any) : next);
       })
     );
