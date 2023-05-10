@@ -2,8 +2,8 @@
   "name": "@valkyr/security",
   "version": "0.0.0",
   "description": "Collection of cryptographic and hashing utilities for security functions",
-  "repository": "kodemon/valkyr",
-  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "repository": "https://github.com/cmdo/valkyr.git",
+  "bugs": "https://github.com/cmdo/valkyr/issues",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "crypto-js": "^4.1.1",
-    "jose": "^4.14.3"
+    "jose": "^4.14.4"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",

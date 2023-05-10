@@ -2,8 +2,8 @@
   "name": "@valkyr/db",
   "version": "0.0.0",
   "description": "Simple client side storage solution written in TypeScript.",
-  "repository": "kodemon/valkyr",
-  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "repository": "https://github.com/cmdo/valkyr.git",
+  "bugs": "https://github.com/cmdo/valkyr/issues",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -56,6 +56,6 @@
   "devDependencies": {
     "@valkyr/jest": "workspace:*",
     "fake-indexeddb": "^4.0.1",
-    "type-fest": "^3.9.0"
+    "type-fest": "^3.10.0"
   }
 }

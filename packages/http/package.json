@@ -1,0 +1,47 @@
+{
+  "name": "@valkyr/http",
+  "version": "0.0.0",
+  "description": "Simple HTTP service.",
+  "repository": "https://github.com/cmdo/valkyr.git",
+  "bugs": "https://github.com/cmdo/valkyr/issues",
+  "author": "Christoffer Rødvik <dev@kodemon.net>",
+  "license": "MIT",
+  "keywords": [
+    "server",
+    "http"
+  ],
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "cmdo": {
+    "type": "module"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -b ./tsconfig.build.json",
+    "build:cjs": "tsc --project tsconfig-cjs.json",
+    "flush": "npm run clean && rm -rf ./node_modules",
+    "clean": "rm -rf ./cjs ./esm ./types",
+    "ncu": "ncu -u",
+    "lint": "eslint ."
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
+    "extends": [
+      "@valkyr"
+    ]
+  },
+  "lint-staged": {
+    "*": [
+      "prettier --write --ignore-unknown"
+    ],
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ]
+  },
+  "dependencies": {
+    "path-to-regexp": "6.2.1"
+  }
+}

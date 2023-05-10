@@ -2,8 +2,8 @@
   "name": "@valkyr/react",
   "version": "0.0.0",
   "description": "Toolkit for building @valkyr web based applications in react.",
-  "repository": "kodemon/valkyr",
-  "bugs": "https://github.com/kodemon/valkyr/issues",
+  "repository": "https://github.com/cmdo/valkyr.git",
+  "bugs": "https://github.com/cmdo/valkyr/issues",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -44,7 +44,7 @@
     "rxjs": "7.8.1"
   },
   "devDependencies": {
-    "@types/react": "18.2.0",
+    "@types/react": "18.2.6",
     "@valkyr/db": "workspace:*",
     "@valkyr/router": "workspace:*",
     "react": "18.2.0"
