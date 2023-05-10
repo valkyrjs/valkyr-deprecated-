@@ -21,7 +21,7 @@
     "build:esm": "tsc -b ./tsconfig.esm.json",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "flush": "npm run clean && rm -rf ./node_modules",
-    "clean": "rm -rf ./cjs ./esm ./types",
+    "clean": "rm -rf ./dist",
     "ncu": "ncu -u",
     "lint": "eslint ."
   },
