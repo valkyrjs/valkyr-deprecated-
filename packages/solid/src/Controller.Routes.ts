@@ -52,10 +52,12 @@ export class ControllerRoutes implements ControllerPlugin {
 
     // ### Subscriber
 
-    this.#subscription = this.router.subscribe(this.#routes, async (resolved) => {
+    this.#subscription = this.router.subscribeToPaths(this.#routes, async (resolved) => {
       const result = await this.router.getRender<typeof this.router>(resolved);
       if (result !== undefined) {
-        this.#controller.state.routed = () => createComponent(result.component, result.props);
+        this.#controller.setState({
+          routed: () => createComponent(result.component, result.props)
+        });
       }
     });
 
@@ -68,7 +70,9 @@ export class ControllerRoutes implements ControllerPlugin {
         if (resolved !== undefined) {
           const view = await this.router.getRender<typeof this.router>(resolved);
           if (view !== undefined) {
-            this.#controller.state.routed = () => createComponent(view.component, view.props);
+            this.#controller.setState({
+              routed: () => createComponent(view.component, view.props)
+            });
           }
         }
       }

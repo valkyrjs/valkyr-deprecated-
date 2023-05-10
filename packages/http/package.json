@@ -18,8 +18,8 @@
   },
   "scripts": {
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc -b ./tsconfig.build.json",
-    "build:cjs": "tsc --project tsconfig-cjs.json",
+    "build:esm": "tsc -b ./tsconfig.esm.json",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf ./cjs ./esm ./types",
     "ncu": "ncu -u",

@@ -1,6 +1,7 @@
-import { batch, Component, createComponent } from "solid-js";
+import { Subscription } from "rxjs";
+import { Component, createComponent } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
-import { createMutable, StoreNode } from "solid-js/store";
+import { createMutable, createStore, SetStoreFunction, Store, StoreNode } from "solid-js/store";
 
 import { Plugin } from "./Controller.Plugin.js";
 import { ControllerClass, ControllerComponent } from "./Controller.Types.js";
@@ -21,7 +22,8 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
   $lifecycle: StoreNode;
 
   readonly plugins: Plugin[] = [];
-  readonly state: State;
+  readonly #state: [get: Store<State>, set: SetStoreFunction<State>];
+  readonly #subscriptions = new Map<string, Subscription>();
 
   /**
    * Creates a new controller instance with given default state and pushState
@@ -32,8 +34,7 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    */
   constructor(readonly props: Props = {} as Props) {
     this.$lifecycle = createMutable({ loading: true, error: undefined });
-    this.state = createMutable<State>({} as State);
-    this.setState = this.setState.bind(this);
+    this.#state = createStore({} as State);
   }
 
   static setDefaultLoadingComponent(component: Component) {
@@ -71,6 +72,20 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
 
   /*
    |--------------------------------------------------------------------------------
+   | State Accessors
+   |--------------------------------------------------------------------------------
+   */
+
+  get state(): Store<State> {
+    return this.#state[0];
+  }
+
+  get setState(): SetStoreFunction<State> {
+    return this.#state[1];
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
    | Bootstrap & Teardown
    |--------------------------------------------------------------------------------
    */
@@ -86,6 +101,9 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
 
   async $destroy(): Promise<void> {
     await this.onDestroy();
+    for (const subscription of this.#subscriptions.values()) {
+      subscription.unsubscribe();
+    }
   }
 
   /*
@@ -113,38 +131,13 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
 
   /*
    |--------------------------------------------------------------------------------
-   | State Methods
+   | Subscription Management
    |--------------------------------------------------------------------------------
    */
 
-  /**
-   * Updates the state of the controller and triggers a state update via the push
-   * state handler. This method will debounce state updates to prevent excessive
-   * state updates.
-   *
-   * @param key   - State key to assign data to.
-   * @param value - State value to assign.
-   */
-  setState(state: Partial<State>): void;
-  setState<K extends keyof State>(key: K): (state: State[K]) => void;
-  setState<K extends keyof State>(key: K, value: State[K]): void;
-  setState<K extends keyof State>(...args: [K | State, State[K]?]): void | ((state: State[K]) => void) {
-    const [target, value] = args;
-
-    if (this.#isStateKey(target) && args.length === 1) {
-      return (value: State[K]) => {
-        this.setState(target, value);
-      };
-    }
-
-    if (this.#isStateKey(target)) {
-      (this.state as any)[target] = value;
-    } else {
-      batch(() => {
-        for (const key in target) {
-          this.state[key] = target[key];
-        }
-      });
+  setSubscriptions(subscriptions: { [id: string]: Subscription }): void {
+    for (const id in subscriptions) {
+      this.#subscriptions.set(id, subscriptions[id]);
     }
   }
 
@@ -168,16 +161,6 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
       }
     }
     return actions;
-  }
-
-  /*
-   |--------------------------------------------------------------------------------
-   | Utilities
-   |--------------------------------------------------------------------------------
-   */
-
-  #isStateKey(key: unknown): key is keyof State {
-    return typeof key === "string";
   }
 }
 

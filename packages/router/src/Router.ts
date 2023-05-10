@@ -9,18 +9,24 @@ import {
   RenderActionMissingException,
   RouteNotFoundException
 } from "./Exceptions.js";
+import { isHashChange } from "./Location.js";
 import { Resolved } from "./Resolved.js";
 import { Route } from "./Route.js";
 
 export class Router<Component = unknown> {
   #base: string;
+
   #history: BrowserHistory | HashHistory | MemoryHistory;
   #parents: Route[] = [];
   #routes: Route[] = [];
-  #resolved?: Resolved;
-  #subscriber = new Subject<Resolved>();
+
+  #subscribers = {
+    location: new Subject<Location>(),
+    resolved: new Subject<Resolved>()
+  };
 
   #parent?: Route;
+  #resolved?: Resolved;
 
   #render?: (component: Component, props?: RenderProps) => void;
   #error?: (error: ActionRejectedException | RenderActionMissingException | RouteNotFoundException) => void;
@@ -121,7 +127,13 @@ export class Router<Component = unknown> {
       this.#destroy();
     }
 
+    let prevLocation = this.location;
     this.#destroy = this.#history.listen(async ({ location }) => {
+      if (isHashChange(prevLocation, location) === true) {
+        prevLocation = location;
+        return this.#subscribers.location.next(location);
+      }
+      prevLocation = location;
       this.#resolve(location.pathname, location.search);
     });
 
@@ -159,7 +171,7 @@ export class Router<Component = unknown> {
         }
         case "render": {
           if (route.parent !== undefined) {
-            this.#subscriber.next(resolved);
+            this.#subscribers.resolved.next(resolved);
             return this.#execute(route.parent, resolved);
           }
           if (this.#parent !== route) {
@@ -175,12 +187,38 @@ export class Router<Component = unknown> {
 
   /*
    |--------------------------------------------------------------------------------
-   | Utilities
+   | Subscribers
    |--------------------------------------------------------------------------------
    */
 
-  subscribe(paths: string[], next: RoutedHandler): Subscription {
-    return this.#subscriber.subscribe((matched) => {
+  /**
+   * Subscribe to route changes.
+   *
+   * @param next - Handler to execute on incoming route.
+   *
+   * @returns RXJS Subscription.
+   */
+  subscribe(next: RoutedHandler): Subscription {
+    return this.#subscribers.resolved.subscribe(next);
+  }
+
+  subscribeToLocation(next: (location: Location) => void): Subscription {
+    return this.#subscribers.location.subscribe((location) => {
+      next(location);
+    });
+  }
+
+  /**
+   * Subscribe to a list of paths and execute the next handler when the incoming
+   * route matches any of the paths.
+   *
+   * @param paths - List of paths to subscribe to.
+   * @param next  - Handler to execute on incoming route.
+   *
+   * @returns RXJS Subscription.
+   */
+  subscribeToPaths(paths: string[], next: RoutedHandler): Subscription {
+    return this.#subscribers.resolved.subscribe((matched) => {
       for (const path of paths) {
         if (matched.route.match(path)) {
           next(matched);
@@ -189,9 +227,11 @@ export class Router<Component = unknown> {
     });
   }
 
-  routed(next: RoutedHandler): Subscription {
-    return this.#subscriber.subscribe(next);
-  }
+  /*
+   |--------------------------------------------------------------------------------
+   | Actions
+   |--------------------------------------------------------------------------------
+   */
 
   /**
    * Redirect response.
@@ -208,19 +248,18 @@ export class Router<Component = unknown> {
     if (response.isExternal) {
       window.location.replace(response.path);
     } else {
-      this.goTo(response.path, { origin: this.location });
+      this.goto(response.path, { origin: this.location });
     }
   }
 
   /**
-   * Execute a new route request.
+   * Push a new routing request into the history instance triggering a new routing
+   * transition.
    *
    * @param path  - Path to resolve.
    * @param state - State to pass.
-   *
-   * @returns Router
    */
-  goTo(path: string, state: Record<string, unknown> = {}): this {
+  goto(path: string, state: Record<string, unknown> = {}): this {
     const parts = (this.#base + path.replace(this.#base, "")).replace(/\/$/, "").split("?");
     this.#history.push(
       {
@@ -241,7 +280,7 @@ export class Router<Component = unknown> {
   };
 
   /**
-   * Reload the current route by re-executing the request.#matched
+   * Reload the current route by re-executing the request.
    *
    * @returns Router
    */
