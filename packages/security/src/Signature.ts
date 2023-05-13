@@ -1,30 +1,74 @@
 import * as Jose from "jose";
 
-import { ExportedKeyPair, KeyPair } from "./KeyPair.js";
+import { createKeyPair, ExportedKeyPair, KeyPair, loadKeyPair } from "./KeyPair.js";
 
-export class Signature extends KeyPair {
-  static readonly ALG = "ES256";
+/*
+ |--------------------------------------------------------------------------------
+ | Security Settings
+ |--------------------------------------------------------------------------------
+ */
 
-  static async create(): Promise<Signature> {
-    return new Signature(await super.create());
+const SIGNATURE_ALGORITHM = "ES256";
+
+/*
+ |--------------------------------------------------------------------------------
+ | Signature Manager
+ |--------------------------------------------------------------------------------
+ */
+
+export class Signature {
+  #keyPair: KeyPair;
+
+  constructor(keyPair: KeyPair) {
+    this.#keyPair = keyPair;
   }
 
-  static async import(keyPair: ExportedKeyPair) {
-    return new Signature(await super.import(keyPair));
-  }
-
-  static async verify(jwt: string, publicKey: string): Promise<Jose.JWTVerifyResult> {
-    return Jose.jwtVerify(jwt, await Signature.importPublicKey(publicKey));
+  get keys() {
+    return this.#keyPair;
   }
 
   async sign(payload: Jose.JWTPayload, options: TokenSignatureOptions = {}): Promise<string> {
-    const cursor = new Jose.SignJWT(payload).setProtectedHeader({ alg: Signature.ALG });
+    const cursor = new Jose.SignJWT(payload).setProtectedHeader({ alg: SIGNATURE_ALGORITHM });
     assignSignatureOptions(cursor, options);
-    return cursor.sign(this.privateKey);
+    return cursor.sign(this.#keyPair.privateKey);
   }
+
+  async verify(jwt: string): Promise<Jose.JWTVerifyResult> {
+    return Jose.jwtVerify(jwt, this.#keyPair.publicKey).catch((error) => {
+      if (error.code === "ERR_JWS_SIGNATURE_VERIFICATION_FAILED") {
+        throw new Signature.JWTInvalidException();
+      }
+      if (error.code === "ERR_JWT_EXPIRED") {
+        throw new Signature.JWTExpiredException();
+      }
+      throw error;
+    });
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Exception Handlers
+   |--------------------------------------------------------------------------------
+   */
+
+  static JWTInvalidException = class extends Error {
+    constructor() {
+      super("Signature Exception: Provided JWT is invalid.");
+    }
+  };
+
+  static JWTExpiredException = class extends Error {
+    constructor() {
+      super("Signature Exception: Provided JWT has expired.");
+    }
+  };
 }
 
-// ### Helpers
+/*
+ |--------------------------------------------------------------------------------
+ | Utilities
+ |--------------------------------------------------------------------------------
+ */
 
 function assignSignatureOptions(sign: Jose.SignJWT, options: TokenSignatureOptions): void {
   if (options.audience) {
@@ -49,6 +93,26 @@ function assignSignatureOptions(sign: Jose.SignJWT, options: TokenSignatureOptio
     sign.setSubject(options.subject);
   }
 }
+
+/*
+ |--------------------------------------------------------------------------------
+ | Factories
+ |--------------------------------------------------------------------------------
+ */
+
+export async function createSignature(): Promise<Signature> {
+  return new Signature(await createKeyPair(SIGNATURE_ALGORITHM));
+}
+
+export async function loadSignature(keyPair: ExportedKeyPair): Promise<Signature> {
+  return new Signature(await loadKeyPair(keyPair, SIGNATURE_ALGORITHM));
+}
+
+/*
+ |--------------------------------------------------------------------------------
+ | Types
+ |--------------------------------------------------------------------------------
+ */
 
 export type JWTPayload = Jose.JWTPayload;
 
