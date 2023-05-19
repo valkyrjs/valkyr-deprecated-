@@ -135,8 +135,9 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    |--------------------------------------------------------------------------------
    */
 
-  setSubscriptions(subscriptions: { [id: string]: Subscription }): void {
+  setSubscription(subscriptions: { [id: string]: Subscription }): void {
     for (const id in subscriptions) {
+      this.#subscriptions.get(id)?.unsubscribe();
       this.#subscriptions.set(id, subscriptions[id]);
     }
   }

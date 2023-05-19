@@ -13,9 +13,9 @@
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/types/index.d.ts",
-  "cmdo": {
-    "type": "module"
-  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "npm run clean && npm run build:esm && npm run build:cjs",
     "build:esm": "tsc -b ./tsconfig.esm.json",
@@ -24,6 +24,9 @@
     "clean": "rm -rf ./dist",
     "ncu": "ncu -u",
     "lint": "eslint ."
+  },
+  "dependencies": {
+    "path-to-regexp": "6.2.1"
   },
   "eslintConfig": {
     "parserOptions": {
@@ -40,8 +43,5 @@
     "*.{ts,tsx}": [
       "eslint --fix"
     ]
-  },
-  "dependencies": {
-    "path-to-regexp": "6.2.1"
   }
 }
