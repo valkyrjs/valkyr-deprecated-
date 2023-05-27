@@ -1,5 +1,5 @@
 import { Subscription } from "rxjs";
-import { Component, createComponent } from "solid-js";
+import { Accessor, Component, createComponent, createMemo } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
 import { createMutable, createStore, SetStoreFunction, Store, StoreNode } from "solid-js/store";
 
@@ -23,7 +23,7 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
 
   readonly plugins: Plugin[] = [];
   readonly #state: [get: Store<State>, set: SetStoreFunction<State>];
-  readonly #subscriptions = new Map<string, Subscription>();
+  readonly #subscriptions = new Map<string, Subscription | SimpleSubscription>();
 
   /**
    * Creates a new controller instance with given default state and pushState
@@ -84,6 +84,10 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
     return this.#state[1];
   }
 
+  watch(key: keyof State): Accessor<State[keyof State]> {
+    return createMemo(() => this.state[key]);
+  }
+
   /*
    |--------------------------------------------------------------------------------
    | Bootstrap & Teardown
@@ -135,7 +139,7 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    |--------------------------------------------------------------------------------
    */
 
-  setSubscription(subscriptions: { [id: string]: Subscription }): void {
+  setSubscription(subscriptions: { [id: string]: Subscription | SimpleSubscription }): void {
     for (const id in subscriptions) {
       this.#subscriptions.get(id)?.unsubscribe();
       this.#subscriptions.set(id, subscriptions[id]);
@@ -172,6 +176,8 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
  */
 
 type ReservedPropertyMembers = typeof RESERVED_MEMBERS;
+
+type SimpleSubscription = { unsubscribe: () => void };
 
 type ViewOptions = {
   name?: string;

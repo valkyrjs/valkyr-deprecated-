@@ -6,17 +6,17 @@ import type { Event } from "./Event.js";
  * Creates an event record by combining the given event with additional metadata.
  * The resulting record can be stored in an event store (database).
  *
- * @param container - Identifier for the container in which the event stream belongs.
- * @param stream    - Identifier for the event stream to which the event belongs.
- * @param event     - The event to record.
+ * @param tenant - Identifier for the tenant in which the event stream belongs.
+ * @param stream - Identifier for the event stream to which the event belongs.
+ * @param event  - The event to record.
  *
  * @returns An event record containing the event and additional metadata.
  */
-export function createEventRecord<E extends Event>(container: string, stream: string, event: E): EventRecord<E> {
+export function createEventRecord<E extends Event>(tenant: string, stream: string, event: E): EventRecord<E> {
   const timestamp = getTimestamp();
   return {
     id: nanoid(),
-    container,
+    tenant,
     stream,
     ...event,
     created: timestamp,
@@ -42,10 +42,10 @@ export type EventRecord<E extends Event = Event> = {
   id: string;
 
   /**
-   * Identifier representing the container in which many individual streams belongs
+   * Identifier representing the tenant in which many individual streams belongs
    * and is used for grouping streams together for easier management.
    */
-  container: string;
+  tenant: string;
 
   /**
    * Identifier representing the stream in which many individual events/transactions

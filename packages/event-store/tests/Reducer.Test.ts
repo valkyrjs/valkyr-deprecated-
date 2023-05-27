@@ -1,4 +1,4 @@
-import { createEventRecord } from "../src/index.js";
+import { createEventRecord } from "../src/Event/Record.js";
 import { events, reducer } from "./Event.Mock.js";
 
 /*

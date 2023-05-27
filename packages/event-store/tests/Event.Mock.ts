@@ -1,4 +1,7 @@
-import { Event, EventToRecord, makeEvent, makeReducer } from "../src/index.js";
+import { makeEvent } from "../src/Event/Factory.js";
+import { EventToRecord } from "../src/Event/Record.js";
+import { Event } from "../src/index.js";
+import { makeReducer } from "../src/Reducer.js";
 
 export type State = {
   title: string;

@@ -1,6 +1,6 @@
 import type { Router } from "@valkyr/router";
 import type { Subscription } from "rxjs";
-import { type Component, createComponent, JSXElement } from "solid-js";
+import { Component, createComponent, JSXElement } from "solid-js";
 
 import type { Controller } from "./Controller.js";
 import type { ControllerPlugin, Plugin } from "./Controller.Plugin.js";
