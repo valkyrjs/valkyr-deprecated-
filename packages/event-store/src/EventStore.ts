@@ -15,7 +15,7 @@ import { ReduceHandler } from "./Reducer.js";
 import { Remote, RemoteAdapter, RemoteSubscription } from "./Remote.js";
 import { Validator } from "./Validator.js";
 
-type EventList<Event extends LedgerEvent> = { [K in Event["type"]]: K };
+type EventList<Event extends LedgerEvent> = Set<Event["type"]>;
 
 type Options<Record extends EventRecord> = {
   remote: RemoteAdapter;
@@ -26,7 +26,7 @@ type Options<Record extends EventRecord> = {
 
 export class EventStore<Event extends LedgerEvent = LedgerEvent, Record extends EventRecord = EventToRecord<Event>> {
   readonly #remote: Remote;
-  readonly #events: Set<Event["type"]>;
+  readonly #events: EventList<Event>;
   readonly #db: IndexedDatabase<{
     events: Document<Record>;
   }>;
@@ -38,7 +38,7 @@ export class EventStore<Event extends LedgerEvent = LedgerEvent, Record extends 
 
   constructor(readonly name: string, options: Options<Record>) {
     this.#remote = new Remote(options.remote);
-    this.#events = new Set(Object.keys(options.events));
+    this.#events = options.events;
     this.#db = new IndexedDatabase({
       name: `event-store:${name}`,
       version: 1,
