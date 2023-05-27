@@ -15,7 +15,7 @@ import type { Event } from "./Event.js";
 export function createEventRecord<E extends Event>(tenant: string, stream: string, event: E): EventRecord<E> {
   const timestamp = getTimestamp();
   return {
-    id: nanoid(),
+    id: nanoid(11),
     tenant,
     stream,
     ...event,

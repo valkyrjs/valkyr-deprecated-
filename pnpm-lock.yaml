@@ -122,6 +122,9 @@ importers:
       '@valkyr/db':
         specifier: workspace:*
         version: link:../db
+      '@valkyr/queue':
+        specifier: workspace:*
+        version: link:../queue
       nanoid:
         specifier: ^4.0.2
         version: 4.0.2

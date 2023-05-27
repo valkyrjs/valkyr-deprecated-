@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@valkyr/db": "workspace:*",
+    "@valkyr/queue": "workspace:*",
     "nanoid": "^4.0.2",
     "rxjs": "^7.8.1"
   },

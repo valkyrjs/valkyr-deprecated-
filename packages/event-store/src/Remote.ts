@@ -1,7 +1,9 @@
 import { Document, IndexedDatabase } from "@valkyr/db";
+import { IndexedStorage, Queue } from "@valkyr/queue";
 import { Subject } from "rxjs";
 
 import { EventRecord } from "./index.js";
+import { EventWorker } from "./RemoteWorker.js";
 import { subscriptions } from "./Subscriptions.js";
 
 const subject = new Subject<[EventRecord, boolean]>();
@@ -10,6 +12,8 @@ export class Remote {
   readonly #db: IndexedDatabase<{
     cursors: Document<{ timestamp: string }>;
   }>;
+
+  readonly #queue: Queue<EventWorker>;
 
   constructor(readonly adapter: RemoteAdapter) {
     this.#db = new IndexedDatabase({
@@ -21,6 +25,10 @@ export class Remote {
         }
       ]
     });
+    this.#queue = new Queue([new EventWorker(this.adapter)], {
+      storage: new IndexedStorage("event-store:queue")
+    });
+    this.#queue.start();
   }
 
   get subject() {
@@ -48,6 +56,10 @@ export class Remote {
         subscriptions.unsubscribe(id);
       }
     };
+  }
+
+  push(record: EventRecord): void {
+    this.#queue.push({ type: "events", payload: record });
   }
 
   async pull(type: ContainerType, id: string): Promise<void> {
@@ -117,6 +129,7 @@ export abstract class RemoteAdapter<Record extends EventRecord = EventRecord> {
   get subject() {
     return subject;
   }
+  abstract push(record: Record): Promise<void>;
   abstract getEvents(type: ContainerType, id: string, cursor?: string): Promise<Record[]>;
   abstract subscribe(type: ContainerType, id: string): () => void;
 }

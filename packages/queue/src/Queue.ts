@@ -29,6 +29,7 @@ export class Queue<W extends Worker> {
 
   async start(): Promise<void> {
     await this.#storage.init?.();
+    this.process();
   }
 
   async stop(): Promise<void> {
@@ -50,7 +51,10 @@ export class Queue<W extends Worker> {
     return this.status === status;
   }
 
-  push({ id = nanoid(), type, payload }: { id?: string; type: W["type"]; payload: Payload<W> }, attempts = 0): string {
+  push(
+    { id = nanoid(11), type, payload }: { id?: string; type: W["type"]; payload: Payload<W> },
+    attempts = 0
+  ): string {
     const worker = this.hasWorker(type);
     if (worker === undefined) {
       throw new Error(`Queue Exception: Cannot push job, no worker registered for type ${type}`);

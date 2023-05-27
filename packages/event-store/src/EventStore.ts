@@ -1,5 +1,4 @@
 import { Document, IndexedDatabase } from "@valkyr/db";
-import { Subject } from "rxjs";
 
 import {
   createEventRecord,
@@ -30,8 +29,6 @@ export class EventStore<Event extends LedgerEvent = LedgerEvent, Record extends 
   readonly #db: IndexedDatabase<{
     events: Document<Record>;
   }>;
-
-  readonly #inserted = new Subject<{ record: Record; hydrated: boolean }>();
 
   readonly #validator: Validator<Record>;
   readonly #projector: Projector<Record>;
@@ -114,10 +111,6 @@ export class EventStore<Event extends LedgerEvent = LedgerEvent, Record extends 
    |--------------------------------------------------------------------------------
    */
 
-  subscribeToInserts(callback: (next: { record: Record; hydrated: boolean }) => Promise<void>) {
-    return this.#inserted.subscribe(callback);
-  }
-
   subscribeToTenant(tenantId: string): RemoteSubscription {
     return this.#remote.subscribe("tenant", tenantId);
   }
@@ -188,9 +181,9 @@ export class EventStore<Event extends LedgerEvent = LedgerEvent, Record extends 
     await this.events.insertOne(record as any);
     await this.project(record, { hydrated, outdated: status.outdated }).catch(console.log);
 
-    console.debug(`Event '${record.type}' Appended\n${JSON.stringify(record, null, 2)}`);
-
-    this.#inserted.next({ record, hydrated });
+    if (hydrated === false) {
+      this.#remote.push(record);
+    }
 
     return record;
   }
