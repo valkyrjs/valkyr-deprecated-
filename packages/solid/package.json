@@ -23,12 +23,12 @@
     "lint": "eslint ."
   },
   "eslintConfig": {
-    "parserOptions": {
-      "project": "./tsconfig.json"
-    },
     "extends": [
       "@valkyr"
-    ]
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    }
   },
   "lint-staged": {
     "*": [
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@valkyr/db": "workspace:*",
     "@valkyr/router": "workspace:*",
-    "solid-js": "1.7.5"
+    "solid-js": "1.7.6"
   },
   "peerDependencies": {
     "joi": "^17.9.2"

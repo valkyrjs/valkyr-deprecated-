@@ -1,5 +1,5 @@
 import { Subscription } from "rxjs";
-import { Accessor, Component, createComponent, createMemo } from "solid-js";
+import { Component, createComponent, createMemo } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
 import { createMutable, createStore, SetStoreFunction, Store, StoreNode } from "solid-js/store";
 
@@ -84,8 +84,8 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
     return this.#state[1];
   }
 
-  watch(key: keyof State): Accessor<State[keyof State]> {
-    return createMemo(() => this.state[key]);
+  get watch() {
+    return createMemo;
   }
 
   /*

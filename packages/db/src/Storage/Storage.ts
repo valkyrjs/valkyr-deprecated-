@@ -16,9 +16,10 @@ export abstract class Storage<D extends Document = Document> {
 
   status: Status = "loading";
 
-  readonly #channel = new BroadcastChannel(`valkyr:db:${this.name}`);
+  readonly #channel: BroadcastChannel;
 
   constructor(readonly name: string, readonly id = nanoid()) {
+    this.#channel = new BroadcastChannel(`valkyr:db:${name}`);
     this.#channel.onmessage = ({ data }: MessageEvent<StorageBroadcast<D>>) => {
       if (data.name !== this.name) {
         return;

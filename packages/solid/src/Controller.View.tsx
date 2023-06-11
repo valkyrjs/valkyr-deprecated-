@@ -14,7 +14,8 @@ export function ControllerView({ $components, controller }: any) {
         {createComponent($components.view, {
           props: controller.props,
           state: controller.state,
-          actions: controller.toActions()
+          actions: controller.toActions(),
+          watch: controller.watch
         })}
       </Match>
     </Switch>

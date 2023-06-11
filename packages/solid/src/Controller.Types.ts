@@ -11,6 +11,7 @@ export type ControllerComponent<Props extends {}, Controller extends ControllerC
   state: InstanceType<Controller>["state"];
   actions: Omit<InstanceType<Controller>, ReservedPropertyMembers>;
   component?: () => JSX.Element;
+  watch: InstanceType<Controller>["watch"];
 }>;
 
 type FunctionComponent<Props> = (props: Props) => JSX.Element;

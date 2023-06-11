@@ -48,7 +48,7 @@
     "dot-prop": "8.0.0",
     "fast-equals": "5.0.1",
     "idb": "^7.1.1",
-    "mingo": "6.3.2",
+    "mingo": "6.4.1",
     "nanoid": "^4.0.2",
     "rfdc": "1.3.0",
     "rxjs": "7.8.1"
@@ -56,6 +56,6 @@
   "devDependencies": {
     "@valkyr/jest": "workspace:*",
     "fake-indexeddb": "^4.0.1",
-    "type-fest": "^3.10.0"
+    "type-fest": "^3.11.1"
   }
 }

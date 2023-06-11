@@ -1,26 +1,14 @@
 {
-  "editor.formatOnSave": true,
-  "editor.formatOnPaste": false,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": true
-  },
-  "scss.lint.unknownAtRules": "ignore",
   "eslint.workingDirectories": [
     {
       "mode": "auto"
     }
   ],
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
-  "editor.detectIndentation": false,
-  "[rust]": {
-    "editor.defaultFormatter": "rust-lang.rust-analyzer",
-    "editor.formatOnSave": true
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
   },
-  "[html,svg]": {
-    "editor.formatOnSaveMode": "file",
-    "editor.defaultFormatter": "HookyQR.beautify"
-  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
   "material-icon-theme.folders.associations": {
     "cerberus": "secure",
     "jsonrpc": "public"
@@ -59,34 +47,5 @@
     "**/CVS": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true
-  },
-  "cSpell.words": [
-    "bindgen",
-    "fastify",
-    "headlessui",
-    "IDBP",
-    "indexeddb",
-    "inmemory",
-    "kodemon",
-    "mingo",
-    "nestjs",
-    "nvmrc",
-    "pako",
-    "pannable",
-    "pino",
-    "quicktype",
-    "reactflow",
-    "rfdc",
-    "Rødvik",
-    "signin",
-    "supabase",
-    "tailwindcss",
-    "todos",
-    "tsbuildinfo",
-    "untar",
-    "valkyr",
-    "viewports",
-    "zoomable"
-  ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  }
 }
