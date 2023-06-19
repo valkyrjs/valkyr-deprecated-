@@ -1,9 +1,9 @@
-import type { Router } from "@valkyr/router";
+import type { Route, Router } from "@valkyr/router";
 import type { Subscription } from "rxjs";
 import { Component, createComponent, JSXElement } from "solid-js";
 
-import type { Controller } from "./Controller.js";
-import type { ControllerPlugin, Plugin } from "./Controller.Plugin.js";
+import { Controller } from "./Controller.js";
+import { ControllerPlugin, Plugin } from "./Controller.Plugin.js";
 
 export class ControllerRoutes implements ControllerPlugin {
   readonly router: Router<Component>;
@@ -19,9 +19,7 @@ export class ControllerRoutes implements ControllerPlugin {
       throw new Error(`ControllerRoutes Exception: Template route for ${routeId} was not found`);
     }
     this.router = router;
-    for (const route of parent.children ?? []) {
-      this.#routes.push(route.path);
-    }
+    this.#resolveRoutePaths(parent);
     this.#controller = controller;
   }
 
@@ -81,6 +79,21 @@ export class ControllerRoutes implements ControllerPlugin {
 
   async onDestroy(): Promise<void> {
     this.#subscription?.unsubscribe();
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Utilities
+   |--------------------------------------------------------------------------------
+   */
+
+  #resolveRoutePaths(parent: Route) {
+    for (const route of parent.children ?? []) {
+      this.#routes.push(route.path);
+      if (route.children !== undefined) {
+        this.#resolveRoutePaths(route);
+      }
+    }
   }
 }
 
