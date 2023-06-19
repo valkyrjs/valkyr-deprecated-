@@ -14,7 +14,7 @@ export class Route {
   readonly children?: Route[];
   readonly actions: readonly Action[];
 
-  #parser!: RegExp;
+  #parser?: RegExp;
   #base?: string;
   #path?: string;
   #parent?: Route;
@@ -41,12 +41,17 @@ export class Route {
   }
 
   register(base?: string): this {
-    this.#base = base;
-    this.#parser = pathToRegexp(this.path);
+    if (this.#path !== undefined) {
+      this.#base = base;
+      this.#parser = pathToRegexp(this.path);
+    }
     return this;
   }
 
   match(path: string): false | Object {
+    if (this.#parser === undefined) {
+      return false;
+    }
     const matched = this.#parser.exec(path);
     if (matched !== null) {
       const res = match(this.path)(path);

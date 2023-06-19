@@ -9,6 +9,7 @@ function setPackageVersions(rootDir, version) {
 
     packageJson.version = version;
     packageJson.main = "./dist/index.js";
+    packageJson.types = "./dist/index.d.ts";
 
     if (packageJson.dependencies !== undefined) {
       for (const key in packageJson.dependencies) {

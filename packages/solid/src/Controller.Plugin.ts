@@ -6,13 +6,17 @@ export type ControllerPlugin = {
   onDestroy(): Promise<void>;
 };
 
-export type Plugin<Options extends JsonLike = any, State extends JsonLike = {}> = {
-  plugin: PluginController<Options, State>;
+export type Plugin<Options extends JsonLike = any, State extends JsonLike = {}, Props extends JsonLike = {}> = {
+  plugin: PluginController<Options, State, Props>;
   options?: Options;
 };
 
-type PluginController<Options extends JsonLike = any, State extends JsonLike = {}> = Options extends void
-  ? { new (controller: Controller<State>): ControllerPlugin }
+type PluginController<
+  Options extends JsonLike = any,
+  State extends JsonLike = {},
+  Props extends JsonLike = {}
+> = Options extends void
+  ? { new (controller: Controller<State, Props>): ControllerPlugin }
   : {
-      new (controller: Controller<State>, options: Options): ControllerPlugin;
+      new (controller: Controller<State, Props>, options: Options): ControllerPlugin;
     };

@@ -1,5 +1,5 @@
 import type { BrowserHistory, HashHistory, Location, MemoryHistory } from "history";
-import { match } from "path-to-regexp";
+import { match, Path } from "path-to-regexp";
 import { Subject, Subscription } from "rxjs";
 
 import { Redirect, RenderProps, response } from "./Action.js";
@@ -17,7 +17,6 @@ export class Router<Component = unknown> {
   #base: string;
 
   #history: BrowserHistory | HashHistory | MemoryHistory;
-  #parents: Route[] = [];
   #routes: Route[] = [];
 
   #subscribers = {
@@ -84,7 +83,7 @@ export class Router<Component = unknown> {
     for (const route of routes) {
       route.parent = parent;
       if (route.children !== undefined) {
-        this.#parents.push(route);
+        this.#routes.push(route.register(this.#base));
         this.register(route.children, route);
       } else {
         this.#routes.push(route.register(this.#base));
@@ -93,12 +92,18 @@ export class Router<Component = unknown> {
     return this;
   }
 
+  /*
+   |--------------------------------------------------------------------------------
+   | Listeners
+   |--------------------------------------------------------------------------------
+   */
+
   /**
    * Register render handler receiving the component and props to render.
    *
    * @param handler - Handler method for incoming components and props.
    */
-  render(handler: (component: Component, props?: RenderProps) => void): this {
+  onRouteRender(handler: (component: Component, props?: RenderProps) => void): this {
     this.#render = handler;
     return this;
   }
@@ -108,7 +113,7 @@ export class Router<Component = unknown> {
    *
    * @param handler - Handler method for incoming errors.
    */
-  error(
+  onRouteError(
     handler: (error: ActionRejectedException | RenderActionMissingException | RouteNotFoundException) => void
   ): this {
     this.#error = handler;
@@ -142,6 +147,12 @@ export class Router<Component = unknown> {
     return this;
   }
 
+  /*
+   |--------------------------------------------------------------------------------
+   | Routing Utilities
+   |--------------------------------------------------------------------------------
+   */
+
   async #resolve(path: string, search?: string) {
     const resolved = this.getResolvedRoute(path, search);
     if (resolved === undefined) {
@@ -149,7 +160,10 @@ export class Router<Component = unknown> {
     }
     this.setRoute(resolved);
     try {
-      await this.#execute(resolved.route, resolved);
+      const tree = this.#getRoutingTree(resolved.route);
+      for (const [index, route] of tree.entries()) {
+        await this.#execute(route, resolved, index);
+      }
     } catch (err) {
       if (err instanceof ActionRedirected) {
         this.redirect(err.redirect);
@@ -159,7 +173,7 @@ export class Router<Component = unknown> {
     }
   }
 
-  async #execute(route: Route, resolved: Resolved): Promise<void> {
+  async #execute(route: Route, resolved: Resolved, index: number): Promise<void> {
     for (const action of route.actions) {
       const res = await action.call(response, resolved);
       switch (res.status) {
@@ -170,19 +184,23 @@ export class Router<Component = unknown> {
           throw new ActionRejectedException(res.message, res.details);
         }
         case "render": {
-          if (route.parent !== undefined) {
-            this.#subscribers.resolved.next(resolved);
-            return this.#execute(route.parent, resolved);
-          }
-          if (this.#parent !== route) {
+          if (index === 0 && this.#parent !== route) {
             this.#parent = route;
             return this.#render?.(res.component, res.props);
           }
-          return;
+          this.#subscribers.resolved.next(resolved);
         }
       }
     }
-    throw new RenderActionMissingException(route.path);
+  }
+
+  #getRoutingTree(route: Route, tree: Route[] = []): Route[] {
+    if (route.parent !== undefined) {
+      tree.push(route);
+      return this.#getRoutingTree(route.parent, tree);
+    }
+    tree.push(route);
+    return tree.reverse();
   }
 
   /*
@@ -295,12 +313,18 @@ export class Router<Component = unknown> {
     return this;
   }
 
+  /*
+   |--------------------------------------------------------------------------------
+   | Utilities
+   |--------------------------------------------------------------------------------
+   */
+
   /**
    * Check if the provided path matches the current route location.
    *
    * @param path - RegEx path to match against location.
    */
-  match(path: string): boolean {
+  match(path: Path): boolean {
     return match(path)(this.location.pathname) !== false;
   }
 
@@ -347,10 +371,6 @@ export class Router<Component = unknown> {
     return undefined;
   }
 
-  getParentRouteById(id: string): Route | undefined {
-    return this.#parents.find((route) => route.id === id);
-  }
-
   /**
    * Get a route by its assigned id.
    *
@@ -367,7 +387,10 @@ export class Router<Component = unknown> {
    * @param resolved - Resolved route.
    * @param props    - Additional props to assign to the render result.
    */
-  async getRender<R extends Router>(resolved: Resolved, props: any = {}): Promise<RoutedResult<R> | undefined> {
+  async getRender<R extends Router<Component>>(
+    resolved: Resolved,
+    props: any = {}
+  ): Promise<RoutedResult<R> | undefined> {
     for (const action of resolved.route.actions) {
       const res = await action.call(response, resolved);
       switch (res.status) {

@@ -3,7 +3,7 @@ import { Component, createComponent, createMemo } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
 import { createMutable, createStore, SetStoreFunction, Store, StoreNode } from "solid-js/store";
 
-import { Plugin } from "./Controller.Plugin.js";
+import { ControllerPlugin, Plugin } from "./Controller.Plugin.js";
 import { ControllerClass, ControllerComponent } from "./Controller.Types.js";
 import { ControllerView } from "./Controller.View.jsx";
 import { JsonLike } from "./JsonLike.js";
@@ -22,8 +22,10 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
   $lifecycle: StoreNode;
 
   readonly plugins: Plugin[] = [];
+
   readonly #state: [get: Store<State>, set: SetStoreFunction<State>];
   readonly #subscriptions = new Map<string, Subscription | SimpleSubscription>();
+  readonly #plugins: ControllerPlugin[] = [];
 
   /**
    * Creates a new controller instance with given default state and pushState
@@ -95,8 +97,11 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
    */
 
   $resolve(): this {
+    for (const { plugin, options } of this.plugins) {
+      this.#plugins.push(new plugin(this as any, options));
+    }
     this.onInit()
-      .then(() => Promise.all(this.plugins.map(({ plugin, options }) => new plugin(this as any, options).onResolve())))
+      .then(() => Promise.all(this.#plugins.map((plugin) => plugin.onResolve())))
       .then(() => {
         this.$lifecycle.loading = false;
       });
@@ -107,6 +112,9 @@ export abstract class Controller<State extends JsonLike = {}, Props extends Json
     await this.onDestroy();
     for (const subscription of this.#subscriptions.values()) {
       subscription.unsubscribe();
+    }
+    for (const plugin of this.#plugins) {
+      plugin.onDestroy();
     }
   }
 
