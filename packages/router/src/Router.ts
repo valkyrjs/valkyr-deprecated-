@@ -363,6 +363,14 @@ export class Router<Component = unknown> {
    */
   getRoute(path: string): { route: Route; params: Object } | undefined {
     for (const route of this.#routes) {
+      if (route.children !== undefined) {
+        for (const child of route.children) {
+          const params = child.match(path);
+          if (params !== false) {
+            return { route: child, params };
+          }
+        }
+      }
       const params = route.match(path);
       if (params !== false) {
         return { route, params };

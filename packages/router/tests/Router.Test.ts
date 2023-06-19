@@ -12,6 +12,7 @@ const routes: Route[] = [
     children: [
       new Route({
         name: "Test-3",
+        path: "",
         actions: []
       }),
       new Route({
