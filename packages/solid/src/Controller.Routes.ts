@@ -122,7 +122,7 @@ export class ControllerRoutes implements ControllerPlugin {
 
   async #getRender(resolved: Resolved) {
     for (const action of resolved.route.actions) {
-      const res = await action(resolved, response);
+      const res = await action(response);
       switch (res.status) {
         case "render": {
           const params = resolved.params.get() ?? {};
