@@ -1,11 +1,3 @@
-import type { Resolved } from "./Resolved.js";
-
-/*
- |--------------------------------------------------------------------------------
- | Action Response
- |--------------------------------------------------------------------------------
- */
-
 export const response: ActionResponse = {
   render<Props extends RenderProps = RenderProps>(component: unknown, props: Props = {} as Props): Render<Props> {
     return {
@@ -44,10 +36,7 @@ export const response: ActionResponse = {
  |--------------------------------------------------------------------------------
  */
 
-export type Action<Props extends RenderProps = RenderProps> = (
-  this: ActionResponse,
-  resolved: Resolved
-) => Response<Props>;
+export type Action<Props extends RenderProps = RenderProps> = (response: ActionResponse) => Response<Props>;
 
 export type Response<Props extends RenderProps = RenderProps> = Promise<Render<Props> | Accept | Redirect | Reject>;
 

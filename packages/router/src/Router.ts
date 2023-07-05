@@ -2,38 +2,24 @@ import type { BrowserHistory, HashHistory, Location, MemoryHistory } from "histo
 import { match, Path } from "path-to-regexp";
 import { Subject, Subscription } from "rxjs";
 
-import { Redirect, RenderProps, response } from "./Action.js";
-import {
-  ActionRedirected,
-  ActionRejectedException,
-  RenderActionMissingException,
-  RouteNotFoundException
-} from "./Exceptions.js";
-import { isHashChange } from "./Location.js";
+import { Redirect, RenderProps } from "./Action.js";
 import { Resolved } from "./Resolved.js";
+import { Resolver } from "./Resolver.js";
 import { Route } from "./Route.js";
+import { isHashChange } from "./Utilities.js";
 
 export class Router<Component = unknown> {
+  readonly routes: Route[] = [];
+
   #base: string;
+  #resolver: Resolver<Component>;
+  #hash = new Subject<string>();
 
-  #history: BrowserHistory | HashHistory | MemoryHistory;
-  #routes: Route[] = [];
-
-  #subscribers = {
-    location: new Subject<Location>(),
-    resolved: new Subject<Resolved>()
-  };
-
-  #parent?: Route;
-  #resolved?: Resolved;
-
-  #render?: (component: Component, props?: RenderProps) => void;
-  #error?: (error: ActionRejectedException | RenderActionMissingException | RouteNotFoundException) => void;
   #destroy?: () => void;
 
-  constructor(history: BrowserHistory | HashHistory | MemoryHistory, base = "") {
+  constructor(readonly history: BrowserHistory | HashHistory | MemoryHistory, base = "") {
     this.#base = base === "" || base === "/" ? "" : base;
-    this.#history = history;
+    this.#resolver = new Resolver<Component>(this);
   }
 
   /*
@@ -42,35 +28,39 @@ export class Router<Component = unknown> {
    |--------------------------------------------------------------------------------
    */
 
-  get routes(): Route[] {
-    return Array.from(this.#routes);
-  }
-
-  get location(): Location {
-    return this.#history.location;
+  get resolve() {
+    return this.#resolver.resolve.bind(this.#resolver);
   }
 
   get state(): Location["state"] {
-    return this.#history.location["state"];
+    return this.history.location["state"];
   }
 
   get params(): Resolved["params"] {
-    return this.resolved.params;
+    return this.current.params;
   }
 
   get query(): Resolved["query"] {
-    return this.resolved.query;
+    return this.current.query;
   }
 
   get route(): Resolved["route"] {
-    return this.resolved.route;
+    return this.current.route;
   }
 
-  get resolved(): Resolved {
-    if (this.#resolved === undefined) {
+  get current(): Resolved {
+    if (this.#resolver.current === undefined) {
       throw new Error("No route has been resolved yet");
     }
-    return this.#resolved;
+    return this.#resolver.current;
+  }
+
+  get onRender() {
+    return this.#resolver.onRender.bind(this.#resolver);
+  }
+
+  get onError() {
+    return this.#resolver.onError.bind(this.#resolver);
   }
 
   /*
@@ -83,10 +73,10 @@ export class Router<Component = unknown> {
     for (const route of routes) {
       route.parent = parent;
       if (route.children !== undefined) {
-        this.#routes.push(route.register(this.#base));
+        this.routes.push(route.register(this.#base));
         this.register(route.children, route);
       } else {
-        this.#routes.push(route.register(this.#base));
+        this.routes.push(route.register(this.#base));
       }
     }
     return this;
@@ -97,28 +87,6 @@ export class Router<Component = unknown> {
    | Listeners
    |--------------------------------------------------------------------------------
    */
-
-  /**
-   * Register render handler receiving the component and props to render.
-   *
-   * @param handler - Handler method for incoming components and props.
-   */
-  onRouteRender(handler: (component: Component, props?: RenderProps) => void): this {
-    this.#render = handler;
-    return this;
-  }
-
-  /**
-   * Register error handler receiving the error to render.
-   *
-   * @param handler - Handler method for incoming errors.
-   */
-  onRouteError(
-    handler: (error: ActionRejectedException | RenderActionMissingException | RouteNotFoundException) => void
-  ): this {
-    this.#error = handler;
-    return this;
-  }
 
   /**
    * Starts listening for routing changes which emits results to the provided
@@ -132,117 +100,28 @@ export class Router<Component = unknown> {
       this.#destroy();
     }
 
-    let prevLocation = this.location;
-    this.#destroy = this.#history.listen(async ({ location }) => {
+    let prevLocation = this.history.location;
+
+    // ### History Listener
+    // Register a listener for history changes that results in triggering
+    // a new route resolution.
+
+    this.#destroy = this.history.listen(async ({ location }) => {
       if (isHashChange(prevLocation, location) === true) {
         prevLocation = location;
-        return this.#subscribers.location.next(location);
+        return this.#hash.next(location.hash);
       }
       prevLocation = location;
-      this.#resolve(location.pathname, location.search);
+      this.#resolver.push(location.pathname, location.search);
     });
 
-    this.#resolve(this.location.pathname, this.location.search);
+    // ### Initial Route
+    // The initial route is resolved on the first call to `listen` so that
+    // the router can initialize and render the current location state.
+
+    this.#resolver.push(this.history.location.pathname, this.history.location.search);
 
     return this;
-  }
-
-  /*
-   |--------------------------------------------------------------------------------
-   | Routing Utilities
-   |--------------------------------------------------------------------------------
-   */
-
-  async #resolve(path: string, search?: string) {
-    const resolved = this.getResolvedRoute(path, search);
-    if (resolved === undefined) {
-      return this.#error?.(new RouteNotFoundException(path));
-    }
-    this.setRoute(resolved);
-    try {
-      const tree = this.#getRoutingTree(resolved.route);
-      for (const [index, route] of tree.entries()) {
-        await this.#execute(route, resolved, index);
-      }
-    } catch (err) {
-      if (err instanceof ActionRedirected) {
-        this.redirect(err.redirect);
-      } else {
-        this.#error?.(err);
-      }
-    }
-  }
-
-  async #execute(route: Route, resolved: Resolved, index: number): Promise<void> {
-    for (const action of route.actions) {
-      const res = await action.call(response, resolved);
-      switch (res.status) {
-        case "redirect": {
-          throw new ActionRedirected(res);
-        }
-        case "reject": {
-          throw new ActionRejectedException(res.message, res.details);
-        }
-        case "render": {
-          if (index === 0 && this.#parent !== route) {
-            this.#parent = route;
-            return this.#render?.(res.component, res.props);
-          }
-          this.#subscribers.resolved.next(resolved);
-        }
-      }
-    }
-  }
-
-  #getRoutingTree(route: Route, tree: Route[] = []): Route[] {
-    if (route.parent !== undefined) {
-      tree.push(route);
-      return this.#getRoutingTree(route.parent, tree);
-    }
-    tree.push(route);
-    return tree.reverse();
-  }
-
-  /*
-   |--------------------------------------------------------------------------------
-   | Subscribers
-   |--------------------------------------------------------------------------------
-   */
-
-  /**
-   * Subscribe to route changes.
-   *
-   * @param next - Handler to execute on incoming route.
-   *
-   * @returns RXJS Subscription.
-   */
-  subscribe(next: RoutedHandler): Subscription {
-    return this.#subscribers.resolved.subscribe(next);
-  }
-
-  subscribeToLocation(next: (location: Location) => void): Subscription {
-    return this.#subscribers.location.subscribe((location) => {
-      next(location);
-    });
-  }
-
-  /**
-   * Subscribe to a list of paths and execute the next handler when the incoming
-   * route matches any of the paths.
-   *
-   * @param paths - List of paths to subscribe to.
-   * @param next  - Handler to execute on incoming route.
-   *
-   * @returns RXJS Subscription.
-   */
-  subscribeToPaths(paths: string[], next: RoutedHandler): Subscription {
-    return this.#subscribers.resolved.subscribe((matched) => {
-      for (const path of paths) {
-        if (matched.route.match(path)) {
-          next(matched);
-        }
-      }
-    });
   }
 
   /*
@@ -250,6 +129,25 @@ export class Router<Component = unknown> {
    | Actions
    |--------------------------------------------------------------------------------
    */
+
+  /**
+   * Push a new routing request into the history instance triggering a new routing
+   * transition.
+   *
+   * @param path  - Path to resolve.
+   * @param state - State to pass.
+   */
+  goto(path: string, state: Record<string, unknown> = {}): this {
+    const parts = (this.#base + path.replace(this.#base, "")).replace(/\/$/, "").split("?");
+    this.history.push(
+      {
+        pathname: parts[0] || "/",
+        search: parts[1] ? `${parts[1]}` : ""
+      },
+      state
+    );
+    return this;
+  }
 
   /**
    * Redirect response.
@@ -262,39 +160,31 @@ export class Router<Component = unknown> {
    * @param origin   - Origin to assign with the redirect.
    * @param onGoTo   - Callback to execute on internal routing.
    */
-  redirect(response: Redirect): void {
+  redirect(response: Redirect): this {
     if (response.isExternal) {
       window.location.replace(response.path);
     } else {
-      this.goto(response.path, { origin: this.location });
+      this.goto(response.path, { origin: this.history.location });
     }
-  }
-
-  /**
-   * Push a new routing request into the history instance triggering a new routing
-   * transition.
-   *
-   * @param path  - Path to resolve.
-   * @param state - State to pass.
-   */
-  goto(path: string, state: Record<string, unknown> = {}): this {
-    const parts = (this.#base + path.replace(this.#base, "")).replace(/\/$/, "").split("?");
-    this.#history.push(
-      {
-        pathname: parts[0] || "/",
-        search: parts[1] ? `${parts[1]}` : ""
-      },
-      state
-    );
     return this;
   }
 
-  forward = () => {
-    this.#history.forward();
+  /**
+   * Move browser history one step forwards, if there is no history item in the
+   * forward direction this action does nothing.
+   */
+  forward = (): this => {
+    this.history.forward();
+    return this;
   };
 
-  back = () => {
-    this.#history.back();
+  /**
+   * Move browser history one step back, if there is no history item in the back
+   * direction this action does nothing.
+   */
+  back = (): this => {
+    this.history.back();
+    return this;
   };
 
   /**
@@ -303,12 +193,12 @@ export class Router<Component = unknown> {
    * @returns Router
    */
   reload(): this {
-    this.#history.replace(
+    this.history.replace(
       {
-        pathname: this.location.pathname,
-        search: this.location.search
+        pathname: this.history.location.pathname,
+        search: this.history.location.search
       },
-      this.location.state
+      this.history.location.state
     );
     return this;
   }
@@ -324,59 +214,8 @@ export class Router<Component = unknown> {
    *
    * @param path - RegEx path to match against location.
    */
-  match(path: Path): boolean {
-    return match(path)(this.location.pathname) !== false;
-  }
-
-  /**
-   * Attach the provided request to the current route assignment.
-   *
-   * @remarks This provides shortcut access to the currently resolved routes state,
-   * query and parameter values.
-   *
-   * @param resolved - Resolved route.
-   */
-  setRoute(resolved: Resolved): this {
-    this.#resolved = resolved;
-    return this;
-  }
-
-  /**
-   * Get the resolved route for the provided path or return undefined if provided
-   * path does not match any registered routes.
-   *
-   * @param path   - Path to retrieve a route for.
-   * @param search - Search string starting with `?`.
-   */
-  getResolvedRoute(path: string, search = this.location.search): Resolved | undefined {
-    const resolved = this.getRoute(path);
-    if (resolved === undefined) {
-      return undefined;
-    }
-    return new Resolved(resolved.route, resolved.params, search, this.#history);
-  }
-
-  /**
-   * Get a route from the registered list of routes.
-   *
-   * @param path - Path to match against.
-   */
-  getRoute(path: string): { route: Route; params: Object } | undefined {
-    for (const route of this.#routes) {
-      if (route.children !== undefined) {
-        for (const child of route.children) {
-          const params = child.match(path);
-          if (params !== false) {
-            return { route: child, params };
-          }
-        }
-      }
-      const params = route.match(path);
-      if (params !== false) {
-        return { route, params };
-      }
-    }
-    return undefined;
+  isCurrentPath(path: Path): boolean {
+    return match(path)(this.history.location.pathname) !== false;
   }
 
   /**
@@ -385,42 +224,58 @@ export class Router<Component = unknown> {
    * @param id - Route id to retrieve.
    */
   getRouteById(id: string): Route | undefined {
-    return this.#routes.find((route) => route.id === id);
+    return this.routes.find((route) => route.id === id);
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Subscribers
+   |--------------------------------------------------------------------------------
+   */
+
+  /**
+   * Subscribe to route changes.
+   *
+   * @param next - Handler to execute on incoming route.
+   *
+   * @returns RXJS Subscription.
+   */
+  subscribe(next: (resolved: Resolved) => void): Subscription {
+    return this.#resolver.resolved.subscribe(next);
   }
 
   /**
-   * Return a render result that should render for the provided resolved route
-   * or return undefined if the route does not result in a render output.
+   * Subscribe to a list of paths and execute the next handler when the incoming
+   * route matches any of the paths.
    *
-   * @param resolved - Resolved route.
-   * @param props    - Additional props to assign to the render result.
+   * @param paths - List of paths to subscribe to.
+   * @param next  - Handler to execute on incoming route.
+   *
+   * @returns RXJS Subscription.
    */
-  async getRender<R extends Router<Component>>(
-    resolved: Resolved,
-    props: any = {}
-  ): Promise<RoutedResult<R> | undefined> {
-    for (const action of resolved.route.actions) {
-      const res = await action.call(response, resolved);
-      switch (res.status) {
-        case "render": {
-          const params = resolved.params.get() ?? {};
-          const query = resolved.query.get() ?? {};
-          return {
-            id: resolved.route.id,
-            name: resolved.route.name,
-            location: this.location,
-            component: res.component,
-            props: {
-              ...res.props,
-              ...params,
-              ...query,
-              ...props
-            }
-          };
+  subscribeToPaths(paths: string[], next: (resolved: Resolved, path: string) => void): Subscription {
+    return this.#resolver.resolved.subscribe((matched) => {
+      for (const path of paths) {
+        if (matched.route.match(path)) {
+          next(matched, path);
         }
       }
-    }
-    return undefined;
+    });
+  }
+
+  /**
+   * Subscribe to changes in the location hash value. This is useful for
+   * applications that use wants to use the hash for custom page behavior
+   * that is not connected to rendering new views.
+   *
+   * @param next - Handler to execute on hash changes.
+   *
+   * @returns RXJS Subscription.
+   */
+  subscribeToHash(next: (hash: string) => void): Subscription {
+    return this.#hash.subscribe((hash: string) => {
+      next(hash);
+    });
   }
 }
 
@@ -429,8 +284,6 @@ export class Router<Component = unknown> {
  | Types
  |--------------------------------------------------------------------------------
  */
-
-type RoutedHandler = (result: Resolved) => void;
 
 export type RoutedResult<Router> = {
   id?: string;

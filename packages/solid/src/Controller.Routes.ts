@@ -1,4 +1,4 @@
-import type { Route, Router } from "@valkyr/router";
+import { type Resolved, response, type Route, type Router } from "@valkyr/router";
 import { type Subscription } from "rxjs";
 import { type Component, createComponent, type JSXElement } from "solid-js";
 
@@ -53,7 +53,7 @@ export class ControllerRoutes implements ControllerPlugin {
 
     this.#subscription = this.router.subscribe(async (resolved) => {
       if (this.#routes.includes(resolved.route.path) === true) {
-        const result = await this.router.getRender(resolved);
+        const result = await this.#getRender(resolved);
         if (result !== undefined) {
           this.#parent = undefined; // direct child should reset parent container
           return this.#controller.setState({
@@ -75,14 +75,14 @@ export class ControllerRoutes implements ControllerPlugin {
     // ### Preload
 
     for (const path of this.#routes) {
-      const isControllerPath = this.router.match(path);
+      const isControllerPath = this.router.isCurrentPath(path);
       if (isControllerPath === true) {
         return this.#resolvePath(path);
       }
     }
 
     for (const path of this.#parents) {
-      const isParentPath = this.router.match(new RegExp(path));
+      const isParentPath = this.router.isCurrentPath(new RegExp(path));
       if (isParentPath === true) {
         return this.#resolvePath(path);
       }
@@ -109,15 +109,39 @@ export class ControllerRoutes implements ControllerPlugin {
   }
 
   async #resolvePath(path: string) {
-    const resolved = this.router.getResolvedRoute(path);
+    const resolved = this.router.resolve(path);
     if (resolved !== undefined) {
-      const view = await this.router.getRender(resolved);
+      const view = await this.#getRender(resolved);
       if (view !== undefined) {
         this.#controller.setState({
           routed: () => createComponent(view.component, view.props)
         });
       }
     }
+  }
+
+  async #getRender(resolved: Resolved) {
+    for (const action of resolved.route.actions) {
+      const res = await action(resolved, response);
+      switch (res.status) {
+        case "render": {
+          const params = resolved.params.get() ?? {};
+          const query = resolved.query.get() ?? {};
+          return {
+            id: resolved.route.id,
+            name: resolved.route.name,
+            location: this.router.history.location,
+            component: res.component,
+            props: {
+              ...res.props,
+              ...params,
+              ...query
+            }
+          };
+        }
+      }
+    }
+    return undefined;
   }
 }
 

@@ -1,7 +1,7 @@
 {
-  "name": "@valkyr/http",
+  "name": "@valkyr/api",
   "version": "0.0.0",
-  "description": "Simple HTTP service.",
+  "description": "Simple toolings for developing JSON-RPC 2.0 compliant APIs.",
   "repository": "https://github.com/cmdo/valkyr.git",
   "bugs": "https://github.com/cmdo/valkyr/issues",
   "author": "Christoffer Rødvik <dev@kodemon.net>",
@@ -17,8 +17,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run clean && npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc -b ./tsconfig.esm.json",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && node esm.js",
+    "build:esm": "tsc --project ./tsconfig.json",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf ./dist",
@@ -26,15 +26,25 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "path-to-regexp": "6.2.1"
+    "@valkyr/jsonrpc": "workspace:*",
+    "computed-types": "^1.11.2",
+    "debug": "^4.3.4"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.8",
+    "@types/ws": "^8.5.5"
+  },
+  "peerDependencies": {
+    "fastify": "^4.18.0",
+    "ws": "^8.13.0"
   },
   "eslintConfig": {
-    "parserOptions": {
-      "project": "./tsconfig.json"
-    },
     "extends": [
       "@valkyr"
-    ]
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    }
   },
   "lint-staged": {
     "*": [

@@ -24,11 +24,6 @@
 .docker
 .parcel-cache
 
-# Generated
-
-packages/api
-packages/app
-
 # node_modules
 
 node_modules
