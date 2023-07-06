@@ -8,8 +8,6 @@ function setPackageVersions(rootDir, version) {
     const packageJson = JSON.parse(readFileSync(packagePath, "utf-8"));
 
     packageJson.version = version;
-    packageJson.main = "./dist/index.js";
-    packageJson.types = "./dist/index.d.ts";
 
     if (packageJson.dependencies !== undefined) {
       for (const key in packageJson.dependencies) {
