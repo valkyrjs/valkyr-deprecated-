@@ -37,9 +37,9 @@ export class Resolver<Component = unknown> {
    *
    * @param handler - Handler method for incoming components and props.
    */
-  onRender(handler: OnRenderHandler<Component>): this {
+  onRender(handler: OnRenderHandler<Component>): Router<Component> {
     this.#render = handler;
-    return this;
+    return this.#router;
   }
 
   /**
@@ -47,9 +47,9 @@ export class Resolver<Component = unknown> {
    *
    * @param handler - Handler method for incoming errors.
    */
-  onError(handler: OnErrorHandler): this {
+  onError(handler: OnErrorHandler): Router<Component> {
     this.#error = handler;
-    return this;
+    return this.#router;
   }
 
   /*
@@ -63,11 +63,14 @@ export class Resolver<Component = unknown> {
     if (resolved === undefined) {
       return this.#error?.(new RouteNotFoundException(path));
     }
+    const current = this.current;
     this.current = resolved;
     try {
       const tree = this.#getRoutingTree(resolved.route);
       for (const [index, route] of tree.entries()) {
-        await this.#execute(route, resolved, index);
+        await this.#execute(route, resolved, index, () => {
+          this.current = current;
+        });
       }
     } catch (err) {
       if (err instanceof ActionRedirected) {
@@ -99,7 +102,7 @@ export class Resolver<Component = unknown> {
    |--------------------------------------------------------------------------------
    */
 
-  async #execute(route: Route, resolved: Resolved, index: number): Promise<void> {
+  async #execute(route: Route, resolved: Resolved, index: number, onCancel: () => void): Promise<void> {
     for (const action of route.actions) {
       const res = await action(response);
       switch (res.status) {
@@ -108,6 +111,9 @@ export class Resolver<Component = unknown> {
         }
         case "reject": {
           throw new ActionRejectedException(res.message, res.details);
+        }
+        case "cancel": {
+          return onCancel();
         }
         case "render": {
           if (index === 0 && this.#parent !== route) {

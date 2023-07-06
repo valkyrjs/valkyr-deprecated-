@@ -13,6 +13,12 @@ export const response: ActionResponse = {
     };
   },
 
+  cancel(): Cancel {
+    return {
+      status: "cancel"
+    };
+  },
+
   redirect(path: string, isExternal = false): Redirect {
     return {
       status: "redirect",
@@ -38,13 +44,16 @@ export const response: ActionResponse = {
 
 export type Action<Props extends RenderProps = RenderProps> = (response: ActionResponse) => Response<Props>;
 
-export type Response<Props extends RenderProps = RenderProps> = Promise<Render<Props> | Accept | Redirect | Reject>;
+export type Response<Props extends RenderProps = RenderProps> = Promise<
+  Render<Props> | Accept | Cancel | Redirect | Reject
+>;
 
 export type RenderProps = Record<string, unknown>;
 
 export type ActionResponse = {
   render<Props extends RenderProps = RenderProps>(component: any, props?: Props): Render<Props>;
   accept(): Accept;
+  cancel(): Cancel;
   redirect(path: string, isExternal?: boolean): Redirect;
   reject(message: string, details?: any): Reject;
 };
@@ -57,6 +66,10 @@ export type Render<Props extends RenderProps = RenderProps, Component = any> = {
 
 export type Accept = {
   status: "accept";
+};
+
+export type Cancel = {
+  status: "cancel";
 };
 
 export type Redirect = {
