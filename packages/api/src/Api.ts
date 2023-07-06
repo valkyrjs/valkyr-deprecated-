@@ -9,7 +9,7 @@ import {
   RpcError,
   SuccessResponse
 } from "@valkyr/jsonrpc";
-import debug from "debug";
+import debug, { Debugger } from "debug";
 import { FastifyInstance } from "fastify";
 import { WebSocket } from "ws";
 
@@ -17,24 +17,54 @@ import { Context, response } from "./Action";
 import { Method } from "./Method";
 import { validateRequest } from "./Validate";
 
-const log = debug("sado-api");
-
-class Api {
+export class Api {
   #methods = new Map<string, Method>();
 
-  constructor() {
+  readonly log: Debugger;
+
+  constructor(name: string) {
+    this.log = debug(name);
     this.fastify = this.fastify.bind(this);
   }
 
-  register<M extends Method<any, any, any>>(method: string, handler: M): void {
-    this.#methods.set(method, handler);
-    log(`registered method ${method}`);
-  }
+  /*
+   |--------------------------------------------------------------------------------
+   | Fastify Handlers
+   |--------------------------------------------------------------------------------
+   */
 
+  /**
+   * Inject API instance with Fastify server.
+   *
+   * @param fastify - Fastify server instance.
+   */
   async fastify(fastify: FastifyInstance): Promise<void> {
     await this.#http(fastify);
     await this.#websocket(fastify);
   }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Method Handlers
+   |--------------------------------------------------------------------------------
+   */
+
+  /**
+   * Register a method to the API instance.
+   *
+   * @param name   - Name of the method.
+   * @param method - Method handler configuration.
+   */
+  register<M extends Method<any, any, any>>(name: string, method: M): void {
+    this.#methods.set(name, method);
+    this.log(`registered method ${name}`);
+  }
+
+  /*
+   |--------------------------------------------------------------------------------
+   | Request Handlers
+   |--------------------------------------------------------------------------------
+   */
 
   async #http(fastify: FastifyInstance): Promise<void> {
     fastify.post<{
@@ -146,5 +176,3 @@ class Api {
     method?.handler(request.params ?? {}, context);
   }
 }
-
-export const api = new Api();

@@ -1,8 +1,19 @@
 {
-  "extends": "@valkyr/typescript",
   "compilerOptions": {
-    "rootDir": "./",
-    "outDir": "./dist",
+    "strict": true,
+
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+
+    "declaration": true,
+    "esModuleInterop": true,
+    "useUnknownInCatchVariables": false,
+    "allowSyntheticDefaultImports": true,
+
+    "declarationDir": "./dist/types",
+    "outDir": "./dist/esm"
   },
-  "include": ["./src", "./tests"]
+  "include": ["./src"]
 }

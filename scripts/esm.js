@@ -1,6 +1,8 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
+const packageName = process.argv[2];
+
 const IMPORT_REGEXP = /^((import|export)[^';]*(from)?"(\.|(\.\.)+)[^';]*)"/g;
 const JUST_ADD_AN_EXTENSION = '$1.js"';
 const ADD_INDEX_FILE = '$1/index.js"';
@@ -52,4 +54,4 @@ function fixImportsAtFile(filePath) {
   fs.writeFileSync(filePath, fixedLines.join("\n"));
 }
 
-fixImportsAtFolder(path.join(__dirname, "dist", "esm"));
+fixImportsAtFolder(path.join(__dirname, "..", "packages", packageName, "dist", "esm"));

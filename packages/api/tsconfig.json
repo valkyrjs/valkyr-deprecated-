@@ -2,18 +2,18 @@
   "compilerOptions": {
     "strict": true,
 
-    "allowSyntheticDefaultImports": true,
-    "useUnknownInCatchVariables": false,
-
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "node",
     "lib": ["ES2022"],
 
     "declaration": true,
-    "declarationDir": "./dist/types",
+    "esModuleInterop": true,
+    "useUnknownInCatchVariables": false,
+    "allowSyntheticDefaultImports": true,
 
+    "declarationDir": "./dist/types",
     "outDir": "./dist/esm"
   },
-  "include": ["src"]
+  "include": ["./src"]
 }

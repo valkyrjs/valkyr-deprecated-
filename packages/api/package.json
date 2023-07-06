@@ -17,9 +17,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run clean && npm run build:esm && npm run build:cjs && node esm.js",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && node ../../scripts/esm.js api",
     "build:esm": "tsc --project ./tsconfig.json",
-    "build:cjs": "tsc --project tsconfig.cjs.json",
+    "build:cjs": "tsc --project ./tsconfig.cjs.json",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf ./dist",
     "ncu": "ncu -u",
@@ -32,7 +32,8 @@
   },
   "devDependencies": {
     "@types/debug": "^4.1.8",
-    "@types/ws": "^8.5.5"
+    "@types/ws": "^8.5.5",
+    "tsup": "^7.1.0"
   },
   "peerDependencies": {
     "fastify": "^4.18.0",

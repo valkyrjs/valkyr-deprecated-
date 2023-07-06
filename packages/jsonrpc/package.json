@@ -5,14 +5,16 @@
   "repository": "https://github.com/cmdo/valkyr.git",
   "bugs": "https://github.com/cmdo/valkyr/issues",
   "license": "MIT",
-  "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc -b ./tsconfig.build.json",
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && node ../../scripts/esm.js jsonrpc",
+    "build:esm": "tsc --project ./tsconfig.json",
+    "build:cjs": "tsc --project ./tsconfig.cjs.json",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf ./.turbo ./dist",
     "ncu": "ncu -u",
@@ -23,12 +25,12 @@
     "preset": "@valkyr/jest"
   },
   "eslintConfig": {
-    "parserOptions": {
-      "project": "./tsconfig.json"
-    },
     "extends": [
       "@valkyr"
-    ]
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.eslint.json"
+    }
   },
   "lint-staged": {
     "*": [
@@ -39,6 +41,7 @@
     ]
   },
   "devDependencies": {
-    "@valkyr/jest": "workspace:*"
+    "@valkyr/jest": "workspace:*",
+    "tsup": "^7.1.0"
   }
 }
