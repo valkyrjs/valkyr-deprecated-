@@ -31,24 +31,24 @@ setPackageVersions(join(PUBLISH_DIR, "packages"), VERSION);
 const packages = readdirSync(join(PUBLISH_DIR, "packages"));
 const configs = readdirSync(join(PUBLISH_DIR, "configs"));
 
-for (const pkg of packages) {
-  spawnSync("npm", ["publish", "--registry", "http://192.168.11.82/4873"], {
-    stdio: "inherit",
-    cwd: join(PUBLISH_DIR, "packages", pkg)
-  });
-}
+// for (const pkg of packages) {
+//   spawnSync("npm", ["publish", "--registry", "http://192.168.11.82/4873"], {
+//     stdio: "inherit",
+//     cwd: join(PUBLISH_DIR, "packages", pkg)
+//   });
+// }
 
-for (const cfg of configs) {
-  spawnSync("npm", ["publish", "--registry", "http://192.168.11.82/4873"], {
-    stdio: "inherit",
-    cwd: join(PUBLISH_DIR, "configs", cfg)
-  });
-}
+// for (const cfg of configs) {
+//   spawnSync("npm", ["publish", "--registry", "http://192.168.11.82/4873"], {
+//     stdio: "inherit",
+//     cwd: join(PUBLISH_DIR, "configs", cfg)
+//   });
+// }
 
 // ### Clean Up
 
 spawnSync("pnpm", ["clean"], { stdio: "inherit", cwd: ROOT_DIR });
-rmSync(PUBLISH_DIR, { recursive: true, force: true });
+// rmSync(PUBLISH_DIR, { recursive: true, force: true });
 
 /*
  |--------------------------------------------------------------------------------

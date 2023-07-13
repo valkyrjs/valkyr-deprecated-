@@ -9,6 +9,14 @@ function setPackageVersions(rootDir, version) {
 
     packageJson.version = version;
 
+    if (packageJson.main === "./src/index.ts") {
+      packageJson.main = "./dist/index.js";
+    }
+
+    if (packageJson.types === "./src/index.ts") {
+      packageJson.types = "./dist/index.d.ts";
+    }
+
     if (packageJson.dependencies !== undefined) {
       for (const key in packageJson.dependencies) {
         if (packageJson.dependencies[key].includes("workspace:*")) {
