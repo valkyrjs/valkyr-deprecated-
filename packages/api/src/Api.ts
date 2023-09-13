@@ -9,7 +9,6 @@ import {
   RpcError,
   SuccessResponse
 } from "@valkyr/jsonrpc";
-import debug, { Debugger } from "debug";
 import { FastifyInstance } from "fastify";
 import { WebSocket } from "ws";
 
@@ -20,10 +19,7 @@ import { validateRequest } from "./Validate";
 export class Api {
   #methods = new Map<string, Method>();
 
-  readonly log: Debugger;
-
-  constructor(name: string) {
-    this.log = debug(name);
+  constructor() {
     this.fastify = this.fastify.bind(this);
   }
 
@@ -57,7 +53,6 @@ export class Api {
    */
   register<M extends Method<any, any, any>>(name: string, method: M): void {
     this.#methods.set(name, method);
-    this.log(`registered method ${name}`);
   }
 
   /*
@@ -163,7 +158,6 @@ export class Api {
           id: request.id
         };
       } catch (error) {
-        console.log(error);
         result = {
           jsonrpc: "2.0",
           error: error instanceof RpcError ? error : new InternalError(error.message),
