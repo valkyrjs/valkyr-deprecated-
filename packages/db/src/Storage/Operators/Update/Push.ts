@@ -3,10 +3,12 @@ import { deepEqual } from "fast-equals";
 import { Query } from "mingo";
 import type { RawObject } from "mingo/types";
 
-import { Document } from "../../Storage.js";
-import type { UpdateOperators } from "./Update.js";
+import { Document, UpdateFilter, WithId } from "../../../Types.js";
 
-export function $push(document: Document, operator: UpdateOperators["$push"] = {}): boolean {
+export function $push<TSchema extends Document = Document>(
+  document: WithId<TSchema>,
+  operator: UpdateFilter<TSchema>["$push"] = {}
+): boolean {
   let modified = false;
   for (const key in operator) {
     const values = getPushValues(document, key);

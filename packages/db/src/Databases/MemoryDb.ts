@@ -1,5 +1,5 @@
 import { Collection } from "../Collection.js";
-import { Document } from "../Storage/mod.js";
+import { Document } from "../Types.js";
 import { MemoryStorage } from "./MemoryDb.Storage.js";
 import { Registrars } from "./Registrars.js";
 
@@ -23,7 +23,7 @@ export class MemoryDatabase<T extends Record<string, Document>> {
     if (collection === undefined) {
       throw new Error(`Collection '${name as string}' not found`);
     }
-    return collection as Collection<T[Name]>;
+    return collection as any;
   }
 
   /*

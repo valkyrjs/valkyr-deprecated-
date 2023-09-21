@@ -1,16 +1,15 @@
 import * as dot from "dot-prop";
 import { deepEqual } from "fast-equals";
 import { Query } from "mingo";
-import type { RawObject } from "mingo/types";
 
 import { clone } from "../../../Clone.js";
-import { Document } from "../../Storage.js";
+import { Document, Filter, WithId } from "../../../Types.js";
 
 type UpdateValue = (data: any, key: string, target: string) => any;
 
-export function setPositionalData(
-  document: Document,
-  criteria: RawObject,
+export function setPositionalData<TSchema extends Document = Document>(
+  document: WithId<TSchema>,
+  criteria: Filter<WithId<TSchema>>,
   key: string,
   update: {
     object: UpdateValue;
@@ -62,7 +61,7 @@ export function getPositionalUpdate(
 export function getPositionalUpdateQuery(
   items: any[],
   key: string,
-  filter: RawObject,
+  filter: Filter<any>,
   target: string,
   updateValue: UpdateValue
 ): any[] {
@@ -81,7 +80,7 @@ export function getPositionalUpdateQuery(
   return items;
 }
 
-export function getPositionalFilter(criteria: RawObject, key: string): PositionalFilter {
+export function getPositionalFilter(criteria: Filter<any>, key: string): PositionalFilter {
   const [leftPath, rightPath] = key.split("$");
 
   const lKey = trimSeparators(leftPath);
@@ -105,7 +104,7 @@ function getPositionalCriteriaFilter(
   key: string,
   lKey: string,
   rKey: string,
-  criteria: RawObject
+  criteria: Filter<any>
 ): PositionalFilter | undefined {
   if (key.includes(lKey) === true) {
     const isObject = typeof criteria[key] === "object";

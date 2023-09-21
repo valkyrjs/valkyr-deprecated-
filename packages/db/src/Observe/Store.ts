@@ -1,80 +1,81 @@
 import { nanoid } from "nanoid";
 
 import { ObserverStorage } from "../Databases/Observer.Storage.js";
-import { Document, Storage } from "../Storage/mod.js";
-import { Criteria, isMatch } from "./IsMatch.js";
+import { Storage } from "../Storage/mod.js";
+import { Document, Filter, WithId } from "../Types.js";
+import { isMatch } from "./IsMatch.js";
 
-export class Store {
-  private constructor(private storage: Storage) {}
+export class Store<TSchema extends Document = Document> {
+  private constructor(private storage: Storage<TSchema>) {}
 
-  static create() {
-    return new Store(new ObserverStorage(`observer[${nanoid()}]`));
+  static create<TSchema extends Document = Document>() {
+    return new Store<TSchema>(new ObserverStorage<TSchema>(`observer[${nanoid()}]`));
   }
 
   get destroy() {
     return this.storage.destroy.bind(this.storage);
   }
 
-  async resolve(documents: Document[]): Promise<Document[]> {
+  async resolve(documents: WithId<TSchema>[]): Promise<WithId<TSchema>[]> {
     await this.storage.insertMany(documents);
     return this.getDocuments();
   }
 
-  async getDocuments(): Promise<Document[]> {
+  async getDocuments(): Promise<WithId<TSchema>[]> {
     return this.storage.find();
   }
 
-  async insertMany(documents: Document[], criteria: Criteria): Promise<Document[]> {
+  async insertMany(documents: WithId<TSchema>[], filter: Filter<WithId<TSchema>>): Promise<WithId<TSchema>[]> {
     const matched = [];
     for (const document of documents) {
-      matched.push(...(await this.insertOne(document, criteria)));
+      matched.push(...(await this.insertOne(document, filter)));
     }
     return matched;
   }
 
-  async insertOne(document: Document, criteria: Criteria): Promise<Document[]> {
-    if (isMatch(document, criteria)) {
+  async insertOne(document: WithId<TSchema>, filter: Filter<WithId<TSchema>>): Promise<WithId<TSchema>[]> {
+    if (isMatch<TSchema>(document, filter)) {
       await this.storage.insertOne(document);
       return [document];
     }
     return [];
   }
 
-  async updateMany(documents: Document[], criteria: Criteria): Promise<Document[]> {
+  async updateMany(documents: WithId<TSchema>[], filter: Filter<WithId<TSchema>>): Promise<WithId<TSchema>[]> {
     const matched = [];
     for (const document of documents) {
-      matched.push(...(await this.updateOne(document, criteria)));
+      matched.push(...(await this.updateOne(document, filter)));
     }
     return matched;
   }
 
-  async updateOne(document: Document, criteria: Criteria): Promise<Document[]> {
+  async updateOne(document: WithId<TSchema>, filter: Filter<WithId<TSchema>>): Promise<WithId<TSchema>[]> {
     if (await this.storage.has(document.id)) {
-      await this.#updateOrRemove(document, criteria);
+      await this.#updateOrRemove(document, filter);
       return [document];
-    } else if (isMatch(document, criteria)) {
+    } else if (isMatch<TSchema>(document, filter)) {
       await this.storage.insertOne(document);
       return [document];
     }
     return [];
   }
 
-  async remove(documents: Document[]): Promise<Document[]> {
+  async remove(documents: WithId<TSchema>[]): Promise<WithId<TSchema>[]> {
     const matched = [];
     for (const document of documents) {
-      if (isMatch(document, { id: document.id })) {
-        await this.storage.remove({ id: document.id });
+      if (isMatch<TSchema>(document, { id: document.id } as WithId<TSchema>)) {
+        await this.storage.remove({ id: document.id } as WithId<TSchema>);
         matched.push(document);
       }
     }
     return matched;
   }
 
-  async #updateOrRemove(document: Document, criteria: Criteria): Promise<void> {
-    if (isMatch(document, criteria)) {
-      await this.storage.replace({ id: document.id }, document);
+  async #updateOrRemove(document: WithId<TSchema>, filter: Filter<WithId<TSchema>>): Promise<void> {
+    if (isMatch<TSchema>(document, filter)) {
+      await this.storage.replace({ id: document.id } as WithId<TSchema>, document);
     } else {
-      await this.storage.remove({ id: document.id });
+      await this.storage.remove({ id: document.id } as WithId<TSchema>);
     }
   }
 
@@ -82,5 +83,3 @@ export class Store {
     this.storage.flush();
   }
 }
-
-export type OnChangeFn = (documents: Document[]) => void;

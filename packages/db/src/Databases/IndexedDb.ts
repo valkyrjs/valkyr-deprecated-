@@ -2,7 +2,7 @@ import { IDBPDatabase, openDB } from "idb/with-async-ittr";
 
 import { Collection } from "../Collection.js";
 import { DBLogger } from "../Logger.js";
-import { Document } from "../Storage/mod.js";
+import { Document } from "../Types.js";
 import { IndexedDbStorage } from "./IndexedDb.Storage.js";
 import { Registrars } from "./Registrars.js";
 
@@ -27,8 +27,6 @@ export class IndexedDatabase<T extends StringRecord<Document>> {
         for (const { name, indexes = [] } of options.registrars) {
           const store = db.createObjectStore(name as string, { keyPath: "id" });
           store.createIndex("id", "id", { unique: true });
-          store.createIndex("$meta.createdAt", "$meta.createdAt", { unique: false });
-          store.createIndex("$meta.updatedAt", "$meta.updatedAt", { unique: false });
           for (const [keyPath, options] of indexes) {
             store.createIndex(keyPath, keyPath, options);
           }
@@ -46,12 +44,12 @@ export class IndexedDatabase<T extends StringRecord<Document>> {
    |--------------------------------------------------------------------------------
    */
 
-  collection<D extends T[Name], Name extends keyof T = keyof T>(name: Name): Collection<D> {
+  collection<TSchema extends T[Name], Name extends keyof T = keyof T>(name: Name): Collection<TSchema> {
     const collection = this.#collections.get(name);
     if (collection === undefined) {
       throw new Error(`Collection '${name as string}' not found`);
     }
-    return collection as Collection<D>;
+    return collection as any;
   }
 
   /*

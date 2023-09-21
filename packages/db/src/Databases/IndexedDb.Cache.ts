@@ -1,17 +1,16 @@
-import type { RawObject } from "mingo/types";
-
 import { hashCodeQuery } from "../Hash.js";
-import { Document, Options } from "../Storage/mod.js";
+import { Options } from "../Storage/mod.js";
+import type { Document, Filter, WithId } from "../Types.js";
 
-export class IndexedDbCache<D extends Document = Document> {
+export class IndexedDbCache<TSchema extends Document = Document> {
   readonly #cache = new Map<number, string[]>();
-  readonly #documents = new Map<string, RawObject>();
+  readonly #documents = new Map<string, WithId<TSchema>>();
 
-  hash(criteria: RawObject, options: Options): number {
-    return hashCodeQuery(criteria, options);
+  hash(filter: Filter<WithId<TSchema>>, options: Options): number {
+    return hashCodeQuery(filter, options);
   }
 
-  set(hashCode: number, documents: D[]) {
+  set(hashCode: number, documents: WithId<TSchema>[]) {
     this.#cache.set(
       hashCode,
       documents.map((document) => document.id)
@@ -21,10 +20,10 @@ export class IndexedDbCache<D extends Document = Document> {
     }
   }
 
-  get(hashCode: number): D[] | undefined {
+  get(hashCode: number): WithId<TSchema>[] | undefined {
     const ids = this.#cache.get(hashCode);
     if (ids !== undefined) {
-      return ids.map((id) => this.#documents.get(id) as D);
+      return ids.map((id) => this.#documents.get(id) as WithId<TSchema>);
     }
   }
 

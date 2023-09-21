@@ -1,3 +1,5 @@
+import { Document, WithId } from "./Types.js";
+
 export const BroadcastChannel =
   globalThis.BroadcastChannel ??
   class BroadcastChannelMock {
@@ -6,16 +8,16 @@ export const BroadcastChannel =
     close() {}
   };
 
-export type StorageBroadcast<Document> =
+export type StorageBroadcast<TSchema extends Document = Document> =
   | {
       name: string;
       type: "insertOne" | "updateOne";
-      data: Document;
+      data: WithId<TSchema>;
     }
   | {
       name: string;
       type: "insertMany" | "updateMany" | "remove";
-      data: Document[];
+      data: WithId<TSchema>[];
     }
   | {
       name: string;

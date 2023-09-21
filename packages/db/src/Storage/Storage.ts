@@ -1,16 +1,16 @@
 import { Cursor } from "mingo/cursor";
-import { RawObject } from "mingo/types";
 import { nanoid } from "nanoid";
 import { Subject } from "rxjs";
 
 import { BroadcastChannel, StorageBroadcast } from "../Broadcast.js";
+import { Document, Filter, UpdateFilter, WithId } from "../Types.js";
 import { InsertManyResult, InsertOneResult } from "./Operators/Insert/mod.js";
 import { RemoveResult } from "./Operators/Remove/mod.js";
-import { UpdateOperators, UpdateResult } from "./Operators/Update/mod.js";
+import { UpdateResult } from "./Operators/Update/mod.js";
 
-export abstract class Storage<D extends Document = Document> {
+export abstract class Storage<TSchema extends Document = Document> {
   readonly observable = {
-    change: new Subject<ChangeEvent>(),
+    change: new Subject<ChangeEvent<TSchema>>(),
     flush: new Subject<void>()
   };
 
@@ -20,7 +20,7 @@ export abstract class Storage<D extends Document = Document> {
 
   constructor(readonly name: string, readonly id = nanoid()) {
     this.#channel = new BroadcastChannel(`valkyr:db:${name}`);
-    this.#channel.onmessage = ({ data }: MessageEvent<StorageBroadcast<D>>) => {
+    this.#channel.onmessage = ({ data }: MessageEvent<StorageBroadcast<TSchema>>) => {
       if (data.name !== this.name) {
         return;
       }
@@ -65,7 +65,7 @@ export abstract class Storage<D extends Document = Document> {
    |
    */
 
-  broadcast(type: StorageBroadcast<D>["type"], data?: D | D[]): void {
+  broadcast(type: StorageBroadcast<TSchema>["type"], data?: TSchema | TSchema[]): void {
     switch (type) {
       case "flush": {
         this.observable.flush.next();
@@ -87,23 +87,23 @@ export abstract class Storage<D extends Document = Document> {
 
   abstract has(id: string): Promise<boolean>;
 
-  abstract insertOne(document: PartialDocument<D>): Promise<InsertOneResult>;
+  abstract insertOne(document: Partial<WithId<TSchema>>): Promise<InsertOneResult>;
 
-  abstract insertMany(documents: PartialDocument<D>[]): Promise<InsertManyResult>;
+  abstract insertMany(documents: Partial<WithId<TSchema>>[]): Promise<InsertManyResult>;
 
-  abstract findById(id: string): Promise<D | undefined>;
+  abstract findById(id: string): Promise<WithId<TSchema> | undefined>;
 
-  abstract find(criteria?: RawObject, options?: Options): Promise<D[]>;
+  abstract find(filter?: Filter<WithId<TSchema>>, options?: Options): Promise<WithId<TSchema>[]>;
 
-  abstract updateOne(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult>;
+  abstract updateOne(filter: Filter<WithId<TSchema>>, operators: UpdateFilter<TSchema>): Promise<UpdateResult>;
 
-  abstract updateMany(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult>;
+  abstract updateMany(filter: Filter<WithId<TSchema>>, operators: UpdateFilter<TSchema>): Promise<UpdateResult>;
 
-  abstract replace(criteria: RawObject, document: Document): Promise<UpdateResult>;
+  abstract replace(filter: Filter<WithId<TSchema>>, document: TSchema): Promise<UpdateResult>;
 
-  abstract remove(criteria: RawObject): Promise<RemoveResult>;
+  abstract remove(filter: Filter<WithId<TSchema>>): Promise<RemoveResult>;
 
-  abstract count(criteria?: RawObject): Promise<number>;
+  abstract count(filter?: Filter<WithId<TSchema>>): Promise<number>;
 
   abstract flush(): Promise<void>;
 
@@ -143,31 +143,16 @@ export function addOptions(cursor: Cursor, options: Options): Cursor {
  |--------------------------------------------------------------------------------
  */
 
-export type Document<Properties extends RawObject = RawObject> = {
-  id: string;
-} & Properties & {
-    $meta: DocumentMeta;
-  };
-
-export type DocumentMeta = {
-  createdAt: number;
-  updatedAt: number;
-};
-
-export type PartialDocument<D extends Document> = Omit<D, "id" | "$meta"> & {
-  id?: string;
-};
-
 type Status = "loading" | "ready";
 
-export type ChangeEvent =
+export type ChangeEvent<TSchema extends Document = Document> =
   | {
       type: "insertOne" | "updateOne";
-      data: Document<any>;
+      data: WithId<TSchema>;
     }
   | {
       type: "insertMany" | "updateMany" | "remove";
-      data: Document<any>[];
+      data: WithId<TSchema>[];
     };
 
 export type Options = {

@@ -1,23 +1,23 @@
 import { Query } from "mingo";
 
 import { Collection } from "../Collection.js";
-import { addOptions, ChangeEvent, Document, Options } from "../Storage/mod.js";
-import { Criteria } from "./IsMatch.js";
+import { addOptions, ChangeEvent, Options } from "../Storage/mod.js";
+import { Document, Filter, WithId } from "../Types.js";
 import { Store } from "./Store.js";
 
-export function observe(
-  collection: Collection,
-  criteria: Criteria,
+export function observe<TSchema extends Document = Document>(
+  collection: Collection<TSchema>,
+  filter: Filter<WithId<TSchema>>,
   options: Options | undefined,
-  onChange: (documents: Document[], changed: Document[], type: ChangeEvent["type"]) => void
+  onChange: (documents: WithId<TSchema>[], changed: WithId<TSchema>[], type: ChangeEvent<TSchema>["type"]) => void
 ): {
   unsubscribe: () => void;
 } {
-  const store = Store.create();
+  const store = Store.create<TSchema>();
 
   let debounce: NodeJS.Timeout;
 
-  collection.find(criteria, options).then(async (documents) => {
+  collection.find(filter, options).then(async (documents) => {
     const resolved = await store.resolve(documents);
     onChange(resolved, resolved, "insertMany");
   });
@@ -29,7 +29,20 @@ export function observe(
       onChange([], [], "remove");
     }),
     collection.observable.change.subscribe(async ({ type, data }) => {
-      const changed = await store[type](data, criteria);
+      let changed: WithId<TSchema>[] = [];
+      switch (type) {
+        case "insertOne":
+        case "updateOne": {
+          changed = await store[type](data, filter);
+          break;
+        }
+        case "insertMany":
+        case "updateMany":
+        case "remove": {
+          changed = await store[type](data, filter);
+          break;
+        }
+      }
       if (changed.length > 0) {
         clearTimeout(debounce);
         debounce = setTimeout(() => {
@@ -51,9 +64,12 @@ export function observe(
   };
 }
 
-function applyQueryOptions(documents: Document[], options?: Options): Document[] {
+function applyQueryOptions<TSchema extends Document = Document>(
+  documents: WithId<TSchema>[],
+  options?: Options
+): WithId<TSchema>[] {
   if (options !== undefined) {
-    return addOptions(new Query({}).find(documents), options).all() as Document[];
+    return addOptions(new Query({}).find(documents), options).all() as WithId<TSchema>[];
   }
   return documents;
 }

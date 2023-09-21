@@ -1,13 +1,11 @@
 import type { IDBPDatabase } from "idb";
 import { Query } from "mingo";
-import type { AnyVal, RawObject } from "mingo/types";
+import type { AnyVal } from "mingo/types";
 import { nanoid } from "nanoid";
 
 import { DBLogger, InsertLog, QueryLog, RemoveLog, ReplaceLog, UpdateLog } from "../Logger.js";
 import {
   addOptions,
-  Document,
-  DocumentMeta,
   DuplicateDocumentError,
   getInsertManyResult,
   getInsertOneResult,
@@ -15,20 +13,19 @@ import {
   InsertManyResult,
   InsertOneResult,
   Options,
-  PartialDocument,
   RemoveResult,
   Storage,
   update,
-  UpdateOperators,
   UpdateResult
 } from "../Storage/mod.js";
+import { Document, Filter, UpdateFilter, WithId } from "../Types.js";
 import { IndexedDbCache } from "./IndexedDb.Cache.js";
 
 const OBJECT_PROTOTYPE = Object.getPrototypeOf({}) as AnyVal;
 const OBJECT_TAG = "[object Object]";
 
-export class IndexedDbStorage<D extends Document = Document> extends Storage<D> {
-  readonly #cache = new IndexedDbCache<D>();
+export class IndexedDbStorage<TSchema extends Document = Document> extends Storage<TSchema> {
+  readonly #cache = new IndexedDbCache<TSchema>();
   readonly #promise: Promise<IDBPDatabase>;
 
   #db?: IDBPDatabase;
@@ -66,12 +63,12 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    |--------------------------------------------------------------------------------
    */
 
-  async insertOne(data: PartialDocument<D>): Promise<InsertOneResult> {
+  async insertOne(data: Partial<WithId<TSchema>>): Promise<InsertOneResult> {
     const logger = new InsertLog(this.name);
 
-    const document = { ...data, id: data.id ?? nanoid(), $meta: getMeta() } as D;
+    const document = { ...data, id: data.id ?? nanoid() } as any;
     if (await this.has(document.id)) {
-      throw new DuplicateDocumentError(document, this);
+      throw new DuplicateDocumentError(document, this as any);
     }
     await this.db.transaction(this.name, "readwrite", { durability: "relaxed" }).store.add(document);
 
@@ -83,15 +80,15 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     return getInsertOneResult(document);
   }
 
-  async insertMany(data: PartialDocument<D>[]): Promise<InsertManyResult> {
+  async insertMany(data: Partial<WithId<TSchema>>[]): Promise<InsertManyResult> {
     const logger = new InsertLog(this.name);
 
-    const documents: D[] = [];
+    const documents: WithId<TSchema>[] = [];
 
     const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
     await Promise.all(
       data.map((data) => {
-        const document = { ...data, id: data.id ?? nanoid(), $meta: getMeta() } as D;
+        const document = { ...data, id: data.id ?? nanoid() } as WithId<TSchema>;
         documents.push(document);
         return tx.store.add(document);
       })
@@ -112,28 +109,28 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    |--------------------------------------------------------------------------------
    */
 
-  async findById(id: string): Promise<D | undefined> {
+  async findById(id: string): Promise<WithId<TSchema> | undefined> {
     return this.db.getFromIndex(this.name, "id", id);
   }
 
-  async find(criteria: RawObject, options: Options = {}): Promise<D[]> {
-    const logger = new QueryLog(this.name, { criteria, options });
+  async find(filter: Filter<WithId<TSchema>>, options: Options = {}): Promise<WithId<TSchema>[]> {
+    const logger = new QueryLog(this.name, { filter, options });
 
-    const hashCode = this.#cache.hash(criteria, options);
+    const hashCode = this.#cache.hash(filter, options);
     const cached = this.#cache.get(hashCode);
     if (cached !== undefined) {
       this.log(logger.result({ cached: true }));
       return cached;
     }
 
-    const indexes = this.#resolveIndexes(criteria);
-    let cursor = new Query(criteria).find(await this.#getAll({ ...options, ...indexes }));
+    const indexes = this.#resolveIndexes(filter);
+    let cursor = new Query(filter).find(await this.#getAll({ ...options, ...indexes }));
     if (options !== undefined) {
       cursor = addOptions(cursor, options);
     }
 
-    const documents = cursor.all() as D[];
-    this.#cache.set(this.#cache.hash(criteria, options), documents);
+    const documents = cursor.all() as WithId<TSchema>[];
+    this.#cache.set(this.#cache.hash(filter, options), documents);
 
     this.log(logger.result());
 
@@ -144,18 +141,18 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    * TODO: Prototype! Needs to cover more mongodb query cases and investigation around
    * nested indexing in indexeddb.
    */
-  #resolveIndexes(criteria: any): { index?: { [key: string]: any } } {
+  #resolveIndexes(filter: any): { index?: { [key: string]: any } } {
     const indexNames = this.db.transaction(this.name, "readonly").store.indexNames;
     const index: { [key: string]: any } = {};
-    for (const key in criteria) {
+    for (const key in filter) {
       if (indexNames.contains(key) === true) {
         let val: any;
-        if (isObject(criteria[key]) === true) {
-          if (criteria[key]["$in"] !== undefined) {
-            val = criteria[key]["$in"];
+        if (isObject(filter[key]) === true) {
+          if (filter[key]["$in"] !== undefined) {
+            val = filter[key]["$in"];
           }
         } else {
-          val = criteria[key];
+          val = filter[key];
         }
         if (val !== undefined) {
           index[key] = val;
@@ -229,23 +226,23 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    |--------------------------------------------------------------------------------
    */
 
-  async updateOne(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
-    if (typeof criteria.id === "string") {
-      return this.#update(criteria.id, criteria, operators);
+  async updateOne(filter: Filter<WithId<TSchema>>, operators: UpdateFilter<TSchema>): Promise<UpdateResult> {
+    if (typeof filter.id === "string") {
+      return this.#update(filter.id, filter, operators);
     }
-    const documents = await this.find(criteria);
+    const documents = await this.find(filter);
     if (documents.length > 0) {
-      return this.#update(documents[0].id, criteria, operators);
+      return this.#update(documents[0].id, filter, operators);
     }
     return new UpdateResult(0, 0);
   }
 
-  async updateMany(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
-    const logger = new UpdateLog(this.name, { criteria, operators });
+  async updateMany(filter: Filter<WithId<TSchema>>, operators: UpdateFilter<TSchema>): Promise<UpdateResult> {
+    const logger = new UpdateLog(this.name, { filter, operators });
 
-    const ids = await this.find(criteria).then((data) => data.map((d) => d.id));
+    const ids = await this.find(filter).then((data) => data.map((d) => d.id));
 
-    const documents: D[] = [];
+    const documents: WithId<TSchema>[] = [];
     let modifiedCount = 0;
 
     const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
@@ -255,7 +252,7 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
           if (current === undefined) {
             return;
           }
-          const { modified, document } = update(criteria, operators, current);
+          const { modified, document } = update<TSchema>(filter, operators, current);
           if (modified) {
             modifiedCount += 1;
             documents.push(document);
@@ -275,12 +272,12 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     return new UpdateResult(ids.length, modifiedCount);
   }
 
-  async replace(criteria: RawObject, document: D): Promise<UpdateResult> {
+  async replace(filter: Filter<WithId<TSchema>>, document: TSchema): Promise<UpdateResult> {
     const logger = new ReplaceLog(this.name, document);
 
-    const ids = await this.find(criteria).then((data) => data.map((d) => d.id));
+    const ids = await this.find(filter).then((data) => data.map((d) => d.id));
 
-    const documents: D[] = [];
+    const documents: WithId<TSchema>[] = [];
     const count = ids.length;
 
     const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
@@ -301,8 +298,12 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
     return new UpdateResult(count, count);
   }
 
-  async #update(id: string, criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
-    const logger = new UpdateLog(this.name, { criteria, operators });
+  async #update(
+    id: string | number,
+    filter: Filter<WithId<TSchema>>,
+    operators: UpdateFilter<TSchema>
+  ): Promise<UpdateResult> {
+    const logger = new UpdateLog(this.name, { filter, operators });
 
     const tx = this.db.transaction(this.name, "readwrite", { durability: "relaxed" });
 
@@ -312,9 +313,8 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
       return new UpdateResult(0, 0);
     }
 
-    const { modified, document } = await update(criteria, operators, current);
+    const { modified, document } = await update<TSchema>(filter, operators, current);
     if (modified === true) {
-      document.$meta.updatedAt = Date.now();
       await tx.store.put(document);
     }
     await tx.done;
@@ -335,10 +335,10 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    |--------------------------------------------------------------------------------
    */
 
-  async remove(criteria: RawObject): Promise<RemoveResult> {
-    const logger = new RemoveLog(this.name, { criteria });
+  async remove(filter: Filter<WithId<TSchema>>): Promise<RemoveResult> {
+    const logger = new RemoveLog(this.name, { filter });
 
-    const documents = await this.find(criteria);
+    const documents = await this.find(filter);
     const tx = this.db.transaction(this.name, "readwrite");
 
     await Promise.all(documents.map((data) => tx.store.delete(data.id)));
@@ -358,9 +358,9 @@ export class IndexedDbStorage<D extends Document = Document> extends Storage<D> 
    |--------------------------------------------------------------------------------
    */
 
-  async count(criteria?: RawObject): Promise<number> {
-    if (criteria !== undefined) {
-      return (await this.find(criteria)).length;
+  async count(filter?: Filter<WithId<TSchema>>): Promise<number> {
+    if (filter !== undefined) {
+      return (await this.find(filter)).length;
     }
     return this.db.count(this.name);
   }
@@ -389,12 +389,4 @@ export function isObject(v: AnyVal): v is object {
   }
   const proto = Object.getPrototypeOf(v) as AnyVal;
   return (proto === OBJECT_PROTOTYPE || proto === null) && OBJECT_TAG === Object.prototype.toString.call(v);
-}
-
-export function getMeta(): DocumentMeta {
-  const now = Date.now();
-  return {
-    createdAt: now,
-    updatedAt: now
-  };
 }

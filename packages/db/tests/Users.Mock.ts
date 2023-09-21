@@ -1,9 +1,7 @@
 import { clone } from "../src/Clone.js";
-import { Document } from "../src/Storage/mod.js";
+import { WithId } from "../src/Types.js";
 
-const now = Date.now();
-
-const users: UserDocument[] = [
+const users: WithId<UserDocument>[] = [
   {
     id: "user-1",
     name: "John Doe",
@@ -14,11 +12,7 @@ const users: UserDocument[] = [
         alias: "Jane"
       }
     ],
-    interests: ["movies", "tv", "sports"],
-    $meta: {
-      createdAt: now,
-      updatedAt: now
-    }
+    interests: ["movies", "tv", "sports"]
   },
   {
     id: "user-2",
@@ -30,19 +24,15 @@ const users: UserDocument[] = [
         alias: "John"
       }
     ],
-    interests: ["movies", "fitness", "dance"],
-    $meta: {
-      createdAt: now,
-      updatedAt: now
-    }
+    interests: ["movies", "fitness", "dance"]
   }
 ];
 
-export function getUsers(): UserDocument[] {
+export function getUsers(): WithId<UserDocument>[] {
   return clone(users);
 }
 
-export type UserDocument = Document & {
+export type UserDocument = {
   name: string;
   email: string;
   friends: Friend[];

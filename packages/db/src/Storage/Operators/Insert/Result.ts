@@ -1,10 +1,10 @@
-import type { Document } from "../../Storage.js";
+import type { Document } from "../../../Types.js";
 
 export function getInsertManyResult(documents: Document[]): InsertManyResult {
   return {
     acknowledged: true,
     insertedCount: documents.length,
-    insertedIds: documents.reduce<{ [key: number]: string }>((map, document, index) => {
+    insertedIds: documents.reduce<{ [key: number]: string | number }>((map, document, index) => {
       map[index] = document.id;
       return map;
     }, {})
@@ -26,7 +26,7 @@ export type InsertManyResult =
       acknowledged: true;
       insertedCount: number;
       insertedIds: {
-        [key: number]: string;
+        [key: number]: string | number;
       };
     };
 
@@ -36,5 +36,5 @@ export type InsertOneResult =
     }
   | {
       acknowledged: true;
-      insertedId: string;
+      insertedId: string | number;
     };

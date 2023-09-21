@@ -1,6 +1,7 @@
 import { RawObject } from "mingo/types";
 
-import type { Document, Storage } from "./Storage.js";
+import { Document } from "../Types.js";
+import type { Storage } from "./Storage.js";
 
 export class DuplicateDocumentError extends Error {
   readonly type = "DuplicateDocumentError";

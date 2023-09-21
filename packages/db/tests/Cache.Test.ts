@@ -1,5 +1,6 @@
 import { IndexedDbCache } from "../src/Databases/IndexedDb.Cache.js";
-import { Document, Options } from "../src/index.js";
+import { Options } from "../src/index.js";
+import { WithId } from "../src/Types.js";
 
 describe("IndexedDbCache", () => {
   let cache: IndexedDbCache;
@@ -12,9 +13,9 @@ describe("IndexedDbCache", () => {
     cache.flush();
   });
 
-  const sampleDocuments: Document<{ name: string }>[] = [
-    { id: "doc1", name: "Document 1", $meta: { createdAt: Date.now(), updatedAt: Date.now() } },
-    { id: "doc2", name: "Document 2", $meta: { createdAt: Date.now(), updatedAt: Date.now() } }
+  const sampleDocuments: WithId<{ name: string }>[] = [
+    { id: "doc1", name: "Document 1" },
+    { id: "doc2", name: "Document 2" }
   ];
 
   const sampleCriteria = { name: { $eq: "Document 1" } };

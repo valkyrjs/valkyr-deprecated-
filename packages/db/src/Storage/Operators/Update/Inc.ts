@@ -1,8 +1,6 @@
 import * as dot from "dot-prop";
-import type { RawObject } from "mingo/types";
 
-import { Document } from "../../Storage.js";
-import type { UpdateOperators } from "./Update.js";
+import { Document, Filter, UpdateFilter, WithId } from "../../../Types.js";
 import { setPositionalData } from "./Utils.js";
 
 /**
@@ -13,15 +11,19 @@ import { setPositionalData } from "./Utils.js";
  * @see https://www.mongodb.com/docs/manual/reference/operator/update/positional
  *
  * @param document - Document being updated.
- * @param criteria - Search criteria provided with the operation. Eg. updateOne({ id: "1" })
+ * @param filter   - Search filter provided with the operation. Eg. updateOne({ id: "1" })
  * @param $set     - $set action being executed.
  */
-export function $inc(document: Document, criteria: RawObject, $inc: UpdateOperators["$inc"] = {}): boolean {
+export function $inc<TSchema extends Document = Document>(
+  document: WithId<TSchema>,
+  filter: Filter<WithId<TSchema>>,
+  $inc: UpdateFilter<TSchema>["$inc"] = {}
+): boolean {
   let modified = false;
   for (const key in $inc) {
     if (key.includes("$")) {
       if (
-        setPositionalData(document, criteria, key, {
+        setPositionalData(document, filter, key, {
           object: (data, key, target) => {
             if (typeof data === "number") {
               return data + ($inc[key] as number);
@@ -45,7 +47,7 @@ export function $inc(document: Document, criteria: RawObject, $inc: UpdateOperat
   return modified;
 }
 
-function increment(document: Document, key: string, value: number): Document {
+function increment<D extends Document>(document: D, key: string, value: number): D {
   let currentValue = dot.getProperty(document, key) as unknown;
   if (typeof currentValue !== "number") {
     currentValue = 0;

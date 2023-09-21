@@ -7,6 +7,7 @@
   "license": "MIT",
   "type": "module",
   "main": "./src/index.ts",
+  "module": "./src/index.ts",
   "types": "./src/index.ts",
   "files": [
     "dist"
@@ -55,6 +56,7 @@
   },
   "devDependencies": {
     "@valkyr/jest": "workspace:*",
+    "bson": "6.1.0",
     "fake-indexeddb": "^4.0.1",
     "type-fest": "^3.11.1"
   }

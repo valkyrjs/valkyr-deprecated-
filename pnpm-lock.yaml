@@ -130,6 +130,9 @@ importers:
       '@valkyr/jest':
         specifier: workspace:*
         version: link:../../configs/jest
+      bson:
+        specifier: 6.1.0
+        version: 6.1.0
       fake-indexeddb:
         specifier: ^4.0.1
         version: 4.0.1
@@ -1800,6 +1803,11 @@ packages:
     dependencies:
       node-int64: 0.4.0
     dev: false
+
+  /bson@6.1.0:
+    resolution: {integrity: sha512-yiQ3KxvpVoRpx1oD1uPz4Jit9tAVTJgjdmjDKtUErkOoL9VNoF8Dd58qtAOL5E40exx2jvAT9sqdRSK/r+SHlA==}
+    engines: {node: '>=16.20.1'}
+    dev: true
 
   /buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}

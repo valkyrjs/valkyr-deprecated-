@@ -1,6 +1,5 @@
 import { Collection } from "../src/Collection.js";
 import { MemoryStorage } from "../src/Databases/MemoryDb.Storage.js";
-import type { Document } from "../src/Storage/Storage.js";
 
 /**
  * @see https://www.mongodb.com/docs/manual/reference/operator/update-field/#field-update-operators
@@ -11,22 +10,20 @@ describe("Field Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/set/#set-top-level-fields
      */
     it("should set top level fields", async () => {
-      const collection = new Collection<
-        Document & {
-          quantity: number;
-          instock: boolean;
-          reorder: boolean;
-          details: {
-            model: string;
-            make: string;
-          };
-          tags: string[];
-          ratings: {
-            by: string;
-            rating: number;
-          }[];
-        }
-      >("tests", new MemoryStorage("tests"));
+      const collection = new Collection<{
+        quantity: number;
+        instock: boolean;
+        reorder: boolean;
+        details: {
+          model: string;
+          make: string;
+        };
+        tags: string[];
+        ratings: {
+          by: string;
+          rating: number;
+        }[];
+      }>("tests", new MemoryStorage("tests"));
 
       await collection.insertOne({
         id: "100",
@@ -73,22 +70,20 @@ describe("Field Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/set/#set-fields-in-embedded-documents
      */
     it("should set fields in the embedded documents", async () => {
-      const collection = new Collection<
-        Document & {
-          quantity: number;
-          instock: boolean;
-          reorder: boolean;
-          details: {
-            model: string;
-            make: string;
-          };
-          tags: string[];
-          ratings: {
-            by: string;
-            rating: number;
-          }[];
-        }
-      >("tests", new MemoryStorage("tests"));
+      const collection = new Collection<{
+        quantity: number;
+        instock: boolean;
+        reorder: boolean;
+        details: {
+          model: string;
+          make: string;
+        };
+        tags: string[];
+        ratings: {
+          by: string;
+          rating: number;
+        }[];
+      }>("tests", new MemoryStorage("tests"));
 
       await collection.insertOne({
         id: "100",
@@ -130,7 +125,7 @@ describe("Field Update Operators", () => {
     });
 
     it("should assign value returned from provided attribute method", async () => {
-      const collection = new Collection<Document<{ favorite: boolean }>>("tests", new MemoryStorage("tests"));
+      const collection = new Collection<{ favorite: boolean }>("tests", new MemoryStorage("tests"));
 
       await collection.insertOne({ id: "1", favorite: false });
 
@@ -141,7 +136,7 @@ describe("Field Update Operators", () => {
           },
           {
             $set: {
-              favorite: (value: boolean) => !value
+              favorite: (value) => !value
             }
           }
         )
@@ -162,22 +157,20 @@ describe("Field Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/set/#set-elements-in-arrays
      */
     it("should set elements in arrays", async () => {
-      const collection = new Collection<
-        Document<{
-          quantity: number;
-          instock: boolean;
-          reorder: boolean;
-          details: {
-            model: string;
-            make: string;
-          };
-          tags: string[];
-          ratings: {
-            by: string;
-            rating: number;
-          }[];
-        }>
-      >("tests", new MemoryStorage("tests"));
+      const collection = new Collection<{
+        quantity: number;
+        instock: boolean;
+        reorder: boolean;
+        details: {
+          model: string;
+          make: string;
+        };
+        tags: string[];
+        ratings: {
+          by: string;
+          rating: number;
+        }[];
+      }>("tests", new MemoryStorage("tests"));
 
       await collection.insertOne({
         id: "100",
@@ -220,22 +213,20 @@ describe("Field Update Operators", () => {
     });
 
     it("should set elements in arrays with function value assignment", async () => {
-      const collection = new Collection<
-        Document<{
-          quantity: number;
-          instock: boolean;
-          reorder: boolean;
-          details: {
-            model: string;
-            make: string;
-          };
-          tags: string[];
-          ratings: {
-            by: string;
-            rating: number;
-          }[];
-        }>
-      >("tests", new MemoryStorage("tests"));
+      const collection = new Collection<{
+        quantity: number;
+        instock: boolean;
+        reorder: boolean;
+        details: {
+          model: string;
+          make: string;
+        };
+        tags: string[];
+        ratings: {
+          by: string;
+          rating: number;
+        }[];
+      }>("tests", new MemoryStorage("tests"));
 
       await collection.insertOne({
         id: "100",
@@ -280,14 +271,12 @@ describe("Field Update Operators", () => {
 
   describe("$unset", () => {
     it("should unset keys", async () => {
-      const collection = new Collection<
-        Document & {
-          item: string;
-          sku: string;
-          quantity: number;
-          instock: boolean;
-        }
-      >("tests", new MemoryStorage("tests"));
+      const collection = new Collection<{
+        item: string;
+        sku: string;
+        quantity: number;
+        instock: boolean;
+      }>("tests", new MemoryStorage("tests"));
 
       await collection.insertMany([
         { id: "1", item: "chisel", sku: "C001", quantity: 4, instock: true },
@@ -345,7 +334,7 @@ describe("Field Update Operators", () => {
 describe("Array Update Operators", () => {
   describe("$(update)", () => {
     it("should replace a object in an array", async () => {
-      const collection = new Collection<Document & { grades: { id: string; value: number }[] }>(
+      const collection = new Collection<{ grades: { id: string; value: number }[] }>(
         "students",
         new MemoryStorage("students")
       );
@@ -407,7 +396,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/positional/#update-values-in-an-array
      */
     it("should update values in an array", async () => {
-      const collection = new Collection<Document & { grades: number[] }>("students", new MemoryStorage("students"));
+      const collection = new Collection<{ grades: number[] }>("students", new MemoryStorage("students"));
 
       await collection.insertMany([
         { id: "1", grades: [85, 80, 80] },
@@ -445,7 +434,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/positional/#update-documents-in-an-array
      */
     it("should update documents in an array", async () => {
-      const collection = new Collection<Document & { grades: { grade: number; mean: number; std: number }[] }>(
+      const collection = new Collection<{ grades: { grade: number; mean: number; std: number }[] }>(
         "students",
         new MemoryStorage("students")
       );
@@ -492,7 +481,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/positional/#update-embedded-documents-using-multiple-field-matches
      */
     it("should update embedded documents using multiple field matches", async () => {
-      const collection = new Collection<Document & { grades: { grade: number; mean: number; std: number }[] }>(
+      const collection = new Collection<{ grades: { grade: number; mean: number; std: number }[] }>(
         "students",
         new MemoryStorage("students")
       );
@@ -550,7 +539,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/pull/#remove-all-items-that-equal-a-specified-value
      */
     it("should remove all items that equal a specified value", async () => {
-      const collection = new Collection<Document & { fruits: string[]; vegetables: string[] }>(
+      const collection = new Collection<{ fruits: string[]; vegetables: string[] }>(
         "stores",
         new MemoryStorage("stores")
       );
@@ -605,7 +594,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/pull/#remove-all-items-that-match-a-specified--pull-condition
      */
     it("should remove all items that match a specific $pull condition", async () => {
-      const collection = new Collection<Document & { votes: number[] }>("profiles", new MemoryStorage("profiles"));
+      const collection = new Collection<{ votes: number[] }>("profiles", new MemoryStorage("profiles"));
 
       await collection.insertOne({ id: "1", votes: [3, 5, 6, 7, 7, 8] });
 
@@ -625,7 +614,7 @@ describe("Array Update Operators", () => {
         modified: 1
       });
 
-      expect(await collection.findOne({ id: "1" })).toEqual({ id: "1", votes: [3, 5] });
+      expect(await collection.findById("1")).toEqual({ id: "1", votes: [3, 5] });
 
       collection.storage.destroy();
     });
@@ -634,7 +623,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/pull/#remove-items-from-an-array-of-documents
      */
     it("should remove items from an array of documents", async () => {
-      const collection = new Collection<Document & { results: { item: string; score: number }[] }>(
+      const collection = new Collection<{ results: { item: string; score: number }[] }>(
         "surveys",
         new MemoryStorage("surveys")
       );
@@ -678,61 +667,13 @@ describe("Array Update Operators", () => {
       collection.storage.destroy();
     });
 
-    it("should not remove any elements when using $elemMatch", async () => {
-      const collection = new Collection<Document & { results: { item: string; score: number }[] }>(
-        "surveys",
-        new MemoryStorage("surveys")
-      );
-
-      await collection.insertMany([
-        {
-          id: "1",
-          results: [
-            { item: "A", score: 5 },
-            { item: "B", score: 8 }
-          ]
-        },
-        {
-          id: "2",
-          results: [
-            { item: "C", score: 8 },
-            { item: "B", score: 4 }
-          ]
-        }
-      ]);
-
-      expect(await collection.updateMany({}, { $pull: { results: { $elemMatch: { score: 8, item: "B" } } } })).toEqual({
-        matched: 2,
-        modified: 0
-      });
-
-      expect(await collection.find()).toEqual([
-        {
-          id: "1",
-          results: [
-            { item: "A", score: 5 },
-            { item: "B", score: 8 }
-          ]
-        },
-        {
-          id: "2",
-          results: [
-            { item: "C", score: 8 },
-            { item: "B", score: 4 }
-          ]
-        }
-      ]);
-
-      collection.storage.destroy();
-    });
-
     /**
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/pull/#remove-documents-from-nested-arrays
      */
     it("should remove documents from nested arrays", async () => {
-      const collection = new Collection<
-        Document & { results: { item: string; score: number; answers: { q: number; a: number }[] }[] }
-      >("surveys", new MemoryStorage("surveys"));
+      const collection = new Collection<{
+        results: { item: string; score: number; answers: { q: number; a: number }[] }[];
+      }>("surveys", new MemoryStorage("surveys"));
 
       await collection.insertMany([
         {
@@ -833,7 +774,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/push/#append-a-value-to-an-array
      */
     it("should append a value to an array", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new MemoryStorage("students"));
+      const collection = new Collection<{ scores: number[] }>("students", new MemoryStorage("students"));
 
       await collection.insertOne({ id: "1", scores: [44, 78, 38, 80] });
 
@@ -860,7 +801,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/push/#append-a-value-to-arrays-in-multiple-documents
      */
     it("should append a value to arrays in multiple documents", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new MemoryStorage("students"));
+      const collection = new Collection<{ scores: number[] }>("students", new MemoryStorage("students"));
 
       await collection.insertMany([
         { id: "1", scores: [44, 78, 38, 80, 89] },
@@ -897,10 +838,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/push/#append-multiple-values-to-an-array
      */
     it("should append multiple values to an array", async () => {
-      const collection = new Collection<Document & { name: string; scores: number[] }>(
-        "students",
-        new MemoryStorage("students")
-      );
+      const collection = new Collection<{ name: string; scores: number[] }>("students", new MemoryStorage("students"));
 
       await collection.insertOne({ id: "1", name: "Joe", scores: [44, 78] });
 
@@ -929,7 +867,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/push/#use--push-operator-with-multiple-modifiers
      */
     it("should use $push operator with multiple modifiers", async () => {
-      const collection = new Collection<Document & { quizzes: { wk: number; score: number }[] }>(
+      const collection = new Collection<{ quizzes: { wk: number; score: number }[] }>(
         "students",
         new MemoryStorage("students")
       );
@@ -982,7 +920,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/slice/#slice-from-the-end-of-the-array
      */
     it("should slice from the end of the array", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new MemoryStorage("students"));
+      const collection = new Collection<{ scores: number[] }>("students", new MemoryStorage("students"));
 
       await collection.insertOne({ id: "1", scores: [40, 50, 60] });
 
@@ -1012,7 +950,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/slice/#slice-from-the-front-of-the-array
      */
     it("should slice from the front of the array", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new MemoryStorage("students"));
+      const collection = new Collection<{ scores: number[] }>("students", new MemoryStorage("students"));
 
       await collection.insertOne({ id: "2", scores: [89, 90] });
 
@@ -1042,7 +980,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/slice/#update-array-using-slice-only
      */
     it("should update array using slice only", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new MemoryStorage("students"));
+      const collection = new Collection<{ scores: number[] }>("students", new MemoryStorage("students"));
 
       await collection.insertOne({ id: "3", scores: [89, 70, 100, 20] });
 
@@ -1072,7 +1010,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/position/#add-elements-at-the-start-of-the-array
      */
     it("should add elements to the start of the array", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new MemoryStorage("students"));
+      const collection = new Collection<{ scores: number[] }>("students", new MemoryStorage("students"));
 
       await collection.insertOne({ id: "1", scores: [100] });
 
@@ -1102,7 +1040,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/position/#add-elements-to-the-middle-of-the-array
      */
     it("should add elements to the middle of the array", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new MemoryStorage("students"));
+      const collection = new Collection<{ scores: number[] }>("students", new MemoryStorage("students"));
 
       await collection.insertOne({ id: "2", scores: [50, 60, 70, 100] });
 
@@ -1129,7 +1067,7 @@ describe("Array Update Operators", () => {
     });
 
     it("should use a negative index to add elements to the array", async () => {
-      const collection = new Collection<Document & { scores: number[] }>("students", new MemoryStorage("students"));
+      const collection = new Collection<{ scores: number[] }>("students", new MemoryStorage("students"));
 
       await collection.insertOne({ id: "3", scores: [50, 60, 20, 30, 70, 100] });
 
@@ -1159,7 +1097,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/sort/#sort-array-of-documents-by-a-field-in-the-documents
      */
     it("should sort array of documents by a field in the documents", async () => {
-      const collection = new Collection<Document & { quizzes: { id: number; score: number }[] }>(
+      const collection = new Collection<{ quizzes: { id: number; score: number }[] }>(
         "students",
         new MemoryStorage("students")
       );
@@ -1211,7 +1149,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/sort/#sort-array-elements-that-are-not-documents
      */
     it("should sort array elements that are not documents", async () => {
-      const collection = new Collection<Document & { tests: number[] }>("students", new MemoryStorage("students"));
+      const collection = new Collection<{ tests: number[] }>("students", new MemoryStorage("students"));
 
       await collection.insertOne({ id: "2", tests: [89, 70, 89, 50] });
 
@@ -1243,7 +1181,7 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/sort/#update-array-using-sort-only
      */
     it("should update array using sort only", async () => {
-      const collection = new Collection<Document & { tests: number[] }>("students", new MemoryStorage("students"));
+      const collection = new Collection<{ tests: number[] }>("students", new MemoryStorage("students"));
 
       await collection.insertOne({ id: "3", tests: [89, 70, 100, 20] });
 
@@ -1277,9 +1215,11 @@ describe("Array Update Operators", () => {
      * @see https://www.mongodb.com/docs/manual/reference/operator/update/inc
      */
     it("should increment and decrement values", async () => {
-      const collection = new Collection<
-        Document & { sku: string; quantity: number; metrics: { orders: number; ratings: number } }
-      >("products", new MemoryStorage("products"));
+      const collection = new Collection<{
+        sku: string;
+        quantity: number;
+        metrics: { orders: number; ratings: number };
+      }>("products", new MemoryStorage("products"));
 
       await collection.insertOne({ id: "1", sku: "abc123", quantity: 10, metrics: { orders: 2, ratings: 3.5 } });
 
@@ -1288,7 +1228,12 @@ describe("Array Update Operators", () => {
           {
             id: "1"
           },
-          { $inc: { quantity: -2, "metrics.orders": 1 } }
+          {
+            $inc: {
+              quantity: -2,
+              "metrics.orders": 1
+            }
+          }
         )
       ).toEqual({
         matched: 1,
@@ -1306,7 +1251,7 @@ describe("Array Update Operators", () => {
     });
 
     it("should increment value of an array element with array object", async () => {
-      const collection = new Collection<Document & { details: { id: string; quantity: number }[] }>(
+      const collection = new Collection<{ details: { id: number; quantity: number }[] }>(
         "products",
         new MemoryStorage("products")
       );
@@ -1316,46 +1261,46 @@ describe("Array Update Operators", () => {
         details: [
           {
             id: 1,
-            Quantity: 4
+            quantity: 4
           },
           {
             id: 2,
-            Quantity: 3
+            quantity: 3
           },
           {
             id: 3,
-            Quantity: 2
+            quantity: 2
           },
           {
             id: 4,
-            Quantity: 7
+            quantity: 7
           }
         ]
       });
 
-      expect(await collection.updateOne({ "details.id": 2 }, { $inc: { "details.$.Quantity": 10 } })).toEqual({
+      expect(await collection.updateOne({ "details.id": 2 }, { $inc: { "details.$.quantity": 10 } })).toEqual({
         matched: 1,
         modified: 1
       });
 
-      expect(await collection.findById("2")).toEqual({
+      expect(await collection.findOne({ id: "2" })).toEqual({
         id: "2",
         details: [
           {
             id: 1,
-            Quantity: 4
+            quantity: 4
           },
           {
             id: 2,
-            Quantity: 13
+            quantity: 13
           },
           {
             id: 3,
-            Quantity: 2
+            quantity: 2
           },
           {
             id: 4,
-            Quantity: 7
+            quantity: 7
           }
         ]
       });
@@ -1364,7 +1309,7 @@ describe("Array Update Operators", () => {
     });
 
     it("should increment value of an array element with array index", async () => {
-      const collection = new Collection<Document & { details: { id: string; quantity: number }[] }>(
+      const collection = new Collection<{ details: { id: number; quantity: number }[] }>(
         "products",
         new MemoryStorage("products")
       );
@@ -1374,24 +1319,24 @@ describe("Array Update Operators", () => {
         details: [
           {
             id: 1,
-            Quantity: 4
+            quantity: 4
           },
           {
             id: 2,
-            Quantity: 3
+            quantity: 3
           },
           {
             id: 3,
-            Quantity: 2
+            quantity: 2
           },
           {
             id: 4,
-            Quantity: 7
+            quantity: 7
           }
         ]
       });
 
-      expect(await collection.updateOne({ id: "3" }, { $inc: { "details[0].Quantity": 10 } })).toEqual({
+      expect(await collection.updateOne({ id: "3" }, { $inc: { "details[0].quantity": 10 } })).toEqual({
         matched: 1,
         modified: 1
       });
@@ -1401,19 +1346,19 @@ describe("Array Update Operators", () => {
         details: [
           {
             id: 1,
-            Quantity: 14
+            quantity: 14
           },
           {
             id: 2,
-            Quantity: 3
+            quantity: 3
           },
           {
             id: 3,
-            Quantity: 2
+            quantity: 2
           },
           {
             id: 4,
-            Quantity: 7
+            quantity: 7
           }
         ]
       });

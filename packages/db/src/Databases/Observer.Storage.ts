@@ -1,26 +1,23 @@
 import { Query } from "mingo";
-import { RawObject } from "mingo/types";
 import { nanoid } from "nanoid";
 
 import {
   addOptions,
-  Document,
   DuplicateDocumentError,
   getInsertManyResult,
   getInsertOneResult,
   InsertManyResult,
   InsertOneResult,
   Options,
-  PartialDocument,
   RemoveResult,
   Storage,
   update,
-  UpdateOperators,
   UpdateResult
 } from "../Storage/mod.js";
+import { Document, Filter, UpdateFilter, WithId } from "../Types.js";
 
-export class ObserverStorage<D extends Document = Document> extends Storage<D> {
-  readonly #documents = new Map<string, D>();
+export class ObserverStorage<TSchema extends Document = Document> extends Storage<TSchema> {
+  readonly #documents = new Map<string, WithId<TSchema>>();
 
   async resolve() {
     return this;
@@ -30,42 +27,42 @@ export class ObserverStorage<D extends Document = Document> extends Storage<D> {
     return this.#documents.has(id);
   }
 
-  async insertOne(data: PartialDocument<D>): Promise<InsertOneResult> {
-    const document = { ...data, id: data.id ?? nanoid() } as D;
+  async insertOne(data: Partial<TSchema>): Promise<InsertOneResult> {
+    const document = { ...data, id: data.id ?? nanoid() } as WithId<TSchema>;
     if (await this.has(document.id)) {
-      throw new DuplicateDocumentError(document, this);
+      throw new DuplicateDocumentError(document, this as any);
     }
     this.#documents.set(document.id, document);
     return getInsertOneResult(document);
   }
 
-  async insertMany(documents: PartialDocument<D>[]): Promise<InsertManyResult> {
-    const result: D[] = [];
+  async insertMany(documents: Partial<TSchema>[]): Promise<InsertManyResult> {
+    const result: TSchema[] = [];
     for (const data of documents) {
-      const document = { ...data, id: data.id ?? nanoid() } as D;
+      const document = { ...data, id: data.id ?? nanoid() } as WithId<TSchema>;
       result.push(document);
       this.#documents.set(document.id, document);
     }
     return getInsertManyResult(result);
   }
 
-  async findById(id: string): Promise<D | undefined> {
+  async findById(id: string): Promise<WithId<TSchema> | undefined> {
     return this.#documents.get(id);
   }
 
-  async find(criteria?: RawObject, options?: Options): Promise<D[]> {
-    let cursor = new Query(criteria ?? {}).find(Array.from(this.#documents.values()));
+  async find(filter?: Filter<WithId<TSchema>>, options?: Options): Promise<WithId<TSchema>[]> {
+    let cursor = new Query(filter ?? {}).find(Array.from(this.#documents.values()));
     if (options !== undefined) {
       cursor = addOptions(cursor, options);
     }
-    return cursor.all() as D[];
+    return cursor.all() as WithId<TSchema>[];
   }
 
-  async updateOne(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
-    const query = new Query(criteria);
+  async updateOne(filter: Filter<WithId<TSchema>>, operators: UpdateFilter<TSchema>): Promise<UpdateResult> {
+    const query = new Query(filter);
     for (const current of Array.from(this.#documents.values())) {
       if (query.test(current) === true) {
-        const { modified, document } = update<D>(criteria, operators, current);
+        const { modified, document } = update<TSchema>(filter, operators, current);
         if (modified === true) {
           this.#documents.set(document.id, document);
           return new UpdateResult(1, 1);
@@ -76,10 +73,10 @@ export class ObserverStorage<D extends Document = Document> extends Storage<D> {
     return new UpdateResult(0, 0);
   }
 
-  async updateMany(criteria: RawObject, operators: UpdateOperators): Promise<UpdateResult> {
-    const query = new Query(criteria);
+  async updateMany(filter: Filter<WithId<TSchema>>, operators: UpdateFilter<TSchema>): Promise<UpdateResult> {
+    const query = new Query(filter);
 
-    const documents: D[] = [];
+    const documents: WithId<TSchema>[] = [];
 
     let matchedCount = 0;
     let modifiedCount = 0;
@@ -87,7 +84,7 @@ export class ObserverStorage<D extends Document = Document> extends Storage<D> {
     for (const current of Array.from(this.#documents.values())) {
       if (query.test(current) === true) {
         matchedCount += 1;
-        const { modified, document } = update<D>(criteria, operators, current);
+        const { modified, document } = update<TSchema>(filter, operators, current);
         if (modified === true) {
           modifiedCount += 1;
           documents.push(document);
@@ -99,10 +96,10 @@ export class ObserverStorage<D extends Document = Document> extends Storage<D> {
     return new UpdateResult(matchedCount, modifiedCount);
   }
 
-  async replace(criteria: RawObject, document: D): Promise<UpdateResult> {
-    const query = new Query(criteria);
+  async replace(filter: Filter<WithId<TSchema>>, document: WithId<TSchema>): Promise<UpdateResult> {
+    const query = new Query(filter);
 
-    const documents: D[] = [];
+    const documents: WithId<TSchema>[] = [];
 
     let matchedCount = 0;
     let modifiedCount = 0;
@@ -119,9 +116,9 @@ export class ObserverStorage<D extends Document = Document> extends Storage<D> {
     return new UpdateResult(matchedCount, modifiedCount);
   }
 
-  async remove(criteria: RawObject): Promise<RemoveResult> {
+  async remove(filter: Filter<WithId<TSchema>>): Promise<RemoveResult> {
     const documents = Array.from(this.#documents.values());
-    const query = new Query(criteria);
+    const query = new Query(filter);
     let count = 0;
     for (const document of documents) {
       if (query.test(document) === true) {
@@ -132,8 +129,8 @@ export class ObserverStorage<D extends Document = Document> extends Storage<D> {
     return new RemoveResult(count);
   }
 
-  async count(criteria?: RawObject): Promise<number> {
-    return new Query(criteria ?? {}).find(Array.from(this.#documents.values())).count();
+  async count(filter?: Filter<WithId<TSchema>>): Promise<number> {
+    return new Query(filter ?? {}).find(Array.from(this.#documents.values())).count();
   }
 
   async flush(): Promise<void> {

@@ -1,10 +1,10 @@
 import { Query } from "mingo";
-import { RawObject } from "mingo/types";
 
-import { Document } from "../Storage/mod.js";
+import { Document, Filter, WithId } from "../Types.js";
 
-export type Criteria = RawObject | undefined;
-
-export function isMatch(document: Document, criteria: Criteria): boolean {
-  return !criteria || new Query(criteria).test(document);
+export function isMatch<TSchema extends Document = Document>(
+  document: WithId<TSchema>,
+  filter?: Filter<WithId<TSchema>>
+): boolean {
+  return !filter || new Query(filter).test(document);
 }

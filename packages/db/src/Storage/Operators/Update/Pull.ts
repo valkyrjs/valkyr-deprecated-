@@ -1,12 +1,14 @@
 import * as dot from "dot-prop";
 import { Query } from "mingo";
-import type { RawObject } from "mingo/types";
+import { RawObject } from "mingo/types";
 
+import { Document, UpdateFilter, WithId } from "../../../Types.js";
 import { PullUpdateArrayError } from "../../Errors.js";
-import { Document } from "../../Storage.js";
-import type { UpdateOperators } from "./Update.js";
 
-export function $pull(document: Document, operator: UpdateOperators["$pull"] = {}): boolean {
+export function $pull<TSchema extends Document>(
+  document: WithId<TSchema>,
+  operator: UpdateFilter<TSchema>["$pull"] = {}
+): boolean {
   let modified = false;
   for (const key in operator) {
     const values = getPullValues(document, key);

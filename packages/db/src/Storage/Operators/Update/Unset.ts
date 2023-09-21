@@ -1,9 +1,11 @@
 import * as dot from "dot-prop";
 
-import { Document } from "../../Storage.js";
-import type { UpdateOperators } from "./Update.js";
+import { Document, UpdateFilter, WithId } from "../../../Types.js";
 
-export function $unset(document: Document, $unset: UpdateOperators["$unset"] = {}): boolean {
+export function $unset<TSchema extends Document = Document>(
+  document: WithId<TSchema>,
+  $unset: UpdateFilter<TSchema>["$unset"] = {}
+): boolean {
   let modified = false;
   for (const key in $unset) {
     if (dot.deleteProperty(document, key)) {
