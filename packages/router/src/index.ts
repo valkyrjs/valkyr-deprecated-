@@ -7,3 +7,5 @@ export type { RoutedResult } from "./Router.js";
 export { Router } from "./Router.js";
 export type { Location } from "history";
 export { createBrowserHistory, createHashHistory, createMemoryHistory } from "history";
+
+console.log("Hello Worlds");

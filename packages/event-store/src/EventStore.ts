@@ -1,4 +1,4 @@
-import { Document, IndexedDatabase } from "@valkyr/db";
+import { IndexedDatabase } from "@valkyr/db";
 
 import {
   createEventRecord,
@@ -27,7 +27,7 @@ export class EventStore<Event extends LedgerEvent = LedgerEvent, Record extends 
   readonly #remote: Remote;
   readonly #events: EventList<Event>;
   readonly #db: IndexedDatabase<{
-    events: Document<Record>;
+    events: EventRecord;
   }>;
 
   readonly #validator: Validator<Record>;

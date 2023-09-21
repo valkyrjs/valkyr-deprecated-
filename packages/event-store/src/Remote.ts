@@ -1,4 +1,4 @@
-import { Document, IndexedDatabase } from "@valkyr/db";
+import { IndexedDatabase } from "@valkyr/db";
 import { IndexedStorage, Queue } from "@valkyr/queue";
 import { Subject } from "rxjs";
 
@@ -10,7 +10,7 @@ const subject = new Subject<[EventRecord, boolean]>();
 
 export class Remote {
   readonly #db: IndexedDatabase<{
-    cursors: Document<{ timestamp: string }>;
+    cursors: { timestamp: string };
   }>;
 
   readonly #queue: Queue<EventWorker>;
@@ -85,7 +85,7 @@ export class Remote {
    */
 
   async setCursor(id: string, timestamp: string): Promise<void> {
-    const cursor = await this.cursors.findById(id);
+    const cursor = await this.cursors.findOne({ id });
     if (cursor === undefined) {
       await this.cursors.insertOne({ id, timestamp });
     } else {
