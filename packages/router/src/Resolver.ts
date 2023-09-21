@@ -116,11 +116,14 @@ export class Resolver<Component = unknown> {
           return onCancel();
         }
         case "render": {
-          if (index === 0 && this.#parent !== route) {
-            this.#parent = route;
-            return this.#render?.(res.component, res.props);
+          if (index === 0) {
+            if (this.#parent !== route) {
+              this.#parent = route;
+              this.#render?.(res.component, res.props);
+            }
+          } else {
+            this.resolved.next(resolved);
           }
-          this.resolved.next(resolved);
         }
       }
     }
