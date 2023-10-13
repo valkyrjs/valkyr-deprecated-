@@ -20,6 +20,7 @@
     "build": "npm run clean && npm run build:esm && npm run build:cjs && node ../../scripts/esm.js api",
     "build:esm": "tsc --project ./tsconfig.json",
     "build:cjs": "tsc --project ./tsconfig.cjs.json",
+    "client": "npx tsx ./src/Sample.ts",
     "flush": "npm run clean && rm -rf ./node_modules",
     "clean": "rm -rf ./dist",
     "ncu": "ncu -u",
@@ -27,7 +28,7 @@
   },
   "dependencies": {
     "@valkyr/jsonrpc": "workspace:*",
-    "computed-types": "^1.11.2"
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@types/ws": "^8.5.5",

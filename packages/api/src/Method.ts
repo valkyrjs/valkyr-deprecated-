@@ -1,4 +1,4 @@
-import type { ResolvedValue, Type, ValidationError } from "computed-types";
+import { TypeOf, z, ZodObject, ZodRawShape, ZodTypeAny } from "zod";
 
 import { Action, Context as ActionContext } from "./Action";
 
@@ -13,13 +13,13 @@ import { Action, Context as ActionContext } from "./Action";
  |
  */
 
-export function method<Schema = any, Actions extends Action<any>[] = [], Response = any>({
-  params,
+export function method<Schema extends ZodRawShape = ZodRawShape, Actions extends Action<any>[] = [], Response = any>({
+  params = {} as unknown as Schema,
   actions,
   handler
-}: Props<Schema, Actions, Response>): Method<Schema, Actions, Response> {
+}: Props<Schema, Actions, Response>): Method<ZodObject<Schema>, Actions, Response> {
   return {
-    validate: (params as any)?.destruct(),
+    params: z.object(params).strict(),
     actions,
     handler
   };
@@ -31,24 +31,24 @@ export function method<Schema = any, Actions extends Action<any>[] = [], Respons
  |--------------------------------------------------------------------------------
  */
 
-export type Method<Schema = any, Actions extends Action<any>[] = [], Response = any> = {
-  validate?: (params: any) => [ValidationError, ResolvedValue<Response>];
+export type Method<Schema extends ZodTypeAny = ZodTypeAny, Actions extends Action<any>[] = [], Response = any> = {
+  params: Schema;
   actions?: Actions;
   handler: Handler<Schema, Actions, Response>;
 };
 
-type Props<Schema = any, Actions extends Action<any>[] = [], Response = any> = {
+type Props<Schema extends ZodRawShape = ZodRawShape, Actions extends Action<any>[] = [], Response = any> = {
   params?: Schema;
   actions?: Actions;
-  handler: Handler<Schema, Actions, Response>;
+  handler: Handler<ZodObject<Schema>, Actions, Response>;
 };
 
-type Handler<Schema, Actions extends Action<any>[], Response> = (
+type Handler<Schema extends ZodTypeAny, Actions extends Action<any>[], Response> = (
   ctx: Context<Schema, Actions>,
   req: Partial<ActionContext>
 ) => Promise<Response> | Response;
 
-type Context<B, A extends Action<any>[]> = Type<B> & ActionsToIntersection<A>;
+type Context<B extends ZodTypeAny, A extends Action<any>[]> = TypeOf<B> & ActionsToIntersection<A>;
 
 type ActionsToIntersection<A extends Action<any>[] = []> = A extends undefined | []
   ? {}

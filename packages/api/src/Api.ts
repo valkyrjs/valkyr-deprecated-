@@ -23,6 +23,13 @@ export class Api {
     this.fastify = this.fastify.bind(this);
   }
 
+  /**
+   * List of registered API methods in the form of `[name, method]` tuples.
+   */
+  get methods() {
+    return Array.from(this.#methods.entries());
+  }
+
   /*
    |--------------------------------------------------------------------------------
    | Fastify Handlers
@@ -120,15 +127,13 @@ export class Api {
 
     // ### Validate Parameters
 
-    if (method.validate !== undefined) {
-      const [err] = method.validate(request.params ?? {});
-      if (err) {
-        return {
-          jsonrpc: "2.0",
-          error: new InvalidParamsError(err.message),
-          id: (request as any).id ?? null
-        };
-      }
+    const result = await method.params.spa(request.params ?? {});
+    if (result.success === false) {
+      return {
+        jsonrpc: "2.0",
+        error: new InvalidParamsError(result.error.flatten().fieldErrors),
+        id: (request as any).id ?? null
+      };
     }
 
     // ### Run Actions
